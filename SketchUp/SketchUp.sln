@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SketchUp", "SketchUp\SketchUp.csproj", "{A6340C0C-822A-4633-BC59-B49CA8F24F85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWallTech", "..\..\SWallTech\SWallTech.csproj", "{2AF09C76-344E-4151-9CED-E745234E0437}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		TEST|Any CPU = TEST|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A6340C0C-822A-4633-BC59-B49CA8F24F85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6340C0C-822A-4633-BC59-B49CA8F24F85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6340C0C-822A-4633-BC59-B49CA8F24F85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6340C0C-822A-4633-BC59-B49CA8F24F85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6340C0C-822A-4633-BC59-B49CA8F24F85}.TEST|Any CPU.ActiveCfg = TEST|Any CPU
+		{A6340C0C-822A-4633-BC59-B49CA8F24F85}.TEST|Any CPU.Build.0 = TEST|Any CPU
+		{2AF09C76-344E-4151-9CED-E745234E0437}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AF09C76-344E-4151-9CED-E745234E0437}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AF09C76-344E-4151-9CED-E745234E0437}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AF09C76-344E-4151-9CED-E745234E0437}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AF09C76-344E-4151-9CED-E745234E0437}.TEST|Any CPU.ActiveCfg = Release|Any CPU
+		{2AF09C76-344E-4151-9CED-E745234E0437}.TEST|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
