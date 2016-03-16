@@ -9,6 +9,9 @@ namespace SketchUp
 {
 	public class SectionData
 	{
+
+		#region Properties
+
 		private SectionData()
 		{
 		}
@@ -137,6 +140,8 @@ namespace SketchUp
 		{
 			get; set;
 		}
+
+#endregion New Region
 
 		public bool SectionisChanged
 		{

@@ -122,7 +122,7 @@ namespace SketchUp
 				_isMinimized = false;
 				splash.UpdateProgress(20);
 				Application.DoEvents();
-				bool test = ExpandoSketch.RefreshEditImageBtn;
+				// TODO: Remove if not needed:	bool test = ExpandoSketch.RefreshEditImageBtn;
 
 				DBAccessManager _connDB = null;
 				splash.UpdateProgress(30);

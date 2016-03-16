@@ -831,31 +831,31 @@ namespace SketchUp
 
 				if (offsetDir == "E")
 				{
-					begNewSecX = Math.Round(Convert.ToDecimal(Xadj), 1);
-					begNewSecY = Math.Round(Convert.ToDecimal(Yadj), 1);
+					NewSectionBeginPointX = Math.Round(Convert.ToDecimal(Xadj), 1);
+					NewSectionBeginPointY = Math.Round(Convert.ToDecimal(Yadj), 1);
 				}
 
 				if (offsetDir == "W")
 				{
-					begNewSecX = Math.Round(Convert.ToDecimal(Xadj), 1);
-					begNewSecY = Math.Round(Convert.ToDecimal(Yadj), 1);
+					NewSectionBeginPointX = Math.Round(Convert.ToDecimal(Xadj), 1);
+					NewSectionBeginPointY = Math.Round(Convert.ToDecimal(Yadj), 1);
 				}
 
 				if (offsetDir == "N")
 				{
-					begNewSecX = Math.Round(Convert.ToDecimal(Xadj), 1);
-					begNewSecY = Math.Round(Convert.ToDecimal(Yadj), 1);
+					NewSectionBeginPointX = Math.Round(Convert.ToDecimal(Xadj), 1);
+					NewSectionBeginPointY = Math.Round(Convert.ToDecimal(Yadj), 1);
 				}
 
 				if (offsetDir == "S")
 				{
-					begNewSecX = Math.Round(Convert.ToDecimal(Xadj), 1);
-					begNewSecY = Math.Round(Convert.ToDecimal(Yadj), 1);
+					NewSectionBeginPointX = Math.Round(Convert.ToDecimal(Xadj), 1);
+					NewSectionBeginPointY = Math.Round(Convert.ToDecimal(Yadj), 1);
 				}
 				if (offsetDir == String.Empty)
 				{
-					begNewSecX = Math.Round(Convert.ToDecimal(Xadj), 1);
-					begNewSecY = Math.Round(Convert.ToDecimal(Yadj), 1);
+					NewSectionBeginPointX = Math.Round(Convert.ToDecimal(Xadj), 1);
+					NewSectionBeginPointY = Math.Round(Convert.ToDecimal(Yadj), 1);
 				}
 
 				if (_hasNewSketch == true)
@@ -877,8 +877,8 @@ namespace SketchUp
 
 				splitLineDist = distance;
 
-				startSplitX = begNewSecX;
-				startSplitY = begNewSecY;
+				startSplitX = NewSectionBeginPointX;
+				startSplitY = NewSectionBeginPointY;
 
 				getSplitLine();
 
@@ -1038,7 +1038,7 @@ namespace SketchUp
 			_lenString = String.Empty;
 			_lastDir = String.Empty;
 
-			int tclick = click;
+			// TODO: Remove if not needed:	int tclick = click;
 
 			try
 			{
@@ -1158,7 +1158,7 @@ namespace SketchUp
 			{
 				Graphics g = Graphics.FromImage(_mainimage);
 				SolidBrush brush = new SolidBrush(Color.White);
-				g.FillRectangle(brush, e.X, e.Y, s, s);
+				g.FillRectangle(brush, e.X, e.Y, StandardDrawWidthAndHeight, StandardDrawWidthAndHeight);
 				g.Save();
 
 				ExpSketchPBox.Image = _mainimage;
@@ -1623,12 +1623,12 @@ namespace SketchUp
 
 			if (ds1.Tables[0].Rows.Count > 0)
 			{
-				CPTypes = new List<string>();
+				cpTypes = new List<string>();
 				for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
 				{
 					string sect = ds1.Tables[0].Rows[i]["rsecto"].ToString().Trim();
 
-					CPTypes.Add(sect);
+					cpTypes.Add(sect);
 				}
 			}
 
@@ -1667,12 +1667,12 @@ namespace SketchUp
 
 			if (cp.Tables[0].Rows.Count > 0)
 			{
-				CPCodes = new List<int>();
+				CpCodes = new List<int>();
 				for (int i = 0; i < cp.Tables[0].Rows.Count; i++)
 				{
 					int cpcodeX = Convert.ToInt32(cp.Tables[0].Rows[i]["ttelem"].ToString());
 
-					CPCodes.Add(cpcodeX);
+					CpCodes.Add(cpcodeX);
 				}
 			}
 
@@ -1704,7 +1704,7 @@ namespace SketchUp
 				}
 			}
 
-			if (CPTypes.Contains(_nextSectType.Trim()) && !CPCodes.Contains(_currentParcel.mcarpt))
+			if (cpTypes.Contains(_nextSectType.Trim()) && !CpCodes.Contains(_currentParcel.mcarpt))
 			{
 				MessageBox.Show("Current Record does not include CarPorts ");
 
@@ -2926,14 +2926,14 @@ End Joey's alternative Code */
 			*/
 			_priorDirection = SortedJumpTableDataView[0]["Direct"].ToString();
 			_savedAttSection = SortedJumpTableDataView[0]["Sect"].ToString();
-			CurrentAttLine = Convert.ToInt32(SortedJumpTableDataView[0]["LineNo"].ToString());
+			currentAttachmentLine = Convert.ToInt32(SortedJumpTableDataView[0]["LineNo"].ToString());
 
 			//TODO: Find the last moved direction and the direction of the Current AttLine. If they are not the same call undo and return to main screen.
 			_mouseX = Convert.ToInt32(JumpX);
 			_mouseY = Convert.ToInt32(JumpY);
 			Trace.WriteLine(string.Format("Mouse moved to {0},{1}", JumpX, JumpY));
-			Trace.WriteLine(string.Format("Section attachment is {0} Line {1}, _priorDirection is {2}", _savedAttSection, CurrentAttLine, _priorDirection));
-			legalMoveDirection = AttachLineDirection(_savedAttSection, CurrentAttLine);
+			Trace.WriteLine(string.Format("Section attachment is {0} Line {1}, _priorDirection is {2}", _savedAttSection, currentAttachmentLine, _priorDirection));
+			legalMoveDirection = AttachLineDirection(_savedAttSection, currentAttachmentLine);
 			MoveCursor();
 			return secltr;
 		}
@@ -3020,8 +3020,8 @@ End Joey's alternative Code */
 									adjNewSecX,
 									adjNewSecY,
 									RemainderLineLength,
-									begNewSecX,
-									begNewSecY));
+									NewSectionBeginPointX,
+									NewSectionBeginPointY));
 			fixOrigLine.Append(String.Format(" where jlrecord = {0} and jldwell = {1} and jlsect = '{2}' and jlline# = {3} ",
 							_currentParcel.mrecno,
 							_currentParcel.mdwell,
@@ -3453,10 +3453,10 @@ End Joey's alternative Code */
 							decimal x2x = (x2 + .5m);
 
 							decimal x2B = (x2 - .5m);
-
+							LineNumberToBreak = lnNbr;
 							if (NextStartY < (float)y1 && NextStartY > (float)y2 && dirsect == "N" && NextStartX >= (float)x1B && NextStartX <= (float)x1x)
 							{
-								breakLineNbr = lnNbr;
+								
 								AttLineNo = Convert.ToInt32(RESpJumpTable.Rows[i]["LineNo"].ToString());
 								AttSpLineNo = Convert.ToInt32(RESpJumpTable.Rows[i]["LineNo"].ToString());
 								AttSpLineDir = RESpJumpTable.Rows[i]["Direct"].ToString().Trim();
@@ -3464,8 +3464,8 @@ End Joey's alternative Code */
 								RESpJumpTableIndex = i;
 
 								// foundLine = true; No usages found
-								begNewSecX = startSplitX;
-								begNewSecY = startSplitY;
+								NewSectionBeginPointX = startSplitX;
+								NewSectionBeginPointY = startSplitY;
 								adjNewSecX = x1Len;
 								adjNewSecY = y1Len;
 								OrigStartX = Convert.ToDecimal(RESpJumpTable.Rows[i]["XPt1"].ToString());
@@ -3480,7 +3480,7 @@ End Joey's alternative Code */
 
 							if (NextStartY > (float)y1 && NextStartY < (float)y2 && dirsect == "S" && NextStartX >= (float)x1B && NextStartX <= (float)x1x)
 							{
-								breakLineNbr = lnNbr;
+							
 								AttLineNo = Convert.ToInt32(RESpJumpTable.Rows[i]["LineNo"].ToString());
 								AttSpLineNo = Convert.ToInt32(RESpJumpTable.Rows[i]["LineNo"].ToString());
 								AttSpLineDir = RESpJumpTable.Rows[i]["Direct"].ToString().Trim();
@@ -3488,8 +3488,8 @@ End Joey's alternative Code */
 								RESpJumpTableIndex = i;
 
 								// foundLine = true; No usages found
-								begNewSecX = startSplitX;
-								begNewSecY = startSplitY;
+								NewSectionBeginPointX = startSplitX;
+								NewSectionBeginPointY = startSplitY;
 								adjNewSecX = x1Len;
 								adjNewSecY = y1Len;
 								OrigStartX = Convert.ToDecimal(RESpJumpTable.Rows[i]["XPt1"].ToString());
@@ -3595,7 +3595,7 @@ End Joey's alternative Code */
 
 							if (NextStartX >= (float)x1 && NextStartX <= (float)x2 && dirsect == "E" && NextStartY >= (float)y2B && NextStartY <= (float)y2x)
 							{
-								breakLineNbr = lnNbr;
+								
 								AttLineNo = Convert.ToInt32(RESpJumpTable.Rows[i]["LineNo"].ToString());
 								AttSpLineNo = Convert.ToInt32(RESpJumpTable.Rows[i]["LineNo"].ToString());
 								AttSpLineDir = RESpJumpTable.Rows[i]["Direct"].ToString().Trim();
@@ -3603,8 +3603,8 @@ End Joey's alternative Code */
 								RESpJumpTableIndex = i;
 
 								// foundLine = true; No usages found
-								begNewSecX = startSplitX;
-								begNewSecY = startSplitY;
+								NewSectionBeginPointX = startSplitX;
+								NewSectionBeginPointY = startSplitY;
 								adjNewSecX = x1Len;
 								adjNewSecY = y1Len;
 								OrigStartX = Convert.ToDecimal(RESpJumpTable.Rows[i]["XPt1"].ToString());
@@ -3619,7 +3619,7 @@ End Joey's alternative Code */
 
 							if (NextStartX < (float)x1 && NextStartX > (float)x2 && dirsect == "W" && NextStartY >= (float)y2B && NextStartY <= (float)y2x)
 							{
-								breakLineNbr = lnNbr;
+								
 								AttLineNo = Convert.ToInt32(RESpJumpTable.Rows[i]["LineNo"].ToString());
 								AttSpLineNo = Convert.ToInt32(RESpJumpTable.Rows[i]["LineNo"].ToString());
 								AttSpLineDir = RESpJumpTable.Rows[i]["Direct"].ToString().Trim();
@@ -3627,8 +3627,8 @@ End Joey's alternative Code */
 								RESpJumpTableIndex = i;
 
 								// foundLine = true; No usages found
-								begNewSecX = startSplitX;
-								begNewSecY = startSplitY;
+								NewSectionBeginPointX = startSplitX;
+								NewSectionBeginPointY = startSplitY;
 								adjNewSecX = x1Len;
 								adjNewSecY = y1Len;
 								OrigStartX = Convert.ToDecimal(RESpJumpTable.Rows[i]["XPt1"].ToString());
@@ -3832,7 +3832,7 @@ End Joey's alternative Code */
 
 			CurrentSecLtr = String.Empty;
 			_newIndex = 0;
-			CurrentAttLine = 0;
+			currentAttachmentLine = 0;
 
 			DataSet lines = null;
 			if (_isNewSketch == false)
@@ -4235,7 +4235,7 @@ End Joey's alternative Code */
 		{
 			int tsteclick = click;
 
-			checkRedraw = true;
+			NeedToRedraw = true;
 
 			for (int i = 0; i < undoPoints.Rows.Count; i++)
 			{
@@ -5473,8 +5473,8 @@ End Joey's alternative Code */
 										adjNewSecX,
 										adjNewSecY,
 										splitLength,
-										begNewSecX,
-										begNewSecY));
+										NewSectionBeginPointX,
+										NewSectionBeginPointY));
 				fixOrigLine.Append(String.Format(" where jlrecord = {0} and jldwell = {1} and jlsect = '{2}' and jlline# = {3} ",
 								_currentParcel.mrecno,
 								_currentParcel.mdwell,
@@ -5686,7 +5686,7 @@ End Joey's alternative Code */
 			click = curclick;
 
 			int mxcnt = 0;
-			if (checkRedraw == true && savcnt.Count > 0)
+			if (NeedToRedraw == true && savcnt.Count > 0)
 			{
 				DeleteReview delrev = new DeleteReview(savpic, savcnt, curclick);
 				delrev.ShowDialog();
@@ -5705,7 +5705,7 @@ End Joey's alternative Code */
 
 			bool redraw = false;
 
-			if (click > 0 && checkRedraw == true)
+			if (click > 0 && NeedToRedraw == true)
 			{
 				foreach (KeyValuePair<int, byte[]> pair in savpic)
 				{
@@ -5717,7 +5717,7 @@ End Joey's alternative Code */
 				}
 			}
 
-			if (click > 0 && checkRedraw == false)
+			if (click > 0 && NeedToRedraw == false)
 			{
 				savpic.Remove(click--);
 			}

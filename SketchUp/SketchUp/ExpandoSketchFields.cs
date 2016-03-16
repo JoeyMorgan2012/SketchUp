@@ -27,26 +27,34 @@ namespace SketchUp
 		#region Fields
 
 		#region private fields
+		/* 
+		Refactored by renaming and providing for null values. Going to ensure that the
+		naming conventions are consistent for all properties. Any field that backs a property
+		will be in camel case (e.g. camelCase) while fields that are not property-backing will be
+		in Pascal case. (e.g. PascalCase).
 
+		*/
 		private DataTable AreaTable = null;
 		private DataTable AttachPoints = null;
 		private DataTable AttachmentPointsDataTable = null;
 		private float BaseX = 0;
 		private float BaseY = 0;
-		private decimal begNewSecX = 0;
-		private decimal begNewSecY = 0;
-		private int breakLineNbr = 0;
+		private decimal NewSectionBeginPointX = 0;
+		private decimal NewSectionBeginPointY = 0;
+		private int LineNumberToBreak = 0;
 
 		//private decimal Xadj1 = 0;
 		//private decimal Yadj1 = 0;
 		//public static bool _undoModeA = false;
-		private bool checkRedraw = false;
+		private bool NeedToRedraw = false;
 
+		// TODO: Remove if not needed:	
 		private int click = 0;
+		//Undo uses this but we are re-doing undo. JMM 3-15-2016
 		private Color color = Color.Red;
-		private List<int> CPCodes = null;
-		private List<String> CPTypes = null;
-		private int CurrentAttLine = 0;
+		private List<int> cpCodes = null;
+		private List<String> cpTypes = null;
+		private int currentAttachmentLine = 0;
 		private DataTable dt = null;
 		private DataTable DupAttPoints = null;
 		private float endOldSecX = 0;
@@ -81,7 +89,7 @@ namespace SketchUp
 		private Point[] pts;
 		private DataTable REJumpTable = null;
 		private DataTable RESpJumpTable = null;
-		private int s = 3;
+		private int StandardDrawWidthAndHeight = 3;
 		private Dictionary<int, byte[]> savpic = null;
 		private float ScaleBaseX = 0;
 		private float ScaleBaseY = 0;
@@ -268,6 +276,23 @@ namespace SketchUp
 				this.section = value;
 				this.unadj_pts = this.section.SectionPoints;
 				this.LoadSection();
+			}
+		}
+
+		public List<int> CpCodes
+		{
+			get
+			{
+				if (cpCodes==null)
+				{
+					cpCodes = new List<int>();
+				}
+				return cpCodes;
+			}
+
+			set
+			{
+				cpCodes = value;
 			}
 		}
 
