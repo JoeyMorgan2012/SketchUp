@@ -66,9 +66,10 @@ namespace SketchUp
 			return nextLetter;
 		}
 
-		public BuildingSection GetBySectionLetter(string sectionLetter)
-		{
-			return this.FirstOrDefault(f => f.SectionLetter == sectionLetter);
-		}
+		// TODO: Remove if not needed:	
+		//public BuildingSection GetBySectionLetter(string sectionLetter)
+		//{
+		//	return this.FirstOrDefault(f => f.SectionLetter == sectionLetter);
+		//}
 	}
 }

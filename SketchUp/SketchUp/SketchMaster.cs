@@ -24,7 +24,7 @@ namespace SketchUp
 			get; set;
 		}
 
-		public SWallTech.CAMRA_Connection _fox
+		public SWallTech.CAMRA_Connection CamraDbConnection
 		{
 			get; set;
 		}
@@ -68,17 +68,13 @@ namespace SketchUp
 
 		private SketchMaster()
 		{
-			livingSquareFootTypes.Add("BASE");
-			livingSquareFootTypes.Add("ADD");
-			livingSquareFootTypes.Add("OH");
-			livingSquareFootTypes.Add("LAG");
-			livingSquareFootTypes.Add("NBAD");
+			LivingSquareFootTypes = Globals.LivingSquareFootTypesList();
 		}
 
 		public SketchMaster(SWallTech.CAMRA_Connection fox, int record, int cardnum, int occupancy)
 			: this()
 		{
-			_fox = fox;
+			CamraDbConnection = fox;
 
 			//ParcelData _data =  ParcelData.GetParcel(_conn, record, cardnum);
 
@@ -91,138 +87,174 @@ namespace SketchUp
 		}
 
 		//public BuildingSectionCollection SectionRecords { get; set; }
-		public BuildingSectionCollection SectionRecords
+		public BuildingSectionCollection BuildingSections
 		{
 			get; set;
 		}
 
+		public List<string> LivingSquareFootTypes
+		{
+			get
+			{
+				if (livingSquareFootTypes == null || livingSquareFootTypes.Count == 0)
+				{
+					livingSquareFootTypes = Globals.LivingSquareFootTypesList();
+				}
+
+				return livingSquareFootTypes;
+			}
+
+			set
+			{
+				livingSquareFootTypes = value;
+			}
+		}
+
 		public void GetSections()
 		{
-			string clrlinex = string.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jldirect = 'X' ", MainForm.FClib, MainForm.FCprefix, Record, Card);
+			ClearXLines(CamraDbConnection);
 
-			_fox.DBConnection.ExecuteNonSelectStatement(clrlinex.ToString());
+			BuildingSections = new BuildingSectionCollection(Record, Card);
 
-			SectionRecords = new BuildingSectionCollection(Record, Card);
+			DataSet dsSections = SelectBuildingSections(Record, Card);
 
-			string bssql = string.Format(" select jsrecord, jsdwell, jssect, jstype,jsstory,jsdesc,jssketch,jssqft,js0depr, jsclass,jsvalue, jsfactor, jsdeprc from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ", MainForm.localLib, MainForm.localPreFix, Record, Card);
-
-			DataSet ds = _fox.DBConnection.RunSelectStatement(bssql);
-
-			if (ds.Tables[0].Rows.Count > 0)
+			if (dsSections.Tables[0].Rows.Count > 0)
 			{
-				var residentialTypes = (from t in CamraSupport.ResidentialSectionTypeCollection
-										select t._resSectionType).ToList();
+				BuildingSections = ReadDataSetIntoBuildingSectionsCollection(dsSections, Record, Card);
+			}
+		}
 
-				var commercialTypes = (from t in CamraSupport.CommercialSectionTypeCollection
-									   select t._commSectionType).ToList();
+		private BuildingSectionCollection ReadDataSetIntoBuildingSectionsCollection(DataSet dsSections, int record, int card)
+		{
+			BuildingSectionCollection buildingSections = new BuildingSectionCollection(record, card);
+			List<string> residentialTypes = (from t in CamraSupport.ResidentialSectionTypeCollection
+											 select t._resSectionType).ToList();
 
-				foreach (DataRow bsreader in ds.Tables[0].Rows)
+			List<string> commercialTypes = (from t in CamraSupport.CommercialSectionTypeCollection
+											select t._commSectionType).ToList();
+
+			foreach (DataRow row in dsSections.Tables[0].Rows)
+			{
+				string sectionLetter = Convert.ToString(row["jssect"].ToString().Trim());
+				BuildingSection section = new BuildingSection(CamraDbConnection, Record, Card, sectionLetter)
 				{
-					var sectionLetter = Convert.ToString(bsreader["jssect"].ToString().Trim());
-					var section = new BuildingSection(_fox, Record, Card, sectionLetter)
-					{
-						SectionType = Convert.ToString(bsreader["jstype"].ToString().Trim()),
-						SquareFootage = Convert.ToDecimal(bsreader["jssqft"]),
-						Factor = Convert.ToDecimal(bsreader["jsfactor"]),
-						Depreciation = Convert.ToDecimal(bsreader["jsdeprc"]),
-						HasSketch = bsreader["jssketch"].ToString().Trim() == "Y"
-					};
+					SectionType = Convert.ToString(row["jstype"].ToString().Trim()),
+					SquareFootage = Convert.ToDecimal(row["jssqft"]),
+					Factor = Convert.ToDecimal(row["jsfactor"]),
+					Depreciation = Convert.ToDecimal(row["jsdeprc"]),
+					HasSketch = row["jssketch"].ToString().Trim() == "Y"
+				};
 
-					if (residentialTypes.Contains(section.SectionType))
+				if (residentialTypes.Contains(section.SectionType))
+				{
+					section.Rate = CamraSupport.ResidentialSectionTypeCollection.ResidentialSectionRate(section.SectionType);
+					section.Description = CamraSupport.ResidentialSectionTypeCollection.ResidentialSectionTypeDescription(section.SectionType);
+				}
+				else if (commercialTypes.Contains(section.SectionType))
+				{
+					string stx = section.SectionType;
+
+					var comm = (from c in CamraSupport.CommercialSectionTypeCollection
+								where c._commSectionType == stx
+								select c).SingleOrDefault();
+
+					section.Class = Convert.ToString(row["jsclass"].ToString().Trim());
+					section.Description = CamraSupport.CommercialSectionTypeCollection.CommercialSectionTypeDescription(section.SectionType);
+					switch (section.Class)
 					{
-						section.Rate = CamraSupport.ResidentialSectionTypeCollection.ResidentialSectionRate(section.SectionType);
-						section.Description = CamraSupport.ResidentialSectionTypeCollection.ResidentialSectionTypeDescription(section.SectionType);
+						case "A":
+							section.Rate = comm._commSectionRateClassA;
+							break;
+
+						case "B":
+							section.Rate = comm._commSectionRateClassB;
+							break;
+
+						case "C":
+							section.Rate = comm._commSectionRateClassC;
+							break;
+
+						case "D":
+							section.Rate = comm._commSectionRateClassD;
+							break;
+
+						case "M":
+							section.Rate = comm._commSectionRateClassM;
+							break;
+
+						default:
+							break;
 					}
-					else if (commercialTypes.Contains(section.SectionType))
+				}
+				else
+				{
+					throw new Exception("Section Type not found in Rat1");
+				}
+
+				if (CamraSupport.ResidentialOccupancies.Contains(Occupancy))
+				{
+					section.Value = Convert.ToInt32(section.Rate * section.SquareFootage);
+				}
+				if (CamraSupport.CommercialOccupancies.Contains(Occupancy))
+				{
+					if (row["js0depr"].ToString() == "Y")
 					{
-						string stx = section.SectionType;
-
-						var comm = (from c in CamraSupport.CommercialSectionTypeCollection
-									where c._commSectionType == stx
-									select c).SingleOrDefault();
-
-						section.Class = Convert.ToString(bsreader["jsclass"].ToString().Trim());
-						section.Description = CamraSupport.CommercialSectionTypeCollection.CommercialSectionTypeDescription(section.SectionType);
-						switch (section.Class)
-						{
-							case "A":
-								section.Rate = comm._commSectionRateClassA;
-								break;
-
-							case "B":
-								section.Rate = comm._commSectionRateClassB;
-								break;
-
-							case "C":
-								section.Rate = comm._commSectionRateClassC;
-								break;
-
-							case "D":
-								section.Rate = comm._commSectionRateClassD;
-								break;
-
-							case "M":
-								section.Rate = comm._commSectionRateClassM;
-								break;
-
-							default:
-								break;
-						}
+						section.Value = Convert.ToInt32(section.SquareFootage * section.Rate * (1 + section.Factor));
 					}
 					else
 					{
-						//throw new Exception("Section Type not found in Rat1");
+						section.Value = Convert.ToInt32(section.SquareFootage * section.Rate * (1 + section.Factor) * (1 - section.Depreciation));
 					}
-
-					if (CamraSupport.ResidentialOccupancies.Contains(Occupancy))
-					{
-						section.Value = Convert.ToInt32(section.Rate * section.SquareFootage);
-					}
-					if (CamraSupport.CommercialOccupancies.Contains(Occupancy))
-					{
-						if (bsreader["js0depr"].ToString() == "Y")
-						{
-							section.Value = Convert.ToInt32(section.SquareFootage * section.Rate * (1 + section.Factor));
-						}
-						else
-						{
-							section.Value = Convert.ToInt32(section.SquareFootage * section.Rate * (1 + section.Factor) * (1 - section.Depreciation));
-						}
-					}
-					if (CamraSupport.TaxExemptOccupancies.Contains(Occupancy))
-					{
-						if (bsreader["js0depr"].ToString() == "Y")
-						{
-							section.Value = Convert.ToInt32(section.SquareFootage * section.Rate * (1 + section.Factor));
-						}
-						else
-						{
-							section.Value = Convert.ToInt32(section.SquareFootage * section.Rate * (1 + section.Factor) * (1 - section.Depreciation));
-						}
-					}
-
-					section.SectionLines = GetLines(section.SectionLetter);
-
-					SectionRecords.Add(section);
 				}
+				if (CamraSupport.TaxExemptOccupancies.Contains(Occupancy))
+				{
+					if (row["js0depr"].ToString() == "Y")
+					{
+						section.Value = Convert.ToInt32(section.SquareFootage * section.Rate * (1 + section.Factor));
+					}
+					else
+					{
+						section.Value = Convert.ToInt32(section.SquareFootage * section.Rate * (1 + section.Factor) * (1 - section.Depreciation));
+					}
+				}
+
+				section.SectionLines = GetLines(section.SectionLetter);
+
+				buildingSections.Add(section);
 			}
+			return buildingSections;
+		}
+
+		private DataSet SelectBuildingSections(int record, int card)
+		{
+			string buildingSectionSelectSql = string.Format(" select jsrecord, jsdwell, jssect, jstype,jsstory,jsdesc,jssketch,jssqft,js0depr, jsclass,jsvalue, jsfactor, jsdeprc from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ", MainForm.localLib, MainForm.localPreFix, record, card);
+		
+			DataSet buildingSectionData = CamraDbConnection.DBConnection.RunSelectStatement(buildingSectionSelectSql);
+			return buildingSectionData;
+		}
+
+		private void ClearXLines(CAMRA_Connection dbConnection)
+		{
+			string clrlinex = string.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jldirect = 'X' ", MainForm.FClib, MainForm.FCprefix, Record, Card);
+
+			dbConnection.DBConnection.ExecuteNonSelectStatement(clrlinex.ToString());
 		}
 
 		public BuildingLineCollection GetLines(string sectionLetter)
 		{
-			var sectionLines = new BuildingLineCollection(Record, Card, sectionLetter);
+			BuildingLineCollection sectionLines = new BuildingLineCollection(Record, Card, sectionLetter);
 
-			StringBuilder blsql = new StringBuilder();
-			blsql.Append(" select jlsect, jlline# , jldirect, jlxlen, jlylen,jllinelen,jlangle,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach ");
-			blsql.Append(String.Format(" from {0}.{1}line", MainForm.localLib, MainForm.localPreFix));
-			blsql.Append(String.Format(" where jlrecord = {0} and jldwell = {1} and jlsect = '{2}'", Record, Card, sectionLetter));
-			blsql.Append(" order by jlline# ");
+			StringBuilder buildingLineSql = new StringBuilder();
+			buildingLineSql.Append(" select jlsect, jlline# , jldirect, jlxlen, jlylen,jllinelen,jlangle,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach ");
+			buildingLineSql.Append(String.Format(" from {0}.{1}line", MainForm.localLib, MainForm.localPreFix));
+			buildingLineSql.Append(String.Format(" where jlrecord = {0} and jldwell = {1} and jlsect = '{2}'", Record, Card, sectionLetter));
+			buildingLineSql.Append(" order by jlline# ");
 
-			DataSet ds = _fox.DBConnection.RunSelectStatement(blsql.ToString());
+			DataSet buildingLineData = CamraDbConnection.DBConnection.RunSelectStatement(buildingLineSql.ToString());
 
-			if (ds.Tables[0].Rows.Count > 0)
+			if (buildingLineData.Tables[0].Rows.Count > 0)
 			{
-				foreach (DataRow blreader in ds.Tables[0].Rows)
+				foreach (DataRow blreader in buildingLineData.Tables[0].Rows)
 				{
 					var line = new BuildingLine()
 					{
@@ -252,7 +284,7 @@ namespace SketchUp
 
 		public List<string> GetSectionLetters()
 		{
-			var q = from l in SectionRecords
+			var q = from l in BuildingSections
 					orderby l.SectionLetter
 					group l.SectionLetter by l.SectionLetter
 						into s
@@ -281,7 +313,7 @@ namespace SketchUp
 
 		private List<BuildingLine> GetLinesForSection(string letter)
 		{
-			var q = (from sect in SectionRecords
+			var q = (from sect in BuildingSections
 					 where sect.SectionLetter == letter
 					 select sect).FirstOrDefault();
 			return q.SectionLines;

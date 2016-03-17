@@ -611,7 +611,7 @@ namespace SketchUp
 		{
 			get
 			{
-				var d = (from s in Sketch.SectionRecords
+				var d = (from s in Sketch.BuildingSections
 						 where CamraSupport.AuxAreaTypes.Contains(s.SectionType)
 						 select s.SquareFootage).Sum();
 
@@ -659,7 +659,7 @@ namespace SketchUp
 		{
 			get
 			{
-				var d = (from s in Sketch.SectionRecords
+				var d = (from s in Sketch.BuildingSections
 						 where CamraSupport.CarPortTypes.Contains(s.SectionType)
 						 select s.SquareFootage).Sum();
 
@@ -700,7 +700,7 @@ namespace SketchUp
 		{
 			get
 			{
-				var d = (from s in Sketch.SectionRecords
+				var d = (from s in Sketch.BuildingSections
 						 where CamraSupport.DeckTypes.Contains(s.SectionType)
 						 select s.SquareFootage).Sum();
 
@@ -742,7 +742,7 @@ namespace SketchUp
 		{
 			get
 			{
-				var d = (from s in Sketch.SectionRecords
+				var d = (from s in Sketch.BuildingSections
 						 where CamraSupport.EnclPorchTypes.Contains(s.SectionType)
 						 select s.SquareFootage).Sum();
 
@@ -839,7 +839,7 @@ namespace SketchUp
 		{
 			get
 			{
-				var d = (from s in Sketch.SectionRecords
+				var d = (from s in Sketch.BuildingSections
 						 where CamraSupport.GarageTypes.Contains(s.SectionType)
 						 select s.SquareFootage).Sum();
 
@@ -898,7 +898,7 @@ namespace SketchUp
 		{
 			get
 			{
-				var d = (from s in Sketch.SectionRecords
+				var d = (from s in Sketch.BuildingSections
 						 where CamraSupport.PatioTypes.Contains(s.SectionType)
 						 select s.SquareFootage).Sum();
 
@@ -925,7 +925,7 @@ namespace SketchUp
 		{
 			get
 			{
-				var d = (from s in Sketch.SectionRecords
+				var d = (from s in Sketch.BuildingSections
 						 where CamraSupport.PorchTypes.Contains(s.SectionType)
 						 select s.SquareFootage).Sum();
 
@@ -977,7 +977,7 @@ namespace SketchUp
 		{
 			get
 			{
-				var d = (from s in Sketch.SectionRecords
+				var d = (from s in Sketch.BuildingSections
 						 where CamraSupport.ScrnPorchTypes.Contains(s.SectionType)
 						 select s.SquareFootage).Sum();
 
@@ -1571,13 +1571,13 @@ namespace SketchUp
 						int tempRec = mrecno;
 						int tempCard = mdwell;
 
-						factoredValue = Convert.ToInt32(this.mtsubt + Sketch.SectionRecords.TotalFactorValue);
+						factoredValue = Convert.ToInt32(this.mtsubt + Sketch.BuildingSections.TotalFactorValue);
 						computedFactor = Decimal.Round((factoredValue / this.mtsubt), 2);
 
-						funcDeprValue = Convert.ToInt32(((factoredValue - Sketch.SectionRecords.TotalDepreciationValue) * this.mfuncd) * -1);
-						econDeprValue = Convert.ToInt32(((factoredValue - Sketch.SectionRecords.TotalDepreciationValue + funcDeprValue) * this.mecond) * -1);
+						funcDeprValue = Convert.ToInt32(((factoredValue - Sketch.BuildingSections.TotalDepreciationValue) * this.mfuncd) * -1);
+						econDeprValue = Convert.ToInt32(((factoredValue - Sketch.BuildingSections.TotalDepreciationValue + funcDeprValue) * this.mecond) * -1);
 
-						totalBldgValue = Convert.ToInt32(factoredValue - Sketch.SectionRecords.TotalDepreciationValue + funcDeprValue + econDeprValue);
+						totalBldgValue = Convert.ToInt32(factoredValue - Sketch.BuildingSections.TotalDepreciationValue + funcDeprValue + econDeprValue);
 
 						decimal tbv1 = (Math.Round(Convert.ToDecimal(totalBldgValue) / 100, 0, MidpointRounding.AwayFromZero) * 100);
 
@@ -1609,13 +1609,13 @@ namespace SketchUp
 						NbrHdAdjValue = 0;
 						percentCompValue = 0;
 
-						factoredValue = Convert.ToInt32(this.mtsubt + Sketch.SectionRecords.TotalFactorValue);
+						factoredValue = Convert.ToInt32(this.mtsubt + Sketch.BuildingSections.TotalFactorValue);
 						computedFactor = Decimal.Round((factoredValue / this.mtsubt), 2);
 						orig_computedFactor = computedFactor;
-						funcDeprValue = Convert.ToInt32(((factoredValue - Sketch.SectionRecords.TotalDepreciationValue) * this.mfuncd) * -1);
-						econDeprValue = Convert.ToInt32(((factoredValue - Sketch.SectionRecords.TotalDepreciationValue + funcDeprValue) * this.mecond) * -1);
+						funcDeprValue = Convert.ToInt32(((factoredValue - Sketch.BuildingSections.TotalDepreciationValue) * this.mfuncd) * -1);
+						econDeprValue = Convert.ToInt32(((factoredValue - Sketch.BuildingSections.TotalDepreciationValue + funcDeprValue) * this.mecond) * -1);
 
-						totalBldgValue = Convert.ToInt32(factoredValue - Sketch.SectionRecords.TotalDepreciationValue + funcDeprValue + econDeprValue);
+						totalBldgValue = Convert.ToInt32(factoredValue - Sketch.BuildingSections.TotalDepreciationValue + funcDeprValue + econDeprValue);
 
 						decimal tbv2 = (Math.Round(Convert.ToDecimal(totalBldgValue) / 100, 0, MidpointRounding.AwayFromZero) * 100);
 
@@ -2333,7 +2333,7 @@ namespace SketchUp
 			//UtilityMethods.LogMethodCall(fullStack, true);
 #endif
 
-			BuildingSketcher sketcher = new BuildingSketcher(Sketch.SectionRecords);
+			BuildingSketcher sketcher = new BuildingSketcher(Sketch.BuildingSections);
 			return sketcher.DrawSketch(bitmapWidth, bitmapHeight, sketchSizeXinPixels, sketchSizeYinPixels, sketchSizeInPixels, out scale);
 		}
 
