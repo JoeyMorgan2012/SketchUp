@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using SWallTech;
 
@@ -11,66 +12,6 @@ namespace SketchUp
 {
 	public class SketchMaster
 	{
-		public enum LimitTypes
-		{
-			MaxX,
-			MaxY,
-			MinX,
-			MinY
-		}
-
-		public DBAccessManager DatabaseConnection
-		{
-			get; set;
-		}
-
-		public SWallTech.CAMRA_Connection CamraDbConnection
-		{
-			get; set;
-		}
-
-		public int Record
-		{
-			get; set;
-		}
-
-		public int Card
-		{
-			get; set;
-		}
-
-		public int Occupancy
-		{
-			get; set;
-		}
-
-		public decimal StoryHeight
-		{
-			get; set;
-		}
-
-		public decimal LivingAreaSquareFootage
-		{
-			get; set;
-		}
-
-		public bool HasSketch
-		{
-			get; set;
-		}
-
-		public string prefix
-		{
-			get; set;
-		}
-
-		private List<string> livingSquareFootTypes = new List<string>();
-
-		private SketchMaster()
-		{
-			LivingSquareFootTypes = Globals.LivingSquareFootTypesList();
-		}
-
 		public SketchMaster(SWallTech.CAMRA_Connection fox, int record, int cardnum, int occupancy)
 			: this()
 		{
@@ -86,158 +27,74 @@ namespace SketchUp
 			GetSections();
 		}
 
-		//public BuildingSectionCollection SectionRecords { get; set; }
-		public BuildingSectionCollection BuildingSections
+		private SketchMaster()
 		{
-			get; set;
+			LivingSquareFootTypes = Globals.LivingSquareFootTypesList();
 		}
 
-		public List<string> LivingSquareFootTypes
+		public Dictionary<string, List<BuildingLine>> GetAllBuildingSections()
 		{
-			get
+			Dictionary<string, List<BuildingLine>> allLines = new Dictionary<string, List<BuildingLine>>();
+			foreach (string letter in GetSectionLetters())
 			{
-				if (livingSquareFootTypes == null || livingSquareFootTypes.Count == 0)
-				{
-					livingSquareFootTypes = Globals.LivingSquareFootTypesList();
-				}
-
-				return livingSquareFootTypes;
+				allLines.Add(letter, GetLinesForSection(letter));
 			}
+			return allLines;
+		}
 
-			set
+		public int GetLimit(LimitTypes type)
+		{
+			decimal limit = 0m;
+
+			if (HasSketch)
 			{
-				livingSquareFootTypes = value;
+				StringBuilder sql = new StringBuilder();
+				sql.Append("select ");
+				switch (type)
+				{
+					case LimitTypes.MaxX:
+						sql.Append("max(jlpt1x) ");
+						break;
+
+					case LimitTypes.MaxY:
+						sql.Append("max(jlpt1y) ");
+						break;
+
+					case LimitTypes.MinX:
+						sql.Append("min(jlpt1x) ");
+						break;
+
+					case LimitTypes.MinY:
+						sql.Append("min(jlpt1y) ");
+						break;
+
+					default:
+						break;
+				}
+				sql.Append(" from skline where jlrecord = ");
+				sql.Append(Record.ToString());
+				sql.Append(" and jldwell = ");
+				sql.Append(Card.ToString());
+
+				try
+				{
+					var limitCmd = DatabaseConnection.CreateCommand(sql.ToString());
+					object obj = limitCmd.ExecuteScalar();
+					string str = obj.ToString();
+					if (!"".Equals(str))
+					{
+						limit = decimal.Parse(str);
+					}
+				}
+				catch (Exception sqlex)
+				{
+					throw sqlex;
+				}
+				finally
+				{
+				}
 			}
-		}
-
-		public void GetSections()
-		{
-			ClearXLines(CamraDbConnection);
-
-			BuildingSections = new BuildingSectionCollection(Record, Card);
-
-			DataSet dsSections = SelectBuildingSections(Record, Card);
-
-			if (dsSections.Tables[0].Rows.Count > 0)
-			{
-				BuildingSections = ReadDataSetIntoBuildingSectionsCollection(dsSections, Record, Card);
-			}
-		}
-
-		private BuildingSectionCollection ReadDataSetIntoBuildingSectionsCollection(DataSet dsSections, int record, int card)
-		{
-			BuildingSectionCollection buildingSections = new BuildingSectionCollection(record, card);
-			List<string> residentialTypes = (from t in CamraSupport.ResidentialSectionTypeCollection
-											 select t._resSectionType).ToList();
-
-			List<string> commercialTypes = (from t in CamraSupport.CommercialSectionTypeCollection
-											select t._commSectionType).ToList();
-
-			foreach (DataRow row in dsSections.Tables[0].Rows)
-			{
-				string sectionLetter = Convert.ToString(row["jssect"].ToString().Trim());
-				BuildingSection section = new BuildingSection(CamraDbConnection, Record, Card, sectionLetter)
-				{
-					SectionType = Convert.ToString(row["jstype"].ToString().Trim()),
-					SquareFootage = Convert.ToDecimal(row["jssqft"]),
-					Factor = Convert.ToDecimal(row["jsfactor"]),
-					Depreciation = Convert.ToDecimal(row["jsdeprc"]),
-					HasSketch = row["jssketch"].ToString().Trim() == "Y"
-				};
-
-				if (residentialTypes.Contains(section.SectionType))
-				{
-					section.Rate = CamraSupport.ResidentialSectionTypeCollection.ResidentialSectionRate(section.SectionType);
-					section.Description = CamraSupport.ResidentialSectionTypeCollection.ResidentialSectionTypeDescription(section.SectionType);
-				}
-				else if (commercialTypes.Contains(section.SectionType))
-				{
-					string stx = section.SectionType;
-
-					var comm = (from c in CamraSupport.CommercialSectionTypeCollection
-								where c._commSectionType == stx
-								select c).SingleOrDefault();
-
-					section.Class = Convert.ToString(row["jsclass"].ToString().Trim());
-					section.Description = CamraSupport.CommercialSectionTypeCollection.CommercialSectionTypeDescription(section.SectionType);
-					switch (section.Class)
-					{
-						case "A":
-							section.Rate = comm._commSectionRateClassA;
-							break;
-
-						case "B":
-							section.Rate = comm._commSectionRateClassB;
-							break;
-
-						case "C":
-							section.Rate = comm._commSectionRateClassC;
-							break;
-
-						case "D":
-							section.Rate = comm._commSectionRateClassD;
-							break;
-
-						case "M":
-							section.Rate = comm._commSectionRateClassM;
-							break;
-
-						default:
-							break;
-					}
-				}
-				else
-				{
-					throw new Exception("Section Type not found in Rat1");
-				}
-
-				if (CamraSupport.ResidentialOccupancies.Contains(Occupancy))
-				{
-					section.Value = Convert.ToInt32(section.Rate * section.SquareFootage);
-				}
-				if (CamraSupport.CommercialOccupancies.Contains(Occupancy))
-				{
-					if (row["js0depr"].ToString() == "Y")
-					{
-						section.Value = Convert.ToInt32(section.SquareFootage * section.Rate * (1 + section.Factor));
-					}
-					else
-					{
-						section.Value = Convert.ToInt32(section.SquareFootage * section.Rate * (1 + section.Factor) * (1 - section.Depreciation));
-					}
-				}
-				if (CamraSupport.TaxExemptOccupancies.Contains(Occupancy))
-				{
-					if (row["js0depr"].ToString() == "Y")
-					{
-						section.Value = Convert.ToInt32(section.SquareFootage * section.Rate * (1 + section.Factor));
-					}
-					else
-					{
-						section.Value = Convert.ToInt32(section.SquareFootage * section.Rate * (1 + section.Factor) * (1 - section.Depreciation));
-					}
-				}
-
-				section.SectionLines = GetLines(section.SectionLetter);
-
-				buildingSections.Add(section);
-			}
-			return buildingSections;
-		}
-
-		private DataSet SelectBuildingSections(int record, int card)
-		{
-			string buildingSectionSelectSql = string.Format(" select jsrecord, jsdwell, jssect, jstype,jsstory,jsdesc,jssketch,jssqft,js0depr, jsclass,jsvalue, jsfactor, jsdeprc from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ", MainForm.localLib, MainForm.localPreFix, record, card);
-		
-			DataSet buildingSectionData = CamraDbConnection.DBConnection.RunSelectStatement(buildingSectionSelectSql);
-			return buildingSectionData;
-		}
-
-		private void ClearXLines(CAMRA_Connection dbConnection)
-		{
-			string clrlinex = string.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jldirect = 'X' ", MainForm.FClib, MainForm.FCprefix, Record, Card);
-
-			dbConnection.DBConnection.ExecuteNonSelectStatement(clrlinex.ToString());
+			return Convert.ToInt32(limit);
 		}
 
 		public BuildingLineCollection GetLines(string sectionLetter)
@@ -301,14 +158,96 @@ namespace SketchUp
 			return lets;
 		}
 
-		public Dictionary<string, List<BuildingLine>> GetAllBuildingSections()
+		public void GetSections()
 		{
-			Dictionary<string, List<BuildingLine>> allLines = new Dictionary<string, List<BuildingLine>>();
-			foreach (string letter in GetSectionLetters())
+			ClearXLines(CamraDbConnection);
+
+			BuildingSections = new BuildingSectionCollection(Record, Card);
+
+			DataSet dsSections = SelectBuildingSections(Record, Card);
+
+			if (dsSections.Tables[0].Rows.Count > 0)
 			{
-				allLines.Add(letter, GetLinesForSection(letter));
+				BuildingSections = ReadDataSetIntoBuildingSectionsCollection(dsSections, Record, Card);
 			}
-			return allLines;
+		}
+
+		private static void SetSectionRateForResOrComm(List<string> residentialTypes, List<string> commercialTypes, DataRow row, BuildingSection section)
+		{
+			SectionResCommType sectionResCommType = SectionResCommType.NotFound;
+
+			if (residentialTypes.Contains(section.SectionType))
+			{
+				sectionResCommType = SectionResCommType.Residential;
+			}
+			else if (commercialTypes.Contains(section.SectionType))
+			{
+				sectionResCommType = SectionResCommType.Commercial;
+			}
+
+			switch (sectionResCommType)
+			{
+				case SectionResCommType.Residential:
+					section.Rate = CamraSupport.ResidentialSectionTypeCollection.ResidentialSectionRate(section.SectionType);
+					section.Description = CamraSupport.ResidentialSectionTypeCollection.ResidentialSectionTypeDescription(section.SectionType);
+					break;
+
+				case SectionResCommType.Commercial:
+					string stx = section.SectionType;
+
+					var comm = (from c in CamraSupport.CommercialSectionTypeCollection
+								where c._commSectionType == stx
+								select c).SingleOrDefault();
+
+					section.Class = Convert.ToString(row["jsclass"].ToString().Trim());
+					section.Description = CamraSupport.CommercialSectionTypeCollection.CommercialSectionTypeDescription(section.SectionType);
+					switch (section.Class)
+					{
+						case "A":
+							section.Rate = comm._commSectionRateClassA;
+							break;
+
+						case "B":
+							section.Rate = comm._commSectionRateClassB;
+							break;
+
+						case "C":
+							section.Rate = comm._commSectionRateClassC;
+							break;
+
+						case "D":
+							section.Rate = comm._commSectionRateClassD;
+							break;
+
+						case "M":
+							section.Rate = comm._commSectionRateClassM;
+							break;
+
+						default:
+							break;
+					}
+					break;
+
+				case SectionResCommType.NotFound:
+				default:
+					section.Rate = 0.00M;
+					throw new Exception("Section Type not found in Rat1");
+			}
+		}
+
+		private void ClearXLines(CAMRA_Connection dbConnection)
+		{
+			try
+			{
+				string clrlinex = string.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jldirect = 'X' ", MainForm.FClib, MainForm.FCprefix, Record, Card);
+
+				dbConnection.DBConnection.ExecuteNonSelectStatement(clrlinex.ToString());
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+				throw;
+			}
 		}
 
 		private List<BuildingLine> GetLinesForSection(string letter)
@@ -319,59 +258,190 @@ namespace SketchUp
 			return q.SectionLines;
 		}
 
-		public int GetLimit(LimitTypes type)
+		private BuildingSection LoadSectionInformationIntoBuildingSections(List<string> residentialTypes, List<string> commercialTypes, DataRow row)
 		{
-			decimal limit = 0m;
-
-			if (HasSketch)
+			string sectionLetter = Convert.ToString(row["jssect"].ToString().Trim());
+			BuildingSection section = new BuildingSection(CamraDbConnection, Record, Card, sectionLetter)
 			{
-				StringBuilder sql = new StringBuilder();
-				sql.Append("select ");
-				switch (type)
-				{
-					case LimitTypes.MaxX:
-						sql.Append("max(jlpt1x) ");
-						break;
+				SectionType = Convert.ToString(row["jstype"].ToString().Trim()),
+				SquareFootage = Convert.ToDecimal(row["jssqft"]),
+				Factor = Convert.ToDecimal(row["jsfactor"]),
+				Depreciation = Convert.ToDecimal(row["jsdeprc"]),
+				HasSketch = row["jssketch"].ToString().Trim() == "Y"
+			};
+			SetSectionRateForResOrComm(residentialTypes, commercialTypes, row, section);
+			SetValueByOccupancyType(row, section);
 
-					case LimitTypes.MaxY:
-						sql.Append("max(jlpt1y) ");
-						break;
-
-					case LimitTypes.MinX:
-						sql.Append("min(jlpt1x) ");
-						break;
-
-					case LimitTypes.MinY:
-						sql.Append("min(jlpt1y) ");
-						break;
-
-					default:
-						break;
-				}
-				sql.Append(" from skline where jlrecord = ");
-				sql.Append(Record.ToString());
-				sql.Append(" and jldwell = ");
-				sql.Append(Card.ToString());
-
-				try
-				{
-					var limitCmd = DatabaseConnection.CreateCommand(sql.ToString());
-					object obj = limitCmd.ExecuteScalar();
-					string str = obj.ToString();
-					if (!"".Equals(str))
-					{
-						limit = decimal.Parse(str);
-					}
-				}
-				catch (Exception sqlex)
-				{
-					throw sqlex;
-				}
-				finally
-				{
-				}
-			}
-			return Convert.ToInt32(limit);
+			section.SectionLines = GetLines(section.SectionLetter);
+			return section;
 		}
+
+		private BuildingSectionCollection ReadDataSetIntoBuildingSectionsCollection(DataSet dsSections, int record, int card)
+		{
+			BuildingSectionCollection buildingSections = new BuildingSectionCollection(record, card);
+			List<string> residentialTypes = (from t in CamraSupport.ResidentialSectionTypeCollection
+											 select t._resSectionType).ToList();
+
+			List<string> commercialTypes = (from t in CamraSupport.CommercialSectionTypeCollection
+											select t._commSectionType).ToList();
+
+			foreach (DataRow row in dsSections.Tables[0].Rows)
+			{
+				BuildingSection section = LoadSectionInformationIntoBuildingSections(residentialTypes, commercialTypes, row);
+
+				buildingSections.Add(section);
+			}
+			return buildingSections;
+		}
+		private DataSet SelectBuildingSections(int record, int card)
+		{
+			string buildingSectionSelectSql = string.Format(" select jsrecord, jsdwell, jssect, jstype,jsstory,jsdesc,jssketch,jssqft,js0depr, jsclass,jsvalue, jsfactor, jsdeprc from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ", MainForm.localLib, MainForm.localPreFix, record, card);
+
+			DataSet buildingSectionData = CamraDbConnection.DBConnection.RunSelectStatement(buildingSectionSelectSql);
+			return buildingSectionData;
+		}
+
+		private void SetValueByOccupancyType(DataRow row, BuildingSection section)
+		{
+			SectionOccResCommType sectionOccupancyType = SectionOccResCommType.NotFound;
+			if (CamraSupport.ResidentialOccupancies.Contains(Occupancy))
+			{
+				sectionOccupancyType = SectionOccResCommType.Residential;
+			}
+			else if (CamraSupport.TaxExemptOccupancies.Contains(Occupancy))
+			{
+				sectionOccupancyType = SectionOccResCommType.TaxExempt;
+			}
+			else if (CamraSupport.CommercialOccupancies.Contains(Occupancy))
+			{
+				sectionOccupancyType = SectionOccResCommType.Commercial;
+			}
+
+			switch (sectionOccupancyType)
+			{
+				case SectionOccResCommType.Residential:
+					section.Value = Convert.ToInt32(section.Rate * section.SquareFootage);
+					break;
+
+				case SectionOccResCommType.Commercial:
+
+					if (row["js0depr"].ToString() == "Y")
+					{
+						section.Value = Convert.ToInt32(section.SquareFootage * section.Rate * (1 + section.Factor));
+					}
+					else
+					{
+						section.Value = Convert.ToInt32(section.SquareFootage * section.Rate * (1 + section.Factor) * (1 - section.Depreciation));
+					}
+					break;
+
+				case SectionOccResCommType.TaxExempt:
+					if (row["js0depr"].ToString() == "Y")
+					{
+						section.Value = Convert.ToInt32(section.SquareFootage * section.Rate * (1 + section.Factor));
+					}
+					else
+					{
+						section.Value = Convert.ToInt32(section.SquareFootage * section.Rate * (1 + section.Factor) * (1 - section.Depreciation));
+					}
+					break;
+
+				case SectionOccResCommType.NotFound:
+
+				default:
+					throw new Exception("Occupancy Type not found in Rat1");
+			}
+		}
+		public enum LimitTypes
+		{
+			MaxX,
+			MaxY,
+			MinX,
+			MinY
+		}
+
+		public enum SectionOccResCommType
+		{
+			Residential = 1,
+			Commercial = 2,
+			TaxExempt = 3,
+			NotFound = 4
+		}
+
+		public enum SectionResCommType
+		{
+			Residential = 1, Commercial = 2, NotFound = 3
+		}
+
+		//public BuildingSectionCollection SectionRecords { get; set; }
+		public BuildingSectionCollection BuildingSections
+		{
+			get; set;
+		}
+
+		public SWallTech.CAMRA_Connection CamraDbConnection
+		{
+			get; set;
+		}
+
+		public int Card
+		{
+			get; set;
+		}
+
+		public DBAccessManager DatabaseConnection
+		{
+			get; set;
+		}
+
+		public bool HasSketch
+		{
+			get; set;
+		}
+
+		public decimal LivingAreaSquareFootage
+		{
+			get; set;
+		}
+
+		public List<string> LivingSquareFootTypes
+		{
+			get
+			{
+				if (livingSquareFootTypes == null || livingSquareFootTypes.Count == 0)
+				{
+					livingSquareFootTypes = Globals.LivingSquareFootTypesList();
+				}
+
+				return livingSquareFootTypes;
+			}
+
+			set
+			{
+				livingSquareFootTypes = value;
+			}
+		}
+
+		public int Occupancy
+		{
+			get; set;
+		}
+
+		public string prefix
+		{
+			get; set;
+		}
+
+		public int Record
+		{
+			get; set;
+		}
+
+		public decimal StoryHeight
+		{
+			get; set;
+		}
+
+		private List<string> livingSquareFootTypes = new List<string>();
 	}
 }
