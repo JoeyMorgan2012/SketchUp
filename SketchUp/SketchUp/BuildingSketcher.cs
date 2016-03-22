@@ -135,24 +135,11 @@ namespace SketchUp
 		{
 			//return DrawSketch(sizeInPixels, sizeInPixels, sizeInPixels);
 			float scale = 1.0f;
-#if DEBUG
-
-			//Debugging Code -- remove for production release
-			//var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-			//UtilityMethods.LogMethodCall(fullStack, true);
-#endif
-
 			return DrawSketch(sizeInPixels, sizeInPixels, sizeInPixels, sizeInPixels, sizeInPixels, out scale);
 		}
 
 		public Bitmap DrawSketch(int bitmapWidth, int bitmapHeight, int sizeXinPixels, int sizeYinPixels, int sizeInPixels, out float scaleOut)
 		{
-#if DEBUG
-
-			//Debugging Code -- remove for production release
-			//var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-			//UtilityMethods.LogMethodCall(fullStack, true);
-#endif
 
 			scaleOut = 1.0f;
 			if (Sections == null || Sections.Count == 0)
@@ -380,12 +367,7 @@ namespace SketchUp
 
 		private static float EmSizeSetting(int sizeInPixels)
 		{
-#if DEBUG
 
-			//Debugging Code -- remove for production release
-			//var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-			//UtilityMethods.LogMethodCall(fullStack, true);
-#endif
 			float em = 8;
 			if (sizeInPixels < 300)
 			{

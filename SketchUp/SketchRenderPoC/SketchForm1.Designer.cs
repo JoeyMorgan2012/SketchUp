@@ -38,10 +38,10 @@
 			this.tsbGetSketch = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.tsbEditSketch = new System.Windows.Forms.ToolStripButton();
-			this.pictureBox1 = new System.Windows.Forms.PictureBox();
+			this.pctMainSketch = new System.Windows.Forms.PictureBox();
 			this.MainMenu.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.pctMainSketch)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// MainMenu
@@ -96,6 +96,7 @@
 			this.tsbGetSketch.Name = "tsbGetSketch";
 			this.tsbGetSketch.Size = new System.Drawing.Size(103, 24);
 			this.tsbGetSketch.Text = "Get Sketch";
+			this.tsbGetSketch.Click += new System.EventHandler(this.tsbGetSketch_Click);
 			// 
 			// toolStripSeparator1
 			// 
@@ -111,20 +112,21 @@
 			this.tsbEditSketch.Size = new System.Drawing.Size(24, 24);
 			this.tsbEditSketch.Text = "Edit Sketch";
 			// 
-			// pictureBox1
+			// pctMainSketch
 			// 
-			this.pictureBox1.Location = new System.Drawing.Point(509, 93);
-			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(527, 400);
-			this.pictureBox1.TabIndex = 4;
-			this.pictureBox1.TabStop = false;
+			this.pctMainSketch.Location = new System.Drawing.Point(509, 93);
+			this.pctMainSketch.Name = "pctMainSketch";
+			this.pctMainSketch.Size = new System.Drawing.Size(527, 400);
+			this.pctMainSketch.TabIndex = 4;
+			this.pctMainSketch.TabStop = false;
+		
 			// 
 			// SketchForm1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1065, 565);
-			this.Controls.Add(this.pictureBox1);
+			this.Controls.Add(this.pctMainSketch);
 			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.statusStrip1);
 			this.Controls.Add(this.MainMenu);
@@ -135,7 +137,7 @@
 			this.MainMenu.PerformLayout();
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pctMainSketch)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -151,7 +153,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripButton tsbEditSketch;
 		private System.Windows.Forms.ToolStripMenuItem beginToolStripMenuItem;
-		private System.Windows.Forms.PictureBox pictureBox1;
+		private System.Windows.Forms.PictureBox pctMainSketch;
 	}
 }
 
