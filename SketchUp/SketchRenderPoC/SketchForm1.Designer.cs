@@ -51,7 +51,7 @@
             this.beginToolStripMenuItem});
 			this.MainMenu.Location = new System.Drawing.Point(0, 0);
 			this.MainMenu.Name = "MainMenu";
-			this.MainMenu.Size = new System.Drawing.Size(1065, 28);
+			this.MainMenu.Size = new System.Drawing.Size(976, 28);
 			this.MainMenu.TabIndex = 0;
 			this.MainMenu.Text = "Menu";
 			// 
@@ -70,9 +70,9 @@
 			// statusStrip1
 			// 
 			this.statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
-			this.statusStrip1.Location = new System.Drawing.Point(0, 543);
+			this.statusStrip1.Location = new System.Drawing.Point(0, 700);
 			this.statusStrip1.Name = "statusStrip1";
-			this.statusStrip1.Size = new System.Drawing.Size(1065, 22);
+			this.statusStrip1.Size = new System.Drawing.Size(976, 22);
 			this.statusStrip1.TabIndex = 2;
 			this.statusStrip1.Text = "statusStrip1";
 			// 
@@ -85,7 +85,7 @@
             this.tsbEditSketch});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 28);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(1065, 27);
+			this.toolStrip1.Size = new System.Drawing.Size(976, 27);
 			this.toolStrip1.TabIndex = 3;
 			this.toolStrip1.Text = "Tests";
 			// 
@@ -114,18 +114,19 @@
 			// 
 			// pctMainSketch
 			// 
-			this.pctMainSketch.Location = new System.Drawing.Point(509, 93);
+			this.pctMainSketch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.pctMainSketch.Location = new System.Drawing.Point(268, 125);
 			this.pctMainSketch.Name = "pctMainSketch";
-			this.pctMainSketch.Size = new System.Drawing.Size(527, 400);
+			this.pctMainSketch.Size = new System.Drawing.Size(400, 400);
+			this.pctMainSketch.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.pctMainSketch.TabIndex = 4;
 			this.pctMainSketch.TabStop = false;
-		
 			// 
 			// SketchForm1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1065, 565);
+			this.ClientSize = new System.Drawing.Size(976, 722);
 			this.Controls.Add(this.pctMainSketch);
 			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.statusStrip1);
