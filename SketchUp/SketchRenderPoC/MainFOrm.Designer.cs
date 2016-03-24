@@ -1,6 +1,6 @@
 ﻿namespace SketchRenderPoC
 {
-	partial class SketchForm1
+	partial class MainForm
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -29,19 +29,21 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SketchForm1));
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.MainMenu = new System.Windows.Forms.MenuStrip();
 			this.beginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+			this.StatusMain = new System.Windows.Forms.StatusStrip();
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
 			this.tsbGetSketch = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.tsbEditSketch = new System.Windows.Forms.ToolStripButton();
-			this.pctMainSketch = new System.Windows.Forms.PictureBox();
+			this.pctMain = new System.Windows.Forms.PictureBox();
+			this.MouseLocationLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.MainMenu.SuspendLayout();
+			this.StatusMain.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pctMainSketch)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.pctMain)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// MainMenu
@@ -51,7 +53,7 @@
             this.beginToolStripMenuItem});
 			this.MainMenu.Location = new System.Drawing.Point(0, 0);
 			this.MainMenu.Name = "MainMenu";
-			this.MainMenu.Size = new System.Drawing.Size(976, 28);
+			this.MainMenu.Size = new System.Drawing.Size(1065, 28);
 			this.MainMenu.TabIndex = 0;
 			this.MainMenu.Text = "Menu";
 			// 
@@ -67,14 +69,16 @@
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
 			this.contextMenuStrip1.Size = new System.Drawing.Size(67, 4);
 			// 
-			// statusStrip1
+			// StatusMain
 			// 
-			this.statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
-			this.statusStrip1.Location = new System.Drawing.Point(0, 700);
-			this.statusStrip1.Name = "statusStrip1";
-			this.statusStrip1.Size = new System.Drawing.Size(976, 22);
-			this.statusStrip1.TabIndex = 2;
-			this.statusStrip1.Text = "statusStrip1";
+			this.StatusMain.ImageScalingSize = new System.Drawing.Size(20, 20);
+			this.StatusMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MouseLocationLabel});
+			this.StatusMain.Location = new System.Drawing.Point(0, 541);
+			this.StatusMain.Name = "StatusMain";
+			this.StatusMain.Size = new System.Drawing.Size(1065, 24);
+			this.StatusMain.TabIndex = 2;
+			this.StatusMain.Text = "Status";
 			// 
 			// toolStrip1
 			// 
@@ -85,7 +89,7 @@
             this.tsbEditSketch});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 28);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(976, 27);
+			this.toolStrip1.Size = new System.Drawing.Size(1065, 27);
 			this.toolStrip1.TabIndex = 3;
 			this.toolStrip1.Text = "Tests";
 			// 
@@ -112,33 +116,39 @@
 			this.tsbEditSketch.Size = new System.Drawing.Size(24, 24);
 			this.tsbEditSketch.Text = "Edit Sketch";
 			// 
-			// pctMainSketch
+			// pctMain
 			// 
-			this.pctMainSketch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.pctMainSketch.Location = new System.Drawing.Point(268, 125);
-			this.pctMainSketch.Name = "pctMainSketch";
-			this.pctMainSketch.Size = new System.Drawing.Size(400, 400);
-			this.pctMainSketch.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-			this.pctMainSketch.TabIndex = 4;
-			this.pctMainSketch.TabStop = false;
+			this.pctMain.Location = new System.Drawing.Point(20, 100);
+			this.pctMain.Name = "pctMain";
+			this.pctMain.Size = new System.Drawing.Size(400, 400);
+			this.pctMain.TabIndex = 4;
+			this.pctMain.TabStop = false;
+			this.pctMain.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pctMain_MouseMove);
 			// 
-			// SketchForm1
+			// MouseLocationLabel
+			// 
+			this.MouseLocationLabel.Name = "MouseLocationLabel";
+			this.MouseLocationLabel.Size = new System.Drawing.Size(0, 19);
+			// 
+			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(976, 722);
-			this.Controls.Add(this.pctMainSketch);
+			this.ClientSize = new System.Drawing.Size(1065, 565);
+			this.Controls.Add(this.pctMain);
 			this.Controls.Add(this.toolStrip1);
-			this.Controls.Add(this.statusStrip1);
+			this.Controls.Add(this.StatusMain);
 			this.Controls.Add(this.MainMenu);
 			this.MainMenuStrip = this.MainMenu;
-			this.Name = "SketchForm1";
+			this.Name = "MainForm";
 			this.Text = "Render Initial Sketch";
 			this.MainMenu.ResumeLayout(false);
 			this.MainMenu.PerformLayout();
+			this.StatusMain.ResumeLayout(false);
+			this.StatusMain.PerformLayout();
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pctMainSketch)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pctMain)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -148,13 +158,14 @@
 
 		private System.Windows.Forms.MenuStrip MainMenu;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-		private System.Windows.Forms.StatusStrip statusStrip1;
+		private System.Windows.Forms.StatusStrip StatusMain;
 		private System.Windows.Forms.ToolStrip toolStrip1;
 		private System.Windows.Forms.ToolStripButton tsbGetSketch;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripButton tsbEditSketch;
 		private System.Windows.Forms.ToolStripMenuItem beginToolStripMenuItem;
-		private System.Windows.Forms.PictureBox pctMainSketch;
+		private System.Windows.Forms.PictureBox pctMain;
+		private System.Windows.Forms.ToolStripStatusLabel MouseLocationLabel;
 	}
 }
 

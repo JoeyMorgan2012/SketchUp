@@ -16,7 +16,7 @@ namespace SketchRenderPoC
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new SketchForm1());
+			Application.Run(new MainForm());
 		}
 	}
 }
