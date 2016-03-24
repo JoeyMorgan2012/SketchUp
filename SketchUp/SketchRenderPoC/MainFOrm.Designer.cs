@@ -34,12 +34,12 @@
 			this.beginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.StatusMain = new System.Windows.Forms.StatusStrip();
+			this.MouseLocationLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
 			this.tsbGetSketch = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.tsbEditSketch = new System.Windows.Forms.ToolStripButton();
 			this.pctMain = new System.Windows.Forms.PictureBox();
-			this.MouseLocationLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.MainMenu.SuspendLayout();
 			this.StatusMain.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
@@ -74,11 +74,16 @@
 			this.StatusMain.ImageScalingSize = new System.Drawing.Size(20, 20);
 			this.StatusMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MouseLocationLabel});
-			this.StatusMain.Location = new System.Drawing.Point(0, 541);
+			this.StatusMain.Location = new System.Drawing.Point(0, 543);
 			this.StatusMain.Name = "StatusMain";
-			this.StatusMain.Size = new System.Drawing.Size(1065, 24);
+			this.StatusMain.Size = new System.Drawing.Size(1065, 22);
 			this.StatusMain.TabIndex = 2;
 			this.StatusMain.Text = "Status";
+			// 
+			// MouseLocationLabel
+			// 
+			this.MouseLocationLabel.Name = "MouseLocationLabel";
+			this.MouseLocationLabel.Size = new System.Drawing.Size(0, 17);
 			// 
 			// toolStrip1
 			// 
@@ -118,22 +123,20 @@
 			// 
 			// pctMain
 			// 
-			this.pctMain.Location = new System.Drawing.Point(20, 100);
+			this.pctMain.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+			this.pctMain.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.pctMain.Location = new System.Drawing.Point(314, 86);
 			this.pctMain.Name = "pctMain";
 			this.pctMain.Size = new System.Drawing.Size(400, 400);
 			this.pctMain.TabIndex = 4;
 			this.pctMain.TabStop = false;
 			this.pctMain.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pctMain_MouseMove);
 			// 
-			// MouseLocationLabel
-			// 
-			this.MouseLocationLabel.Name = "MouseLocationLabel";
-			this.MouseLocationLabel.Size = new System.Drawing.Size(0, 19);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
 			this.ClientSize = new System.Drawing.Size(1065, 565);
 			this.Controls.Add(this.pctMain);
 			this.Controls.Add(this.toolStrip1);
