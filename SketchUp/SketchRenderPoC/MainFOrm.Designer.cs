@@ -38,7 +38,7 @@
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
 			this.tsbGetSketch = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.tsbEditSketch = new System.Windows.Forms.ToolStripButton();
+			this.tsb2DSketch = new System.Windows.Forms.ToolStripButton();
 			this.pctMain = new System.Windows.Forms.PictureBox();
 			this.MainMenu.SuspendLayout();
 			this.StatusMain.SuspendLayout();
@@ -91,7 +91,7 @@
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsbGetSketch,
             this.toolStripSeparator1,
-            this.tsbEditSketch});
+            this.tsb2DSketch});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 28);
 			this.toolStrip1.Name = "toolStrip1";
 			this.toolStrip1.Size = new System.Drawing.Size(1065, 27);
@@ -112,22 +112,22 @@
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
 			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
 			// 
-			// tsbEditSketch
+			// tsb2DSketch
 			// 
-			this.tsbEditSketch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.tsbEditSketch.Image = ((System.Drawing.Image)(resources.GetObject("tsbEditSketch.Image")));
-			this.tsbEditSketch.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.tsbEditSketch.Name = "tsbEditSketch";
-			this.tsbEditSketch.Size = new System.Drawing.Size(24, 24);
-			this.tsbEditSketch.Text = "Edit Sketch";
+			this.tsb2DSketch.Image = global::SketchRenderPoC.Properties.Resources.RedRectangle;
+			this.tsb2DSketch.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.tsb2DSketch.Name = "tsb2DSketch";
+			this.tsb2DSketch.Size = new System.Drawing.Size(126, 24);
+			this.tsb2DSketch.Text = "Draw With 2D";
+			this.tsb2DSketch.Click += new System.EventHandler(this.tsb2DSketch_Click);
 			// 
 			// pctMain
 			// 
 			this.pctMain.BackColor = System.Drawing.SystemColors.ButtonHighlight;
 			this.pctMain.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.pctMain.Location = new System.Drawing.Point(314, 86);
+			this.pctMain.Location = new System.Drawing.Point(0, 58);
 			this.pctMain.Name = "pctMain";
-			this.pctMain.Size = new System.Drawing.Size(400, 400);
+			this.pctMain.Size = new System.Drawing.Size(1053, 482);
 			this.pctMain.TabIndex = 4;
 			this.pctMain.TabStop = false;
 			this.pctMain.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pctMain_MouseMove);
@@ -165,7 +165,7 @@
 		private System.Windows.Forms.ToolStrip toolStrip1;
 		private System.Windows.Forms.ToolStripButton tsbGetSketch;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-		private System.Windows.Forms.ToolStripButton tsbEditSketch;
+		private System.Windows.Forms.ToolStripButton tsb2DSketch;
 		private System.Windows.Forms.ToolStripMenuItem beginToolStripMenuItem;
 		private System.Windows.Forms.PictureBox pctMain;
 		private System.Windows.Forms.ToolStripStatusLabel MouseLocationLabel;

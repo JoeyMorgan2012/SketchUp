@@ -385,8 +385,6 @@ namespace SketchUp
 		{
 			int secCnt = GetSectionsCount();
 
-			//MessageBox.Show(String.Format("Insertint into Section Record - {0}, Card - {1} at 3229", _currentParcel.Record, _currentParcel.Card));
-
 			if (_nextSectLtr != String.Empty)
 			{
 				AddNewSection(secCnt);
@@ -749,7 +747,8 @@ namespace SketchUp
 
 		private void AddSectionBtn_Click(object sender, EventArgs e)
 		{
-			checkDirection = true;
+			//TODO: Change back to true
+			checkDirection = false;
 			AddSections();
 			AddNewPoint();
 			_deleteMaster = false;
@@ -3372,11 +3371,9 @@ End Joey's alternative Code */
 					{
 						if (offsetDir == "N" || offsetDir == "S")
 						{
-							float txtsx = NextStartX;
-
-							float txtsy = NextStartY;
-
-							decimal tstxadjr = XadjR;
+							// TODO: Remove if not needed:	float txtsx = NextStartX;
+							// TODO: Remove if not needed:	float txtsy = NextStartY;
+							// TODO: Remove if not needed:	decimal tstxadjr = XadjR;
 
 							XadjR = Convert.ToDecimal(NextStartX);
 							YadjR = Convert.ToDecimal(NextStartY);
@@ -3677,7 +3674,6 @@ End Joey's alternative Code */
 					}
 
 					BeginSplitX = NextStartX;
-
 					BeginSplitY = NextStartY;
 				}
 			}
