@@ -130,6 +130,7 @@
 			this.pctMain.Size = new System.Drawing.Size(1053, 482);
 			this.pctMain.TabIndex = 4;
 			this.pctMain.TabStop = false;
+			this.pctMain.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.pctMain_MouseDoubleClick);
 			this.pctMain.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pctMain_MouseMove);
 			// 
 			// MainForm
