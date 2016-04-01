@@ -851,7 +851,7 @@ namespace SketchUp
 		{
 			get
 			{
-				var r = CamraSupport.Rate1Master.GetRat1Type(Rat1Master.Rat1Types.Subdivision,
+				var r = Rates.Rate1Master.GetRat1Type(Rat1Master.Rat1Types.Subdivision,
 					this.msubdv) as SubdivisionRat1Type;
 
 				return r.QualityFactor;
@@ -862,7 +862,7 @@ namespace SketchUp
 		{
 			get
 			{
-				var r = CamraSupport.Rate1Master.GetRat1Type(Rat1Master.Rat1Types.Subdivision,
+				var r = Rates.Rate1Master.GetRat1Type(Rat1Master.Rat1Types.Subdivision,
 								  this.msubdv) as SubdivisionRat1Type;
 
 				//var r = CamraSupport.Rate1Master.GetRat1Type(
@@ -1319,7 +1319,7 @@ namespace SketchUp
 
 								////   need the adjusted mtsubt here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-								calcsubt = Convert.ToInt32((mtota * mpsf) + mtbas + mtfbas + mtplum + mtheat + mtac + mtfp + mtfl + mtbimp + mtbi + mswl + mttadd + (mekit * CamraSupport.ExtraKitRate));
+								calcsubt = Convert.ToInt32((mtota * mpsf) + mtbas + mtfbas + mtplum + mtheat + mtac + mtfp + mtfl + mtbimp + mtbi + mswl + mttadd + (mekit * Rates.ExtraKitRate));
 
 								orig_calcsubt = calcsubt;
 
@@ -1485,7 +1485,7 @@ namespace SketchUp
 											_basementPercent = orig_BasementPercentage;
 										}
 
-										mtbas = Convert.ToInt32(_basementArea * (CamraSupport.BasementRate));
+										mtbas = Convert.ToInt32(_basementArea * (Rates.BasementRate));
 									}
 									if (_basementArea == orig_BasementArea)
 									{

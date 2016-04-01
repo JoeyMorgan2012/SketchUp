@@ -1,0 +1,189 @@
+﻿Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown at 0x000000007706A604 (ntdll.dll) in SketchUp.exe: 0xC0000005: Access violation writing location 0x0000000000000024.
+Exception thrown: 'System.AccessViolationException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2DCFunctionErrorException' in IBM.Data.DB2.iSeries.dll

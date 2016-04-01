@@ -7,8 +7,8 @@
     <ProjectGuid>{A6340C0C-822A-4633-BC59-B49CA8F24F85}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SketchUp</RootNamespace>
-    <AssemblyName>SketchUp</AssemblyName>
+    <RootNamespace>CamraSketch</RootNamespace>
+    <AssemblyName>CamraSketch</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -16,7 +16,7 @@
     <PublishUrl>\\SKYWALKER\inetpub\support.swalltech.com\SketchUp\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
-    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateEnabled>false</UpdateEnabled>
     <UpdateMode>Foreground</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>Days</UpdateIntervalUnits>
@@ -24,17 +24,15 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>http://updates.swalltech.com/Camra/support/SketchUp/</InstallUrl>
-    <SupportUrl>http://updates.swalltech.com/Camra/support/</SupportUrl>
+    <SupportUrl>http://updates.swalltech.com/Camra/support/index.html</SupportUrl>
     <ProductName>SketchUp</ProductName>
-    <PublisherName>Stonewall Technologies</PublisherName>
-    <SuiteName>CAMRA Support Suite</SuiteName>
+    <PublisherName>Stonewall Technologies, Inc.</PublisherName>
+    <SuiteName>CAMRA Suite</SuiteName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>SketchUp.html</WebPage>
-    <TrustUrlParameters>true</TrustUrlParameters>
-    <ApplicationRevision>13</ApplicationRevision>
+    <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
-    <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -44,22 +42,18 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>RELEASE</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>24216172B9588C94A259624C150D5EDD54E824B8</ManifestCertificateThumbprint>
@@ -73,66 +67,9 @@
   <PropertyGroup>
     <SignManifests>true</SignManifests>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TEST|AnyCPU'">
-    <DefineConstants>TRACE;TEST</DefineConstants>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <TargetZone>LocalIntranet</TargetZone>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>StonewallTechIcon.ico</ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup />
   <ItemGroup>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Data.Tools.Schema.Sql, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.SqlServer.Dac.1.0.1\lib\Microsoft.Data.Tools.Schema.Sql.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Data.Tools.Utilities, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.SqlServer.Dac.1.0.1\lib\Microsoft.Data.Tools.Utilities.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.SqlServer.Dac, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.SqlServer.Dac.1.0.1\lib\Microsoft.SqlServer.Dac.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="SqlLocalDb, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SqlLocalDb.1.1.0\lib\net451\SqlLocalDb.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="SqlLocalDb.Dac, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SqlLocalDb.Dac.1.1.0\lib\net451\SqlLocalDb.Dac.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Collections.NonGeneric, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Collections.NonGeneric.4.0.0\lib\net46\System.Collections.NonGeneric.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.Common, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Data.Common.4.0.0\lib\net46\System.Data.Common.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Data.SqlServerCe_unofficial.4.0.8482.1\lib\net20\System.Data.SqlServerCe.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Security" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -146,11 +83,11 @@
   <ItemGroup>
     <Compile Include="AdminData.cs" />
     <Compile Include="AdminDataCollection.cs" />
-    <Compile Include="AngleForm.cs">
+    <Compile Include="AngelForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AngleForm.Designer.cs">
-      <DependentUpon>AngleForm.cs</DependentUpon>
+    <Compile Include="AngelForm.Designer.cs">
+      <DependentUpon>AngelForm.cs</DependentUpon>
     </Compile>
     <Compile Include="AttachedMapCollection.cs" />
     <Compile Include="AttachedMapData.cs" />
@@ -159,9 +96,8 @@
     <Compile Include="BuildingSectionCollection.cs" />
     <Compile Include="BuildingSketcher.cs" />
     <Compile Include="BuilldingSection.cs" />
+    <Compile Include="CalculateClosure.cs" />
     <Compile Include="CamraSupport.cs" />
-    <Compile Include="CommandLineArguments.cs" />
-    <Compile Include="CommandLineArgumentsBase.cs" />
     <Compile Include="ComparableSalesCollection.cs" />
     <Compile Include="CPBuildingSection.cs" />
     <Compile Include="CPBuildingSectionCollection.cs" />
@@ -176,15 +112,6 @@
     </Compile>
     <Compile Include="ExpandoSketch.Designer.cs">
       <DependentUpon>ExpandoSketch.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ExpandoSketchFields.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExpandoSketchMovementMethods.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExpandoSketchUtilities.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Extensions.cs" />
     <Compile Include="FlipSketch.cs">
@@ -207,8 +134,6 @@
     </Compile>
     <Compile Include="GasLogCollection.cs" />
     <Compile Include="GasLogData.cs" />
-    <Compile Include="Globals.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ImprData.cs" />
     <Compile Include="ImprDataCollection.cs" />
     <Compile Include="InteriorImprovement.cs" />
@@ -233,15 +158,12 @@
     <Compile Include="MultiSectionSelection.Designer.cs">
       <DependentUpon>MultiSectionSelection.cs</DependentUpon>
     </Compile>
-    <Compile Include="ParcelChangedEventArgs.cs" />
     <Compile Include="ParcelData.cs" />
     <Compile Include="ParcelDataCollection.cs" />
     <Compile Include="ParcelNotes.cs" />
     <Compile Include="ParcelNotesCollection.cs" />
-    <Compile Include="JumpPointLine.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rates.cs" />
     <Compile Include="SalesHistory.cs" />
     <Compile Include="SalesHistoryCollection.cs" />
     <Compile Include="SectionData.cs" />
@@ -253,7 +175,6 @@
       <DependentUpon>SectionTypes.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
-    <Compile Include="SingleInstanceController.cs" />
     <Compile Include="SketchCreatedEventArgs.cs" />
     <Compile Include="SketchDistance.cs">
       <SubType>Form</SubType>
@@ -275,17 +196,17 @@
     <Compile Include="SketchSection.Designer.cs">
       <DependentUpon>SketchSection.cs</DependentUpon>
     </Compile>
+    <Compile Include="Test\TestHook.cs" />
     <Compile Include="UpdateInfo.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="UpdateInfo.Designer.cs">
       <DependentUpon>UpdateInfo.cs</DependentUpon>
     </Compile>
-    <Compile Include="UtilityMethods.cs" />
     <Compile Include="ValuesTracking.cs" />
     <Compile Include="ValuesTrackingCollection.cs" />
-    <EmbeddedResource Include="AngleForm.resx">
-      <DependentUpon>AngleForm.cs</DependentUpon>
+    <EmbeddedResource Include="AngelForm.resx">
+      <DependentUpon>AngelForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DeleteReview.resx">
       <DependentUpon>DeleteReview.cs</DependentUpon>
@@ -319,7 +240,6 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="SectionTypes.resx">
       <DependentUpon>SectionTypes.cs</DependentUpon>
@@ -338,10 +258,7 @@
     </EmbeddedResource>
     <None Include="CamraSketch_1_TemporaryKey.pfx" />
     <None Include="CamraSketch_TemporaryKey.pfx" />
-    <None Include="ClassDiagram1.cd" />
-    <None Include="ClassDiagram2.cd" />
     <None Include="packages.config" />
-    <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -357,11 +274,12 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.6">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.6 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
+    <ProjectReference Include="..\..\CamraApps\StonewallLibraries\SWallTech\SWallTech\SWallTech.csproj">
+      <Project>{2af09c76-344e-4151-9ced-e745234e0437}</Project>
+      <Name>SWallTech</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1</ProductName>
@@ -372,24 +290,6 @@
       <ProductName>Windows Installer 4.5</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Stonewall Tech. Big Logo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\STONE TECH LOGO.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="StonewallTechIcon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\SWallTech\SWallTech.csproj">
-      <Project>{2af09c76-344e-4151-9ced-e745234e0437}</Project>
-      <Name>SWallTech</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

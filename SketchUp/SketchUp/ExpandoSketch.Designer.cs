@@ -96,7 +96,7 @@
             this.beginPointToolStripMenuItem,
             this.endSectionToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(193, 82);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(193, 110);
 			this.contextMenuStrip1.Click += new System.EventHandler(this.beginPointToolStripMenuItem_Click);
 			// 
 			// jumpToolStripMenuItem
@@ -112,6 +112,7 @@
 			this.beginPointToolStripMenuItem.Size = new System.Drawing.Size(192, 26);
 			this.beginPointToolStripMenuItem.Text = "Begin Point";
 			this.beginPointToolStripMenuItem.Visible = false;
+			this.beginPointToolStripMenuItem.Click += new System.EventHandler(this.beginPointToolStripMenuItem_Click_1);
 			// 
 			// endSectionToolStripMenuItem
 			// 

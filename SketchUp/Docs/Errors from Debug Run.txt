@@ -1,0 +1,92 @@
+property error--why?
+
+SketchMaster._fox.get() called by SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchMaster._fox.get() called by SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchMaster._fox.get() called by SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchMaster._fox.get() called by SetchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+
+Stack Trace for terminating error
+
+Exception thrown: 'System.ArgumentOutOfRangeException' in rmscorlib.dll
+Exception thrown: 'System.ArgumentOutOfRangeException' in exe
+Exception thrown: 'System.ArgumentOutOfRangeException' in exe
+System.Transactions Critical: 0 : <TraceRecord xmlns="http://schemas.microsoft.com/2004/10/E2ETraceEvent/TraceRecord" Severity="Critical"><TraceIdentifier>http://msdn.microsoft.com/TraceCodes/System/ActivityTracing/2004/07/Reliability/Exception/Unhandled</TraceIdentifier><Description>Unhandled exception</Description><AppDomain>exe</AppDomain><Exception><ExceptionType>System.ArgumentOutOfRangeException, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</ExceptionType><Message>Index was out of range. Must be non-negative and less than the size of the collection.
+Parameter name: index</Message><StackTrace>   at System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   at System.Collections.Generic.List`1.get_Item(Int32 index)
+   at ExpandoSketch.JumptoCorner() in C:\Users\joey\Source\Repos\SketchUp\SketchUp\SketchUp\ExpandoSketch.cs:line 3850
+   at ExpandoSketch.jumpToolStripMenuItem_Click(Object sender, EventArgs e) in C:\Users\joey\Source\Repos\SketchUp\SketchUp\SketchUp\ExpandoSketch.cs:line 1190
+   at ToolStripItem.RaiseEvent(Object key, EventArgs e)
+   at ToolStripMenuItem.OnClick(EventArgs e)
+   at ToolStripItem.HandleClick(EventArgs e)
+   at ToolStripItem.HandleMouseUp(MouseEventArgs e)
+   at ToolStrip.OnMouseUp(MouseEventArgs mea)
+   at ToolStripDropDown.OnMouseUp(MouseEventArgs mea)
+   at Control.WmMouseUp(Message&amp;amp; m, MouseButtons button, Int32 clicks)
+   at Control.WndProc(Message&amp;amp; m)
+   at ToolStrip.WndProc(Message&amp;amp; m)
+   at ToolStripDropDown.WndProc(Message&amp;amp; m)
+   at NativeWindow.DebuggableCallback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)
+   at UnsafeNativeMethods.DispatchMessageW(MSG&amp;amp; msg)
+   at Application.ComponentManager.UnsafeNativeMethods.IMsoComponentManager.FPushMessageLoop(IntPtr dwComponentID, Int32 reason, Int32 pvLoopData)
+   at Application.ThreadContext.RunMessageLoopInner(Int32 reason, ApplicationContext context)
+   at Application.ThreadContext.RunMessageLoop(Int32 reason, ApplicationContext context)
+   at Form.ShowDialog(IWin32Window owner)
+   at MainForm.GetSelectedImages() in C:\Users\joey\Source\Repos\SketchUp\SketchUp\SketchUp\MainForm.cs:line 787
+   at MainForm.EditImage_Click(Object sender, EventArgs e) in C:\Users\joey\Source\Repos\SketchUp\SketchUp\SketchUp\MainForm.cs:line 721
+   at Control.OnClick(EventArgs e)
+   at Button.OnClick(EventArgs e)
+   at Button.OnMouseUp(MouseEventArgs mevent)
+   at Control.WmMouseUp(Message&amp;amp; m, MouseButtons button, Int32 clicks)
+   at Control.WndProc(Message&amp;amp; m)
+   at ButtonBase.WndProc(Message&amp;amp; m)
+   at Button.WndProc(Message&amp;amp; m)
+   at NativeWindow.DebuggableCallback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)
+   at UnsafeNativeMethods.DispatchMessageW(MSG&amp;amp; msg)
+   at Application.ComponentManager.UnsafeNativeMethods.IMsoComponentManager.FPushMessageLoop(IntPtr dwComponentID, Int32 reason, Int32 pvLoopData)
+   at Application.ThreadContext.RunMessageLoopInner(Int32 reason, ApplicationContext context)
+   at Application.ThreadContext.RunMessageLoop(Int32 reason, ApplicationContext context)
+   at Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase.OnRun()
+   at Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase.DoApplicationModel()
+   at Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase.Run(String[] commandLine)
+   at Program.Main() in C:\Users\joey\Source\Repos\SketchUp\SketchUp\SketchUp\Program.cs:line 76</StackTrace><ExceptionString>System.ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection.
+Parameter name: index
+   at System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   at System.Collections.Generic.List`1.get_Item(Int32 index)
+   at ExpandoSketch.JumptoCorner() in C:\Users\joey\Source\Repos\SketchUp\SketchUp\SketchUp\ExpandoSketch.cs:line 3850
+   at ExpandoSketch.jumpToolStripMenuItem_Click(Object sender, EventArgs e) in C:\Users\joey\Source\Repos\SketchUp\SketchUp\SketchUp\ExpandoSketch.cs:line 1190
+   at ToolStripItem.RaiseEvent(Object key, EventArgs e)
+   at ToolStripMenuItem.OnClick(EventArgs e)
+   at ToolStripItem.HandleClick(EventArgs e)
+   at ToolStripItem.HandleMouseUp(MouseEventArgs e)
+   at ToolStrip.OnMouseUp(MouseEventArgs mea)
+   at ToolStripDropDown.OnMouseUp(MouseEventArgs mea)
+   at Control.WmMouseUp(Message&amp;amp; m, MouseButtons button, Int32 clicks)
+   at Control.WndProc(Message&amp;amp; m)
+   at ToolStrip.WndProc(Message&amp;amp; m)
+   at ToolStripDropDown.WndProc(Message&amp;amp; m)
+   at NativeWindow.DebuggableCallback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)
+   at UnsafeNativeMethods.DispatchMessageW(MSG&amp;amp; msg)
+   at Application.ComponentManager.UnsafeNativeMethods.IMsoComponentManager.FPushMessageLoop(IntPtr dwComponentID, Int32 reason, Int32 pvLoopData)
+   at Application.ThreadContext.RunMessageLoopInner(Int32 reason, ApplicationContext context)
+   at Application.ThreadContext.RunMessageLoop(Int32 reason, ApplicationContext context)
+   at Form.ShowDialog(IWin32Window owner)
+   at MainForm.GetSelectedImages() in C:\Users\joey\Source\Repos\SketchUp\SketchUp\SketchUp\MainForm.cs:line 787
+   at MainForm.EditImage_Click(Object sender, EventArgs e) in C:\Users\joey\Source\Repos\SketchUp\SketchUp\SketchUp\MainForm.cs:line 721
+   at Control.OnClick(EventArgs e)
+   at Button.OnClick(EventArgs e)
+   at Button.OnMouseUp(MouseEventArgs mevent)
+   at Control.WmMouseUp(Message&amp;amp; m, MouseButtons button, Int32 clicks)
+   at Control.WndProc(Message&amp;amp; m)
+   at ButtonBase.WndProc(Message&amp;amp; m)
+   at Button.WndProc(Message&amp;amp; m)
+   at NativeWindow.DebuggableCallback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)
+   at UnsafeNativeMethods.DispatchMessageW(MSG&amp;amp; msg)
+   at Application.ComponentManager.UnsafeNativeMethods.IMsoComponentManager.FPushMessageLoop(IntPtr dwComponentID, Int32 reason, Int32 pvLoopData)
+   at Application.ThreadContext.RunMessageLoopInner(Int32 reason, ApplicationContext context)
+   at Application.ThreadContext.RunMessageLoop(Int32 reason, ApplicationContext context)
+   at Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase.OnRun()
+   at Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase.DoApplicationModel()
+   at Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase.Run(String[] commandLine)
+   at Program.Main() in C:\Users\joey\Source\Repos\SketchUp\SketchUp\SketchUp\Program.cs:line 76</ExceptionString></Exception></TraceRecord>
+An unhandled exception of type 'System.ArgumentOutOfRangeException' occurred in exe
+Additional information: Index was out of range. Must be non-negative and less than the size of the collection.

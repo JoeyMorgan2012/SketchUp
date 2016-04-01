@@ -6114,5 +6114,10 @@ End Joey's alternative Code */
 				WrtLine.Close();
 			}
 		}
+
+		private void beginPointToolStripMenuItem_Click_1(object sender, EventArgs e)
+		{
+
+		}
 	}
 }
