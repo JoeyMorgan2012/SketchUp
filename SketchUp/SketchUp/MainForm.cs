@@ -725,96 +725,123 @@ namespace SketchUp
 		private void GetSelectedImages()
 		{
 #if DEBUG
+		        
+		
 
 			//Debugging Code -- remove for production release
 			var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
 			UtilityMethods.LogMethodCall(fullStack, true);
 #endif
-
-			_subSections = new SectionDataCollection(_conn, _currentParcel.mrecno, _currentParcel.mdwell);
-
-			_currentParcel.BuildSketchData();
-			getSketch(_currentParcel.Record, _currentParcel.Card);
-
-			//Ask Dave why this happens twice
-			CurrentSketch = _currentParcel.GetSketchImage(374);
-			sketchBox.Image = CurrentSketch;
-
-			if (EditImage.Text == "Add Sketch")
+			try
 			{
-				EditImage.Text = "Edit Sketch";
-			}
 
-			StringBuilder delXline = new StringBuilder();
-			delXline.Append(String.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jldirect = 'X' ",
-										MainForm.FClib, MainForm.FCprefix, _currentParcel.Record, _currentParcel.Card));
-
-			_conn.DBConnection.ExecuteNonSelectStatement(delXline.ToString());
-
-			StringBuilder cntSect = new StringBuilder();
-			cntSect.Append(String.Format("select count(*) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ",
-						FClib, FCprefix, _currentParcel.Record, _currentParcel.Card));
-
-			int SectionCnt = Convert.ToInt32(_conn.DBConnection.ExecuteScalar(cntSect.ToString()));
-
-			bool omitSketch = false;
-
-			if (SectionCnt == 0)
-			{
-				DialogResult result;
-				result = (MessageBox.Show("Add Sketch ?", "Sketch Does Not Exist", MessageBoxButtons.YesNo, MessageBoxIcon.Question));
-
-				if (result == DialogResult.Yes)
-				{
-					//BuildNewSketch();
-
-					EditImage.Text = "Edit Sketch";
-
-					_hasNewSketch = true;
-				}
-				if (result == DialogResult.No)
-				{
-					omitSketch = true;
-				}
-			}
-			SetTextAddOrEdit(SectionCnt);
-
-			if (omitSketch == false && ExpandoSketch._cantSketch == false)
-			{
-				ExpandoSketch skexp = new ExpandoSketch(_currentParcel, SketchFolder, _currentParcel.mrecno.ToString(), _currentParcel.mdwell.ToString(),
-				   MainForm.FCprefix, _conn, _subSections, _hasSketch, sketchImage, _hasNewSketch);
-
-				skexp.ShowDialog(this);
-
-				if (ExpandoSketch._isClosed == false && ExpandoSketch._deleteThisSketch == true)
-				{
-					CleanUpSketch();
-				}
-
-				int record = _currentParcel.mrecno;
-				int card = _currentParcel.mdwell;
-
-				_currentParcel = null;
-				_subSections = null;
-
-				_currentParcel = ParcelData.getParcel(_conn, record, card);
-				_subSections = new SectionDataCollection(_conn, record, card);
+				_subSections = new SectionDataCollection(_conn, _currentParcel.mrecno, _currentParcel.mdwell);
 
 				_currentParcel.BuildSketchData();
 				getSketch(_currentParcel.Record, _currentParcel.Card);
+
+				//Ask Dave why this happens twice
 				CurrentSketch = _currentParcel.GetSketchImage(374);
 				sketchBox.Image = CurrentSketch;
+
+				if (EditImage.Text == "Add Sketch")
+				{
+					EditImage.Text = "Edit Sketch";
+				}
+
+				StringBuilder delXline = new StringBuilder();
+				delXline.Append(String.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jldirect = 'X' ",
+											MainForm.FClib, MainForm.FCprefix, _currentParcel.Record, _currentParcel.Card));
+
+				_conn.DBConnection.ExecuteNonSelectStatement(delXline.ToString());
+
+				StringBuilder cntSect = new StringBuilder();
+				cntSect.Append(String.Format("select count(*) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ",
+							FClib, FCprefix, _currentParcel.Record, _currentParcel.Card));
+
+				int SectionCnt = Convert.ToInt32(_conn.DBConnection.ExecuteScalar(cntSect.ToString()));
+
+				bool omitSketch = false;
+
+				if (SectionCnt == 0)
+				{
+					DialogResult result;
+					result = (MessageBox.Show("Add Sketch ?", "Sketch Does Not Exist", MessageBoxButtons.YesNo, MessageBoxIcon.Question));
+
+					if (result == DialogResult.Yes)
+					{
+						//BuildNewSketch();
+
+						EditImage.Text = "Edit Sketch";
+
+						_hasNewSketch = true;
+					}
+					if (result == DialogResult.No)
+					{
+						omitSketch = true;
+					}
+				}
+				SetTextAddOrEdit(SectionCnt);
+
+				try
+				{
+					if (omitSketch == false && ExpandoSketch._cantSketch == false)
+					{
+						ExpandoSketch skexp = new ExpandoSketch(_currentParcel, SketchFolder, _currentParcel.mrecno.ToString(), _currentParcel.mdwell.ToString(),
+						   MainForm.FCprefix, _conn, _subSections, _hasSketch, sketchImage, _hasNewSketch);
+
+						skexp.ShowDialog(this);
+
+						if (ExpandoSketch._isClosed == false && ExpandoSketch._deleteThisSketch == true)
+						{
+							CleanUpSketch();
+						}
+
+						int record = _currentParcel.mrecno;
+						int card = _currentParcel.mdwell;
+
+						_currentParcel = null;
+						_subSections = null;
+
+						_currentParcel = ParcelData.getParcel(_conn, record, card);
+						_subSections = new SectionDataCollection(_conn, record, card);
+
+						_currentParcel.BuildSketchData();
+						getSketch(_currentParcel.Record, _currentParcel.Card);
+						CurrentSketch = _currentParcel.GetSketchImage(374);
+						sketchBox.Image = CurrentSketch;
+					}
+
+				}
+				catch (Exception ex)
+				{
+					string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+								Trace.WriteLine(errMessage);
+								Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+#if DEBUG
+
+								MessageBox.Show(errMessage);
+#endif
+					throw;
+				}
+				
+
+				if (ExpandoSketch._deleteMaster == true)
+				{
+					EditImage.Text = "Add Sketch";
+				}
 			}
 
-			// TODO: Remove if not needed:
-			//if (ExpandoSketch.RefreshEditImageBtn == true)
-			//{
-			//	//EditImage.Text = "Add Sketch";
-			//}
-
-			if (ExpandoSketch._deleteMaster == true)
+			catch (Exception ex)
 			{
-				EditImage.Text = "Add Sketch";
+				string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+				Trace.WriteLine(errMessage);
+				Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+#if DEBUG
+
+				MessageBox.Show(errMessage);
+#endif
+				throw;
 			}
 		}
 

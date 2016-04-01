@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SWallTech;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
@@ -27,34 +28,34 @@ namespace SketchUp
 		#region Fields
 
 		#region private fields
-		/* 
-		Refactored by renaming and providing for null values. Going to ensure that the
-		naming conventions are consistent for all properties. Any field that backs a property
-		will be in camel case (e.g. camelCase) while fields that are not property-backing will be
-		in Pascal case. (e.g. PascalCase).
 
-		*/
+		private decimal adjNewSecX = 0;
+		private decimal adjNewSecY = 0;
+		private decimal adjOldSecX = 0;
+		private decimal adjOldSecY = 0;
+		private decimal AngD1 = 0;
+		private decimal AngD2 = 0;
 		private DataTable AreaTable = null;
-		private DataTable AttachPoints = null;
 		private DataTable AttachmentPointsDataTable = null;
+		private DataTable AttachPoints = null;
+		private int AttLineNo = 0;
+		private string AttSectLtr = String.Empty;
+		private string AttSpLineDir = String.Empty;
+		private int AttSpLineNo = 0;
 		private float BaseX = 0;
 		private float BaseY = 0;
-		private decimal NewSectionBeginPointX = 0;
-		private decimal NewSectionBeginPointY = 0;
-		private int LineNumberToBreak = 0;
-
-		//private decimal Xadj1 = 0;
-		//private decimal Yadj1 = 0;
-		//public static bool _undoModeA = false;
-		private bool NeedToRedraw = false;
+		private static bool checkDirection = false;
 
 		// TODO: Remove if not needed:	
 		private int click = 0;
+
 		//Undo uses this but we are re-doing undo. JMM 3-15-2016
 		private Color color = Color.Red;
 		private List<int> cpCodes = null;
 		private List<String> cpTypes = null;
 		private int currentAttachmentLine = 0;
+		private string CurrentAttDir = String.Empty;
+		private string CurrentSecLtr = String.Empty;
 		private DataTable dt = null;
 		private DataTable DupAttPoints = null;
 		private float endOldSecX = 0;
@@ -71,13 +72,27 @@ namespace SketchUp
 		private DataTable JumpTable = null;
 		private float JumpX = 0;
 		private float JumpY = 0;
+		private string legalMoveDirection;
 		private int lineCnt = 0;
+		private int LineNumberToBreak = 0;
+		private string Locality = String.Empty;
+		private string midDirect = String.Empty;
 		private int midLine = 0;
+		private string midSection = String.Empty;
 		private byte[] ms = null;
 		private DataTable MulPts = null;
 		private int mylineNo = 0;
+
+		//private decimal Xadj1 = 0;
+		//private decimal Yadj1 = 0;
+		//public static bool _undoModeA = false;
+		private bool NeedToRedraw = false;
 		private int NewPointIndex;
+		private decimal NewSectionBeginPointX = 0;
+		private decimal NewSectionBeginPointY = 0;
 		private decimal NewSplitLIneDist = 0;
+		private string OffSetAttSpLineDir = String.Empty;
+		SMParcel parcelWorkingCopy;
 		private decimal prevPt2X = 0;
 		private decimal prevPt2Y = 0;
 		private decimal prevTst1 = 0;
@@ -89,7 +104,6 @@ namespace SketchUp
 		private Point[] pts;
 		private DataTable REJumpTable = null;
 		private DataTable RESpJumpTable = null;
-		private int StandardDrawWidthAndHeight = 3;
 		private Dictionary<int, byte[]> savpic = null;
 		private float ScaleBaseX = 0;
 		private float ScaleBaseY = 0;
@@ -99,8 +113,20 @@ namespace SketchUp
 		private BuildingSection section;
 		private DataTable SectionLtrs = null;
 		private DataTable SectionTable = null;
+		private string SketchCard = String.Empty;
+		private string SketchFolder = String.Empty;
+		/* 
+		Refactored by renaming and providing for null values. Going to ensure that the
+		naming conventions are consistent for all properties. Any field that backs a property
+		will be in camel case (e.g. camelCase) while fields that are not property-backing will be
+		in Pascal case. (e.g. PascalCase).
+		
+		*/
+		SMParcel sketchMgrParcel;
+		private string SketchRecord = String.Empty;
 		private DataTable sortDist = null;
 		private decimal splitLineDist = 0;
+		private int StandardDrawWidthAndHeight = 3;
 		private float StartX = 0;
 		private float StartY = 0;
 		private DataTable StrtPts = null;
@@ -114,68 +140,43 @@ namespace SketchUp
 		private Point[] unadj_pts;
 		private decimal XadjR = 0;
 		private decimal YadjR = 0;
+		private SWallTech.CAMRA_Connection _conn = null;
 		private int _curLineCnt = 0;
 		private ParcelData _currentParcel = null;
 		private float _currentScale = 0;
+		private SectionDataCollection _currentSection = null;
 		private bool _isAngle = false;
 		private bool _isclosing = false;
 		private bool _isJumpMode = false;
 		private bool _isKeyValid = false;
+		private string _lenString = String.Empty;
 		private int _newIndex = 0;
 		private List<PointF> _newSectionPoints;
 		private int _nextLineCount = 0;
+		private string _nextSectType = String.Empty;
 		private decimal _nextStoryHeight = 0;
 		private bool _openForm = false;
+		private string _priorDirection = "";
 		private bool _reOpenSec = false;
 		private int _savedAttLine;
+		private string _savedAttSection = "";
 		private float _scale = 1.0f;
 		private Dictionary<int, float> _StartX = null;
 		private Dictionary<int, float> _StartY = null;
-
-		private int AttLineNo = 0;
-		private int AttSpLineNo = 0;
-
-		private string AttSpLineDir = String.Empty;
-		private string OffSetAttSpLineDir = String.Empty;
-
-		private string AttSectLtr = String.Empty;
-		private static bool checkDirection = false;
-		private string CurrentAttDir = String.Empty;
-		private string CurrentSecLtr = String.Empty;
-		private string legalMoveDirection;
-		private string Locality = String.Empty;
-		private string midDirect = String.Empty;
-		private string midSection = String.Empty;
-
-		private string SketchCard = String.Empty;
-		private string SketchFolder = String.Empty;
-		private string SketchRecord = String.Empty;
-		private SWallTech.CAMRA_Connection _conn = null;
-		private SectionDataCollection _currentSection = null;
-		private string _lenString = String.Empty;
-		private string _nextSectType = String.Empty;
-		private string _priorDirection = "";
-		private string _savedAttSection = "";
-		private decimal adjNewSecX = 0;
-		private decimal adjNewSecY = 0;
-		private decimal AngD1 = 0;
-		private decimal AngD2 = 0;
-		private decimal adjOldSecX = 0;
-		private decimal adjOldSecY = 0;
 
 		#endregion private fields
 
 		#region Public Fields
 
-		public string ConnectSec = String.Empty;
 		public float BeginSplitX = 0;
 		public float BeginSplitY = 0;
 		public decimal begSplitX = 0;
 		public decimal begSplitY = 0;
-
+		public string ConnectSec = String.Empty;
 		public int CPcnt = 0;
 		public decimal CPSize = 0;
 		public int CurSecLineCnt = 0;
+		public SWallTech.CAMRA_Connection dbConn = null;
 		public float delStartX = 0;
 		public float delStartY = 0;
 		public decimal distance = 0;
@@ -188,7 +189,6 @@ namespace SketchUp
 		public decimal EndSplitY = 0;
 		public float EndSplitYF = 0;
 		public static int finalClick;
-		public SWallTech.CAMRA_Connection dbConn = null;
 		public int Garcnt = 0;
 		public decimal GarSize = 0;
 		public static List<string> Letters = new List<string>() { "A", "B", "C", "D", "F", "G", "H", "I", "J", "K", "L", "M" };
@@ -248,37 +248,6 @@ namespace SketchUp
 		private int _mouseX;
 		private int _mouseY;
 
-		private List<PointF> NewSectionPoints
-		{
-			get
-			{
-				if (_newSectionPoints == null)
-					_newSectionPoints = new List<PointF>();
-
-				return _newSectionPoints;
-			}
-
-			set
-			{
-				_newSectionPoints = value;
-			}
-		}
-
-		public BuildingSection SketchSection
-		{
-			get
-			{
-				return this.section;
-			}
-
-			set
-			{
-				this.section = value;
-				this.unadj_pts = this.section.SectionPoints;
-				this.LoadSection();
-			}
-		}
-
 		public List<int> CpCodes
 		{
 			get
@@ -289,10 +258,62 @@ namespace SketchUp
 				}
 				return cpCodes;
 			}
-
 			set
 			{
 				cpCodes = value;
+			}
+		}
+
+		private List<PointF> NewSectionPoints
+		{
+			get
+			{
+				if (_newSectionPoints == null)
+					_newSectionPoints = new List<PointF>();
+
+				return _newSectionPoints;
+			}
+			set
+			{
+				_newSectionPoints = value;
+			}
+		}
+
+		public SMParcel ParcelWorkingCopy
+		{
+			get
+			{
+				return parcelWorkingCopy;
+			}
+			set
+			{
+				parcelWorkingCopy = value;
+			}
+		}
+
+		public SMParcel SketchMgrParcel
+		{
+			get
+			{
+				return sketchMgrParcel;
+			}
+			set
+			{
+				sketchMgrParcel = value;
+			}
+		}
+
+		public BuildingSection SketchSection
+		{
+			get
+			{
+				return this.section;
+			}
+			set
+			{
+				this.section = value;
+				this.unadj_pts = this.section.SectionPoints;
+				this.LoadSection();
 			}
 		}
 

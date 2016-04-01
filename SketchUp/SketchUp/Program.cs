@@ -31,7 +31,7 @@ namespace SketchUp
 		/// <summary>
 		/// The main entry point for the application.
 		/// </summary>
-		//  [STAThread]
+	 [STAThread]
 		private static void Main()
 		{
 			Application.EnableVisualStyles();

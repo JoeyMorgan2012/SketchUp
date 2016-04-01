@@ -8,24 +8,46 @@ namespace SketchUp
 {
 	public class ComparableSalesCollection : List<ParcelData>
 	{
-		private SWallTech.CAMRA_Connection _db = null;
+		private SWallTech.CAMRA_Connection dbConn = null;
 		private ParcelData _currentParcel = null;
 
 		public ParcelData Subject
 		{
 			get
 			{
-				return _currentParcel;
+				return CurrentParcel;
 			}
 		}
 
 		private SortedDictionary<decimal, int> _dissimilarity = null;
 
 		private DataTable _SCTable = new DataTable("ComparablesTable");
+		private string lastQuerySql;
+		
+		public ParcelData CurrentParcel
+		{
+			get
+			{
+				return _currentParcel;
+			}
+
+			set
+			{
+				_currentParcel = value;
+			}
+		}
 
 		public string LastQuerySql
 		{
-			get; set;
+			get
+			{
+				return lastQuerySql;
+			}
+
+			set
+			{
+				lastQuerySql = value;
+			}
 		}
 
 		private int dyear = DateTime.Now.Year;
@@ -34,110 +56,7 @@ namespace SketchUp
 		{
 		}
 
-		//private decimal CalculateDissimilarity(ParcelData _comp)
-		//{
-		//    // add code for dissimilarity
-		//    decimal tstStories = 0;
-		//    if (_currentParcel.mstorN >= 1.0m && _currentParcel.mstorN < 1.3m)
-		//    {
-		//        tstStories = 1.0m;
-		//    }
-		//    if (_currentParcel.mstorN >= 1.3m && _currentParcel.mstorN < 1.8m)
-		//    {
-		//        tstStories = 1.5m;
-		//    }
-		//    if (_currentParcel.mstorN >= 1.8m)
-		//    {
-		//        tstStories = 2.0m;
-		//    }
-
-		//    StdDeviations subDevs = CamraSupport.StdDeviationCollection.StdDeviation(tstStories);
-
-		//    DismWieghts subWghts = CamraSupport.DisimilarityWeightCollection.DisWght(Convert.ToDecimal(tstStories));
-
-		//    string subMap = string.Empty;
-		//    string compMap = string.Empty;
-
-		//if (_currentParcel.mmap.Substring(0, 1) != " ")
-		//{
-		//    subMap = _currentParcel.mmap.Substring(0, 3).PadLeft(3, '0');
-		//}
-		//if (_currentParcel.mmap.Substring(0, 1) == " ")
-		//{
-		//    subMap = _currentParcel.mmap.Substring(0, 3);
-		//}
-		//if (_currentParcel.mmap.Substring(2, 1) == "-")
-		//{
-		//    subMap = _currentParcel.mmap.Substring(0, 2).PadLeft(3, '0');
-		//}
-
-		//if (_comp.mmap.Substring(0, 1) != " ")
-		//{
-		//    compMap = _comp.mmap.Substring(0, 3).PadLeft(3, '0');
-
-		//    if (_comp.mmap.Substring(0, 1) == " ")
-		//    {
-		//        compMap = _comp.mmap.Substring(0, 3);
-		//    }
-		//    if (_comp.mmap.Substring(2, 1) == "-")
-		//    {
-		//        compMap = _comp.mmap.Substring(0, 2).PadLeft(3, '0');
-		//    }
-
-		//    MapCoordinates subcoords = CamraSupport.MapCoordinateCollection.MapCoordinate(subMap);
-		//    MapCoordinates compcoords = CamraSupport.MapCoordinateCollection.MapCoordinate(compMap);
-
-		//    //MapCoordinates subcoords = CamraSupport.MapCoordinateCollection.MapCoordinate(_currentParcel.mmap.ToString().Substring(0, 3));
-		//    //MapCoordinates compcoords = CamraSupport.MapCoordinateCollection.MapCoordinate(_comp.mmap.ToString().Substring(0, 3));
-
-		//    int _currentComputedDate = ((DateTime.Now.Year * 365) + (DateTime.Now.Month * 30) + (DateTime.Now.Day));
-
-		//    decimal diss = 0;
-		//if (CamraSupport.MapCoordinateCollection.Count > 0)
-		//{
-		//    diss = Convert.ToDecimal((Math.Sqrt(
-		//            (Math.Pow(Convert.ToDouble(subcoords._xAxis - compcoords._xAxis), 2)) +
-		//            (Math.Pow(Convert.ToDouble(subcoords._yAxis - compcoords._yAxis), 2))) * 100) * .125);
-		//}
-
-		//diss += Math.Abs((((_currentParcel.TotalPropertyValue - Convert.ToDecimal(_comp.msellp)) * .25m) * .01m));
-		//diss += Math.Abs(((_currentComputedDate - ((_comp.myrsld * 365) + (_comp.mmosld * 30) + (_comp.mdasld))) * 1.0m) * .165m);
-		//diss += Math.Abs((((dyear - _currentParcel.myrblt) - (dyear - _comp.myrblt)) * 50) * .125m);
-
-		//diss += Math.Abs(((_currentParcel.depreciatonValue - _comp.depreciatonValue) * .15m) * .125m);
-
-		//diss += DifferenceFormula(_currentParcel.mtota, _comp.mtota, subDevs._sdSize, subWghts._wtSize);
-		//diss += DifferenceFormula(_currentParcel.BasementArea, _comp.BasementArea, subDevs._sdBsmt, subWghts._wtBsmt);
-		//diss += DifferenceFormula(_currentParcel.FinBasementArea, _comp.FinBasementArea, subDevs._sdFinBsmt, subWghts._wtFinBsmt);
-		//diss += DifferenceFormula(_currentParcel.auxA, _comp.auxA, subDevs._sdAuxArea, subWghts._wtAuxArea);
-		//diss += DifferenceFormula(_currentParcel.porA, _comp.porA, subDevs._sdPor, subWghts._wtPor);
-		//diss += DifferenceFormula(_currentParcel.sporA, _comp.sporA, subDevs._sdSpor, subWghts._wtSpor);
-		//diss += DifferenceFormula(_currentParcel.eporA, _comp.eporA, subDevs._sdEpor, subWghts._wtEpor);
-		//diss += DifferenceFormula(_currentParcel.deckA, _comp.deckA, subDevs._sdDeck, subWghts._wtDeck);
-		//diss += DifferenceFormula(_currentParcel.patioA, _comp.patioA, subDevs._sdPor, subWghts._wtPor);
-		//diss += DifferenceFormula(_currentParcel.carportA, _comp.carportA, subDevs._sdCarPort, subWghts._wtCarPort);
-		//diss += DifferenceFormula(_currentParcel.garA, _comp.garA, subDevs._sdGarage, subWghts._wtGarage);
-
-		//diss += Math.Abs((Convert.ToDecimal(_currentParcel.mtfp - _comp.mtfp) * .25m) * .025m);
-
-		//        decimal subBathValue = (((_currentParcel.mNfbth * 3) + (_currentParcel.mNhbth * 2)) * CamraSupport.PlumbingRate);
-		//        decimal compBathValue = (((_comp.mNfbth * 3) + (_comp.mNhbth * 2)) * CamraSupport.PlumbingRate);
-		//        diss += Math.Abs(((subBathValue - compBathValue) * 1) * .025m);
-		//        diss += Math.Abs(((_currentParcel.computedFactor - _comp.computedFactor) * 1000) * 1);
-
-		//        // Land value here ???
-
-		//        diss += Math.Abs(((_currentParcel.mtotoi - _comp.mtotoi) * .25m) * .125m);
-		//        diss += Math.Abs((((_currentParcel.LocationFactor * 1000) - (_comp.LocationFactor * 1000)) * .50m));
-
-		//        if (_currentParcel.msubdv == _comp.msubdv && diss > 300)
-		//        {
-		//            diss += -300;
-		//        }
-
-		//        return Decimal.Round(diss, 5);
-		//    }
-		//}
+	
 
 		private decimal DifferenceFormula(decimal subject, decimal comp, decimal stdv, decimal weight)
 		{
@@ -151,7 +70,7 @@ namespace SketchUp
 		{
 			_dissimilarity = new SortedDictionary<decimal, int>();
 
-			ParcelDataCollection _comps = new ParcelDataCollection(_db, _currentParcel.mrecno, _currentParcel.mdwell);
+			ParcelDataCollection _comps = new ParcelDataCollection(dbConn, CurrentParcel.mrecno, CurrentParcel.mdwell);
 			try
 			{
 				_comps.GetData(_parms, true);
@@ -177,76 +96,76 @@ namespace SketchUp
 		{
 			_SCTable.Rows.Clear();
 
-			if (_currentParcel != null)
+			if (CurrentParcel != null)
 			{
 				DataRow row = _SCTable.NewRow();
 				row["Type"] = "Subject";
-				row["Record"] = _currentParcel.Record;
-				row["911Add"] = _currentParcel.SiteAddress;
-				row["Map No"] = _currentParcel.mmap;
-				row["SalePrice"] = _currentParcel.msellp;
-				row["SaleDate"] = _currentParcel.SalesDate;
+				row["Record"] = CurrentParcel.Record;
+				row["911Add"] = CurrentParcel.SiteAddress;
+				row["Map No"] = CurrentParcel.mmap;
+				row["SalePrice"] = CurrentParcel.msellp;
+				row["SaleDate"] = CurrentParcel.SalesDate;
 				row["Index"] = "0";
-				row["Sub Division"] = CamraSupport.SubDivisionCodeCollection._subDivDescription(_currentParcel.msubdv.ToString().Trim());
-				row["Location"] = _currentParcel.LocationQuality;
-				row["Acres"] = Convert.ToDecimal(_currentParcel.macreN.ToString("N3"));
-				row["YearBuilt"] = _currentParcel.myrblt;
-				row["Stories"] = Convert.ToDecimal(_currentParcel.mstorN.ToString("N2"));
-				row["ExteriorWall"] = CamraSupport.ExteriorWallTypeCollection.Description(_currentParcel.mexwll.ToString());
-				row["Size"] = _currentParcel.mtota;
-				row["Bsmt"] = _currentParcel.BasementArea;
-				row["Fin.Bsmt"] = _currentParcel.FinBasementArea;
-				row["Rooms"] = _currentParcel.mNroom;
-				row["BedRooms"] = _currentParcel.mNbr;
-				row["Full Baths"] = _currentParcel.mNfbth;
-				row["Half Baths"] = _currentParcel.mNhbth;
-				row["Heat"] = CamraSupport.HeatTypeCollection.Description(_currentParcel.mheat.ToString());
-				row["A/C"] = _currentParcel.mac;
-				row["Fireplace"] = _currentParcel.mfpN;
-				row["StackedFP"] = _currentParcel.msfpN;
-				row["InOPFP"] = _currentParcel.miofpN;
-				if (_currentParcel.GasLogRecords.Count >= 1)
+				row["Sub Division"] = CamraSupport.SubDivisionCodeCollection.SubDivDescription(CurrentParcel.msubdv.ToString().Trim());
+				row["Location"] = CurrentParcel.LocationQuality;
+				row["Acres"] = Convert.ToDecimal(CurrentParcel.macreN.ToString("N3"));
+				row["YearBuilt"] = CurrentParcel.myrblt;
+				row["Stories"] = Convert.ToDecimal(CurrentParcel.mstorN.ToString("N2"));
+				row["ExteriorWall"] = CamraSupport.ExteriorWallTypeCollection.Description(CurrentParcel.mexwll.ToString());
+				row["Size"] = CurrentParcel.mtota;
+				row["Bsmt"] = CurrentParcel.BasementArea;
+				row["Fin.Bsmt"] = CurrentParcel.FinBasementArea;
+				row["Rooms"] = CurrentParcel.mNroom;
+				row["BedRooms"] = CurrentParcel.mNbr;
+				row["Full Baths"] = CurrentParcel.mNfbth;
+				row["Half Baths"] = CurrentParcel.mNhbth;
+				row["Heat"] = CamraSupport.HeatTypeCollection.Description(CurrentParcel.mheat.ToString());
+				row["A/C"] = CurrentParcel.mac;
+				row["Fireplace"] = CurrentParcel.mfpN;
+				row["StackedFP"] = CurrentParcel.msfpN;
+				row["InOPFP"] = CurrentParcel.miofpN;
+				if (CurrentParcel.GasLogRecords.Count >= 1)
 				{
-					row["GasLogFP"] = _currentParcel.GasLogRecords[0].NbrGasFP;
+					row["GasLogFP"] = CurrentParcel.GasLogRecords[0].NbrGasFP;
 				}
-				row["Flues"] = _currentParcel.mflN;
-				row["StackedFlue"] = _currentParcel.msflN;
-				row["MetalFlue"] = _currentParcel.mmflN;
-				row["Aux.Liv.Area"] = _currentParcel.auxA;
-				row["Porch"] = _currentParcel.porA;
-				row["Scrn.Porch"] = _currentParcel.sporA;
-				row["Encl.Porch"] = _currentParcel.eporA;
-				row["Deck"] = _currentParcel.deckA;
-				row["Patio"] = _currentParcel.patioA;
-				row["CarPort"] = _currentParcel.carportA;
-				row["NoCars_CP"] = _currentParcel.mcarNc;
-				row["Garage"] = _currentParcel.garA;
-				if (_currentParcel.mgart != 64)
+				row["Flues"] = CurrentParcel.mflN;
+				row["StackedFlue"] = CurrentParcel.msflN;
+				row["MetalFlue"] = CurrentParcel.mmflN;
+				row["Aux.Liv.Area"] = CurrentParcel.auxA;
+				row["Porch"] = CurrentParcel.porA;
+				row["Scrn.Porch"] = CurrentParcel.sporA;
+				row["Encl.Porch"] = CurrentParcel.eporA;
+				row["Deck"] = CurrentParcel.deckA;
+				row["Patio"] = CurrentParcel.patioA;
+				row["CarPort"] = CurrentParcel.carportA;
+				row["NoCars_CP"] = CurrentParcel.mcarNc;
+				row["Garage"] = CurrentParcel.garA;
+				if (CurrentParcel.mgart != 64)
 				{
-					row["NoCars_GAR"] = _currentParcel.mgarNc;
+					row["NoCars_GAR"] = CurrentParcel.mgarNc;
 				}
-				else if (_currentParcel.mgart == 64)
+				else if (CurrentParcel.mgart == 64)
 				{
 					row["NoCars_GAR"] = 0;
 				}
-				row["NoCars_BI"] = _currentParcel.mbiNc;
-				row["Class"] = _currentParcel.Class;
-				row["Factor"] = Convert.ToDecimal(_currentParcel.Factor);
-				row["QualityAdj"] = _currentParcel.computedFactor;
-				row["Condition"] = _currentParcel.conditionType;
-				row["Deprec"] = Convert.ToDecimal(_currentParcel.Deprc);
-				row["PlumbValue"] = _currentParcel.mtplum;
-				row["HeatValue"] = _currentParcel.mtheat;
-				row["ACValue"] = _currentParcel.mtac;
-				row["FPValue"] = _currentParcel.mtfp;
-				row["FlueValue"] = _currentParcel.mtfl;
-				row["BIGarValue"] = _currentParcel.mtbi;
-				row["SWLValue"] = _currentParcel.mswl;
-				row["TotalBldgVal"] = _currentParcel.mtotbv;
-				row["OtherImp"] = _currentParcel.mtotoi;
-				row["LandValue"] = _currentParcel.mtotld;
-				row["TotalValue"] = _currentParcel.mtotpr;
-				row["NbrParcelsSold"] = _currentParcel.mmcode;
+				row["NoCars_BI"] = CurrentParcel.mbiNc;
+				row["Class"] = CurrentParcel.Class;
+				row["Factor"] = Convert.ToDecimal(CurrentParcel.Factor);
+				row["QualityAdj"] = CurrentParcel.computedFactor;
+				row["Condition"] = CurrentParcel.conditionType;
+				row["Deprec"] = Convert.ToDecimal(CurrentParcel.Deprc);
+				row["PlumbValue"] = CurrentParcel.mtplum;
+				row["HeatValue"] = CurrentParcel.mtheat;
+				row["ACValue"] = CurrentParcel.mtac;
+				row["FPValue"] = CurrentParcel.mtfp;
+				row["FlueValue"] = CurrentParcel.mtfl;
+				row["BIGarValue"] = CurrentParcel.mtbi;
+				row["SWLValue"] = CurrentParcel.mswl;
+				row["TotalBldgVal"] = CurrentParcel.mtotbv;
+				row["OtherImp"] = CurrentParcel.mtotoi;
+				row["LandValue"] = CurrentParcel.mtotld;
+				row["TotalValue"] = CurrentParcel.mtotpr;
+				row["NbrParcelsSold"] = CurrentParcel.mmcode;
 
 				_SCTable.Rows.Add(row);
 
@@ -262,7 +181,7 @@ namespace SketchUp
 					r["SalePrice"] = _comp.msellp;
 					r["SaleDate"] = _comp.SalesDate;
 					r["Index"] = _dissimilarity.Where(f => f.Value == _comp.Record).SingleOrDefault().Key;
-					r["Sub Division"] = CamraSupport.SubDivisionCodeCollection._subDivDescription(_comp.msubdv.ToString().Trim());
+					r["Sub Division"] = CamraSupport.SubDivisionCodeCollection.SubDivDescription(_comp.msubdv.ToString().Trim());
 					r["Location"] = _comp.LocationQuality;
 					r["Acres"] = Convert.ToDecimal(_comp.macreN.ToString("N3"));
 					r["YearBuilt"] = _comp.myrblt;
@@ -334,8 +253,8 @@ namespace SketchUp
 		public ComparableSalesCollection(SWallTech.CAMRA_Connection db, ParcelData data)
 			: this()
 		{
-			_db = db;
-			_currentParcel = data;
+			dbConn = db;
+			CurrentParcel = data;
 
 			_SCTable = new DataTable("ComparablesTable");
 			_SCTable.Columns.Add(new DataColumn("Type", typeof(string)));
@@ -397,8 +316,6 @@ namespace SketchUp
 			_SCTable.Columns.Add(new DataColumn("NbrParcelsSold", typeof(int)));
 		}
 
-		public void SortByDissimilarity()
-		{
-		}
+	
 	}
 }

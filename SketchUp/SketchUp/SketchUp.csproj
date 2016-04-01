@@ -144,6 +144,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddSectionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddSectionDialog.Designer.cs">
+      <DependentUpon>AddSectionDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="AdminData.cs" />
     <Compile Include="AdminDataCollection.cs" />
     <Compile Include="AngleForm.cs">
@@ -160,6 +166,20 @@
     <Compile Include="BuildingSketcher.cs" />
     <Compile Include="BuilldingSection.cs" />
     <Compile Include="CamraSupport.cs" />
+    <Compile Include="CamraSupportClasses\Class1.cs" />
+    <Compile Include="CamraSupportClasses\Class2.cs" />
+    <Compile Include="CamraSupportClasses\Class3.cs" />
+    <Compile Include="CamraSupportClasses\Class4.cs" />
+    <Compile Include="CamraSupportClasses\Class5.cs" />
+    <Compile Include="CamraSupportClasses\Class6.cs" />
+    <Compile Include="CamraSupportClasses\Class7.cs" />
+    <Compile Include="CamraSupportClasses\AllStructureSections.cs" />
+    <Compile Include="CamraSupportClasses\SubDivisionCodes.cs" />
+    <Compile Include="CamraSupportClasses\SubDivisionCodesD.cs" />
+    <Compile Include="CamraSupportClasses\TerrainTypeDescription.cs" />
+    <Compile Include="WaterRates.cs" />
+    <Compile Include="CamraSupportClasses\ZoningDescriptionD.cs" />
+    <Compile Include="CamraSupportClasses\ZoningDescription.cs" />
     <Compile Include="CommandLineArguments.cs" />
     <Compile Include="CommandLineArgumentsBase.cs" />
     <Compile Include="ComparableSalesCollection.cs" />
@@ -246,12 +266,6 @@
     <Compile Include="SalesHistoryCollection.cs" />
     <Compile Include="SectionData.cs" />
     <Compile Include="SectionDataCollection.cs" />
-    <Compile Include="SectionTypes.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SectionTypes.Designer.cs">
-      <DependentUpon>SectionTypes.cs</DependentUpon>
-    </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="SingleInstanceController.cs" />
     <Compile Include="SketchCreatedEventArgs.cs" />
@@ -284,6 +298,11 @@
     <Compile Include="UtilityMethods.cs" />
     <Compile Include="ValuesTracking.cs" />
     <Compile Include="ValuesTrackingCollection.cs" />
+    <Compile Include="CamraSupportClasses\WaterTypeDescription.cs" />
+    <Compile Include="CamraSupportClasses\WaterTypeDescriptionD.cs" />
+    <EmbeddedResource Include="AddSectionDialog.resx">
+      <DependentUpon>AddSectionDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AngleForm.resx">
       <DependentUpon>AngleForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -321,9 +340,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="SectionTypes.resx">
-      <DependentUpon>SectionTypes.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="SketchDistance.resx">
       <DependentUpon>SketchDistance.cs</DependentUpon>
     </EmbeddedResource>
@@ -338,8 +354,6 @@
     </EmbeddedResource>
     <None Include="CamraSketch_1_TemporaryKey.pfx" />
     <None Include="CamraSketch_TemporaryKey.pfx" />
-    <None Include="ClassDiagram1.cd" />
-    <None Include="ClassDiagram2.cd" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
@@ -383,6 +397,10 @@
     <Content Include="StonewallTechIcon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\SketchManager\SketchManager\SketchManager.csproj">
+      <Project>{949e3885-9ffc-4200-bde7-4b67832d9faf}</Project>
+      <Name>SketchManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\SWallTech\SWallTech.csproj">
       <Project>{2af09c76-344e-4151-9ced-e745234e0437}</Project>
       <Name>SWallTech</Name>

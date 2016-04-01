@@ -1,16 +1,16 @@
-﻿using SWallTech;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Reflection;
 using System.Text;
+using SWallTech;
+
 
 namespace SketchUp
 {
 	public static class CamraSupport
 	{
-		public static string _assInitDescription(this List<AssessorCodes> list, string code)
+		public static string assInitDescription(this List<AssessorCodes> list, string code)
 		{
 			var q = from h in list
 					where h._assInitCode == code
@@ -19,7 +19,7 @@ namespace SketchUp
 			return q.SingleOrDefault();
 		}
 
-		public static string _dataEntryOpInitDescription(this List<DataEntryOperatorCode> list, string code)
+		public static string dataEntryOpInitDescription(this List<DataEntryOperatorCode> list, string code)
 		{
 			var q = from h in list
 					where h._dataEntryOpCode == code
@@ -28,7 +28,7 @@ namespace SketchUp
 			return q.SingleOrDefault();
 		}
 
-		public static string _floorAbreviation(this List<FloorAbreviation> list, string code)
+		public static string floorAbreviation(this List<FloorAbreviation> list, string code)
 		{
 			var q = from h in list
 					where h.FlrCode == code
@@ -37,7 +37,7 @@ namespace SketchUp
 			return q.SingleOrDefault();
 		}
 
-		public static string _InWallAbreviation(this List<InWallAbreviation> list, string code)
+		public static string InWallAbreviation(this List<InWallAbreviation> list, string code)
 		{
 			var q = from h in list
 					where h.WallCode == code
@@ -46,7 +46,7 @@ namespace SketchUp
 			return q.SingleOrDefault();
 		}
 
-		public static string _landUseDescription(this List<LandUseType> list, string code)
+		public static string landUseDescription(this List<LandUseType> list, string code)
 		{
 			var q = from h in list
 					where h._landUseCode == code
@@ -54,7 +54,7 @@ namespace SketchUp
 			return q.SingleOrDefault();
 		}
 
-		public static string _magDistDescription(this List<MagDistrictCodes> list, string code)
+		public static string magDistDescription(this List<MagDistrictCodes> list, string code)
 		{
 			var q = from h in list
 					where h._magDistCode == code
@@ -62,16 +62,16 @@ namespace SketchUp
 			return q.SingleOrDefault();
 		}
 
-		public static string _subDivDescription(this List<SubDivisionCodes> list, string code)
+		public static string SubDivDescription(this List<SubDivisionCodes> list, string code)
 		{
 			var q = from h in list
-					where h._subDivCode == code
-					select h._subDivDescription;
+					where h.SubDivCode == code
+					select h.SubDivDescription;
 
 			return q.SingleOrDefault();
 		}
 
-		public static string _userCodeDescription(this List<UserCodeType> list, string code)
+		public static string userCodeDescription(this List<UserCodeType> list, string code)
 		{
 			var q = from h in list
 					where h._userCode == code
@@ -933,10 +933,10 @@ namespace SketchUp
 					row["rdesc"].ToString().Trim());
 				var subdivCode = new SubDivisionCodes()
 				{
-					_subDivCode = row["rsecto"].ToString().Substring(1, 3),
-					_subDivDescription = row["rdesc"].ToString().Trim(),
-					_sudDivQuality = row["rincsf"].ToString().Trim(),
-					_printDescription = subDivCode.ToString().Trim(),
+					SubDivCode = row["rsecto"].ToString().Substring(1, 3),
+					SubDivDescription = row["rdesc"].ToString().Trim(),
+					SubDivQuality = row["rincsf"].ToString().Trim(),
+					PrintDescription = subDivCode.ToString().Trim(),
 				};
 				SubDivisionCodeCollection.Add(subdivCode);
 			}
@@ -1726,23 +1726,7 @@ namespace SketchUp
 		public static List<ZoningDescriptionD> ZoningDescriptionCollection_srt;
 	}
 
-	public class AllStructureSections
-	{
-		public string _allSectionDescription
-		{
-			get; set;
-		}
-
-		public string _allSectionType
-		{
-			get; set;
-		}
-
-		public string _allSectPrintedDescription
-		{
-			get; set;
-		}
-	}
+	
 
 	public class AssessorCodes
 	{
@@ -2701,70 +2685,10 @@ namespace SketchUp
 		}
 	}
 
-	public class SubDivisionCodes
-	{
-		public string _printDescription
-		{
-			get; set;
-		}
+	
 
-		public string _subDivCode
-		{
-			get; set;
-		}
 
-		public string _subDivDescription
-		{
-			get; set;
-		}
-
-		public string _sudDivQuality
-		{
-			get; set;
-		}
-	}
-
-	public class SubDivisionCodesD
-	{
-		public string _printSubDivDescription
-		{
-			get; set;
-		}
-
-		public string _subDivCode
-		{
-			get; set;
-		}
-
-		public string _subDivDescription
-		{
-			get; set;
-		}
-
-		public string _sudDivQuality
-		{
-			get; set;
-		}
-	}
-
-	public class TerrainTypeDescription
-	{
-		public string _printTerrDescription
-		{
-			get; set;
-		}
-
-		public string _terrCode
-		{
-			get; set;
-		}
-
-		public string _terrDescription
-		{
-			get; set;
-		}
-	}
-
+	
 	public class TerrainTypeDescriptionD
 	{
 		public string _printTerrDescription
@@ -2801,93 +2725,10 @@ namespace SketchUp
 		}
 	}
 
-	public class WaterRates
-	{
-		public int WaterCode
-		{
-			get; set;
-		}
+	
 
-		public string WaterDescription
-		{
-			get; set;
-		}
-
-		public int WaterRate
-		{
-			get; set;
-		}
-	}
-
-	public class WaterTypeDescription
-	{
-		public string _printWaterDescription
-		{
-			get; set;
-		}
-
-		public string _waterCode
-		{
-			get; set;
-		}
-
-		public string _waterDescription
-		{
-			get; set;
-		}
-	}
-
-	public class WaterTypeDescriptionD
-	{
-		public string _printWaterDescription
-		{
-			get; set;
-		}
-
-		public string _waterCode
-		{
-			get; set;
-		}
-
-		public string _waterDescription
-		{
-			get; set;
-		}
-	}
-
-	public class ZoningDescription
-	{
-		public string _printZoneDescription
-		{
-			get; set;
-		}
-
-		public string _zoneCode
-		{
-			get; set;
-		}
-
-		public string _zoneDescription
-		{
-			get; set;
-		}
-	}
-
-	public class ZoningDescriptionD
-	{
-		public string _printZoneDescription
-		{
-			get; set;
-		}
-
-		public string _zoneCode
-		{
-			get; set;
-		}
-
-		public string _zoneDescription
-		{
-			get; set;
-		}
-	}
+	
+	
+	
+	
 }

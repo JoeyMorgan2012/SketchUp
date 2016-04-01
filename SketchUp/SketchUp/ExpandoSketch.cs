@@ -353,15 +353,18 @@ namespace SketchUp
 			_addSection = true;
 			NewSectionPoints.Clear();
 			lineCnt = 0;
-			SectionTypes sktype = new SectionTypes(dbConn, _currentParcel, _addSection, lineCnt, _isNewSketch);
-			sktype.ShowDialog(this);
 
-			int test = _currentParcel.mcarpt;
+			//AddSectionDialog addSect = new AddSectionDialog(dbConn, _currentParcel, _addSection, lineCnt, _isNewSketch);
 
-			_nextSectLtr = SectionTypes._nextSectLtr;
-			_nextSectType = SectionTypes._nextSectType;
-			_nextStoryHeight = SectionTypes._nextSectStory;
-			_nextLineCount = SectionTypes._nextLineCount;
+			AddSectionDialog addSect = new AddSectionDialog(dbConn, _currentParcel, _addSection, lineCnt, _isNewSketch, SketchMgrParcel);
+			addSect.ShowDialog(this);
+
+		
+
+			_nextSectLtr = AddSectionDialog._nextSectLtr;
+			_nextSectType = AddSectionDialog._nextSectType;
+			_nextStoryHeight = AddSectionDialog._nextSectStory;
+			_nextLineCount = AddSectionDialog._nextLineCount;
 
 			if (_nextSectLtr != "A")
 			{
@@ -1313,19 +1316,31 @@ namespace SketchUp
 		#endregion User Actions Response Methods
 
 		public ExpandoSketch(ParcelData currentParcel, string sketchFolder,
-			string sketchRecord, string sketchCard, string _locality, SWallTech.CAMRA_Connection _fox,
+			string sketchRecord, string sketchCard, string _locality, CAMRA_Connection dbConnection,
 			SectionDataCollection currentSection, bool hasSketch, Image sketchImage, bool hasNewSketch)
 		{
 			InitializeComponent();
+			dbConn = dbConnection;
+			SketchRepository sr = new SketchRepository(dbConnection.DataSource, dbConnection.User, dbConnection.Password, dbConnection.LocalityPrefix);
+
 			checkDirection = true;
 			_currentParcel = currentParcel;
 			_currentSection = currentSection;
 
-			dbConn = _fox;
+			dbConn = dbConnection;
 
-			_currentSection = new SectionDataCollection(_fox, _currentParcel.Record, _currentParcel.Card);
+			_currentSection = new SectionDataCollection(dbConnection, _currentParcel.Record, _currentParcel.Card);
 
 			Locality = _locality;
+
+			#region New Sketchmanager Code
+
+			SketchMgrParcel = GetParcel(_currentParcel.Record, _currentParcel.Card, sr);
+
+			//Make a copy for manipulation, leaving the current one as loaded from the DB
+			ParcelWorkingCopy = SketchMgrParcel;
+
+			#endregion New Sketchmanager Code
 
 			_isNewSketch = false;
 			_hasNewSketch = hasNewSketch;
@@ -1474,6 +1489,18 @@ namespace SketchUp
 
 			click++;
 			savpic.Add(click, imageToByteArray(_mainimage));
+		}
+
+		private SMParcel GetParcel(int dwelling, int record, SketchRepository sr)
+		{
+			SMParcel parcel = sr.SelectParcelData(record, dwelling);
+			parcel.Sections = sr.SelectParcelSections(parcel);
+			foreach (SMSection sms in parcel.Sections)
+			{
+				sms.Lines = sr.SelectSectionLines(sms);
+			}
+			parcel.IdentifyAttachedToSections();
+			return parcel;
 		}
 
 		private void AddXLine(string thisSection)
@@ -3453,7 +3480,6 @@ End Joey's alternative Code */
 							LineNumberToBreak = lnNbr;
 							if (NextStartY < (float)y1 && NextStartY > (float)y2 && dirsect == "N" && NextStartX >= (float)x1B && NextStartX <= (float)x1x)
 							{
-								
 								AttLineNo = Convert.ToInt32(RESpJumpTable.Rows[i]["LineNo"].ToString());
 								AttSpLineNo = Convert.ToInt32(RESpJumpTable.Rows[i]["LineNo"].ToString());
 								AttSpLineDir = RESpJumpTable.Rows[i]["Direct"].ToString().Trim();
@@ -3477,7 +3503,6 @@ End Joey's alternative Code */
 
 							if (NextStartY > (float)y1 && NextStartY < (float)y2 && dirsect == "S" && NextStartX >= (float)x1B && NextStartX <= (float)x1x)
 							{
-							
 								AttLineNo = Convert.ToInt32(RESpJumpTable.Rows[i]["LineNo"].ToString());
 								AttSpLineNo = Convert.ToInt32(RESpJumpTable.Rows[i]["LineNo"].ToString());
 								AttSpLineDir = RESpJumpTable.Rows[i]["Direct"].ToString().Trim();
@@ -3592,7 +3617,6 @@ End Joey's alternative Code */
 
 							if (NextStartX >= (float)x1 && NextStartX <= (float)x2 && dirsect == "E" && NextStartY >= (float)y2B && NextStartY <= (float)y2x)
 							{
-								
 								AttLineNo = Convert.ToInt32(RESpJumpTable.Rows[i]["LineNo"].ToString());
 								AttSpLineNo = Convert.ToInt32(RESpJumpTable.Rows[i]["LineNo"].ToString());
 								AttSpLineDir = RESpJumpTable.Rows[i]["Direct"].ToString().Trim();
@@ -3616,7 +3640,6 @@ End Joey's alternative Code */
 
 							if (NextStartX < (float)x1 && NextStartX > (float)x2 && dirsect == "W" && NextStartY >= (float)y2B && NextStartY <= (float)y2x)
 							{
-								
 								AttLineNo = Convert.ToInt32(RESpJumpTable.Rows[i]["LineNo"].ToString());
 								AttSpLineNo = Convert.ToInt32(RESpJumpTable.Rows[i]["LineNo"].ToString());
 								AttSpLineDir = RESpJumpTable.Rows[i]["Direct"].ToString().Trim();
@@ -6117,7 +6140,6 @@ End Joey's alternative Code */
 
 		private void beginPointToolStripMenuItem_Click_1(object sender, EventArgs e)
 		{
-
 		}
 	}
 }

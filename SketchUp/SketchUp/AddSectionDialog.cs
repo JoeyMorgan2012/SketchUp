@@ -4,51 +4,40 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
+using SWallTech;
 
 namespace SketchUp
 {
-	public partial class SectionTypes : Form
+	public partial class AddSectionDialog : Form
 	{
-		public SectionTypes(SWallTech.CAMRA_Connection conn, ParcelData parcelData, bool addSection, int lineCount, bool newSketch)
+		public AddSectionDialog(CAMRA_Connection conn, ParcelData parcelData, bool addSection, int lineCount, bool newSketch)
 		{
-			_conn = conn;
-			_currentParcel = parcelData;
-
+			deConn = conn;
+			currentParcel = parcelData;
 			_AddSection = addSection;
-
 			InitializeComponent();
-
 			_checkStory = false;
 			_nextSectStory = 0;
-
-			Record = _currentParcel.Record;
-			Card = _currentParcel.Card;
-			btnAdd.Enabled = false;
-
-			SectionTypesCbox.DataSource = PopulateSectionTypeCollection();
-			ReSet();
-			SectLtrLabel.Text= GetNextSection(Record, Card);
-
-			if (CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
-			{
-				CurOccTxt.Text = "Residential Occupancy";
-			}
-			if (CamraSupport.CommercialOccupancies.Contains(_currentParcel.moccup))
-			{
-				CurOccTxt.Text = "Commercial Occupany";
-			}
-			if (CamraSupport.TaxExemptOccupancies.Contains(_currentParcel.moccup))
-			{
-				CurOccTxt.Text = "Tax Exempt Occupancy";
-			}
+			InitializeFormUI();
+			SetPanels();
 		}
-
+		public AddSectionDialog(CAMRA_Connection conn, ParcelData parcelData, bool addSection, int lineCount, bool newSketch,SMParcel smParcel)
+		{
+			deConn = conn;
+			currentParcel = parcelData;
+			_AddSection = addSection;
+			
+			InitializeComponent();
+			_checkStory = false;
+			_nextSectStory = 0;
+			InitializeFormUI();
+			SetPanels();
+		}
 		private void btnAdd_Click(object sender, EventArgs e)
 		{
 			this.Close();
 		}
 
-		
 		private string GetNextSection(int _record, int _card)
 		{
 			char[] validSec = new char[] { 'A', 'B', 'C', 'D', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M' };
@@ -60,7 +49,7 @@ namespace SketchUp
 
 			try
 			{
-				nextSec = (string)_conn.DBConnection.ExecuteScalar(secSql.ToString());
+				nextSec = (string)deConn.DBConnection.ExecuteScalar(secSql.ToString());
 			}
 			catch
 			{
@@ -72,26 +61,23 @@ namespace SketchUp
 
 					if (_nextSectStory == 0 && nextSec == "A")
 					{
-						_nextSectStory = _currentParcel.mstorN;
-						SectionSizeTxt.Text = _nextSectStory.ToString("N2");
+						_nextSectStory = currentParcel.mstorN;
+						SquareFootageTextBox.Text = _nextSectStory.ToString("N2");
 					}
-
-					
 				}
 			}
 
-			
 			if (nextSec.Trim() == String.Empty)
 			{
 				nextSec = "A";
 
 				_checkStory = true;
-				_isnewSketch = true;
+				isNewSketch = true;
 
 				if (_nextSectStory == 0 && nextSec == "A")
 				{
-					_nextSectStory = _currentParcel.mstorN;
-					SectionSizeTxt.Text = _nextSectStory.ToString("N2");
+					_nextSectStory = currentParcel.mstorN;
+					SquareFootageTextBox.Text = _nextSectStory.ToString("N2");
 				}
 
 				//ChkBase();
@@ -103,30 +89,17 @@ namespace SketchUp
 			}
 			if (nextSec.Trim() != "M")
 			{
-				SectionLetterCbox.SelectedItem = nextSec.Trim();
-				int index = SectionLetterCbox.SelectedIndex;
+				newSectionLetterLabel.Text = nextSec.Trim();
 
 				if (nextSec == "A")
 				{
-					index = -1;
-
-					_isnewSketch = true;
+					isNewSketch = true;
 
 					_checkStory = true;
 				}
-				else
-				{
-					index = SectionLetterCbox.SelectedIndex;
-				}
-
-				SectionLetterCbox.SelectedIndex = (index + 1);
-
-				_nextSectLtr = SectionLetterCbox.SelectedItem.ToString().Trim();
-
-				
 			}
 
-			if (_AddStory == true)
+			if (addStory == true)
 			{
 				if (_nextSectStory <= 0)
 				{
@@ -140,24 +113,46 @@ namespace SketchUp
 				_nextSectStory = 1.0M;
 			}
 
-			if (_AddStory == false && _nextSectStory != 0 && _nextSectLtr != "A")
+			if (addStory == false && _nextSectStory != 0 && _nextSectLtr != "A")
 			{
-				
-				_nextSectLtr= _nextSectStory.ToString("N2");
+				_nextSectLtr = _nextSectStory.ToString("N2");
 			}
 			return _nextSectLtr;
 		}
 
+		private void InitializeFormUI()
+		{
+			Record = currentParcel.Record;
+			Card = currentParcel.Card;
+			btnAdd.Enabled = false;
+
+			ResetForm();
+			List<string>comboBoxData= PopulateSectionTypeCollection();
+			SectionTypesCbox.DataSource = comboBoxData;
+			SectionTypesCbox.SelectedIndex = -1;
+
+
+			if (CamraSupport.ResidentialOccupancies.Contains(currentParcel.moccup))
+			{
+				CurOccTxt.Text = "Residential Occupancy";
+			}
+			if (CamraSupport.CommercialOccupancies.Contains(currentParcel.moccup))
+			{
+				CurOccTxt.Text = "Commercial Occupany";
+			}
+			if (CamraSupport.TaxExemptOccupancies.Contains(currentParcel.moccup))
+			{
+				CurOccTxt.Text = "Tax Exempt Occupancy";
+			}
+		}
+
 		private List<string> PopulateSectionTypeCollection()
 		{
-			//    int _cboxIndex = 0;
-
 			List<string> sectionTypes = new List<string>();
 
-			// var index = -1;
 			if (SectionTypesCbox.SelectedIndex <= 0)
 			{
-				sectionTypes.Add(" < Section Types > ");
+				sectionTypes.Add(" (Select Section Type)");
 
 				foreach (var item in CamraSupport.ResidentialSectionTypeCollection)
 				{
@@ -179,37 +174,47 @@ namespace SketchUp
 			return sectionTypes;
 		}
 
-		private void ReSet()
+		private void rbNewSection_CheckedChanged(object sender, EventArgs e)
 		{
-			_AddStory = false;
-			_AddType = false;
-			SectionTypesCbox.SelectedIndex = 0;
-			SectionLetterCbox.SelectedIndex = 0;
+			SetPanels();
+		}
+
+		private void rbSquareFootage_CheckedChanged(object sender, EventArgs e)
+		{
+			SetPanels();
+		}
+
+		private void ResetForm()
+		{
+			addStory = false;
+			addType = false;
+			SectionTypesCbox.SelectedIndex = -1;
+
 			SectionStoriesTxt.Text = String.Empty;
-			SectionSizeTxt.Text = String.Empty;
+			SquareFootageTextBox.Text = String.Empty;
 		}
 
 		private void SectionSizeTxt_Leave(object sender, EventArgs e)
 		{
 			decimal _size = 0;
 
-			if (SectionSizeTxt.Text == String.Empty)
+			if (SquareFootageTextBox.Text == String.Empty)
 			{
-				_blankSize = false;
+				blankSize = false;
 			}
 
-			if (SectionSizeTxt.Text != String.Empty)
+			if (SquareFootageTextBox.Text != String.Empty)
 			{
-				decimal.TryParse(SectionSizeTxt.Text, out _size);
+				decimal.TryParse(SquareFootageTextBox.Text, out _size);
 
 				_nextSectSize = _size;
 				_sizeOnly = _size;
 
 				if (_size > 0)
 				{
-					SectionSizeTxt.Text = _size.ToString("N1");
+					SquareFootageTextBox.Text = _size.ToString("N1");
 
-					_blankSize = true;
+					blankSize = true;
 				}
 			}
 
@@ -218,28 +223,25 @@ namespace SketchUp
 
 		private void SectionStoriesTxt_Leave(object sender, EventArgs e)
 		{
-			decimal _sty = 0;
+			decimal storey = 0;
 
 			_nextSectStory = 0;
 
-			_blankStory = false;
+			blankStory = false;
 
 			if (SectionStoriesTxt.Text == String.Empty)
 			{
-				_blankStory = true;
+				blankStory = true;
 			}
 
-			if (SectionStoriesTxt.Text != String.Empty)
+			if (!blankStory)
 			{
-				decimal.TryParse(SectionStoriesTxt.Text, out _sty);
-
-				decimal curstory = _currentParcel.mstorN;
-
-				_nextSectStory = _sty;
-
-				if (CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
+				decimal.TryParse(SectionStoriesTxt.Text, out storey);
+				decimal curstory = currentParcel.mstorN;
+				_nextSectStory = storey;
+				if (CamraSupport.ResidentialOccupancies.Contains(currentParcel.moccup))
 				{
-					if (nextSec == "A" && _blankStory != true && curstory != _sty)
+					if (nextSec == "A" && blankStory != true && curstory != storey)
 					{
 						DialogResult storycheck;
 						storycheck = (MessageBox.Show("Master Story Confilct", "Check Stories Error",
@@ -247,30 +249,27 @@ namespace SketchUp
 
 						if (storycheck == DialogResult.OK)
 						{
-							if (nextSec == "A" && curstory != _sty)
+							if (nextSec == "A" && curstory != storey)
 							{
-								MessageBox.Show(String.Format("Master Parcel shows {0} stories .. Entered Sories = {1} ", curstory.ToString("N2"), _sty.ToString("N2")));
+								MessageBox.Show(String.Format("Master Parcel shows {0} stories .. Entered Sories = {1} ", curstory.ToString("N2"), storey.ToString("N2")));
 
 								_checkStory = false;
 							}
 
-							if (_sty > 0)
+							if (storey > 0)
 							{
-								SectionStoriesTxt.Text = _sty.ToString("N2");
-								_currentParcel.mstorN = _sty;
+								SectionStoriesTxt.Text = storey.ToString("N2");
+								currentParcel.mstorN = storey;
 
 								StringBuilder maststory = new StringBuilder();
-								maststory.Append(String.Format("update {0}.{1}mast set mstor# = {2} ", MainForm.FClib, MainForm.FCprefix, _sty));
-								maststory.Append(String.Format("where mrecno = {0} and mdwell = {1} ", _currentParcel.mrecno, _currentParcel.mdwell));
+								maststory.Append(String.Format("update {0}.{1}mast set mstor# = {2} ", MainForm.FClib, MainForm.FCprefix, storey));
+								maststory.Append(String.Format("where mrecno = {0} and mdwell = {1} ", currentParcel.mrecno, currentParcel.mdwell));
 
-								//UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "maststory", maststory);
-								_conn.DBConnection.ExecuteNonSelectStatement(maststory.ToString());
-
-								//UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "maststory", maststory);
-								_AddStory = true;
+							deConn.DBConnection.ExecuteNonSelectStatement(maststory.ToString());
+								addStory = true;
 							}
 
-							if (_AddStory == true && _AddType == true)
+							if (addStory == true && addType == true)
 							{
 								this.Close();
 							}
@@ -284,9 +283,9 @@ namespace SketchUp
 					}
 				}
 
-				if (CamraSupport.CommercialOccupancies.Contains(_currentParcel.moccup))
+				if (CamraSupport.CommercialOccupancies.Contains(currentParcel.moccup))
 				{
-					if (nextSec == "A" && _blankStory != true && curstory != _sty)
+					if (nextSec == "A" && blankStory != true && curstory != storey)
 					{
 						DialogResult storycheck2;
 						storycheck2 = (MessageBox.Show("Master Story Confilct", "Check Stories Error",
@@ -294,30 +293,30 @@ namespace SketchUp
 
 						if (storycheck2 == DialogResult.OK)
 						{
-							if (nextSec == "A" && curstory != _sty)
+							if (nextSec == "A" && curstory != storey)
 							{
-								MessageBox.Show(String.Format("Master Parcel shows {0} stories .. Entered Sories = {1} ", curstory.ToString("N2"), _sty.ToString("N2")));
+								MessageBox.Show(String.Format("Master Parcel shows {0} stories .. Entered Sories = {1} ", curstory.ToString("N2"), storey.ToString("N2")));
 
 								_checkStory = false;
 							}
 
-							if (_sty > 0)
+							if (storey > 0)
 							{
-								SectionStoriesTxt.Text = _sty.ToString("N2");
-								_currentParcel.mstorN = _sty;
+								SectionStoriesTxt.Text = storey.ToString("N2");
+								currentParcel.mstorN = storey;
 
 								StringBuilder maststory = new StringBuilder();
-								maststory.Append(String.Format("update {0}.{1}mast set mstor# = {2} ", MainForm.FClib, MainForm.FCprefix, _sty));
-								maststory.Append(String.Format("where mrecno = {0} and mdwell = {1} ", _currentParcel.mrecno, _currentParcel.mdwell));
+								maststory.Append(String.Format("update {0}.{1}mast set mstor# = {2} ", MainForm.FClib, MainForm.FCprefix, storey));
+								maststory.Append(String.Format("where mrecno = {0} and mdwell = {1} ", currentParcel.mrecno, currentParcel.mdwell));
 
 								//UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "maststory", maststory);
-								_conn.DBConnection.ExecuteNonSelectStatement(maststory.ToString());
+								deConn.DBConnection.ExecuteNonSelectStatement(maststory.ToString());
 
 								//UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "maststory", maststory);
-								_AddStory = true;
+								addStory = true;
 							}
 
-							if (_AddStory == true && _AddType == true)
+							if (addStory == true && addType == true)
 							{
 								this.Close();
 							}
@@ -338,9 +337,9 @@ namespace SketchUp
 				btnAdd.Enabled = true;
 				_nextSectType = SectionTypesCbox.SelectedItem.ToString().Substring(0, 4);
 
-				_AddType = true;
+				addType = true;
 
-				if (nextSec == "A" && CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
+				if (nextSec == "A" && CamraSupport.ResidentialOccupancies.Contains(currentParcel.moccup))
 				{
 					if (_nextSectType != "BASE")
 					{
@@ -348,9 +347,9 @@ namespace SketchUp
 						SectionTypesCbox.Focus();
 					}
 
-					SectionStoriesTxt.Text = _currentParcel.mstorN.ToString("N2");
+					SectionStoriesTxt.Text = currentParcel.mstorN.ToString("N2");
 				}
-				if (_nextSectLtr != "A" && CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
+				if (_nextSectLtr != "A" && CamraSupport.ResidentialOccupancies.Contains(currentParcel.moccup))
 				{
 					if (_nextSectType == "BASE")
 					{
@@ -363,7 +362,7 @@ namespace SketchUp
 					}
 				}
 
-				if (nextSec == "A" && CamraSupport.CommercialOccupancies.Contains(_currentParcel.moccup))
+				if (nextSec == "A" && CamraSupport.CommercialOccupancies.Contains(currentParcel.moccup))
 				{
 					if (_nextSectType == "BASE")
 					{
@@ -383,9 +382,9 @@ namespace SketchUp
 						}
 					}
 
-					SectionStoriesTxt.Text = _currentParcel.mstorN.ToString("N2");
+					SectionStoriesTxt.Text = currentParcel.mstorN.ToString("N2");
 				}
-				if (nextSec != "A" && CamraSupport.CommercialOccupancies.Contains(_currentParcel.moccup) && CamraSupport.InvalidCommercialSection.Contains(_nextSectType.Trim()))
+				if (nextSec != "A" && CamraSupport.CommercialOccupancies.Contains(currentParcel.moccup) && CamraSupport.InvalidCommercialSection.Contains(_nextSectType.Trim()))
 				{
 					DialogResult result2;
 
@@ -407,19 +406,47 @@ namespace SketchUp
 
 				SectionStoriesTxt.Focus();
 			}
-			if (_AddStory == true && _AddType == true)
+			if (addStory == true && addType == true)
 			{
 				this.Close();
 			}
 		}
 
+		private void SetPanels()
+		{
+			if (rbNewSection.Checked)
+			{
+				SectLtrLabel.Text = GetNextSection(Record, Card);
+				sqFootagePanel.Enabled = false;
+				newSectionPanel.Enabled = true;
+				SectionTypesCbox.Focus();
+			}
+			else
+			{
+				SectLtrLabel.Text = string.Empty;
+				sqFootagePanel.Enabled = true;
+				newSectionPanel.Enabled = false;
+				SquareFootageTextBox.Focus();
+			}
+		}
+
+		private void sqFootageGroup_Enter(object sender, EventArgs e)
+		{
+			SquareFootageTextBox.Focus();
+		}
+
 		private void Sqftcbox_CheckedChanged(object sender, EventArgs e)
 		{
-			SectionSizeTxt.Visible = true;
+			SquareFootageTextBox.Visible = true;
 			SizeOnlyLbl.Visible = true;
 			SqftLbl.Visible = true;
 
-			SectionSizeTxt.Focus();
+			SquareFootageTextBox.Focus();
+		}
+
+		public static string nextSec
+		{
+			get; set;
 		}
 
 		public static int _nextLineCount
@@ -452,37 +479,18 @@ namespace SketchUp
 			get; set;
 		}
 
-		public static string nextSec
-		{
-			get; set;
-		}
-
-		public static bool _AddSection = false;
-
-		public static bool _blankSize = false;
-
-		public static bool _isnewSketch = false;
-
-		private bool _AddStory = false;
-
-		private bool _AddType = false;
-
-		private bool _blankStory = false;
-
-		private bool _checkStory = false;
-
-		// TODO: Remove if not needed:	DBAccessManager _fox = null;
-		private SWallTech.CAMRA_Connection _conn = null;
-
-		private ParcelData _currentParcel = null;
-
 		private int Card = 0;
 		private int Record = 0;
 		private string Section = String.Empty;
-
-		private void sqFootageGroup_Enter(object sender, EventArgs e)
-		{
-			SectionSizeTxt.Focus();
-		}
+		public static bool _AddSection = false;
+		private bool addStory = false;
+		private bool addType = false;
+		public static bool blankSize = false;
+		private bool blankStory = false;
+		private bool _checkStory = false;
+		private CAMRA_Connection deConn = null;
+		private ParcelData currentParcel = null;
+		public static bool isNewSketch = false;
+		private SMParcel parcelWorkingCopy;
 	}
 }
