@@ -106,7 +106,7 @@ namespace SketchUp
 
 			StringBuilder sqlcount = new StringBuilder();
 			sqlcount.Append("select count(*) ");
-			sqlcount.Append(String.Format(" from {0}.{1}mast ", MainForm.localLib, MainForm.localPreFix));
+			sqlcount.Append(String.Format(" from {0}.{1}mast ", MainForm.localLib, MainForm.localPrefix));
 			sqlcount.Append(" where moccup < 99");
 			StringBuilder whereClause = new StringBuilder();
 			foreach (var p in parms)
@@ -390,7 +390,7 @@ namespace SketchUp
 			subParcel.Append(" mdbook,mdpage,mwbook,mwpage,mdcode,mwcode,mmortc,mfill7,macre#,mgispn,muser3,muser4,mimadj,mcdrdt,mmnud,mmnnud,mss1,mpcode,mpbook,mppage,mss2,massm, ");
 			subParcel.Append(" mfill9,mgrntr,mcvmo,mcvda,mcvyr,mprout,mperr,mtbimp,mpuse,mcvexp,metxyr,mqapch,mqafil,mpict,meacre,mprcit,mprsta,mprzp1,mprzp4,mfp#,msfp#,mfl#, ");
 			subParcel.Append(" msfl#,mmfl#,miofp#,mstor#,mascom,mhrph#,mhrdat,mhrtim,mhrnam,mhrses,mhidpc,mhidnm,mcamo,mcada,mcayr,moldoc ");
-			subParcel.Append(String.Format(" from {0}.{1}mast where mrecno = {2} and mdwell = {3} and moccup < 30 ", MainForm.localLib, MainForm.localPreFix, Record, Card));
+			subParcel.Append(String.Format(" from {0}.{1}mast where mrecno = {2} and mdwell = {3} and moccup < 30 ", MainForm.localLib, MainForm.localPrefix, Record, Card));
 
 			DataSet Parcel = db.DBConnection.RunSelectStatement(subParcel.ToString());
 

@@ -67,7 +67,7 @@ namespace SketchUp
 			ntSql.Append("select cseqno,clin1,clin2,clin3,clin4,clin5,clin6,clin7,clin8,clin9,clin10, ");
 			ntSql.Append("clin11,clin12,clin13,clin14,clin15,clin16,clin17,clin18,clin19,clin20,clin21 ");
 			ntSql.Append(String.Format("from {0}.{1}note where crecno = {2} and cdwell = {3}  ",
-				MainForm.localLib, MainForm.localPreFix, recno, card));
+				MainForm.localLib, MainForm.localPrefix, recno, card));
 			ntSql.Append("order by cseqno ");
 
 			DataSet ds = _NTdb.RunSelectStatement(ntSql.ToString());

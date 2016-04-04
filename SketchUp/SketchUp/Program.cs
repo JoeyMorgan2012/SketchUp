@@ -201,12 +201,7 @@ namespace SketchUp
 
 		private static void ParseArgs(string[] args)
 		{
-#if DEBUG
 
-			//Debugging Code -- remove for production release
-			//var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-			//UtilityMethods.LogMethodCall(fullStack, true);
-#endif
 			if (args == null || args.Length < 2)
 			{
 				commandLineArgs = new CommandLineArguments();

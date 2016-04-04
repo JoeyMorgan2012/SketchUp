@@ -41,7 +41,7 @@ namespace SketchUp
 			_IITable.Rows.Clear();
 			StringBuilder iisql = new StringBuilder();
 			iisql.Append("select urecno,udwell,useqno,udesc,uqty,uprice,utotal ");
-			iisql.Append(String.Format("from {0}.{1}bimp where urecno = {2} and udwell = {3} ", MainForm.localLib, MainForm.localPreFix, record, card));
+			iisql.Append(String.Format("from {0}.{1}bimp where urecno = {2} and udwell = {3} ", MainForm.localLib, MainForm.localPrefix, record, card));
 			iisql.Append(" and utotal > 0 ");
 
 			DataSet ds = _fox.DBConnection.RunSelectStatement(iisql.ToString());

@@ -126,7 +126,7 @@ namespace SketchUp
 
 			StringBuilder bssql = new StringBuilder();
 			bssql.Append(" select jstype, jsstory, jssqft, jsclass, jsfactor, jsdeprc, js0depr ");
-			bssql.Append(String.Format(" from {0}.{1}section where jsrecord = {2} and jsdwell = {3} and jssect = '{4}' ", MainForm.localLib, MainForm.localPreFix, recno, card, sectionLetter));
+			bssql.Append(String.Format(" from {0}.{1}section where jsrecord = {2} and jsdwell = {3} and jssect = '{4}' ", MainForm.localLib, MainForm.localPrefix, recno, card, sectionLetter));
 
 			DataSet ds = fox.RunSelectStatement(bssql.ToString());
 

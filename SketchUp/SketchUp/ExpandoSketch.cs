@@ -276,12 +276,12 @@ namespace SketchUp
 			StringBuilder sumArea = new StringBuilder();
 			sumArea.Append(String.Format("select sum(jssqft) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ",
 					  MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 					   //MainForm.FClib,
 					   //MainForm.FCprefix,
-					   _currentParcel.Record,
-					   _currentParcel.Card));
+					   currentParcel.Record,
+					   currentParcel.Card));
 
 			try
 			{
@@ -294,12 +294,12 @@ namespace SketchUp
 			StringBuilder getStory = new StringBuilder();
 			getStory.Append(String.Format("select jsstory from {0}.{1}section where jsrecord = {2} and jsdwell = {3} and jssect = 'A'  ",
 					   MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 						//MainForm.FClib,
 						//MainForm.FCprefix,
-						_currentParcel.Record,
-						_currentParcel.Card));
+						currentParcel.Record,
+						currentParcel.Card));
 
 			try
 			{
@@ -325,19 +325,19 @@ namespace SketchUp
 		private void AddNewSection(int secCnt)
 		{
 			StringBuilder addSectSQL = new StringBuilder();
-			addSectSQL.Append(String.Format("insert into {0}.{1}section ( jsrecord,jsdwell,jssect,jstype,jsstory,jsdesc,jssketch,jssqft, ", MainForm.localLib, MainForm.localPreFix));
+			addSectSQL.Append(String.Format("insert into {0}.{1}section ( jsrecord,jsdwell,jssect,jstype,jsstory,jsdesc,jssketch,jssqft, ", MainForm.localLib, MainForm.localPrefix));
 			addSectSQL.Append(" js0depr,jsclass,jsvalue,jsfactor,jsdeprc ) ");
 			addSectSQL.Append(String.Format("values ({0},{1},'{2}','{3}',{4},'{5}','{6}',{7},'{8}','{9}',{10},{11},{12} ) ",
-				_currentParcel.Record,
-				_currentParcel.Card,
-				_nextSectLtr.Trim(),
-				_nextSectType.Trim(),
-				Math.Round(_nextStoryHeight, 2),
+				currentParcel.Record,
+				currentParcel.Card,
+				nextSectionLetter.Trim(),
+				nextSectionType.Trim(),
+				Math.Round(nextStoryHeight, 2),
 				" ",
 				"Y",
 			   _nextSectArea,
 				" ",
-				_currentParcel.mclass.Trim(),
+				currentParcel.mclass.Trim(),
 				0,
 				0,
 				0));
@@ -356,28 +356,26 @@ namespace SketchUp
 
 			//AddSectionDialog addSect = new AddSectionDialog(dbConn, _currentParcel, _addSection, lineCnt, _isNewSketch);
 
-			AddSectionDialog addSect = new AddSectionDialog(dbConn, _currentParcel, _addSection, lineCnt, _isNewSketch, SketchMgrParcel);
+			AddSectionDialog addSect = new AddSectionDialog(dbConn, currentParcel, _addSection, lineCnt, _isNewSketch, SketchMgrParcel);
 			addSect.ShowDialog(this);
 
-		
-
-			_nextSectLtr = AddSectionDialog._nextSectLtr;
-			_nextSectType = AddSectionDialog._nextSectType;
-			_nextStoryHeight = AddSectionDialog._nextSectStory;
-			_nextLineCount = AddSectionDialog._nextLineCount;
-
-			if (_nextSectLtr != "A")
+			nextSectionLetter = AddSectionDialog._nextSectLtr;
+			nextSectionType = AddSectionDialog.nextSectionType;
+			nextStoryHeight = AddSectionDialog.nextSectionStoreys;
+			nextLineCount = AddSectionDialog._nextLineCount;
+			ParcelWorkingCopy = AddSectionDialog.ParcelWorkingCopy;
+			if (nextSectionLetter != "A")
 			{
 				_hasNewSketch = false;
 			}
-			if (_nextSectLtr == "A")
+			if (nextSectionLetter == "A")
 			{
 				_hasNewSketch = true;
 			}
 
 			try
 			{
-				FieldText.Text = String.Format("Sect- {0}, {1} sty {2}", _nextSectLtr.Trim(), _nextStoryHeight.ToString("N2"), _nextSectType.Trim());
+				FieldText.Text = String.Format("Sect- {0}, {1} sty {2}", nextSectionLetter.Trim(), nextStoryHeight.ToString("N2"), nextSectionType.Trim());
 			}
 			catch
 			{
@@ -388,12 +386,12 @@ namespace SketchUp
 		{
 			int secCnt = GetSectionsCount();
 
-			if (_nextSectLtr != String.Empty)
+			if (nextSectionLetter != String.Empty)
 			{
 				AddNewSection(secCnt);
 			}
 
-			_currentSection = new SectionDataCollection(dbConn, _currentParcel.Record, _currentParcel.Card);
+			_currentSection = new SectionDataCollection(dbConn, currentParcel.Record, currentParcel.Card);
 
 			LoadAttachmentPointsDataTable();
 
@@ -402,7 +400,7 @@ namespace SketchUp
 			//TODO: Look at this stepping through
 			SetNewSectionAttachmentPoint();
 
-			TempAttSplineNo = _savedAttLine;
+			TempAttSplineNo = savedAttachmentLine;
 
 			decimal sptline = splitLineDist;
 
@@ -417,13 +415,13 @@ namespace SketchUp
 			StringBuilder checkSect = new StringBuilder();
 			checkSect.Append(String.Format("select count(*) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} and jssect = '{4}' ",
 						   MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 							//MainForm.FClib,
 							//MainForm.FCprefix,
-							_currentParcel.Record,
-							_currentParcel.Card,
-							_nextSectLtr));
+							currentParcel.Record,
+							currentParcel.Card,
+							nextSectionLetter));
 
 			int secCnt = Convert.ToInt32(dbConn.DBConnection.ExecuteScalar(checkSect.ToString()));
 			return secCnt;
@@ -436,14 +434,14 @@ namespace SketchUp
 				StringBuilder insMaster = new StringBuilder();
 				insMaster.Append(String.Format("insert into {0}.{1}master (jmrecord,jmdwell,jmsketch,jmstory,jmstoryex,jmscale,jmtotsqft,jmesketch) ",
 							  MainForm.localLib,
-							   MainForm.localPreFix
+							   MainForm.localPrefix
 
 								//MainForm.FClib,
 								//MainForm.FCprefix
 								));
 				insMaster.Append(String.Format("values ({0},{1},'{2}',{3},'{4}',{5},{6},'{7}' ) ",
-							_currentParcel.Record,
-							_currentParcel.Card,
+							currentParcel.Record,
+							currentParcel.Card,
 							"Y",
 							baseStory,
 							String.Empty,
@@ -461,9 +459,9 @@ namespace SketchUp
 
 			string attachSQL = String.Format("select jlsect,jlpt1x,jlpt1y,jlpt2x,jlpt2y from {0}.{1}line where jlline# = 1 and jlrecord = {2} and jldwell = {3} and jlsect <> 'A' ",
 								  MainForm.localLib,
-								  MainForm.localPreFix,
-								   _currentParcel.Record,
-								   _currentParcel.Card);
+								  MainForm.localPrefix,
+								   currentParcel.Record,
+								   currentParcel.Card);
 
 			attachPointsDataSet = dbConn.DBConnection.RunSelectStatement(attachSQL);
 
@@ -494,11 +492,11 @@ namespace SketchUp
 		{
 			string startSQL = String.Format("select jlsect,jlpt1x,jlpt1y from {0}.{1}line where jlrecord = {2} and jlline# = 1 order by jlsect",
 									  MainForm.localLib,
-									  MainForm.localPreFix,
+									  MainForm.localPrefix,
 
 									   //MainForm.FClib,
 									   //MainForm.FCprefix,
-									   _currentParcel.Record);
+									   currentParcel.Record);
 
 			DataSet startPoints = null;
 			startPoints = dbConn.DBConnection.RunSelectStatement(startSQL);
@@ -524,12 +522,12 @@ namespace SketchUp
 			//TODO: Look at this stepping through
 			string updateSQL = String.Format("update {0}.{1}line set JLATTACH = '{2}' where JLRECORD = {3} and JLDWELL = {4} and JLSECT = '{5}' and JLLINE# = {6}",
 				MainForm.localLib,
-				MainForm.localPreFix,
-				_nextSectLtr.Trim(),
-				_currentParcel.Record,
-				_currentParcel.Card,
+				MainForm.localPrefix,
+				nextSectionLetter.Trim(),
+				currentParcel.Record,
+				currentParcel.Card,
 				CurrentSecLtr,
-				_savedAttLine);
+				savedAttachmentLine);
 
 			dbConn.DBConnection.ExecuteNonSelectStatement(updateSQL);
 		}
@@ -538,9 +536,9 @@ namespace SketchUp
 		{
 			string checkMaster = string.Format("select * from {0}.{1}master where jmrecord = {2} and jmdwell = {3} ",
 				MainForm.localLib,
-				MainForm.localPreFix,
-				_currentParcel.Record,
-				_currentParcel.Card);
+				MainForm.localPrefix,
+				currentParcel.Record,
+				currentParcel.Card);
 
 			DataSet ds_master = dbConn.DBConnection.RunSelectStatement(checkMaster.ToString());
 
@@ -548,10 +546,10 @@ namespace SketchUp
 			{
 				string updateMasterSql = string.Format("update {0}.{1}master set jmtotsqft = {2} where jmrecord = {3} and jmdwell = {4} ",
 							   MainForm.localLib,
-							   MainForm.localPreFix,
+							   MainForm.localPrefix,
 							   summedArea,
-							   _currentParcel.Record,
-							   _currentParcel.Card);
+							   currentParcel.Record,
+							   currentParcel.Card);
 
 				dbConn.DBConnection.ExecuteNonSelectStatement(updateMasterSql.ToString());
 			}
@@ -567,7 +565,7 @@ namespace SketchUp
 
 		private void DistText_KeyDown(object sender, KeyEventArgs e)
 		{
-			_isKeyValid = false;
+			isValidKey = false;
 			bool IsArrowKey = (e.KeyCode == Keys.Right || e.KeyCode == Keys.Left || e.KeyCode == Keys.Up || e.KeyCode == Keys.Down);
 			if (!IsArrowKey)
 			{
@@ -581,7 +579,7 @@ namespace SketchUp
 
 		private void DistText_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			if (_isKeyValid == true)
+			if (isValidKey == true)
 			{
 				e.Handled = true;
 			}
@@ -589,7 +587,7 @@ namespace SketchUp
 
 		private void DistText_KeyUp(object sender, KeyEventArgs e)
 		{
-			if (_isKeyValid == true)
+			if (isValidKey == true)
 			{
 				e.Handled = true;
 			}
@@ -597,7 +595,7 @@ namespace SketchUp
 
 		private void DistText_Leave(object sender, EventArgs e)
 		{
-			if (_isAngle == true)
+			if (isAngle == true)
 			{
 				MeasureAngle();
 			}
@@ -631,8 +629,8 @@ namespace SketchUp
 
 			if (e.KeyCode == Keys.Right || e.KeyCode == Keys.R || e.KeyCode == Keys.E)
 			{
-				_isKeyValid = IsValidDirection("E");
-				if (_isKeyValid)
+				isValidKey = IsValidDirection("E");
+				if (isValidKey)
 				{
 					HandleEastKeys();
 				}
@@ -646,8 +644,8 @@ namespace SketchUp
 			}
 			if (e.KeyCode == Keys.Left || e.KeyCode == Keys.L || e.KeyCode == Keys.W)
 			{
-				_isKeyValid = IsValidDirection("W");
-				if (_isKeyValid)
+				isValidKey = IsValidDirection("W");
+				if (isValidKey)
 				{
 					HandleWestKeys();
 				}
@@ -661,8 +659,8 @@ namespace SketchUp
 			}
 			if (e.KeyCode == Keys.Up || e.KeyCode == Keys.U || e.KeyCode == Keys.N)
 			{
-				_isKeyValid = IsValidDirection("N");
-				if (_isKeyValid)
+				isValidKey = IsValidDirection("N");
+				if (isValidKey)
 				{
 					HandleNorthKeys();
 				}
@@ -676,8 +674,8 @@ namespace SketchUp
 			}
 			if (e.KeyCode == Keys.Down || e.KeyCode == Keys.D || e.KeyCode == Keys.S)
 			{
-				_isKeyValid = IsValidDirection("S");
-				if (_isKeyValid)
+				isValidKey = IsValidDirection("S");
+				if (isValidKey)
 				{
 					HandleSouthKeys();
 				}
@@ -702,24 +700,24 @@ namespace SketchUp
 
 				if (e.KeyCode != Keys.Back)
 				{
-					_isKeyValid = true;
+					isValidKey = true;
 				}
 				bool isNumberKey = (e.KeyCode >= Keys.D1 && e.KeyCode <= Keys.D9 || e.KeyCode == Keys.D0);
 				bool isPunctuation = (e.KeyCode == Keys.Decimal || e.KeyCode == Keys.OemPeriod);
 				{
 					if (isNumberKey || isPunctuation)
 					{
-						_isKeyValid = false;
+						isValidKey = false;
 					}
 					if (e.KeyCode == Keys.Oemcomma)
 					{
-						_isKeyValid = false;
-						_isAngle = true;
+						isValidKey = false;
+						isAngle = true;
 					}
 					if (e.KeyCode == Keys.Delete)
 					{
 						unDo(savpic, click);
-						_isKeyValid = false;
+						isValidKey = false;
 					}
 				}
 
@@ -798,7 +796,7 @@ namespace SketchUp
 
 			float tstdist = distanceD;
 
-			string tstdirect = _lastDir;
+			string tstdirect = lastLineDirection;
 
 			if (_addSection == false)
 			{
@@ -806,19 +804,19 @@ namespace SketchUp
 			}
 			if (_addSection == true)
 			{
-				Xadj = (((ScaleBaseX - _mouseX) / _currentScale) * -1);
-				Yadj = (((ScaleBaseY - _mouseY) / _currentScale) * -1);
+				xAdjustment = (((ScaleBaseX - _mouseX) / currentScale) * -1);
+				yAdjustment = (((ScaleBaseY - _mouseY) / currentScale) * -1);
 
-				offsetDir = _lastDir;
+				offsetDir = lastLineDirection;
 
 				//if (NextStartX != 0 || Xadj != 0)
 				//{
 				//    Xadj = NextStartX;
 				//}
 
-				if (Xadj != NextStartX)
+				if (xAdjustment != NextStartX)
 				{
-					Xadj = NextStartX;
+					xAdjustment = NextStartX;
 				}
 
 				//if (NextStartY != 0 || Yadj != 0)
@@ -826,44 +824,44 @@ namespace SketchUp
 				//    NextStartY = Yadj;
 				//}
 
-				if (Yadj != NextStartY)
+				if (yAdjustment != NextStartY)
 				{
-					Yadj = NextStartY;
+					yAdjustment = NextStartY;
 				}
 
 				if (offsetDir == "E")
 				{
-					NewSectionBeginPointX = Math.Round(Convert.ToDecimal(Xadj), 1);
-					NewSectionBeginPointY = Math.Round(Convert.ToDecimal(Yadj), 1);
+					NewSectionBeginPointX = Math.Round(Convert.ToDecimal(xAdjustment), 1);
+					NewSectionBeginPointY = Math.Round(Convert.ToDecimal(yAdjustment), 1);
 				}
 
 				if (offsetDir == "W")
 				{
-					NewSectionBeginPointX = Math.Round(Convert.ToDecimal(Xadj), 1);
-					NewSectionBeginPointY = Math.Round(Convert.ToDecimal(Yadj), 1);
+					NewSectionBeginPointX = Math.Round(Convert.ToDecimal(xAdjustment), 1);
+					NewSectionBeginPointY = Math.Round(Convert.ToDecimal(yAdjustment), 1);
 				}
 
 				if (offsetDir == "N")
 				{
-					NewSectionBeginPointX = Math.Round(Convert.ToDecimal(Xadj), 1);
-					NewSectionBeginPointY = Math.Round(Convert.ToDecimal(Yadj), 1);
+					NewSectionBeginPointX = Math.Round(Convert.ToDecimal(xAdjustment), 1);
+					NewSectionBeginPointY = Math.Round(Convert.ToDecimal(yAdjustment), 1);
 				}
 
 				if (offsetDir == "S")
 				{
-					NewSectionBeginPointX = Math.Round(Convert.ToDecimal(Xadj), 1);
-					NewSectionBeginPointY = Math.Round(Convert.ToDecimal(Yadj), 1);
+					NewSectionBeginPointX = Math.Round(Convert.ToDecimal(xAdjustment), 1);
+					NewSectionBeginPointY = Math.Round(Convert.ToDecimal(yAdjustment), 1);
 				}
 				if (offsetDir == String.Empty)
 				{
-					NewSectionBeginPointX = Math.Round(Convert.ToDecimal(Xadj), 1);
-					NewSectionBeginPointY = Math.Round(Convert.ToDecimal(Yadj), 1);
+					NewSectionBeginPointX = Math.Round(Convert.ToDecimal(xAdjustment), 1);
+					NewSectionBeginPointY = Math.Round(Convert.ToDecimal(yAdjustment), 1);
 				}
 
 				if (_hasNewSketch == true)
 				{
-					Xadj = 0;
-					Yadj = 0;
+					xAdjustment = 0;
+					yAdjustment = 0;
 				}
 
 				if (_hasNewSketch == true)
@@ -895,7 +893,7 @@ namespace SketchUp
 
 		private void changeSectionToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SketchSection sysect = new SketchSection(_currentParcel, dbConn, _currentSection);
+			SketchSection sysect = new SketchSection(currentParcel, dbConn, _currentSection);
 			sysect.ShowDialog(this);
 
 			ExpSketchPBox.Image = _mainimage;
@@ -918,36 +916,36 @@ namespace SketchUp
 					StringBuilder delSect = new StringBuilder();
 					delSect.Append(String.Format("delete from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ",
 							  MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 								//MainForm.FClib,
 								//MainForm.FCprefix,
-								_currentParcel.Record,
-								_currentParcel.Card));
+								currentParcel.Record,
+								currentParcel.Card));
 
 					dbConn.DBConnection.ExecuteNonSelectStatement(delSect.ToString());
 
 					StringBuilder delLine = new StringBuilder();
 					delLine.Append(String.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} ",
 								   MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 								   //MainForm.FClib,
 								   //MainForm.FCprefix,
-								   _currentParcel.Record,
-								   _currentParcel.Card));
+								   currentParcel.Record,
+								   currentParcel.Card));
 
 					dbConn.DBConnection.ExecuteNonSelectStatement(delLine.ToString());
 
 					StringBuilder delmaster = new StringBuilder();
 					delmaster.Append(String.Format("delete from {0}.{1}master where jmrecord = {2} and jmdwell = {3} ",
 							  MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 							   //MainForm.FClib,
 							   //MainForm.FCprefix,
-							   _currentParcel.Record,
-							   _currentParcel.Card));
+							   currentParcel.Record,
+							   currentParcel.Card));
 
 					dbConn.DBConnection.ExecuteNonSelectStatement(delmaster.ToString());
 				}
@@ -968,7 +966,7 @@ namespace SketchUp
 					StringBuilder clrMast2 = new StringBuilder();
 					clrMast2.Append(String.Format("update {0}.{1}mast set moccup = 15, mstory = ' ', mage = 0, mcond = ' ', mclass = ' ', ",
 							   MainForm.localLib,
-							   MainForm.localPreFix
+							   MainForm.localPrefix
 
 								//MainForm.FClib,
 								//MainForm.FCprefix
@@ -979,7 +977,7 @@ namespace SketchUp
 					clrMast2.Append(" mfairv = 0, mexwl2 = 0, mtbv = 0, mtbas = 0, mtfbas = 0, mtplum = 0, mtheat = 0, mtac = 0, mtfp = 0, mtfl = 0 , mtbi = 0 , mttadd = 0 , mnbadj = 0, ");
 					clrMast2.Append(" mtsubt = 0, mtotbv = 0, mbasa = 0, mtota = 0, mpsf = 0, minwll = ' ', mfloor = ' ', myrblt = 0, mpcomp = 0, mfuncd = 0, mecond = 0, mimadj = 0, ");
 					clrMast2.Append(" mtbimp = 0, mcvexp = 'Improvement Deleted', mqapch = 0, mqafil = ' ', mfp# = 0, msfp# = 0, mfl#= 0, msfl# = 0, mmfl# = 0, miofp# = 0,mstor# = 0, ");
-					clrMast2.Append(String.Format(" moldoc = {0}, ", _currentParcel.orig_moccup));
+					clrMast2.Append(String.Format(" moldoc = {0}, ", currentParcel.orig_moccup));
 					clrMast2.Append(String.Format(" mcvmo = {0}, mcvda = {1}, mcvyr = {2} ",
 							   MainForm.Month,
 							   MainForm.Today,
@@ -989,21 +987,21 @@ namespace SketchUp
 								// MainForm.Today,
 								// MainForm.Year
 								));
-					clrMast2.Append(String.Format(" where mrecno = {0} and mdwell = {1} ", _currentParcel.Record, _currentParcel.Card));
+					clrMast2.Append(String.Format(" where mrecno = {0} and mdwell = {1} ", currentParcel.Record, currentParcel.Card));
 
 					dbConn.DBConnection.ExecuteNonSelectStatement(clrMast2.ToString());
 
-					if (_currentParcel.GasLogFP > 0)
+					if (currentParcel.GasLogFP > 0)
 					{
 						StringBuilder clrGasLg = new StringBuilder();
 						clrGasLg.Append(String.Format("update {0}.{1}gaslg set gnogas = 0 where grecno = {2} and gdwell = {3} ",
 						   MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 							//MainForm.FClib,
 							//MainForm.FCprefix,
-							_currentParcel.Record,
-							_currentParcel.Card));
+							currentParcel.Record,
+							currentParcel.Card));
 
 						dbConn.DBConnection.ExecuteNonSelectStatement(clrGasLg.ToString());
 					}
@@ -1037,16 +1035,16 @@ namespace SketchUp
 			txtLoc = 0;
 			txtX = 0;
 			txtY = 0;
-			_lenString = String.Empty;
-			_lastDir = String.Empty;
+			lengthLabelString = String.Empty;
+			lastLineDirection = String.Empty;
 
 			// TODO: Remove if not needed:	int tclick = click;
 
 			try
 			{
-				_StartX.Add(click, StartX);
+				startPointX.Add(click, StartX);
 
-				_StartY.Add(click, StartY);
+				startPointY.Add(click, StartY);
 			}
 			catch
 			{
@@ -1068,7 +1066,7 @@ namespace SketchUp
 		{
 			if (jumpMode == false)
 			{
-				_isJumpMode = false;
+				jumpModeActive = false;
 				draw = true;
 				Graphics g = Graphics.FromImage(_mainimage);
 				Pen pen1 = new Pen(Color.White, 4);
@@ -1081,7 +1079,7 @@ namespace SketchUp
 			}
 			if (jumpMode == true)
 			{
-				_isJumpMode = true;
+				jumpModeActive = true;
 				draw = true;
 				_mouseX = X;
 				_mouseY = Y;
@@ -1094,7 +1092,7 @@ namespace SketchUp
 
 		private void EastDirBtn_Click(object sender, EventArgs e)
 		{
-			_isKeyValid = true;
+			isValidKey = true;
 			MoveEast(NextStartX, NextStartY);
 			DistText.Focus();
 		}
@@ -1121,7 +1119,7 @@ namespace SketchUp
 
 		private void ExpSketchPbox_MouseClick(object sender, MouseEventArgs e)
 		{
-			if (!_isJumpMode)
+			if (!jumpModeActive)
 			{
 				_mouseX = e.X;
 				_mouseY = e.Y;
@@ -1137,7 +1135,7 @@ namespace SketchUp
 
 		private void ExpSketchPbox_MouseDown(object sender, MouseEventArgs e)
 		{
-			_isJumpMode = false;
+			jumpModeActive = false;
 			if (e.Button == System.Windows.Forms.MouseButtons.Left)
 			{
 				_mouseX = e.X;
@@ -1147,7 +1145,7 @@ namespace SketchUp
 			}
 			else if (e.Button == System.Windows.Forms.MouseButtons.Right)
 			{
-				_isJumpMode = true;
+				jumpModeActive = true;
 				_mouseX = e.X;
 				_mouseY = e.Y;
 				DMouseMove(e.X, e.Y, true);
@@ -1156,7 +1154,7 @@ namespace SketchUp
 
 		private void ExpSketchPbox_MouseMove(object sender, MouseEventArgs e)
 		{
-			if (draw && !_isJumpMode)
+			if (draw && !jumpModeActive)
 			{
 				Graphics g = Graphics.FromImage(_mainimage);
 				SolidBrush brush = new SolidBrush(Color.White);
@@ -1177,14 +1175,14 @@ namespace SketchUp
 			BeginSectionBtn.BackColor = Color.Orange;
 			BeginSectionBtn.Text = "Begin";
 
-			if (_isJumpMode)
+			if (jumpModeActive)
 			{
 				int jx = _mouseX;
 				int jy = _mouseY;
 
 				float _scaleBaseX = ScaleBaseX;
 				float _scaleBaseY = ScaleBaseY;
-				float CurrentScale = _currentScale;
+				float CurrentScale = currentScale;
 
 				draw = false;
 				_isNewSketch = false;
@@ -1193,12 +1191,12 @@ namespace SketchUp
 
 				_undoJump = false;
 			}
-			_isJumpMode = false;
+			jumpModeActive = false;
 		}
 
 		private void NorthDirBtn_Click(object sender, EventArgs e)
 		{
-			_isKeyValid = true;
+			isValidKey = true;
 			MoveNorth(NextStartX, NextStartY);
 			DistText.Focus();
 		}
@@ -1241,7 +1239,7 @@ namespace SketchUp
 
 		private void SouthDirBtn_Click(object sender, EventArgs e)
 		{
-			_isKeyValid = true;
+			isValidKey = true;
 			MoveSouth(NextStartX, NextStartY);
 			DistText.Focus();
 		}
@@ -1293,14 +1291,14 @@ namespace SketchUp
 
 		private void viewSectionsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SketchSection sksect = new SketchSection(_currentParcel, dbConn, _currentSection);
+			SketchSection sksect = new SketchSection(currentParcel, dbConn, _currentSection);
 			sksect.ShowDialog(this);
 
-			_reOpenSec = false;
+			reopenTheSection = false;
 
 			if (MainForm.reopenSec != String.Empty)
 			{
-				_reOpenSec = true;
+				reopenTheSection = true;
 
 				ReOpenSec();
 			}
@@ -1308,7 +1306,7 @@ namespace SketchUp
 
 		private void WestDirBtn_Click(object sender, EventArgs e)
 		{
-			_isKeyValid = true;
+			isValidKey = true;
 			MoveWest(NextStartX, NextStartY);
 			DistText.Focus();
 		}
@@ -1324,18 +1322,18 @@ namespace SketchUp
 			SketchRepository sr = new SketchRepository(dbConnection.DataSource, dbConnection.User, dbConnection.Password, dbConnection.LocalityPrefix);
 
 			checkDirection = true;
-			_currentParcel = currentParcel;
+			this.currentParcel = currentParcel;
 			_currentSection = currentSection;
 
 			dbConn = dbConnection;
 
-			_currentSection = new SectionDataCollection(dbConnection, _currentParcel.Record, _currentParcel.Card);
+			_currentSection = new SectionDataCollection(dbConnection, this.currentParcel.Record, this.currentParcel.Card);
 
 			Locality = _locality;
 
 			#region New Sketchmanager Code
 
-			SketchMgrParcel = GetParcel(_currentParcel.Record, _currentParcel.Card, sr);
+			SketchMgrParcel = GetParcel(this.currentParcel.Record, this.currentParcel.Card, sr);
 
 			//Make a copy for manipulation, leaving the current one as loaded from the DB
 			ParcelWorkingCopy = SketchMgrParcel;
@@ -1353,8 +1351,8 @@ namespace SketchUp
 			_hasSketch = hasSketch;
 
 			savpic = new Dictionary<int, byte[]>();
-			_StartX = new Dictionary<int, float>();
-			_StartY = new Dictionary<int, float>();
+			startPointX = new Dictionary<int, float>();
+			startPointY = new Dictionary<int, float>();
 
 			SectionTable = ConstructSectionTable();
 
@@ -1421,7 +1419,7 @@ namespace SketchUp
 
 			this.dgSections.DataSource = this.dt;
 
-			float tstScale = _scale;
+			float tstScale = drawingScale;
 
 			if (hasSketch == false)
 			{
@@ -1430,19 +1428,19 @@ namespace SketchUp
 
 			if (hasSketch == true)
 			{
-				_baseImage = currentParcel.GetSketchImage(ExpSketchPBox.Width, ExpSketchPBox.Height, 1000, 572, 400, out _scale);
-				_currentScale = _scale;
+				_baseImage = currentParcel.GetSketchImage(ExpSketchPBox.Width, ExpSketchPBox.Height, 1000, 572, 400, out drawingScale);
+				currentScale = drawingScale;
 				_mainimage = sketchImage;
 				_mainimage = _baseImage;
 			}
 			if (hasSketch == false)
 			{
-				_mainimage = currentParcel.GetSketchImage(ExpSketchPBox.Width, ExpSketchPBox.Height, 1000, 572, 400, out _scale);
-				_currentScale = _scale;
+				_mainimage = currentParcel.GetSketchImage(ExpSketchPBox.Width, ExpSketchPBox.Height, 1000, 572, 400, out drawingScale);
+				currentScale = drawingScale;
 			}
 			else
 			{
-				_currentScale = _scale;
+				currentScale = drawingScale;
 				_isNewSketch = true;
 			}
 
@@ -1471,7 +1469,7 @@ namespace SketchUp
 			{
 				g.DrawRectangle(whitePen, 0, 0, 1000, 572);
 				g.FillRectangle(FillBrush, 0, 0, 1000, 572);
-				_currentScale = Convert.ToSingle(7.2);
+				currentScale = Convert.ToSingle(7.2);
 			}
 
 			g.DrawString(_locality, TitleF, Lblbrush, new PointF(10, 10));
@@ -1479,7 +1477,7 @@ namespace SketchUp
 			g.DrawString(String.Format("Record # - {0}", sketchRecord.TrimStart(leadzero)), LbLf, Lblbrush, new PointF(10, 30));
 			g.DrawString(String.Format("Card # - {0}", sketchCard), LbLf, Lblbrush, new PointF(10, 45));
 
-			g.DrawString(String.Format("Scale - {0}", _currentScale), LbLf, Lblbrush, new PointF(10, 70));
+			g.DrawString(String.Format("Scale - {0}", currentScale), LbLf, Lblbrush, new PointF(10, 70));
 
 			ExpSketchPBox.Image = _mainimage;
 			if (click == 0)
@@ -1506,8 +1504,8 @@ namespace SketchUp
 		private void AddXLine(string thisSection)
 		{
 			StringBuilder addXLine = new StringBuilder();
-			addXLine.Append(String.Format("insert into {0}.{1}line ", MainForm.localLib, MainForm.localPreFix));
-			addXLine.Append(String.Format("values ( {0},{1},'{2}',{3},'X',0,0,0,0,0,0,0,0,' ') ", _currentParcel.Record, _currentParcel.Card, thisSection, (SecLineCnt + 1)));
+			addXLine.Append(String.Format("insert into {0}.{1}line ", MainForm.localLib, MainForm.localPrefix));
+			addXLine.Append(String.Format("values ( {0},{1},'{2}',{3},'X',0,0,0,0,0,0,0,0,' ') ", currentParcel.Record, currentParcel.Card, thisSection, (SecLineCnt + 1)));
 			dbConn.DBConnection.ExecuteNonSelectStatement(addXLine.ToString());
 		}
 
@@ -1516,7 +1514,7 @@ namespace SketchUp
 			StringBuilder adjLine = new StringBuilder();
 			adjLine.Append(String.Format("update {0}.{1}line set jldirect = '{2}',jlxlen = {3},jlylen = {4},jllinelen = {5}, ",
 						   MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 							//MainForm.FClib,
 							//MainForm.FCprefix,
@@ -1527,19 +1525,13 @@ namespace SketchUp
 			adjLine.Append(String.Format("jlpt1x = {0},jlpt1y = {1},jlpt2x = {2},jlpt2y = {3} ",
 					newEndX, newEndY, EndEndX, EndEndY));
 			adjLine.Append(String.Format("where jlrecord = {0} and jldwell = {1} and jlsect = '{2}' and jlline# = {3} ",
-				_currentParcel.mrecno, _currentParcel.mdwell, _savedAttSection, (mylineNo + 1)));
+				currentParcel.mrecno, currentParcel.mdwell, SavedAttachmentSection, (mylineNo + 1)));
 
 			dbConn.DBConnection.ExecuteNonSelectStatement(adjLine.ToString());
 		}
 
 		private void AutoClose(Dictionary<int, byte[]> curpic, int curclick, float startx, float starty)
 		{
-#if DEBUG
-
-			//Debugging Code -- remove for production release
-			//var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-			////UtilityMethods.LogMethodCall(fullStack, true);
-#endif
 			Cursor = Cursors.WaitCursor;
 
 			savcnt = new List<int>();
@@ -1547,15 +1539,17 @@ namespace SketchUp
 
 			_isClosed = true;
 
-			string stx = _nextSectLtr;
+			string stx = nextSectionLetter;
 
-			click = curclick;
+			// TODO: Remove if not needed:		click = curclick;
 
 			float tx1 = NextStartX;
 
 			float ty1 = NextStartY;
 
 			ExpSketchPBox.Image = _mainimage;
+
+			// TODO: Remove if not needed:
 			click++;
 			savpic.Add(click, imageToByteArray(_mainimage));
 
@@ -1566,11 +1560,9 @@ namespace SketchUp
 
 			finalClick = click;
 
-			_isclosing = true;
+			isClosing = true;
 
-			string delXline = string.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jldirect = 'X' ", MainForm.localLib, MainForm.localPreFix, _currentParcel.Record, _currentParcel.Card);
-
-			dbConn.DBConnection.ExecuteNonSelectStatement(delXline);
+			UtilityMethods.DeleteXLines(currentParcel._conn, currentParcel.Record, currentParcel.Card, MainForm.localLib, MainForm.localPrefix);
 
 			Graphics g = Graphics.FromImage(_mainimage);
 			SolidBrush brush = new SolidBrush(Color.Red);
@@ -1591,255 +1583,53 @@ namespace SketchUp
 
 			if (_addSection == true)
 			{
-#if DEBUG
-				StringBuilder traceOut = new StringBuilder();
-				int traceCounter = 1;
-				traceOut.AppendLine(string.Format("*** {0}", "New Section Points"));
-				foreach (PointF p in NewSectionPoints)
-				{
-					traceOut.AppendLine(string.Format("{0} - {1},{2}", traceCounter.ToString(), p.X, p.Y));
-				}
-				Trace.WriteLine(string.Format("{0}", traceOut.ToString()));
-#endif
-				var sectionPolygon = new PolygonF(NewSectionPoints.ToArray());
-				var sectionArea = sectionPolygon.Area;
-
-				if (_nextStoryHeight < 1.0m)
-				{
-					_nextStoryHeight = 1;
-				}
-				if (_nextStoryHeight >= 1.0m)
-				{
-					_nextSectArea = (Math.Round(Convert.ToDecimal(sectionPolygon.Area), 1) * _nextStoryHeight);
-				}
+				ComputeNewSectionArea();
 			}
 
-			StringBuilder garcp = new StringBuilder();
-			garcp.Append(String.Format("select rsecto from {0}.{1}rat1 where rid = 'P' and rdesc like '%GAR%' and rrpsf <> 0 ",
-							   MainForm.localLib,
-						  MainForm.localPreFix
+			BuildGarageTypeList();
+			BuildCarportTypeList();
+			BuildGarageCodeList();
+			BuildCarportCodeList();
 
-								//MainForm.FClib,
-								//MainForm.FCprefix
-								));
+			string newSect = nextSectionType.Trim();
 
-			DataSet ds = dbConn.DBConnection.RunSelectStatement(garcp.ToString());
-
-			if (ds.Tables[0].Rows.Count > 0)
-			{
-				GarTypes = new List<string>();
-				for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
-				{
-					string sect = ds.Tables[0].Rows[i]["rsecto"].ToString().Trim();
-
-					GarTypes.Add(sect);
-				}
-			}
-
-			StringBuilder cptype = new StringBuilder();
-			cptype.Append(String.Format("select rsecto from {0}.{1}rat1 where rid = 'P' and rdesc like '%CAR%' and rrpsf <> 0 ",
-					  MainForm.localLib,
-						  MainForm.localPreFix
-
-						//MainForm.FClib,
-						//MainForm.FCprefix
-						));
-
-			DataSet ds1 = dbConn.DBConnection.RunSelectStatement(cptype.ToString());
-
-			if (ds1.Tables[0].Rows.Count > 0)
-			{
-				cpTypes = new List<string>();
-				for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
-				{
-					string sect = ds1.Tables[0].Rows[i]["rsecto"].ToString().Trim();
-
-					cpTypes.Add(sect);
-				}
-			}
-
-			StringBuilder garcode = new StringBuilder();
-			garcode.Append(String.Format("select ttelem from {0}.{1}stab where ttid = 'GAR' and tdesc not like '%NONE%' and tdesc not like '%DETACHED%' ",
-							   MainForm.localLib,
-						  MainForm.localPreFix
-
-								//MainForm.FClib,
-								//MainForm.FCprefix
-								));
-
-			DataSet gc = dbConn.DBConnection.RunSelectStatement(garcode.ToString());
-
-			if (gc.Tables[0].Rows.Count > 0)
-			{
-				GarCodes = new List<int>();
-				for (int i = 0; i < gc.Tables[0].Rows.Count; i++)
-				{
-					int gcode = Convert.ToInt32(gc.Tables[0].Rows[i]["ttelem"].ToString());
-
-					GarCodes.Add(gcode);
-				}
-			}
-
-			StringBuilder cpcode = new StringBuilder();
-			cpcode.Append(String.Format("select ttelem from {0}.{1}stab where ttid = 'CAR' and tdesc not like '%NONE%' and tdesc not like '%DETACHED%' ",
-							  MainForm.localLib,
-						  MainForm.localPreFix
-
-								//MainForm.FClib,
-								//MainForm.FCprefix
-								));
-
-			DataSet cp = dbConn.DBConnection.RunSelectStatement(cpcode.ToString());
-
-			if (cp.Tables[0].Rows.Count > 0)
-			{
-				CpCodes = new List<int>();
-				for (int i = 0; i < cp.Tables[0].Rows.Count; i++)
-				{
-					int cpcodeX = Convert.ToInt32(cp.Tables[0].Rows[i]["ttelem"].ToString());
-
-					CpCodes.Add(cpcodeX);
-				}
-			}
-
-			string newSect = _nextSectType.Trim();
-
-			if (GarTypes.Contains(_nextSectType.Trim()) && !GarCodes.Contains(_currentParcel.mgart))
+			if (GarTypes.Contains(nextSectionType.Trim()) && !GarCodes.Contains(currentParcel.mgart))
 			{
 				MessageBox.Show("Current Record does not include Garages ");
 
-				MissingGarageData missGar = new MissingGarageData(dbConn, _currentParcel, _nextSectArea, "GAR");
+				MissingGarageData missGar = new MissingGarageData(dbConn, currentParcel, _nextSectArea, "GAR");
 				missGar.ShowDialog();
 
-				if (_currentParcel.mgart != _currentParcel.orig_mgart)
+				if (currentParcel.mgart != currentParcel.orig_mgart)
 				{
-					StringBuilder fixCp = new StringBuilder();
-					fixCp.Append(String.Format("update {0}.{1}mast set mgart = {2},mgar#c = {3} ",
-					  MainForm.localLib,
-						  MainForm.localPreFix,
+					UpdateParcelCarports();
 
-						//MainForm.FClib,
-						//MainForm.FCprefix,
-						_currentParcel.mgart,
-						_currentParcel.mgarNc));
-					fixCp.Append(String.Format("where mrecno = {0} and mdwell = {1} ", _currentParcel.mrecno, _currentParcel.mdwell));
-
-					dbConn.DBConnection.ExecuteNonSelectStatement(fixCp.ToString());
-
-					ParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
+					RefreshParcelDataFromDB();
 				}
 			}
 
-			if (cpTypes.Contains(_nextSectType.Trim()) && !CpCodes.Contains(_currentParcel.mcarpt))
+			if (cpTypes.Contains(nextSectionType.Trim()) && !CpCodes.Contains(currentParcel.mcarpt))
 			{
 				MessageBox.Show("Current Record does not include CarPorts ");
 
-				MissingGarageData missCP = new MissingGarageData(dbConn, _currentParcel, _nextSectArea, "CP");
-				missCP.ShowDialog();
+				MissingGarageData missingCarportDataa = new MissingGarageData(dbConn, currentParcel, _nextSectArea, "CP");
+				missingCarportDataa.ShowDialog();
 
-				if (_currentParcel.mcarpt != _currentParcel.orig_mcarpt)
+				if (currentParcel.mcarpt != currentParcel.orig_mcarpt)
 				{
-					StringBuilder fixCp = new StringBuilder();
-					fixCp.Append(String.Format("update {0}.{1}mast set mcarpt = {2},mcar#c = {3} ",
-					   MainForm.localLib,
-						  MainForm.localPreFix,
+					UpdateMasterRecordCarports();
 
-						//MainForm.FClib,
-						//MainForm.FCprefix,
-						_currentParcel.mcarpt,
-						_currentParcel.mcarNc));
-					fixCp.Append(String.Format("where mrecno = {0} and mdwell = {1} ", _currentParcel.mrecno, _currentParcel.mdwell));
-
-					dbConn.DBConnection.ExecuteNonSelectStatement(fixCp.ToString());
-
-					if (_currentParcel.mcarpt == 66)
+					if (currentParcel.mcarpt == 66)
 					{
-						_nextSectType = "WCP";
+						nextSectionType = "WCP";
 					}
 
-					ParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
+					RefreshParcelDataFromDB();
 				}
 			}
 
-			calcDistXf = ((BaseX - StartX) / _currentScale);
-
-			calcDistYf = ((BaseY - StartY) / _currentScale);
-
-			calcDistX = Convert.ToDecimal((((BaseX - StartX) / _currentScale)));
-
-			calcDistY = Convert.ToDecimal((((BaseY - StartY) / _currentScale)));
-
-			float tstclacDistfx = SecBeginX - startx;
-
-			float tstcalcDistfy = SecBeginY - starty;
-
-			if (startx > SecBeginX)
-			{
-				finalDirect = "W";
-				finalDistance = Math.Abs(Convert.ToDecimal(SecBeginX - startx));
-				finalDistanceF = (float)finalDistance;
-				Xadj = NextStartX - finalDistanceF;
-				Yadj = NextStartY;
-			}
-			if (startx < SecBeginX)
-			{
-				finalDirect = "E";
-				finalDistance = Math.Abs(Convert.ToDecimal(SecBeginX - startx));
-				finalDistanceF = (float)finalDistance;
-				Xadj = NextStartX + finalDistanceF;
-				Yadj = NextStartY;
-			}
-			if (starty < SecBeginY)
-			{
-				finalDirect = "S";
-				finalDistance = Math.Abs(Convert.ToDecimal(SecBeginY - starty));
-				finalDistanceF = (float)finalDistance;
-				Yadj = NextStartY + finalDistanceF;
-				Xadj = NextStartX;
-			}
-			if (starty > SecBeginY)
-			{
-				finalDirect = "N";
-				finalDistance = Math.Abs(Convert.ToDecimal(SecBeginY - starty));
-				finalDistanceF = (float)finalDistance;
-				Yadj = NextStartY - finalDistanceF;
-				Xadj = NextStartX;
-			}
-
-			_lenString = String.Format("{0} ft.", finalDistance.ToString("N1"));
-
-			txtLoc = ((finalDistance * Convert.ToDecimal(_currentScale)) / 2);
-			txtLocf = ((((finalDistanceF) * _currentScale) / 2));
-
-			g.DrawLine(pen1, StartX, StartY, BaseX, BaseY);
-
-			if (finalDirect == "N")
-			{
-				g.DrawString(_lenString, f, brush, new PointF((StartX + 15), (StartY - txtLocf)));
-			}
-			if (finalDirect == "S")
-			{
-				g.DrawString(_lenString, f, brush, new PointF((StartX + 15), (StartY + txtLocf)));
-			}
-			if (finalDirect == "E")
-			{
-				g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
-			}
-			if (finalDirect == "W")
-			{
-				g.DrawString(_lenString, f, brush, new PointF((StartX - txtLocf), (StartY - 15)));
-			}
-
-			float px = startx;
-
-			float py = starty;
-
-			float px1 = PrevStartX;
-
-			float py1 = PrevStartY;
-
-			lineCnt++;
-			BuildAddSQL(StartX, StartY, finalDistanceF, finalDirect, lineCnt, _isclosing, Xadj, Yadj, NextStartX, NextStartY);
+			CloseSectionWithCOmputerLine(startx, starty, g, brush, pen1, f, ref finalDirect, ref finalDistance, ref finalDistanceF, out calcDistXf, out calcDistYf, out calcDistX, out calcDistY);
+			BuildAddSQL(StartX, StartY, finalDistanceF, finalDirect, lineCnt, isClosing, xAdjustment, yAdjustment, NextStartX, NextStartY);
 
 			_addSection = false;
 
@@ -1864,6 +1654,266 @@ namespace SketchUp
 			this.Close();
 		}
 
+		private void CloseSectionWithCOmputerLine(float startx, float starty, Graphics g, SolidBrush brush, Pen pen1, Font f, ref string finalDirect, ref decimal finalDistance, ref float finalDistanceF, out float calcDistXf, out float calcDistYf, out decimal calcDistX, out decimal calcDistY)
+		{
+			calcDistXf = ((BaseX - StartX) / currentScale);
+
+			calcDistYf = ((BaseY - StartY) / currentScale);
+
+			calcDistX = Convert.ToDecimal((((BaseX - StartX) / currentScale)));
+
+			calcDistY = Convert.ToDecimal((((BaseY - StartY) / currentScale)));
+
+			float tstclacDistfx = SecBeginX - startx;
+
+			float tstcalcDistfy = SecBeginY - starty;
+
+			if (startx > SecBeginX)
+			{
+				finalDirect = "W";
+				finalDistance = Math.Abs(Convert.ToDecimal(SecBeginX - startx));
+				finalDistanceF = (float)finalDistance;
+				xAdjustment = NextStartX - finalDistanceF;
+				yAdjustment = NextStartY;
+			}
+			if (startx < SecBeginX)
+			{
+				finalDirect = "E";
+				finalDistance = Math.Abs(Convert.ToDecimal(SecBeginX - startx));
+				finalDistanceF = (float)finalDistance;
+				xAdjustment = NextStartX + finalDistanceF;
+				yAdjustment = NextStartY;
+			}
+			if (starty < SecBeginY)
+			{
+				finalDirect = "S";
+				finalDistance = Math.Abs(Convert.ToDecimal(SecBeginY - starty));
+				finalDistanceF = (float)finalDistance;
+				yAdjustment = NextStartY + finalDistanceF;
+				xAdjustment = NextStartX;
+			}
+			if (starty > SecBeginY)
+			{
+				finalDirect = "N";
+				finalDistance = Math.Abs(Convert.ToDecimal(SecBeginY - starty));
+				finalDistanceF = (float)finalDistance;
+				yAdjustment = NextStartY - finalDistanceF;
+				xAdjustment = NextStartX;
+			}
+
+			lengthLabelString = String.Format("{0} ft.", finalDistance.ToString("N1"));
+
+			txtLoc = ((finalDistance * Convert.ToDecimal(currentScale)) / 2);
+			txtLocf = ((((finalDistanceF) * currentScale) / 2));
+
+			g.DrawLine(pen1, StartX, StartY, BaseX, BaseY);
+
+			if (finalDirect == "N")
+			{
+				g.DrawString(lengthLabelString, f, brush, new PointF((StartX + 15), (StartY - txtLocf)));
+			}
+			if (finalDirect == "S")
+			{
+				g.DrawString(lengthLabelString, f, brush, new PointF((StartX + 15), (StartY + txtLocf)));
+			}
+			if (finalDirect == "E")
+			{
+				g.DrawString(lengthLabelString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
+			}
+			if (finalDirect == "W")
+			{
+				g.DrawString(lengthLabelString, f, brush, new PointF((StartX - txtLocf), (StartY - 15)));
+			}
+
+			float px = startx;
+
+			float py = starty;
+
+			float px1 = PrevStartX;
+
+			float py1 = PrevStartY;
+
+			lineCnt++;
+		}
+
+		private void RefreshParcelDataFromDB()
+		{
+			ParcelData.getParcel(dbConn, currentParcel.mrecno, currentParcel.mdwell);
+		}
+
+		private void UpdateMasterRecordCarports()
+		{
+			StringBuilder fixCp = new StringBuilder();
+			fixCp.Append(String.Format("update {0}.{1}mast set mcarpt = {2},mcar#c = {3} ",
+			   MainForm.localLib,
+				  MainForm.localPrefix,
+
+				//MainForm.FClib,
+				//MainForm.FCprefix,
+				currentParcel.mcarpt,
+				currentParcel.mcarNc));
+			fixCp.Append(String.Format("where mrecno = {0} and mdwell = {1} ", currentParcel.mrecno, currentParcel.mdwell));
+
+			dbConn.DBConnection.ExecuteNonSelectStatement(fixCp.ToString());
+		}
+
+		private void UpdateParcelCarports()
+		{
+			StringBuilder updateCarportsSql = new StringBuilder();
+			updateCarportsSql.Append(String.Format("update {0}.{1}mast set mgart = {2},mgar#c = {3} ",
+			  MainForm.localLib,
+				  MainForm.localPrefix,
+
+				//MainForm.FClib,
+				//MainForm.FCprefix,
+				currentParcel.mgart,
+				currentParcel.mgarNc));
+			updateCarportsSql.Append(String.Format("where mrecno = {0} and mdwell = {1} ", currentParcel.mrecno, currentParcel.mdwell));
+
+			dbConn.DBConnection.ExecuteNonSelectStatement(updateCarportsSql.ToString());
+		}
+
+		private void BuildCarportCodeList()
+		{
+			DataSet carportCodeDS = CarportCodesDataset();
+
+			if (carportCodeDS.Tables[0].Rows.Count > 0)
+			{
+				CpCodes = new List<int>();
+				for (int i = 0; i < carportCodeDS.Tables[0].Rows.Count; i++)
+				{
+					int cpcodeX = Convert.ToInt32(carportCodeDS.Tables[0].Rows[i]["ttelem"].ToString());
+
+					CpCodes.Add(cpcodeX);
+				}
+			}
+		}
+
+		private DataSet CarportCodesDataset()
+		{
+			StringBuilder carportCodeSql = new StringBuilder();
+			carportCodeSql.Append(String.Format("select ttelem from {0}.{1}stab where ttid = 'CAR' and tdesc not like '%NONE%' and tdesc not like '%DETACHED%' ",
+							  MainForm.localLib,
+						  MainForm.localPrefix
+
+								//MainForm.FClib,
+								//MainForm.FCprefix
+								));
+
+			DataSet carportCodeDS = dbConn.DBConnection.RunSelectStatement(carportCodeSql.ToString());
+			return carportCodeDS;
+		}
+
+		private void BuildGarageCodeList()
+		{
+			DataSet GarageCodeDS = GarageCodeDataset();
+
+			if (GarageCodeDS.Tables[0].Rows.Count > 0)
+			{
+				GarCodes = new List<int>();
+				for (int i = 0; i < GarageCodeDS.Tables[0].Rows.Count; i++)
+				{
+					int gcode = Convert.ToInt32(GarageCodeDS.Tables[0].Rows[i]["ttelem"].ToString());
+
+					GarCodes.Add(gcode);
+				}
+			}
+		}
+
+		private DataSet GarageCodeDataset()
+		{
+			StringBuilder garageCodeSql = new StringBuilder();
+			garageCodeSql.Append(String.Format("select ttelem from {0}.{1}stab where ttid = 'GAR' and tdesc not like '%NONE%' and tdesc not like '%DETACHED%' ",
+							   MainForm.localLib,
+						  MainForm.localPrefix
+
+								//MainForm.FClib,
+								//MainForm.FCprefix
+								));
+
+			DataSet GarageCodeDS = dbConn.DBConnection.RunSelectStatement(garageCodeSql.ToString());
+			return GarageCodeDS;
+		}
+
+		private void ComputeNewSectionArea()
+		{
+			var sectionPolygon = new PolygonF(NewSectionPoints.ToArray());
+			var sectionArea = sectionPolygon.Area;
+
+			if (nextStoryHeight < 1.0m)
+			{
+				nextStoryHeight = 1;
+			}
+			if (nextStoryHeight >= 1.0m)
+			{
+				_nextSectArea = (Math.Round(Convert.ToDecimal(sectionPolygon.Area), 1) * nextStoryHeight);
+			}
+		}
+
+		private void BuildGarageTypeList()
+		{
+			DataSet garageCarportDS = GarageCarportDataSet();
+
+			if (garageCarportDS.Tables[0].Rows.Count > 0)
+			{
+				GarTypes = new List<string>();
+				for (int i = 0; i < garageCarportDS.Tables[0].Rows.Count; i++)
+				{
+					string sect = garageCarportDS.Tables[0].Rows[i]["rsecto"].ToString().Trim();
+
+					GarTypes.Add(sect);
+				}
+			}
+		}
+
+		private void BuildCarportTypeList()
+		{
+			DataSet carportTypeDS = CarportTypeDS();
+
+			if (carportTypeDS.Tables[0].Rows.Count > 0)
+			{
+				cpTypes = new List<string>();
+				for (int i = 0; i < carportTypeDS.Tables[0].Rows.Count; i++)
+				{
+					string sect = carportTypeDS.Tables[0].Rows[i]["rsecto"].ToString().Trim();
+
+					cpTypes.Add(sect);
+				}
+			}
+		}
+
+		private DataSet CarportTypeDS()
+		{
+			StringBuilder carportTypeSql = new StringBuilder();
+			carportTypeSql.Append(String.Format("select rsecto from {0}.{1}rat1 where rid = 'P' and rdesc like '%CAR%' and rrpsf <> 0 ",
+					  MainForm.localLib,
+						  MainForm.localPrefix
+
+						//MainForm.FClib,
+						//MainForm.FCprefix
+						));
+
+			DataSet carportTypeDS = dbConn.DBConnection.RunSelectStatement(carportTypeSql.ToString());
+			return carportTypeDS;
+		}
+
+		private DataSet GarageCarportDataSet()
+		{
+			StringBuilder garageCarportSQL = new StringBuilder();
+			garageCarportSQL.Append(String.Format("select rsecto from {0}.{1}rat1 where rid = 'P' and rdesc like '%GAR%' and rrpsf <> 0 ",
+							   MainForm.localLib,
+						  MainForm.localPrefix
+
+								//MainForm.FClib,
+								//MainForm.FCprefix
+								));
+
+			DataSet garageCarportDS = dbConn.DBConnection.RunSelectStatement(garageCarportSQL.ToString());
+			return garageCarportDS;
+		}
+
+		
+
 		private string BeginLineDirection(float nextStartX, float nextStartY)
 		{
 			string dir = string.Empty;
@@ -1887,7 +1937,7 @@ namespace SketchUp
 
 		private void BuildAddSQL(float prevX, float prevY, float distD, string direction, int _lineCnt, bool closing, float startx, float starty, float prevstartx, float prevstarty)
 		{
-			_isclosing = closing;
+			isClosing = closing;
 
 			pt2X = 0;
 			pt2Y = 0;
@@ -1896,120 +1946,115 @@ namespace SketchUp
 
 			float ny1 = NextStartY;
 
-			float nx2 = Xadj;
+			float nx2 = xAdjustment;
 
-			float ny2 = Yadj;
+			float ny2 = yAdjustment;
 
 			float nx2P = XadjP;
 
 			float ny2P = YadjP;
 
-			decimal dste = Convert.ToDecimal(distD);
+			decimal compputedDistance = Convert.ToDecimal(distD);
 
-			Xadj = (((ScaleBaseX - prevX) / _currentScale) * -1);
-			Yadj = (((ScaleBaseY - prevY) / _currentScale) * -1);
+			xAdjustment = (((ScaleBaseX - prevX) / currentScale) * -1);
+			yAdjustment = (((ScaleBaseY - prevY) / currentScale) * -1);
 
-			NewSectionPoints.Add(new PointF(Xadj, Yadj));
+			NewSectionPoints.Add(new PointF(xAdjustment, yAdjustment));
 
-			if (NextStartX != Xadj)
+			if (NextStartX != xAdjustment)
 			{
-				Xadj = NextStartX;
+				xAdjustment = NextStartX;
 			}
-			if (NextStartY != Yadj)
+			if (NextStartY != yAdjustment)
 			{
-				Yadj = NextStartY;
+				yAdjustment = NextStartY;
 			}
 
 			float lengthX = 0;
 			float lengthY = 0;
-			if (direction == "E")
+			switch (direction)
 			{
-				if (_isclosing == true)
-				{
-					NextStartX = startx;
-				}
+				case "E":
+					if (isClosing == true)
+					{
+						NextStartX = startx;
+					}
 
-				Xadj = NextStartX - distD;
+					xAdjustment = NextStartX - distD;
 
-				//Xadj = NextStartX;
+					//Xadj = NextStartX;
 
-				lengthX = distD;
-				lengthY = 0;
+					lengthX = distD;
+					lengthY = 0;
 
-				pt2X = Xadj + distD;
-				pt2Y = Yadj;
-			}
+					pt2X = xAdjustment + distD;
+					pt2Y = yAdjustment;
+					break;
 
-			if (direction == "W")
-			{
-				if (_isclosing == true)
-				{
-					NextStartX = startx;
-				}
+				case "W":
+					if (isClosing == true)
+					{
+						NextStartX = startx;
+					}
 
-				Xadj = NextStartX + distD;
+					xAdjustment = NextStartX + distD;
 
-				//Xadj = NextStartX;
+					//Xadj = NextStartX;
 
-				lengthX = distD;
-				lengthY = 0;
+					lengthX = distD;
+					lengthY = 0;
 
-				pt2X = Xadj - distD;
-				pt2Y = Yadj;
-			}
-			if (direction == "N")
-			{
-				if (_isclosing == true)
-				{
-					NextStartY = starty;
-				}
+					pt2X = xAdjustment - distD;
+					pt2Y = yAdjustment;
+					break;
 
-				Yadj = NextStartY + distD;
+				case "N":
+					if (isClosing == true)
+					{
+						NextStartY = starty;
+					}
 
-				//Yadj = NextStartY;
+					yAdjustment = NextStartY + distD;
 
-				lengthX = 0;
-				lengthY = distD;
+					//Yadj = NextStartY;
 
-				pt2X = Xadj;
-				pt2Y = Yadj - distD;
-			}
-			if (direction == "S")
-			{
-				if (_isclosing == true)
-				{
-					NextStartY = starty;
-				}
+					lengthX = 0;
+					lengthY = distD;
 
-				Yadj = NextStartY - distD;
+					pt2X = xAdjustment;
+					pt2Y = yAdjustment - distD;
+					break;
 
-				//Yadj = NextStartY;
+				case "S":
+					if (isClosing == true)
+					{
+						NextStartY = starty;
+					}
 
-				lengthX = 0;
-				lengthY = distD;
+					yAdjustment = NextStartY - distD;
 
-				pt2X = Xadj;
-				pt2Y = Yadj + distD;
+					//Yadj = NextStartY;
 
-				//pt2Y = Yadj;
+					lengthX = 0;
+					lengthY = distD;
+
+					pt2X = xAdjustment;
+					pt2Y = yAdjustment + distD;
+
+					//pt2Y = Yadj;
+					break;
+
+				default:
+					MessageBox.Show("Invalid computed direction");
+					break;
 			}
 
 			if (draw)
 			{
-				if (_lineCnt == 1)
-				{
-					if (_hasNewSketch == true)
-					{
-						Xadj = 0;
-						Yadj = 0;
-					}
+				SetFirstLineOrigin(_lineCnt);
 
-					SecBeginX = Xadj;
-					SecBeginY = Yadj;
-				}
-
-				decimal Tst1 = Convert.ToDecimal(Xadj);
-				decimal Tst2 = Convert.ToDecimal(Yadj);
+				decimal Tst1 = Convert.ToDecimal(xAdjustment);
+				decimal Tst2 = Convert.ToDecimal(yAdjustment);
 				decimal Ptx = Convert.ToDecimal(pt2X);
 				decimal Pty = Convert.ToDecimal(pt2Y);
 
@@ -2020,164 +2065,28 @@ namespace SketchUp
 				var rndPt2X = Math.Round(Ptx, 1);
 				var rndPt2Y = Math.Round(Pty, 1);
 
-				if (_hasNewSketch == true && _lineCnt == 1)
-				{
-					switch (direction)
-					{
-						case "N":
-
-							rndTst1 = 0;
-							rndTst2 = 0;
-							rndPt2X = rndTst1;
-
-							rndPt2Y = rndTst2 - (Convert.ToDecimal(lengthY));
-
-							prevPt2X = rndPt2X;
-							prevPt2Y = rndPt2Y;
-							prevTst1 = rndPt2X;
-							prevTst2 = rndPt2Y;
-							break;
-
-						case "S":
-
-							rndTst1 = 0;
-							rndTst2 = 0;
-							rndPt2X = rndTst1;
-
-							rndPt2Y = rndTst2 + (Convert.ToDecimal(lengthY));
-
-							prevPt2X = rndPt2X;
-							prevPt2Y = rndPt2Y;
-							prevTst1 = rndPt2X;
-							prevTst2 = rndPt2Y;
-							break;
-
-						case "E":
-							rndTst1 = 0;
-							rndTst2 = 0;
-							rndPt2Y = rndTst2;
-
-							rndPt2X = rndTst1 + (Convert.ToDecimal(lengthX));
-
-							prevPt2X = rndPt2X;
-							prevPt2Y = rndPt2Y;
-							prevTst1 = rndPt2X;
-							prevTst2 = rndPt2Y;
-							break;
-
-						case "W":
-							rndTst1 = 0;
-							rndTst2 = 0;
-							rndPt2Y = rndTst2;
-
-							rndPt2X = rndTst1 - (Convert.ToDecimal(lengthX));
-
-							prevPt2X = rndPt2X;
-							prevPt2Y = rndPt2Y;
-							prevTst1 = rndPt2X;
-							prevTst2 = rndPt2Y;
-							break;
-
-						default:
-							throw new NotImplementedException(string.Format("Invalid line direction: '{0}", direction));
-					}
-
-					//decimal TprevTst1 = prevTst1;
-					//decimal TprevTst2 = prevTst2;
-					//decimal TprevPt2X = prevPt2X;
-					//decimal TprevPt2Y = prevPt2Y;
-				}
+				SetPointsDirectionByLineDirection(direction, _lineCnt, lengthX, lengthY, ref rndTst1, ref rndTst2, ref rndPt2X, ref rndPt2Y);
 
 				if (_hasNewSketch == true && _lineCnt > 1)
 				{
-					//decimal TprevTst1 = prevTst1;
-					//decimal TprevTst2 = prevTst2;
-					//decimal TprevPt2X = prevPt2X;
-					//decimal TprevPt2Y = prevPt2Y;
-					switch (direction)
-					{
-						case "N":
-							rndPt2Y = rndTst2 - (Convert.ToDecimal(lengthY));
-
-							prevPt2X = rndPt2X;
-							prevPt2Y = rndPt2Y;
-							prevTst1 = rndPt2X;
-							prevTst2 = rndPt2Y;
-							break;
-
-						case "S":
-							rndPt2Y = rndTst2 + (Convert.ToDecimal(lengthY));
-
-							prevPt2X = rndPt2X;
-							prevPt2Y = rndPt2Y;
-							prevTst1 = rndPt2X;
-							prevTst2 = rndPt2Y;
-
-							break;
-
-						case "E":
-							rndPt2X = rndTst1 + (Convert.ToDecimal(lengthX));
-
-							prevPt2X = rndPt2X;
-							prevPt2Y = rndPt2Y;
-							prevTst1 = rndPt2X;
-							prevTst2 = rndPt2Y;
-							break;
-
-						case "W":
-							rndPt2X = rndTst1 - (Convert.ToDecimal(lengthX));
-
-							prevPt2X = rndPt2X;
-							prevPt2Y = rndPt2Y;
-							prevTst1 = rndPt2X;
-							prevTst2 = rndPt2Y;
-							break;
-
-						default:
-
-							throw new NotImplementedException(string.Format("Invalid line direction: '{0}", direction));
-					}
+					SetNewSectionPointsByLineDirection(direction, lengthX, lengthY, rndTst1, rndTst2, ref rndPt2X, ref rndPt2Y);
 				}
 
-				if (_isclosing == true)
+				if (isClosing == true)
 				{
-					var sectionPolygon = new PolygonF(NewSectionPoints.ToArray());
-					var sectionArea = sectionPolygon.Area;
-
-					if (_nextStoryHeight < 1.0m)
-					{
-						_nextSectArea = (Math.Round(Convert.ToDecimal(sectionPolygon.Area), 1) * _nextStoryHeight);
-					}
-					if (_nextStoryHeight >= 1.0m)
-					{
-						_nextSectArea = Math.Round(Convert.ToDecimal(sectionPolygon.Area), 1);
-					}
+					CalculateAreas();
 				}
 
-				StringBuilder mxline = new StringBuilder();
-				mxline.Append(String.Format("select max(jlline#) from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' ",
-							  MainForm.localLib,
-							  MainForm.localPreFix,
-							   _currentParcel.Record,
-							   _currentParcel.Card,
-								   _nextSectLtr));
+				currentLineCount = SelectMaxLineNumber();
 
-				try
+				if (currentLineCount == 0)
 				{
-					_curLineCnt = Convert.ToInt32(dbConn.DBConnection.ExecuteScalar(mxline.ToString()));
-				}
-				catch
-				{
+					currentLineCount = 0;
 				}
 
-				if (_curLineCnt == 0)
-				{
-					_curLineCnt = 0;
-				}
+				_lineCnt = currentLineCount;
 
-				_lineCnt = _curLineCnt;
-
-				lineCnt = _curLineCnt + 1;
+				lineCnt = currentLineCount + 1;
 
 				if (lineCnt == 19)
 				{
@@ -2201,12 +2110,12 @@ namespace SketchUp
 					StringBuilder addSect = new StringBuilder();
 					addSect.Append(String.Format("insert into {0}.{1}line (jlrecord,jldwell,jlsect,jlline#,jldirect,jlxlen,jlylen, jllinelen,jlangle,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach) ",
 						  MainForm.localLib,
-						  MainForm.localPreFix));
+						  MainForm.localPrefix));
 					addSect.Append(String.Format(" values ( {0},{1},'{2}',{3},'{4}',{5},{6},{7},{8},{9},{10},{11},{12},'{13}' ) ",
-						_currentParcel.Record, //0
-						_currentParcel.Card, // 1
-						_nextSectLtr.Trim(), // 2
-						lineCnt, //3
+						currentParcel.Record, //0
+						currentParcel.Card, // 1
+						nextSectionLetter.Trim(), // 2
+						(int)lineCnt, //3
 						direction.Trim(), //4
 						lengthX, //5
 						lengthY, //6
@@ -2221,7 +2130,7 @@ namespace SketchUp
 #if DEBUG
 					StringBuilder traceOut = new StringBuilder();
 					traceOut.AppendLine(string.Format("Section Adding SQL: {0}", addSect.ToString()));
-					Trace.WriteLine(string.Format("{0}", traceOut.ToString()));
+					MessageBox.Show(traceOut.ToString());
 #endif
 					NextStartX = (float)rndPt2X;
 					NextStartY = (float)rndPt2Y;
@@ -2255,37 +2164,203 @@ namespace SketchUp
 			}
 		}
 
+		private int SelectMaxLineNumber()
+		{
+			int linesInSection = 0;
+			string mxline = string.Format("select max(jlline#) from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' ",
+															  MainForm.localLib,
+															  MainForm.localPrefix,
+															   currentParcel.Record,
+															   currentParcel.Card,
+																   nextSectionLetter);
+			Int32.TryParse(dbConn.DBConnection.ExecuteScalar(mxline.ToString()).ToString(), out linesInSection);
+			return linesInSection;
+		}
+
+		private void SetFirstLineOrigin(int _lineCnt)
+		{
+			if (_lineCnt == 1)
+			{
+				if (_hasNewSketch == true)
+				{
+					xAdjustment = 0;
+					yAdjustment = 0;
+				}
+
+				SecBeginX = xAdjustment;
+				SecBeginY = yAdjustment;
+			}
+		}
+
+		private void CalculateAreas()
+		{
+			var sectionPolygon = new PolygonF(NewSectionPoints.ToArray());
+			var sectionArea = sectionPolygon.Area;
+
+			if (nextStoryHeight < 1.0m)
+			{
+				_nextSectArea = (Math.Round(Convert.ToDecimal(sectionPolygon.Area), 1) * nextStoryHeight);
+			}
+			if (nextStoryHeight >= 1.0m)
+			{
+				_nextSectArea = Math.Round(Convert.ToDecimal(sectionPolygon.Area), 1);
+			}
+		}
+
+		private void SetNewSectionPointsByLineDirection(string direction, float lengthX, float lengthY, decimal rndTst1, decimal rndTst2, ref decimal rndPt2X, ref decimal rndPt2Y)
+		{
+			// TODO: Remove if not needed:
+			//decimal TprevTst1 = prevTst1;
+			//decimal TprevTst2 = prevTst2;
+			//decimal TprevPt2X = prevPt2X;
+			//decimal TprevPt2Y = prevPt2Y;
+			switch (direction)
+			{
+				case "N":
+					rndPt2Y = rndTst2 - (Convert.ToDecimal(lengthY));
+
+					prevPt2X = rndPt2X;
+					prevPt2Y = rndPt2Y;
+					prevTst1 = rndPt2X;
+					prevTst2 = rndPt2Y;
+					break;
+
+				case "S":
+					rndPt2Y = rndTst2 + (Convert.ToDecimal(lengthY));
+
+					prevPt2X = rndPt2X;
+					prevPt2Y = rndPt2Y;
+					prevTst1 = rndPt2X;
+					prevTst2 = rndPt2Y;
+
+					break;
+
+				case "E":
+					rndPt2X = rndTst1 + (Convert.ToDecimal(lengthX));
+
+					prevPt2X = rndPt2X;
+					prevPt2Y = rndPt2Y;
+					prevTst1 = rndPt2X;
+					prevTst2 = rndPt2Y;
+					break;
+
+				case "W":
+					rndPt2X = rndTst1 - (Convert.ToDecimal(lengthX));
+					prevPt2X = rndPt2X;
+					prevPt2Y = rndPt2Y;
+					prevTst1 = rndPt2X;
+					prevTst2 = rndPt2Y;
+					break;
+
+				default:
+
+					throw new InvalidExpressionException(string.Format("Invalid line direction: '{0}", direction));
+			}
+		}
+
+		private void SetPointsDirectionByLineDirection(string direction, int _lineCnt, float lengthX, float lengthY, ref decimal rndTst1, ref decimal rndTst2, ref decimal rndPt2X, ref decimal rndPt2Y)
+		{
+			if (_hasNewSketch == true && _lineCnt == 1)
+			{
+				switch (direction)
+				{
+					case "N":
+
+						rndTst1 = 0;
+						rndTst2 = 0;
+						rndPt2X = rndTst1;
+
+						rndPt2Y = rndTst2 - (Convert.ToDecimal(lengthY));
+
+						prevPt2X = rndPt2X;
+						prevPt2Y = rndPt2Y;
+						prevTst1 = rndPt2X;
+						prevTst2 = rndPt2Y;
+						break;
+
+					case "S":
+
+						rndTst1 = 0;
+						rndTst2 = 0;
+						rndPt2X = rndTst1;
+
+						rndPt2Y = rndTst2 + (Convert.ToDecimal(lengthY));
+
+						prevPt2X = rndPt2X;
+						prevPt2Y = rndPt2Y;
+						prevTst1 = rndPt2X;
+						prevTst2 = rndPt2Y;
+						break;
+
+					case "E":
+						rndTst1 = 0;
+						rndTst2 = 0;
+						rndPt2Y = rndTst2;
+
+						rndPt2X = rndTst1 + (Convert.ToDecimal(lengthX));
+
+						prevPt2X = rndPt2X;
+						prevPt2Y = rndPt2Y;
+						prevTst1 = rndPt2X;
+						prevTst2 = rndPt2Y;
+						break;
+
+					case "W":
+						rndTst1 = 0;
+						rndTst2 = 0;
+						rndPt2Y = rndTst2;
+
+						rndPt2X = rndTst1 - (Convert.ToDecimal(lengthX));
+
+						prevPt2X = rndPt2X;
+						prevPt2Y = rndPt2Y;
+						prevTst1 = rndPt2X;
+						prevTst2 = rndPt2Y;
+						break;
+
+					default:
+						throw new NotImplementedException(string.Format("Invalid line direction: '{0}", direction));
+				}
+
+				// TODO: Remove if not needed:
+				//decimal TprevTst1 = prevTst1;
+				//decimal TprevTst2 = prevTst2;
+				//decimal TprevPt2X = prevPt2X;
+				//decimal TprevPt2Y = prevPt2Y;
+			}
+		}
+
 		private void BuildAddSQLAng(float prevX, float prevY, decimal distDX, decimal distDY, string direction, decimal length, int _lineCnt, bool closing, float startx, float starty)
 		{
-			_isclosing = closing;
+			isClosing = closing;
 			_lastAngDir = direction;
 
 			pt2X = 0;
 			pt2Y = 0;
 
-			Xadj = (((ScaleBaseX - prevX) / _currentScale) * -1);
-			Yadj = (((ScaleBaseY - prevY) / _currentScale) * -1);
+			xAdjustment = (((ScaleBaseX - prevX) / currentScale) * -1);
+			yAdjustment = (((ScaleBaseY - prevY) / currentScale) * -1);
 
-			NewSectionPoints.Add(new PointF(Xadj, Yadj));
+			NewSectionPoints.Add(new PointF(xAdjustment, yAdjustment));
 
-			decimal xw2 = Convert.ToDecimal(Xadj);
+			decimal xw2 = Convert.ToDecimal(xAdjustment);
 
-			decimal yw2 = Convert.ToDecimal(Yadj);
+			decimal yw2 = Convert.ToDecimal(yAdjustment);
 
-			decimal XadjD = Math.Round((Convert.ToDecimal(Xadj)), 1);
+			decimal XadjD = Math.Round((Convert.ToDecimal(xAdjustment)), 1);
 
-			decimal YadjD = Math.Round((Convert.ToDecimal(Yadj)), 1);
+			decimal YadjD = Math.Round((Convert.ToDecimal(yAdjustment)), 1);
 
-			Xadj = (float)XadjD;
-			Yadj = (float)YadjD;
+			xAdjustment = (float)XadjD;
+			yAdjustment = (float)YadjD;
 
-			if (NextStartX != Xadj)
+			if (NextStartX != xAdjustment)
 			{
-				Xadj = NextStartX;
+				xAdjustment = NextStartX;
 			}
-			if (NextStartY != Yadj)
+			if (NextStartY != yAdjustment)
 			{
-				Yadj = NextStartY;
+				yAdjustment = NextStartY;
 			}
 
 			decimal lengthX = 0;
@@ -2295,12 +2370,12 @@ namespace SketchUp
 				lengthX = distDX;
 				lengthY = distDY;
 
-				decimal pt2XD = Math.Round((Convert.ToDecimal(Xadj) + distDX), 1);
+				decimal pt2XD = Math.Round((Convert.ToDecimal(xAdjustment) + distDX), 1);
 
-				decimal pt2YD = Math.Round((Convert.ToDecimal(Yadj) - distDY), 1);
+				decimal pt2YD = Math.Round((Convert.ToDecimal(yAdjustment) - distDY), 1);
 
-				pt2X = Xadj + Convert.ToInt32(distDX);
-				pt2Y = Yadj - Convert.ToInt32(distDY);
+				pt2X = xAdjustment + Convert.ToInt32(distDX);
+				pt2Y = yAdjustment - Convert.ToInt32(distDY);
 
 				pt2X = (float)pt2XD;
 				pt2Y = (float)pt2YD;
@@ -2313,12 +2388,12 @@ namespace SketchUp
 				lengthX = distDX;
 				lengthY = distDY;
 
-				decimal pt2XD = Convert.ToDecimal(Xadj) - distDX;
+				decimal pt2XD = Convert.ToDecimal(xAdjustment) - distDX;
 
-				decimal pt2YD = Convert.ToDecimal(Yadj) - distDY;
+				decimal pt2YD = Convert.ToDecimal(yAdjustment) - distDY;
 
-				pt2X = Xadj - Convert.ToInt16(distDX);
-				pt2Y = Yadj - Convert.ToInt16(distDY);
+				pt2X = xAdjustment - Convert.ToInt16(distDX);
+				pt2Y = yAdjustment - Convert.ToInt16(distDY);
 
 				pt2X = (float)pt2XD;
 				pt2Y = (float)pt2YD;
@@ -2331,12 +2406,12 @@ namespace SketchUp
 				lengthX = distDX;
 				lengthY = distDY;
 
-				decimal pt2XD = Convert.ToDecimal(Xadj) + distDX;
+				decimal pt2XD = Convert.ToDecimal(xAdjustment) + distDX;
 
-				decimal pt2YD = Convert.ToDecimal(Yadj) + distDY;
+				decimal pt2YD = Convert.ToDecimal(yAdjustment) + distDY;
 
-				pt2X = Xadj + Convert.ToInt16(distDX);
-				pt2Y = Yadj + Convert.ToInt16(distDY);
+				pt2X = xAdjustment + Convert.ToInt16(distDX);
+				pt2Y = yAdjustment + Convert.ToInt16(distDY);
 
 				pt2X = (float)pt2XD;
 				pt2Y = (float)pt2YD;
@@ -2349,12 +2424,12 @@ namespace SketchUp
 				lengthX = distDX;
 				lengthY = distDY;
 
-				decimal pt2XD = Convert.ToDecimal(Xadj) - distDX;
+				decimal pt2XD = Convert.ToDecimal(xAdjustment) - distDX;
 
-				decimal pt2YD = Convert.ToDecimal(Yadj) + distDY;
+				decimal pt2YD = Convert.ToDecimal(yAdjustment) + distDY;
 
-				pt2X = Xadj - Convert.ToInt16(distDX);
-				pt2Y = Yadj + Convert.ToInt16(distDY);
+				pt2X = xAdjustment - Convert.ToInt16(distDX);
+				pt2Y = yAdjustment + Convert.ToInt16(distDY);
 
 				pt2X = (float)pt2XD;
 				pt2Y = (float)pt2YD;
@@ -2369,16 +2444,16 @@ namespace SketchUp
 				{
 					if (_hasNewSketch == true)
 					{
-						Xadj = 0;
-						Yadj = 0;
+						xAdjustment = 0;
+						yAdjustment = 0;
 					}
 
-					SecBeginX = Xadj;
-					SecBeginY = Yadj;
+					SecBeginX = xAdjustment;
+					SecBeginY = yAdjustment;
 				}
 
-				decimal Tst1 = Convert.ToDecimal(Xadj);
-				decimal Tst2 = Convert.ToDecimal(Yadj);
+				decimal Tst1 = Convert.ToDecimal(xAdjustment);
+				decimal Tst2 = Convert.ToDecimal(yAdjustment);
 				decimal Ptx = Convert.ToDecimal(pt2X);
 				decimal Pty = Convert.ToDecimal(pt2Y);
 
@@ -2446,104 +2521,99 @@ namespace SketchUp
 						prevTst2 = rndPt2Y;
 					}
 
-					decimal TprevTst1 = prevTst1;
-					decimal TprevTst2 = prevTst2;
-					decimal TprevPt2X = prevPt2X;
-					decimal TprevPt2Y = prevPt2Y;
+					// TODO: Remove if not needed:
+					//decimal TprevTst1 = prevTst1;
+					//decimal TprevTst2 = prevTst2;
+					//decimal TprevPt2X = prevPt2X;
+					//decimal TprevPt2Y = prevPt2Y;
 				}
 
 				if (_hasNewSketch == true && _lineCnt > 1)
 				{
-					decimal TprevTst1 = prevTst1;
-					decimal TprevTst2 = prevTst2;
-					decimal TprevPt2X = prevPt2X;
-					decimal TprevPt2Y = prevPt2Y;
-
-					if (direction == "NE")
+					//decimal TprevTst1 = prevTst1;
+					//decimal TprevTst2 = prevTst2;
+					//decimal TprevPt2X = prevPt2X;
+					//decimal TprevPt2Y = prevPt2Y;
+					switch (direction)
 					{
-						rndTst1 = prevTst1;
-						rndTst2 = prevTst2;
+						case "NE":
+							rndTst1 = prevTst1;
+							rndTst2 = prevTst2;
 
-						rndPt2X = Convert.ToDecimal(rndTst1 + (Convert.ToDecimal(lengthX)));
+							rndPt2X = Convert.ToDecimal(rndTst1 + (Convert.ToDecimal(lengthX)));
 
-						rndPt2Y = Convert.ToDecimal(rndTst2 - (Convert.ToDecimal(lengthY)));
+							rndPt2Y = Convert.ToDecimal(rndTst2 - (Convert.ToDecimal(lengthY)));
 
-						prevPt2X = rndPt2X;
-						prevPt2Y = rndPt2Y;
-						prevTst1 = rndPt2X;
-						prevTst2 = rndPt2Y;
-					}
-					if (direction == "SE")
-					{
-						rndTst1 = prevTst1;
-						rndTst2 = prevTst2;
+							prevPt2X = rndPt2X;
+							prevPt2Y = rndPt2Y;
+							prevTst1 = rndPt2X;
+							prevTst2 = rndPt2Y;
+							break;
 
-						rndPt2X = Convert.ToDecimal(rndTst1 + (Convert.ToDecimal(lengthX)));
+						case "SE":
+							rndTst1 = prevTst1;
+							rndTst2 = prevTst2;
 
-						rndPt2Y = Convert.ToDecimal(rndTst2 + (Convert.ToDecimal(lengthY)));
+							rndPt2X = Convert.ToDecimal(rndTst1 + (Convert.ToDecimal(lengthX)));
 
-						prevPt2X = rndPt2X;
-						prevPt2Y = rndPt2Y;
-						prevTst1 = rndPt2X;
-						prevTst2 = rndPt2Y;
-					}
-					if (direction == "NW")
-					{
-						rndTst1 = prevTst1;
-						rndTst2 = prevTst2;
+							rndPt2Y = Convert.ToDecimal(rndTst2 + (Convert.ToDecimal(lengthY)));
 
-						rndPt2X = Convert.ToDecimal(rndTst1 - (Convert.ToDecimal(lengthX)));
+							prevPt2X = rndPt2X;
+							prevPt2Y = rndPt2Y;
+							prevTst1 = rndPt2X;
+							prevTst2 = rndPt2Y;
+							break;
 
-						rndPt2Y = Convert.ToDecimal(rndTst2 - (Convert.ToDecimal(lengthY)));
+						case "NW":
+							rndTst1 = prevTst1;
+							rndTst2 = prevTst2;
 
-						prevPt2X = rndPt2X;
-						prevPt2Y = rndPt2Y;
-						prevTst1 = rndPt2X;
-						prevTst2 = rndPt2Y;
-					}
-					if (direction == "SW")
-					{
-						rndTst1 = prevTst1;
-						rndTst2 = prevTst2;
+							rndPt2X = Convert.ToDecimal(rndTst1 - (Convert.ToDecimal(lengthX)));
 
-						rndPt2X = Convert.ToDecimal(rndTst1 - (Convert.ToDecimal(lengthX)));
+							rndPt2Y = Convert.ToDecimal(rndTst2 - (Convert.ToDecimal(lengthY)));
 
-						rndPt2Y = Convert.ToDecimal(rndTst2 + (Convert.ToDecimal(lengthY)));
+							prevPt2X = rndPt2X;
+							prevPt2Y = rndPt2Y;
+							prevTst1 = rndPt2X;
+							prevTst2 = rndPt2Y;
+							break;
 
-						prevPt2X = rndPt2X;
-						prevPt2Y = rndPt2Y;
-						prevTst1 = rndPt2X;
-						prevTst2 = rndPt2Y;
+						case "SW":
+							rndTst1 = prevTst1;
+							rndTst2 = prevTst2;
+
+							rndPt2X = Convert.ToDecimal(rndTst1 - (Convert.ToDecimal(lengthX)));
+
+							rndPt2Y = Convert.ToDecimal(rndTst2 + (Convert.ToDecimal(lengthY)));
+
+							prevPt2X = rndPt2X;
+							prevPt2Y = rndPt2Y;
+							prevTst1 = rndPt2X;
+							prevTst2 = rndPt2Y;
+							break;
+
+						default:
+							break;
 					}
 				}
 
-				StringBuilder mxline2 = new StringBuilder();
-				mxline2.Append(String.Format("select max(jlline#) from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' ",
-							  MainForm.localLib,
-						  MainForm.localPreFix,
+				string maxLineSql = string.Format("select max(jlline#) from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' ",
+								MainForm.localLib,
+								MainForm.localPrefix,
+								currentParcel.Record,
+								currentParcel.Card,
+								nextSectionLetter);
+				Int32.TryParse(dbConn.DBConnection.ExecuteScalar(maxLineSql.ToString()).ToString(), out currentLineCount);
 
-								//MainForm.FClib,
-								//MainForm.FCprefix,
-								_currentParcel.Record,
-								_currentParcel.Card,
-								_nextSectLtr));
+				// TODO: Remove if not needed:	Pointless code
+				//if (currentLineCount == 0)
+				//{
+				//	currentLineCount = 0;
+				//}
 
-				try
-				{
-					_curLineCnt = Convert.ToInt32(dbConn.DBConnection.ExecuteScalar(mxline2.ToString()));
-				}
-				catch
-				{
-				}
+				_lineCnt = currentLineCount;
 
-				if (_curLineCnt == 0)
-				{
-					_curLineCnt = 0;
-				}
-
-				_lineCnt = _curLineCnt;
-
-				lineCnt = _curLineCnt + 1;
+				lineCnt = currentLineCount + 1;
 
 				if (lineCnt == 19)
 				{
@@ -2555,61 +2625,16 @@ namespace SketchUp
 					MessageBox.Show("Section Lines Exceeded", "Critical Line Count", MessageBoxButtons.OK, MessageBoxIcon.Stop);
 				}
 
-				if (_isclosing == true)
+				if (isClosing == true)
 				{
-					var sectionPolygon = new PolygonF(NewSectionPoints.ToArray());
-					var sectionArea = sectionPolygon.Area;
-
-					if (_nextStoryHeight < 1.0m)
-					{
-						_nextSectArea = (Math.Round(Convert.ToDecimal(sectionPolygon.Area), 1) * _nextStoryHeight);
-					}
-					if (_nextStoryHeight >= 1.0m)
-					{
-						_nextSectArea = Math.Round(Convert.ToDecimal(sectionPolygon.Area), 1);
-					}
+					CalculateAreas();
 				}
 
 				int checkcnt = lineCnt;
 
 				if (lineCnt <= 20)
 				{
-					//MessageBox.Show(String.Format("Insert into Line Record - {0}, Card - {1} at 2416", _currentParcel.Record, _currentParcel.Card));
-
-					StringBuilder addSectAng = new StringBuilder();
-					addSectAng.Append(String.Format("insert into {0}.{1}line ( jlrecord,jldwell,jlsect,jlline#,jldirect,jlxlen,jlylen,jllinelen,jlangle,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach) ",
-								 MainForm.localLib,
-						  MainForm.localPreFix
-
-								//MainForm.FClib,
-								//MainForm.FCprefix
-								));
-					addSectAng.Append(String.Format(" values ( {0},{1},'{2}',{3},'{4}',{5},{6},{7},{8},{9},{10},{11},{12},'{13}' ) ",
-						_currentParcel.Record,
-						_currentParcel.Card,
-						_nextSectLtr.Trim(),
-						lineCnt,
-						direction.Trim(),
-						lengthX,
-						lengthY,
-						length,
-						0,
-						rndTst1,  // jlpt1x  tst1 /// 27.0
-						rndTst2,  // jlpt1y  tst2 //// 0
-						rndPt2X,  // jlpt2x tst1x ///// 13.5
-						rndPt2Y,  // jlpt2y tst2y //// 3.0
-						" "));
-
-					NextStartX = (float)rndPt2X;
-					NextStartY = (float)rndPt2Y;
-
-					if (_undoLine == false)
-					{
-						if (Math.Abs(lengthX) > 0 || Math.Abs(lengthY) > 0)
-						{
-							dbConn.DBConnection.ExecuteNonSelectStatement(addSectAng.ToString());
-						}
-					}
+					InsertNewAngledLine(direction, length, lengthX, lengthY, rndTst1, rndTst2, rndPt2X, rndPt2Y);
 				}
 
 				if (_undoLine == true)
@@ -2619,6 +2644,47 @@ namespace SketchUp
 			}
 
 			DistText.Focus();
+		}
+
+		private void InsertNewAngledLine(string direction, decimal length, decimal lengthX, decimal lengthY, decimal rndTst1, decimal rndTst2, decimal rndPt2X, decimal rndPt2Y)
+		{
+			string addSectionAngleSql = BuildAngleSqlString(direction, length, lengthX, lengthY, rndTst1, rndTst2, rndPt2X, rndPt2Y);
+
+			NextStartX = (float)rndPt2X;
+			NextStartY = (float)rndPt2Y;
+
+			if (_undoLine == false)
+			{
+				if (Math.Abs(lengthX) > 0 || Math.Abs(lengthY) > 0)
+				{
+					dbConn.DBConnection.ExecuteNonSelectStatement(addSectionAngleSql);
+				}
+			}
+		}
+
+		private string BuildAngleSqlString(string direction, decimal length, decimal lengthX, decimal lengthY, decimal rndTst1, decimal rndTst2, decimal rndPt2X, decimal rndPt2Y)
+		{
+			StringBuilder insertAngleSql = new StringBuilder();
+			insertAngleSql.Append(String.Format("insert into {0}.{1}line ( jlrecord,jldwell,jlsect,jlline#,jldirect,jlxlen,jlylen,jllinelen,jlangle,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach) ",
+						MainForm.localLib,
+						MainForm.localPrefix
+						));
+			insertAngleSql.Append(String.Format(" values ( {0},{1},'{2}',{3},'{4}',{5},{6},{7},{8},{9},{10},{11},{12},'{13}' ) ",
+				currentParcel.Record,
+				currentParcel.Card,
+				nextSectionLetter.Trim(),
+				lineCnt,
+				direction.Trim(),
+				lengthX,
+				lengthY,
+				length,
+				0,
+				rndTst1,  // jlpt1x  tst1 /// 27.0
+				rndTst2,  // jlpt1y  tst2 //// 0
+				rndPt2X,  // jlpt2x tst1x ///// 13.5
+				rndPt2Y,  // jlpt2y tst2y //// 3.0
+				""));
+			return insertAngleSql.ToString();
 		}
 
 		private Image byteArrayToImage(byte[] byteArrayIn)
@@ -2636,7 +2702,7 @@ namespace SketchUp
 			string closeX = String.Empty;
 			string closeY = String.Empty;
 
-			_openForm = true;
+			openForm = true;
 
 			if (ewDist > 0)
 			{
@@ -2657,22 +2723,22 @@ namespace SketchUp
 
 			if (Math.Round(Convert.ToDecimal(ewDist), 1) == 0 && Math.Round(Convert.ToDecimal(nsDist), 1) == 0)
 			{
-				_openForm = false;
+				openForm = false;
 
 				decimal EWdist = Math.Round(Convert.ToDecimal(ewDist), 1);
 				decimal NSdist = Math.Round(Convert.ToDecimal(nsDist), 1);
 
-				ShowDistanceForm(closeY, EWdist, closeX, NSdist, _openForm);
+				ShowDistanceForm(closeY, EWdist, closeX, NSdist, openForm);
 			}
 
 			if (Math.Round(Convert.ToDecimal(ewDist), 1) != 0 || Math.Round(Convert.ToDecimal(nsDist), 1) != 0)
 			{
-				_openForm = true;
+				openForm = true;
 
 				decimal EWdist = Math.Round(Convert.ToDecimal(ewDist), 1);
 				decimal NSdist = Math.Round(Convert.ToDecimal(nsDist), 1);
 
-				ShowDistanceForm(closeY, EWdist, closeX, NSdist, _openForm);
+				ShowDistanceForm(closeY, EWdist, closeX, NSdist, openForm);
 			}
 		}
 
@@ -2682,12 +2748,12 @@ namespace SketchUp
 			getLine.Append("select jlpt1x,jlpt1y,jlpt2x,jlpt2Y ");
 			getLine.Append(String.Format("from {0}.{1}line where jlrecord = {2} and jldwell = {3} ",
 					  MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 						//MainForm.FClib,
 						//MainForm.FCprefix,
-						_currentParcel.mrecno,
-						_currentParcel.mdwell));
+						currentParcel.mrecno,
+						currentParcel.mdwell));
 			getLine.Append(String.Format("and jlsect = '{0}' ", nextsec));
 
 			DataSet arealines = dbConn.DBConnection.RunSelectStatement(getLine.ToString());
@@ -2759,12 +2825,12 @@ namespace SketchUp
 				StringBuilder delXdir = new StringBuilder();
 				delXdir.Append(String.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jldirect = 'X'",
 							   MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 								//MainForm.FClib,
 								//MainForm.FCprefix,
-								_currentParcel.Record,
-								_currentParcel.Card));
+								currentParcel.Record,
+								currentParcel.Card));
 
 				dbConn.DBConnection.ExecuteNonSelectStatement(delXdir.ToString());
 			}
@@ -2775,23 +2841,23 @@ namespace SketchUp
 			var sectionPolygon = new PolygonF(NewSectionPoints.ToArray());
 			var sectionArea = sectionPolygon.Area;
 
-			calculateNewArea(_currentParcel.Record, _currentParcel.Card, _nextSectLtr);
+			calculateNewArea(currentParcel.Record, currentParcel.Card, nextSectionLetter);
 
-			if (_nextStoryHeight < 1.0m)
+			if (nextStoryHeight < 1.0m)
 			{
-				_nextStoryHeight = 1;
+				nextStoryHeight = 1;
 			}
-			if (_nextStoryHeight >= 1.0m)
+			if (nextStoryHeight >= 1.0m)
 			{
-				_nextSectArea = (Math.Round(Convert.ToDecimal(sectionPolygon.Area), 1) * _nextStoryHeight);
+				_nextSectArea = (Math.Round(Convert.ToDecimal(sectionPolygon.Area), 1) * nextStoryHeight);
 			}
 
-			_nextSectArea = (Math.Round((_calcNextSectArea * _nextStoryHeight), 1));
+			_nextSectArea = (Math.Round((_calcNextSectArea * nextStoryHeight), 1));
 		}
 
 		private void CountLines(string thisSection)
 		{
-			string curlincnt = string.Format("select count(*) from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' ", MainForm.localLib, MainForm.localPreFix, _currentParcel.Record, _currentParcel.Card, thisSection);
+			string curlincnt = string.Format("select count(*) from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' ", MainForm.localLib, MainForm.localPrefix, currentParcel.Record, currentParcel.Card, thisSection);
 
 			SecLineCnt = Convert.ToInt32(dbConn.DBConnection.ExecuteScalar(curlincnt.ToString()));
 		}
@@ -2800,7 +2866,7 @@ namespace SketchUp
 		{
 			try
 			{
-				string seccnt = string.Format("select count(*) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ", MainForm.localLib, MainForm.localPreFix, _currentParcel.Record, _currentParcel.Card);
+				string seccnt = string.Format("select count(*) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ", MainForm.localLib, MainForm.localPrefix, currentParcel.Record, currentParcel.Card);
 
 				int secItemCnt = 0;
 				Int32.TryParse(dbConn.DBConnection.ExecuteScalar(seccnt).ToString(), out secItemCnt);
@@ -2819,12 +2885,12 @@ namespace SketchUp
 			StringBuilder deletelinesect = new StringBuilder();
 			deletelinesect.Append(String.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' ",
 						   MainForm.localLib,
-						   MainForm.localPreFix,
+						   MainForm.localPrefix,
 
 							//MainForm.FClib,
 							//MainForm.FCprefix,
-							_currentParcel.mrecno,
-							_currentParcel.mdwell,
+							currentParcel.mrecno,
+							currentParcel.mdwell,
 							CurrentSecLtr));
 
 			dbConn.DBConnection.ExecuteNonSelectStatement(deletelinesect.ToString());
@@ -2832,10 +2898,10 @@ namespace SketchUp
 
 		private void DeleteSection()
 		{
-			SketchSection sksect = new SketchSection(_currentParcel, dbConn, _currentSection);
+			SketchSection sksect = new SketchSection(currentParcel, dbConn, _currentSection);
 			sksect.ShowDialog(this);
 
-			_currentSection = new SectionDataCollection(dbConn, _currentParcel.Record, _currentParcel.Card);
+			_currentSection = new SectionDataCollection(dbConn, currentParcel.Record, currentParcel.Card);
 		}
 
 		private string FindClosestCorner(float CurrentScale, ref string curltr, List<string> AttSecLtrList)
@@ -2923,10 +2989,10 @@ End Joey's alternative Code */
 
 			int savedAttLine = Convert.ToInt32(JumpTable.Rows[rowindex]["LineNo"].ToString());
 
-			_savedAttLine = Convert.ToInt32(SortedJumpTableDataView[0]["LineNo"].ToString());
-			Trace.WriteLine(string.Format("_savedAttLine = Convert.ToInt32(JumpTable.Rows[rowindex][LineNo]={0}", _savedAttLine));
-			Trace.WriteLine(string.Format("************ ({0} is not subsequently used.******** ", _savedAttLine));
-			Trace.WriteLine(string.Format("_savedAttLine = Convert.ToInt32(SortedJumpTableDataView[0][LineNo]={0}", _savedAttLine));
+			savedAttachmentLine = Convert.ToInt32(SortedJumpTableDataView[0]["LineNo"].ToString());
+			Trace.WriteLine(string.Format("_savedAttLine = Convert.ToInt32(JumpTable.Rows[rowindex][LineNo]={0}", savedAttachmentLine));
+			Trace.WriteLine(string.Format("************ ({0} is not subsequently used.******** ", savedAttachmentLine));
+			Trace.WriteLine(string.Format("_savedAttLine = Convert.ToInt32(SortedJumpTableDataView[0][LineNo]={0}", savedAttachmentLine));
 
 			//Ask Dave why this is set here if it is set differently above
 			//Ask Dave why sometimes the rowindex of the JumpTable is used and othertimes the row[0] of the Sorted Jump Table
@@ -2950,16 +3016,16 @@ End Joey's alternative Code */
 						decimal tsplit2 = Convert.ToDecimal(SortedJumpTableDataView[0]["XPt2"].ToString());
 						decimal tsplit3 = Convert.ToDecimal(SortedJumpTableDataView[0]["YPt2"].ToString());
 			*/
-			_priorDirection = SortedJumpTableDataView[0]["Direct"].ToString();
-			_savedAttSection = SortedJumpTableDataView[0]["Sect"].ToString();
+			this.priorDirection = SortedJumpTableDataView[0]["Direct"].ToString();
+			SavedAttachmentSection = SortedJumpTableDataView[0]["Sect"].ToString();
 			currentAttachmentLine = Convert.ToInt32(SortedJumpTableDataView[0]["LineNo"].ToString());
 
 			//TODO: Find the last moved direction and the direction of the Current AttLine. If they are not the same call undo and return to main screen.
 			_mouseX = Convert.ToInt32(JumpX);
 			_mouseY = Convert.ToInt32(JumpY);
 			Trace.WriteLine(string.Format("Mouse moved to {0},{1}", JumpX, JumpY));
-			Trace.WriteLine(string.Format("Section attachment is {0} Line {1}, _priorDirection is {2}", _savedAttSection, currentAttachmentLine, _priorDirection));
-			legalMoveDirection = AttachLineDirection(_savedAttSection, currentAttachmentLine);
+			Trace.WriteLine(string.Format("Section attachment is {0} Line {1}, _priorDirection is {2}", SavedAttachmentSection, currentAttachmentLine, this.priorDirection));
+			legalMoveDirection = AttachLineDirection(SavedAttachmentSection, currentAttachmentLine);
 			MoveCursor();
 			return secltr;
 		}
@@ -3002,32 +3068,32 @@ End Joey's alternative Code */
 			return lineDirection;
 		}
 
-		public void findends()
+		public void FindEnds()
 		{
 			delStartX = 0;
 			delStartY = 0;
-			_lastDir = String.Empty;
+			lastLineDirection = String.Empty;
 
-			StringBuilder cntLine = new StringBuilder();
-			cntLine.Append(String.Format("select max(jlline#) from {0}.{1}line ", MainForm.localLib, MainForm.localPreFix));
-			cntLine.Append(String.Format("where jlrecord = {0} and jldwell = {1} and jlsect = '{2}' ", _currentParcel.mrecno, _currentParcel.mdwell, _nextSectLtr));
+			StringBuilder countOfLines = new StringBuilder();
+			countOfLines.Append(String.Format("select max(jlline#) from {0}.{1}line ", MainForm.localLib, MainForm.localPrefix));
+			countOfLines.Append(String.Format("where jlrecord = {0} and jldwell = {1} and jlsect = '{2}' ", currentParcel.mrecno, currentParcel.mdwell, nextSectionLetter));
 
 			try
 			{
-				int jlinecnt = Convert.ToInt32(dbConn.DBConnection.ExecuteScalar(cntLine.ToString()));
+				int jlinecnt = Convert.ToInt32(dbConn.DBConnection.ExecuteScalar(countOfLines.ToString()));
 
 				StringBuilder curLine = new StringBuilder();
-				curLine.Append(String.Format("select jldirect,jlpt1x,jlpt1y from {0}.{1}line ", MainForm.localLib, MainForm.localPreFix));
+				curLine.Append(String.Format("select jldirect,jlpt1x,jlpt1y from {0}.{1}line ", MainForm.localLib, MainForm.localPrefix));
 				curLine.Append(String.Format("where jlrecord = {0} and jldwell = {1} and jlsect = '{2}' and jlline# = {3} ",
-								_currentParcel.mrecno,
-								_currentParcel.mdwell,
-								_nextSectLtr,
+								currentParcel.mrecno,
+								currentParcel.mdwell,
+								nextSectionLetter,
 								jlinecnt));
 				DataSet dsl = dbConn.DBConnection.RunSelectStatement(curLine.ToString());
 
 				if (dsl.Tables[0].Rows.Count > 0)
 				{
-					_lastDir = dsl.Tables[0].Rows[0]["jldirect"].ToString();
+					lastLineDirection = dsl.Tables[0].Rows[0]["jldirect"].ToString();
 
 					delStartX = (float)(Convert.ToDecimal(dsl.Tables[0].Rows[0]["jlpt1x"].ToString()));
 					delStartY = (float)(Convert.ToDecimal(dsl.Tables[0].Rows[0]["jlpt1y"].ToString()));
@@ -3041,7 +3107,7 @@ End Joey's alternative Code */
 		private void FixOrigLine()
 		{
 			StringBuilder fixOrigLine = new StringBuilder();
-			fixOrigLine.Append(String.Format("update {0}.{1}line ", MainForm.localLib, MainForm.localPreFix));
+			fixOrigLine.Append(String.Format("update {0}.{1}line ", MainForm.localLib, MainForm.localPrefix));
 			fixOrigLine.Append(String.Format("set jlxlen = {0},jlylen = {1}, jllinelen = {2}, jlpt2x = {3}, jlpt2y = {4} ",
 									adjNewSecX,
 									adjNewSecY,
@@ -3049,10 +3115,10 @@ End Joey's alternative Code */
 									NewSectionBeginPointX,
 									NewSectionBeginPointY));
 			fixOrigLine.Append(String.Format(" where jlrecord = {0} and jldwell = {1} and jlsect = '{2}' and jlline# = {3} ",
-							_currentParcel.mrecno,
-							_currentParcel.mdwell,
+							currentParcel.mrecno,
+							currentParcel.mdwell,
 							CurrentSecLtr,
-							_savedAttLine));
+							savedAttachmentLine));
 
 			dbConn.DBConnection.ExecuteNonSelectStatement(fixOrigLine.ToString());
 		}
@@ -3063,12 +3129,12 @@ End Joey's alternative Code */
 			sectable.Append("select jlrecord,jldwell,jlsect,jlline#,jldirect,jlxlen,jlylen,jllinelen,jlangle,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach ");
 			sectable.Append(String.Format(" from {0}.{1}line where jlrecord = {2} and jldwell = {3}  ",
 						  MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 							//MainForm.FClib,
 							//MainForm.FCprefix,
-							_currentParcel.Record,
-							_currentParcel.Card));
+							currentParcel.Record,
+							currentParcel.Card));
 
 			DataSet scl = dbConn.DBConnection.RunSelectStatement(sectable.ToString());
 
@@ -3079,8 +3145,8 @@ End Joey's alternative Code */
 				for (int i = 0; i < scl.Tables[0].Rows.Count; i++)
 				{
 					DataRow row = SectionTable.NewRow();
-					row["Record"] = _currentParcel.mrecno;
-					row["Card"] = _currentParcel.mdwell;
+					row["Record"] = currentParcel.mrecno;
+					row["Card"] = currentParcel.mdwell;
 					row["Sect"] = scl.Tables[0].Rows[i]["jlsect"].ToString().Trim();
 					row["LineNo"] = Convert.ToInt32(scl.Tables[0].Rows[i]["jlline#"].ToString());
 					row["Direct"] = scl.Tables[0].Rows[i]["jldirect"].ToString().Trim();
@@ -3147,7 +3213,7 @@ End Joey's alternative Code */
 				StringBuilder flipit = new StringBuilder();
 				flipit.Append(String.Format("update {0}.{1}line set jldirect = '{2}', jlpt1x = {3}, jlpt2x = {4} ",
 							   MainForm.localLib,
-							   MainForm.localPreFix,
+							   MainForm.localPrefix,
 
 								//MainForm.FClib,
 								//MainForm.FCprefix,
@@ -3155,7 +3221,7 @@ End Joey's alternative Code */
 								fXpt1,
 								fXpt2));
 				flipit.Append(String.Format(" where jlrecord = {0} and jldwell = {1} and jlsect = '{2}' and jlline# = {3} ",
-								_currentParcel.mrecno, _currentParcel.mdwell, fsect, flineno));
+								currentParcel.mrecno, currentParcel.mdwell, fsect, flineno));
 
 				dbConn.DBConnection.ExecuteNonSelectStatement(flipit.ToString());
 			}
@@ -3171,12 +3237,12 @@ End Joey's alternative Code */
 			sectable.Append("select jlrecord,jldwell,jlsect,jlline#,jldirect,jlxlen,jlylen,jllinelen,jlangle,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach ");
 			sectable.Append(String.Format(" from {0}.{1}line where jlrecord = {2} and jldwell = {3}  ",
 						  MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 							//MainForm.FClib,
 							//MainForm.FCprefix,
-							_currentParcel.Record,
-							_currentParcel.Card));
+							currentParcel.Record,
+							currentParcel.Card));
 
 			DataSet scl = dbConn.DBConnection.RunSelectStatement(sectable.ToString());
 
@@ -3187,8 +3253,8 @@ End Joey's alternative Code */
 				for (int i = 0; i < scl.Tables[0].Rows.Count; i++)
 				{
 					DataRow row = SectionTable.NewRow();
-					row["Record"] = _currentParcel.mrecno;
-					row["Card"] = _currentParcel.mdwell;
+					row["Record"] = currentParcel.mrecno;
+					row["Card"] = currentParcel.mdwell;
 					row["Sect"] = scl.Tables[0].Rows[i]["jlsect"].ToString().Trim();
 					row["LineNo"] = Convert.ToInt32(scl.Tables[0].Rows[i]["jlline#"].ToString());
 					row["Direct"] = scl.Tables[0].Rows[i]["jldirect"].ToString().Trim();
@@ -3256,7 +3322,7 @@ End Joey's alternative Code */
 				StringBuilder flipitFB = new StringBuilder();
 				flipitFB.Append(String.Format("update {0}.{1}line set jldirect = '{2}', jlpt1y = {3}, jlpt2y = {4} ",
 								   MainForm.localLib,
-								   MainForm.localPreFix,
+								   MainForm.localPrefix,
 
 									 //MainForm.FClib,
 									 //MainForm.FCprefix,
@@ -3264,7 +3330,7 @@ End Joey's alternative Code */
 									 fYpt1,
 									 fYpt2));
 				flipitFB.Append(String.Format(" where jlrecord = {0} and jldwell = {1} and jlsect = '{2}' and jlline# = {3} ",
-								_currentParcel.mrecno, _currentParcel.mdwell, fsect, flineno));
+								currentParcel.mrecno, currentParcel.mdwell, fsect, flineno));
 
 				dbConn.DBConnection.ExecuteNonSelectStatement(flipitFB.ToString());
 			}
@@ -3277,7 +3343,7 @@ End Joey's alternative Code */
 		private DataSet GetLinesData(int crrec, int crcard)
 		{
 			DataSet lines;
-			string getLine = string.Format("select jlrecord,jldwell,jlsect,jlline#,jldirect,jlxlen,jlylen,jllinelen,jlangle, jlpt1x,jlpt1y,jlpt2x,jlpt2Y,jlattach from {0}.{1}line where jlrecord = {2} and jldwell = {3} ", MainForm.localLib, MainForm.localPreFix, crrec, crcard);
+			string getLine = string.Format("select jlrecord,jldwell,jlsect,jlline#,jldirect,jlxlen,jlylen,jllinelen,jlangle, jlpt1x,jlpt1y,jlpt2x,jlpt2Y,jlattach from {0}.{1}line where jlrecord = {2} and jldwell = {3} ", MainForm.localLib, MainForm.localPrefix, crrec, crcard);
 
 			lines = dbConn.DBConnection.RunSelectStatement(getLine);
 			return lines;
@@ -3291,7 +3357,7 @@ End Joey's alternative Code */
 			getLine.Append("jlpt1x,jlpt1y,jlpt2x,jlpt2Y,jlattach ");
 			getLine.Append(String.Format("from {0}.{1}line where jlrecord = {2} and jldwell = {3} ",
 					   MainForm.localLib,
-					   MainForm.localPreFix,
+					   MainForm.localPrefix,
 
 						//MainForm.FClib,
 						//MainForm.FCprefix,
@@ -3315,7 +3381,7 @@ End Joey's alternative Code */
 			}
 			if (MultiSectionSelection.adjsec == String.Empty)
 			{
-				ConnectSec = _savedAttSection;
+				ConnectSec = SavedAttachmentSection;
 			}
 
 			mylineNo = 0;
@@ -3339,12 +3405,12 @@ End Joey's alternative Code */
 			getSpLine.Append("jlpt1x,jlpt1y,jlpt2x,jlpt2Y,jlattach ");
 			getSpLine.Append(String.Format("from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' ",
 						   MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 						   //MainForm.FClib,
 						   //MainForm.FCprefix,
-						   _currentParcel.mrecno,
-						   _currentParcel.mdwell,
+						   currentParcel.mrecno,
+						   currentParcel.mdwell,
 						   ConnectSec));
 
 			Sprolines = dbConn.DBConnection.RunSelectStatement(getSpLine.ToString());
@@ -3375,8 +3441,8 @@ End Joey's alternative Code */
 					decimal xpt2 = Convert.ToDecimal(Sprolines.Tables[0].Rows[i]["jlpt2x"].ToString());
 					decimal ypt2 = Convert.ToDecimal(Sprolines.Tables[0].Rows[i]["jlpt2y"].ToString());
 
-					float xPoint = (ScaleBaseX + (Convert.ToSingle(xpt2) * _currentScale));
-					float yPoint = (ScaleBaseY + (Convert.ToSingle(ypt2) * _currentScale));
+					float xPoint = (ScaleBaseX + (Convert.ToSingle(xpt2) * currentScale));
+					float yPoint = (ScaleBaseY + (Convert.ToSingle(ypt2) * currentScale));
 
 					Sprowindex = Convert.ToInt32(Sprolines.Tables[0].Rows[i]["jlline#"].ToString());
 
@@ -3454,7 +3520,7 @@ End Joey's alternative Code */
 
 								if (startSplitY >= y2 && startSplitY <= Convert.ToDecimal(RESpJumpTable.Rows[i + 1]["Ypt2"].ToString()))
 								{
-									_savedAttSection = atsect;
+									SavedAttachmentSection = atsect;
 
 									OrigLineLength = Convert.ToDecimal(RESpJumpTable.Rows[i + 1]["YLen"].ToString());
 
@@ -3568,7 +3634,7 @@ End Joey's alternative Code */
 							{
 								if (startSplitX >= x2 && startSplitX <= Convert.ToDecimal(RESpJumpTable.Rows[i + 1]["Xpt2"].ToString()) && offsetDir == "E")
 								{
-									_savedAttSection = atsect;
+									SavedAttachmentSection = atsect;
 
 									OrigLineLength = Convert.ToDecimal(RESpJumpTable.Rows[i + 1]["XLen"].ToString());
 
@@ -3584,7 +3650,7 @@ End Joey's alternative Code */
 
 								if (startSplitX <= x2 && startSplitX >= Convert.ToDecimal(RESpJumpTable.Rows[i + 1]["Xpt2"].ToString()) && offsetDir == "W")
 								{
-									_savedAttSection = atsect;
+									SavedAttachmentSection = atsect;
 
 									OrigLineLength = Convert.ToDecimal(RESpJumpTable.Rows[i + 1]["XLen"].ToString());
 
@@ -3669,26 +3735,26 @@ End Joey's alternative Code */
 
 					if (draw)
 					{
-						if (_lastDir == "E")
+						if (lastLineDirection == "E")
 						{
 							NextStartX = NextStartX + distanceD;
 
 							float ty = NextStartY;
 						}
-						if (_lastDir == "W")
+						if (lastLineDirection == "W")
 						{
 							NextStartX = NextStartX - distanceD;
 
 							float ty = NextStartY;
 						}
 
-						if (_lastDir == "N")
+						if (lastLineDirection == "N")
 						{
 							NextStartY = NextStartY - distanceD;
 
 							float tx = NextStartX;
 						}
-						if (_lastDir == "S")
+						if (lastLineDirection == "S")
 						{
 							NextStartY = NextStartY + distanceD;
 
@@ -3714,10 +3780,10 @@ End Joey's alternative Code */
 			{
 				DataRow row = undoPoints.NewRow();
 
-				float _JumpX1 = (ScaleBaseX + (Convert.ToSingle(REJumpTable.Rows[i]["XPt1"].ToString()) * _currentScale)); //  change XPt1 to XPt2
-				float _JumpY1 = (ScaleBaseY + (Convert.ToSingle(REJumpTable.Rows[i]["YPT1"].ToString()) * _currentScale));
-				float _JumpX2 = (ScaleBaseX + (Convert.ToSingle(REJumpTable.Rows[i]["XPt2"].ToString()) * _currentScale)); //  change XPt1 to XPt2
-				float _JumpY2 = (ScaleBaseY + (Convert.ToSingle(REJumpTable.Rows[i]["YPT2"].ToString()) * _currentScale));
+				float _JumpX1 = (ScaleBaseX + (Convert.ToSingle(REJumpTable.Rows[i]["XPt1"].ToString()) * currentScale)); //  change XPt1 to XPt2
+				float _JumpY1 = (ScaleBaseY + (Convert.ToSingle(REJumpTable.Rows[i]["YPT1"].ToString()) * currentScale));
+				float _JumpX2 = (ScaleBaseX + (Convert.ToSingle(REJumpTable.Rows[i]["XPt2"].ToString()) * currentScale)); //  change XPt1 to XPt2
+				float _JumpY2 = (ScaleBaseY + (Convert.ToSingle(REJumpTable.Rows[i]["YPT2"].ToString()) * currentScale));
 
 				JumpX = _JumpX1;
 				JumpY = _JumpY1;
@@ -3752,9 +3818,9 @@ End Joey's alternative Code */
 		{
 			StringBuilder insertLine = new StringBuilder();
 			insertLine.Append(String.Format("insert into {0}.{1}line (jlrecord,jldwell,jlsect,jlline#,jldirect,jlxlen,jlylen,jllinelen, ",
-					  MainForm.localLib, MainForm.localPreFix));
+					  MainForm.localLib, MainForm.localPrefix));
 			insertLine.Append("jlangle,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach ) values ( ");
-			insertLine.Append(String.Format(" {0},{1},'{2}',{3},'{4}',{5},{6},{7},{8},{9},{10},{11},{12},'{13}' )", _currentParcel.mrecno, _currentParcel.mdwell, CurrentSecLtr,
+			insertLine.Append(String.Format(" {0},{1},'{2}',{3},'{4}',{5},{6},{7},{8},{9},{10},{11},{12},'{13}' )", currentParcel.mrecno, currentParcel.mdwell, CurrentSecLtr,
 				mylineNo,
 				CurAttDir,
 				Math.Abs(adjNewSecX),
@@ -3765,7 +3831,7 @@ End Joey's alternative Code */
 				StartEndY,
 				newEndX,
 				newEndY,
-				_nextSectLtr
+				nextSectionLetter
 				));
 
 			dbConn.DBConnection.ExecuteNonSelectStatement(insertLine.ToString());
@@ -3845,12 +3911,12 @@ End Joey's alternative Code */
 			float jy = _mouseY;
 			float _scaleBaseX = ScaleBaseX;
 			float _scaleBaseY = ScaleBaseY;
-			float CurrentScale = _currentScale;
-			int crrec = _currentParcel.Record;
-			int crcard = _currentParcel.Card;
+			float CurrentScale = currentScale;
+			int crrec = currentParcel.Record;
+			int crcard = currentParcel.Card;
 
 			CurrentSecLtr = String.Empty;
-			_newIndex = 0;
+			newIndex = 0;
 			currentAttachmentLine = 0;
 
 			DataSet lines = null;
@@ -3916,13 +3982,13 @@ End Joey's alternative Code */
 			StringBuilder lineCntx = new StringBuilder();
 			lineCntx.Append(String.Format("select max(jlline#) from {0}.{1}line ",
 					   MainForm.localLib,
-						  MainForm.localPreFix
+						  MainForm.localPrefix
 
 						//MainForm.FClib,
 						//MainForm.FCprefix
 						));
 			lineCntx.Append(String.Format("where jlrecord = {0} and jldwell = {1} and jlsect = '{2}' ",
-				_currentParcel.mrecno, _currentParcel.mdwell, CurrentSecLtr));
+				currentParcel.mrecno, currentParcel.mdwell, CurrentSecLtr));
 
 			maxLineCnt = Convert.ToInt32(dbConn.DBConnection.ExecuteScalar(lineCntx.ToString()));
 			return maxLineCnt;
@@ -3945,9 +4011,9 @@ End Joey's alternative Code */
 			AngleForm _findCode = new AngleForm();
 			_findCode.ShowDialog();
 
-			if (_isKeyValid == false)
+			if (isValidKey == false)
 			{
-				_isKeyValid = true;
+				isValidKey = true;
 			}
 
 			if (AngleForm.NorthWest == true)
@@ -4019,7 +4085,7 @@ End Joey's alternative Code */
 			{
 				MulPts.Clear();
 
-				MultiSectionSelection attsecltr = new MultiSectionSelection(AttSecLtrList, _currentParcel.mrecno, _currentParcel.mdwell, dbConn);
+				MultiSectionSelection attsecltr = new MultiSectionSelection(AttSecLtrList, currentParcel.mrecno, currentParcel.mdwell, dbConn);
 				attsecltr.ShowDialog(this);
 
 				multisectatch = MultiSectionSelection.adjsec;
@@ -4043,12 +4109,12 @@ End Joey's alternative Code */
 			StringBuilder orgLen = new StringBuilder();
 			orgLen.Append(String.Format("select jllinelen from {0}.{1}line where jlrecord = {2} and jldwell = {3} ",
 					  MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 						//MainForm.FClib,
 						//MainForm.FCprefix,
-						_currentParcel.mrecno,
-						_currentParcel.mdwell
+						currentParcel.mrecno,
+						currentParcel.mdwell
 						));
 			orgLen.Append(String.Format("and jlsect = '{0}' and jlline# = {1} ",
 				CurrentSecLtr, AttSpLineNo));
@@ -4228,7 +4294,7 @@ End Joey's alternative Code */
 
 		private void PopulateSectionList()
 		{
-			string seclst = string.Format("SELECT JLSECT FROM {0}.{1}LINE WHERE JLRECORD = {2} AND JLDWELL = {3} AND JLLINE# = 1 ", MainForm.localLib, MainForm.localPreFix, _currentParcel.Record, _currentParcel.Card);
+			string seclst = string.Format("SELECT JLSECT FROM {0}.{1}LINE WHERE JLRECORD = {2} AND JLDWELL = {3} AND JLLINE# = 1 ", MainForm.localLib, MainForm.localPrefix, currentParcel.Record, currentParcel.Card);
 
 			try
 			{
@@ -4274,17 +4340,17 @@ End Joey's alternative Code */
 				{
 					if (x1 == x2)
 					{
-						redist = Math.Abs((y1 - y2) / _currentScale);
+						redist = Math.Abs((y1 - y2) / currentScale);
 					}
 					if (y1 == y2)
 					{
-						redist = Math.Abs((x1 - x2) / _currentScale);
+						redist = Math.Abs((x1 - x2) / currentScale);
 					}
 				}
 				if (undodirect == "NE" || undodirect == "SE" || undodirect == "NW" || undodirect == "SW")
 				{
-					float x1f = Math.Abs((x1 - x2) / _currentScale);
-					float y1f = Math.Abs((y1 - y2) / _currentScale);
+					float x1f = Math.Abs((x1 - x2) / currentScale);
+					float y1f = Math.Abs((y1 - y2) / currentScale);
 
 					distanceD = Convert.ToInt32(Math.Sqrt(x1f + y1f));
 
@@ -4313,7 +4379,7 @@ End Joey's alternative Code */
 					Pen pen1w = new Pen(Color.White, 2);
 					Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1x, StartX, StartY, (StartX + (redist * _currentScale)), StartY);
+					g.DrawLine(pen1x, StartX, StartY, (StartX + (redist * currentScale)), StartY);
 
 					ExpSketchPBox.Image = _mainimage;
 					click++;
@@ -4326,7 +4392,7 @@ End Joey's alternative Code */
 					Pen pen1w = new Pen(Color.White, 2);
 					Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1x, StartX, StartY, StartX, (StartY - (redist * _currentScale)));
+					g.DrawLine(pen1x, StartX, StartY, StartX, (StartY - (redist * currentScale)));
 
 					ExpSketchPBox.Image = _mainimage;
 					click++;
@@ -4339,7 +4405,7 @@ End Joey's alternative Code */
 					Pen pen1w = new Pen(Color.White, 2);
 					Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1x, StartX, StartY, StartX, (StartY + (redist * _currentScale)));
+					g.DrawLine(pen1x, StartX, StartY, StartX, (StartY + (redist * currentScale)));
 
 					ExpSketchPBox.Image = _mainimage;
 					click++;
@@ -4352,7 +4418,7 @@ End Joey's alternative Code */
 					Pen pen1w = new Pen(Color.White, 2);
 					Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1x, StartX, StartY, (StartX - (redist * _currentScale)), StartY);
+					g.DrawLine(pen1x, StartX, StartY, (StartX - (redist * currentScale)), StartY);
 
 					ExpSketchPBox.Image = _mainimage;
 					click++;
@@ -4365,7 +4431,7 @@ End Joey's alternative Code */
 					Pen pen1w = new Pen(Color.White, 2);
 					Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1x, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * _currentScale)), (StartY - (Convert.ToInt16(AngD2) * _currentScale)));
+					g.DrawLine(pen1x, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * currentScale)), (StartY - (Convert.ToInt16(AngD2) * currentScale)));
 
 					ExpSketchPBox.Image = _mainimage;
 					click++;
@@ -4378,7 +4444,7 @@ End Joey's alternative Code */
 					Pen pen1w = new Pen(Color.White, 2);
 					Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1x, StartX, StartY, (StartX + (Convert.ToInt16(AngD1) * _currentScale)), (StartY - (Convert.ToInt16(AngD2) * _currentScale)));
+					g.DrawLine(pen1x, StartX, StartY, (StartX + (Convert.ToInt16(AngD1) * currentScale)), (StartY - (Convert.ToInt16(AngD2) * currentScale)));
 
 					ExpSketchPBox.Image = _mainimage;
 					click++;
@@ -4391,7 +4457,7 @@ End Joey's alternative Code */
 					Pen pen1w = new Pen(Color.White, 2);
 					Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1x, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * _currentScale)), (StartY + (Convert.ToInt16(AngD2) * _currentScale)));
+					g.DrawLine(pen1x, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * currentScale)), (StartY + (Convert.ToInt16(AngD2) * currentScale)));
 
 					ExpSketchPBox.Image = _mainimage;
 					click++;
@@ -4404,7 +4470,7 @@ End Joey's alternative Code */
 					Pen pen1w = new Pen(Color.White, 2);
 					Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1x, StartX, StartY, (StartX + (Convert.ToInt16(AngD1) * _currentScale)), (StartY + (Convert.ToInt16(AngD2) * _currentScale)));
+					g.DrawLine(pen1x, StartX, StartY, (StartX + (Convert.ToInt16(AngD1) * currentScale)), (StartY + (Convert.ToInt16(AngD2) * currentScale)));
 
 					ExpSketchPBox.Image = _mainimage;
 					click++;
@@ -4422,9 +4488,9 @@ End Joey's alternative Code */
 			ExpSketchPBox.Refresh();
 			_mainimage = null;
 
-			_mainimage = _currentParcel.GetSketchImage(ExpSketchPBox.Width, ExpSketchPBox.Height,
-				1000, 572, 400, out _scale);
-			_currentScale = _scale;
+			_mainimage = currentParcel.GetSketchImage(ExpSketchPBox.Width, ExpSketchPBox.Height,
+				1000, 572, 400, out drawingScale);
+			currentScale = drawingScale;
 
 			Graphics g = Graphics.FromImage(_mainimage);
 			SolidBrush Lblbrush = new SolidBrush(Color.Black);
@@ -4442,7 +4508,7 @@ End Joey's alternative Code */
 			g.DrawString(String.Format("Record # - {0}", SketchRecord.TrimStart(leadzero)), LbLf, Lblbrush, new PointF(10, 30));
 			g.DrawString(String.Format("Card # - {0}", SketchCard), LbLf, Lblbrush, new PointF(10, 45));
 
-			g.DrawString(String.Format("Scale - {0}", _currentScale), LbLf, Lblbrush, new PointF(10, 70));
+			g.DrawString(String.Format("Scale - {0}", currentScale), LbLf, Lblbrush, new PointF(10, 70));
 
 			ExpSketchPBox.Image = _mainimage;
 
@@ -4463,12 +4529,12 @@ End Joey's alternative Code */
 			getLine.Append("jlpt1x,jlpt1y,jlpt2x,jlpt2Y,jlattach ");
 			getLine.Append(String.Format("from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' ",
 					   MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 						//MainForm.FClib,
 						//MainForm.FCprefix,
-						_currentParcel.mrecno,
-						_currentParcel.mdwell,
+						currentParcel.mrecno,
+						currentParcel.mdwell,
 						MainForm.reopenSec));
 
 			rolines = dbConn.DBConnection.RunSelectStatement(getLine.ToString());
@@ -4501,22 +4567,22 @@ End Joey's alternative Code */
 					decimal xpt2 = Convert.ToDecimal(rolines.Tables[0].Rows[i]["jlpt2x"].ToString());
 					decimal ypt2 = Convert.ToDecimal(rolines.Tables[0].Rows[i]["jlpt2y"].ToString());
 
-					float xPoint = (ScaleBaseX + (Convert.ToSingle(xpt2) * _currentScale));
-					float yPoint = (ScaleBaseY + (Convert.ToSingle(ypt2) * _currentScale));
+					float xPoint = (ScaleBaseX + (Convert.ToSingle(xpt2) * currentScale));
+					float yPoint = (ScaleBaseY + (Convert.ToSingle(ypt2) * currentScale));
 
 					rowindex = Convert.ToInt32(rolines.Tables[0].Rows[i]["jlline#"].ToString());
 
-					_StartX.Add(rowindex, xPoint);
+					startPointX.Add(rowindex, xPoint);
 
-					_StartY.Add(rowindex, yPoint);
+					startPointY.Add(rowindex, yPoint);
 
 					REJumpTable.Rows.Add(row);
 				}
 
-				float _JumpXT = (ScaleBaseX + (Convert.ToSingle(REJumpTable.Rows[rowindex - 1]["XPt2"].ToString()) * _currentScale));
+				float _JumpXT = (ScaleBaseX + (Convert.ToSingle(REJumpTable.Rows[rowindex - 1]["XPt2"].ToString()) * currentScale));
 
-				float _JumpX = (ScaleBaseX + (Convert.ToSingle(REJumpTable.Rows[rowindex - 1]["XPt2"].ToString()) * _currentScale)); //  change XPt1 to XPt2
-				float _JumpY = (ScaleBaseY + (Convert.ToSingle(REJumpTable.Rows[rowindex - 1]["YPT2"].ToString()) * _currentScale));
+				float _JumpX = (ScaleBaseX + (Convert.ToSingle(REJumpTable.Rows[rowindex - 1]["XPt2"].ToString()) * currentScale)); //  change XPt1 to XPt2
+				float _JumpY = (ScaleBaseY + (Convert.ToSingle(REJumpTable.Rows[rowindex - 1]["YPT2"].ToString()) * currentScale));
 
 				JumpX = _JumpX;
 				JumpY = _JumpY;
@@ -4532,15 +4598,15 @@ End Joey's alternative Code */
 			CPcnt = 0;
 			CPSize = 0;
 
-			int tg = _currentParcel.mgart;
+			int tg = currentParcel.mgart;
 
-			int tg2 = _currentParcel.mgart2;
+			int tg2 = currentParcel.mgart2;
 
-			int tc = _currentParcel.mcarpt;
+			int tc = currentParcel.mcarpt;
 
 			StringBuilder getSect = new StringBuilder();
 			getSect.Append(String.Format("select jsrecord,jsdwell,jssect,jstype,jssqft from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ",
-							  MainForm.FClib, MainForm.FCprefix, _currentParcel.Record, _currentParcel.Card));
+							  MainForm.FClib, MainForm.FCprefix, currentParcel.Record, currentParcel.Card));
 			getSect.Append(" order by jssect ");
 
 			DataSet ds = dbConn.DBConnection.RunSelectStatement(getSect.ToString());
@@ -4550,13 +4616,13 @@ End Joey's alternative Code */
 				for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
 				{
 					DataRow row = SectionLtrs.NewRow();
-					row["RecNo"] = _currentParcel.Record;
-					row["CardNo"] = _currentParcel.Card;
+					row["RecNo"] = currentParcel.Record;
+					row["CardNo"] = currentParcel.Card;
 
 					//row["CurSecLtr"] = ds.Tables[0].Rows[i]["jssect"].ToString();
 					//row["NewSecLtr"] = Letters[i].ToString();
 					row["CurSecLtr"] = CurrentSecLtr;
-					row["NewSecLtr"] = _nextSectLtr;
+					row["NewSecLtr"] = nextSectionLetter;
 					row["NewType"] = ds.Tables[0].Rows[i]["jstype"].ToString();
 					row["SectSize"] = Convert.ToDecimal(ds.Tables[0].Rows[i]["jssqft"].ToString());
 
@@ -4582,140 +4648,140 @@ End Joey's alternative Code */
 				StringBuilder zerogar = new StringBuilder();
 				zerogar.Append(String.Format("update {0}.{1}mast set mgart = 63, mgar#c = 0,mgart2 = 0,mgar#2 = 0 where mrecno = {2} and mdwell = {3} ",
 										MainForm.localLib,
-										MainForm.localPreFix,
-										_currentParcel.mrecno,
-										_currentParcel.mdwell));
+										MainForm.localPrefix,
+										currentParcel.mrecno,
+										currentParcel.mdwell));
 
 				dbConn.DBConnection.ExecuteNonSelectStatement(zerogar.ToString());
 
-				ParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
+				ParcelData.getParcel(dbConn, currentParcel.mrecno, currentParcel.mdwell);
 			}
 			if (CPcnt == 0)
 			{
 				StringBuilder zerocp = new StringBuilder();
 				zerocp.Append(String.Format("update {0}.{1}mast set mcarpt = 67, mcar#c = 0 where mrecno = {2} and mdwell = {3} ",
 										MainForm.localLib,
-										MainForm.localPreFix,
-										_currentParcel.mrecno,
-										_currentParcel.mdwell));
+										MainForm.localPrefix,
+										currentParcel.mrecno,
+										currentParcel.mdwell));
 
 				dbConn.DBConnection.ExecuteNonSelectStatement(zerocp.ToString());
 
-				ParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
+				ParcelData.getParcel(dbConn, currentParcel.mrecno, currentParcel.mdwell);
 			}
 
 			if (Garcnt > 0)
 			{
-				if (Garcnt == 1 && _currentParcel.mgart <= 60 || Garcnt == 1 && _currentParcel.mgart == 63 || Garcnt == 1 && _currentParcel.mgart == 64)
+				if (Garcnt == 1 && currentParcel.mgart <= 60 || Garcnt == 1 && currentParcel.mgart == 63 || Garcnt == 1 && currentParcel.mgart == 64)
 				{
-					MissingGarageData missGar = new MissingGarageData(dbConn, _currentParcel, GarSize, "GAR");
+					MissingGarageData missGar = new MissingGarageData(dbConn, currentParcel, GarSize, "GAR");
 					missGar.ShowDialog();
 
-					if (MissingGarageData.GarCode != _currentParcel.orig_mgart)
+					if (MissingGarageData.GarCode != currentParcel.orig_mgart)
 					{
 						StringBuilder fixCp = new StringBuilder();
 						fixCp.Append(String.Format("update {0}.{1}mast set mgart = {2},mgar#c = {3},mgart2 = 0,mgar#2 = 0 ",
 						  MainForm.localLib,
-							  MainForm.localPreFix,
+							  MainForm.localPrefix,
 
 							//MainForm.FClib,
 							//MainForm.FCprefix,
 							MissingGarageData.GarCode,
 							MissingGarageData.GarNbr));
-						fixCp.Append(String.Format("where mrecno = {0} and mdwell = {1} ", _currentParcel.mrecno, _currentParcel.mdwell));
+						fixCp.Append(String.Format("where mrecno = {0} and mdwell = {1} ", currentParcel.mrecno, currentParcel.mdwell));
 
 						dbConn.DBConnection.ExecuteNonSelectStatement(fixCp.ToString());
 
-						ParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
+						ParcelData.getParcel(dbConn, currentParcel.mrecno, currentParcel.mdwell);
 					}
 				}
-				if (Garcnt > 1 && _currentParcel.mgart2 == 0)
+				if (Garcnt > 1 && currentParcel.mgart2 == 0)
 				{
-					MissingGarageData missGar = new MissingGarageData(dbConn, _currentParcel, GarSize, "GAR");
+					MissingGarageData missGar = new MissingGarageData(dbConn, currentParcel, GarSize, "GAR");
 					missGar.ShowDialog();
 
-					if (MissingGarageData.GarCode != _currentParcel.orig_mgart2)
+					if (MissingGarageData.GarCode != currentParcel.orig_mgart2)
 					{
 						StringBuilder fixCp = new StringBuilder();
 						fixCp.Append(String.Format("update {0}.{1}mast set mgart2 = {2},mgar#2 = {3} ",
 						  MainForm.localLib,
-							  MainForm.localPreFix,
+							  MainForm.localPrefix,
 
 							//MainForm.FClib,
 							//MainForm.FCprefix,
 							MissingGarageData.GarCode,
 							MissingGarageData.GarNbr));
-						fixCp.Append(String.Format("where mrecno = {0} and mdwell = {1} ", _currentParcel.mrecno, _currentParcel.mdwell));
+						fixCp.Append(String.Format("where mrecno = {0} and mdwell = {1} ", currentParcel.mrecno, currentParcel.mdwell));
 
 						dbConn.DBConnection.ExecuteNonSelectStatement(fixCp.ToString());
 
-						ParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
+						ParcelData.getParcel(dbConn, currentParcel.mrecno, currentParcel.mdwell);
 					}
 				}
 				if (Garcnt > 2)
 				{
-					MissingGarageData missGar = new MissingGarageData(dbConn, _currentParcel, GarSize, "GAR");
+					MissingGarageData missGar = new MissingGarageData(dbConn, currentParcel, GarSize, "GAR");
 					missGar.ShowDialog();
 
-					int newgarcnt = _currentParcel.mgarN2 + MissingGarageData.GarNbr;
+					int newgarcnt = currentParcel.mgarN2 + MissingGarageData.GarNbr;
 
 					StringBuilder addcp = new StringBuilder();
 					addcp.Append(String.Format("update {0}.{1}mast set mgar#2 = {2} where mrecno = {3} and mdwell = {4} ",
 							MainForm.localLib,
-							MainForm.localPreFix,
+							MainForm.localPrefix,
 							newgarcnt,
-							_currentParcel.mrecno,
-							_currentParcel.mdwell));
+							currentParcel.mrecno,
+							currentParcel.mdwell));
 
 					dbConn.DBConnection.ExecuteNonSelectStatement(addcp.ToString());
 
-					ParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
+					ParcelData.getParcel(dbConn, currentParcel.mrecno, currentParcel.mdwell);
 				}
 			}
 			if (CPcnt > 0)
 			{
-				if (CPcnt > 0 && _currentParcel.mcarpt == 0 || CPcnt > 0 && _currentParcel.mcarpt == 67)
+				if (CPcnt > 0 && currentParcel.mcarpt == 0 || CPcnt > 0 && currentParcel.mcarpt == 67)
 				{
-					MissingGarageData missCP = new MissingGarageData(dbConn, _currentParcel, CPSize, "CP");
+					MissingGarageData missCP = new MissingGarageData(dbConn, currentParcel, CPSize, "CP");
 					missCP.ShowDialog();
 
-					if (MissingGarageData.CPCode != _currentParcel.orig_mcarpt)
+					if (MissingGarageData.CPCode != currentParcel.orig_mcarpt)
 					{
 						StringBuilder fixCp = new StringBuilder();
 						fixCp.Append(String.Format("update {0}.{1}mast set mcarpt = {2},mcar#c = {3} ",
 						   MainForm.localLib,
-							  MainForm.localPreFix,
+							  MainForm.localPrefix,
 
 							//MainForm.FClib,
 							//MainForm.FCprefix,
 							MissingGarageData.CPCode,
 							MissingGarageData.CpNbr));
-						fixCp.Append(String.Format("where mrecno = {0} and mdwell = {1} ", _currentParcel.mrecno, _currentParcel.mdwell));
+						fixCp.Append(String.Format("where mrecno = {0} and mdwell = {1} ", currentParcel.mrecno, currentParcel.mdwell));
 
 						dbConn.DBConnection.ExecuteNonSelectStatement(fixCp.ToString());
 
-						ParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
+						ParcelData.getParcel(dbConn, currentParcel.mrecno, currentParcel.mdwell);
 					}
 				}
 
-				if (CPcnt > 1 && _currentParcel.mcarpt != 0 || CPcnt > 1 && _currentParcel.mcarpt != 67)
+				if (CPcnt > 1 && currentParcel.mcarpt != 0 || CPcnt > 1 && currentParcel.mcarpt != 67)
 				{
-					MissingGarageData missCPx = new MissingGarageData(dbConn, _currentParcel, CPSize, "CP");
+					MissingGarageData missCPx = new MissingGarageData(dbConn, currentParcel, CPSize, "CP");
 					missCPx.ShowDialog();
 
-					int newcpcnt = _currentParcel.mcarNc + MissingGarageData.CpNbr;
+					int newcpcnt = currentParcel.mcarNc + MissingGarageData.CpNbr;
 
 					StringBuilder addcp = new StringBuilder();
 					addcp.Append(String.Format("update {0}.{1}mast set mcar#c = {2} where mrecno = {3} and mdwell = {4} ",
 							MainForm.localLib,
-							MainForm.localPreFix,
+							MainForm.localPrefix,
 							newcpcnt,
-							_currentParcel.mrecno,
-							_currentParcel.mdwell));
+							currentParcel.mrecno,
+							currentParcel.mdwell));
 
 					dbConn.DBConnection.ExecuteNonSelectStatement(addcp.ToString());
 
-					ParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
+					ParcelData.getParcel(dbConn, currentParcel.mrecno, currentParcel.mdwell);
 				}
 			}
 
@@ -4723,7 +4789,7 @@ End Joey's alternative Code */
 			{
 				StringBuilder fixSect = new StringBuilder();
 				fixSect.Append(String.Format("update {0}.{1}section set jssect = '{2}' where jsrecord = {3} and jsdwell = {4} ", MainForm.FClib, MainForm.FCprefix,
-					SectionLtrs.Rows[j]["NewSecLtr"].ToString().Trim(), _currentParcel.Record, _currentParcel.Card));
+					SectionLtrs.Rows[j]["NewSecLtr"].ToString().Trim(), currentParcel.Record, currentParcel.Card));
 				fixSect.Append(String.Format(" and jssect = '{0}' ", SectionLtrs.Rows[j]["CurSecLtr"].ToString().Trim()));
 
 				//fox.DBConnection.ExecuteNonSelectStatement(fixSect.ToString());
@@ -4737,7 +4803,7 @@ End Joey's alternative Code */
 
 				//oldLineLtr = SectionLtrs.Rows[k]["CurSecLtr"].ToString().Trim();
 
-				newLineLtr = _nextSectLtr.Trim();
+				newLineLtr = nextSectionLetter.Trim();
 
 				oldLineLtr = CurrentSecLtr.Trim();
 
@@ -4845,12 +4911,12 @@ End Joey's alternative Code */
 			StringBuilder attPnts = new StringBuilder();
 			attPnts.Append(String.Format("select jlrecord,jldwell,jlsect,jldirect,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach from {0}.{1}line ",
 						  MainForm.localLib,
-						  MainForm.localPreFix
+						  MainForm.localPrefix
 
 							//MainForm.FClib,
 							//MainForm.FCprefix
 							));
-			attPnts.Append(String.Format(" where jlrecord = {0} and jldwell = {1} and jlline# = 1 and jlsect <> 'A' ", _currentParcel.Record, _currentParcel.Card));
+			attPnts.Append(String.Format(" where jlrecord = {0} and jldwell = {1} and jlline# = 1 and jlsect <> 'A' ", currentParcel.Record, currentParcel.Card));
 
 			DataSet ap = dbConn.DBConnection.RunSelectStatement(attPnts.ToString());
 
@@ -4861,8 +4927,8 @@ End Joey's alternative Code */
 				for (int i = 0; i < ap.Tables[0].Rows.Count; i++)
 				{
 					DataRow row = AttachPoints.NewRow();
-					row["RecNo"] = _currentParcel.Record;
-					row["CardNo"] = _currentParcel.Card;
+					row["RecNo"] = currentParcel.Record;
+					row["CardNo"] = currentParcel.Card;
 					row["Sect"] = ap.Tables[0].Rows[i]["jlsect"].ToString().Trim();
 					row["Direct"] = ap.Tables[0].Rows[i]["jldirect"].ToString().Trim();
 					row["Xpt1"] = Convert.ToDecimal(ap.Tables[0].Rows[i]["jlpt1x"].ToString());
@@ -4879,18 +4945,18 @@ End Joey's alternative Code */
 			{
 				//MessageBox.Show(String.Format("Updating Line Record - {0}, Card - {1} at 4356", _currentParcel.Record, _currentParcel.Card));
 
-				string jkw = _nextSectLtr;
+				string jkw = nextSectionLetter;
 
 				StringBuilder delapts = new StringBuilder();
 				delapts.Append(String.Format("update {0}.{1}line set jlattach = ' ' where jlrecord = {2} and jldwell = {3} and jlattach = '{4}' ",
 							   MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 								//MainForm.FClib,
 								//MainForm.FCprefix,
-								_currentParcel.mrecno,
-								_currentParcel.mdwell,
-								_nextSectLtr));
+								currentParcel.mrecno,
+								currentParcel.mdwell,
+								nextSectionLetter));
 
 				dbConn.DBConnection.ExecuteNonSelectStatement(delapts.ToString());
 
@@ -4915,7 +4981,7 @@ End Joey's alternative Code */
 
 					//MessageBox.Show(String.Format("Update Line Record - {0}, Card - {1} at 4373", _currentParcel.Record, _currentParcel.Card));
 
-					if (curSect == _nextSectLtr)
+					if (curSect == nextSectionLetter)
 					{
 						ConnectSec = CurrentSecLtr;
 					}
@@ -4923,7 +4989,7 @@ End Joey's alternative Code */
 					StringBuilder addAttPnt = new StringBuilder();
 					addAttPnt.Append(String.Format("update {0}.{1}line set jlattach = '{2}' ",
 								   MainForm.localLib,
-								   MainForm.localPreFix,
+								   MainForm.localPrefix,
 
 									//MainForm.FClib,
 									//MainForm.FCprefix,
@@ -5096,12 +5162,12 @@ End Joey's alternative Code */
 			StringBuilder addFix = new StringBuilder();
 			addFix.Append(String.Format("select jlsect from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlline# = 1 ",
 					  MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 						//MainForm.FClib,
 						//MainForm.FCprefix,
-						_currentParcel.Record,
-						_currentParcel.Card));
+						currentParcel.Record,
+						currentParcel.Card));
 
 			DataSet fs = dbConn.DBConnection.RunSelectStatement(addFix.ToString());
 
@@ -5123,12 +5189,12 @@ End Joey's alternative Code */
 					chkLen.Append("when jldirect in ( 'NE','SE','NW','SW') then sqrt(abs(jlpt1y-jlpt2y)*abs(jlpt1y-jlpt2y)+abs(jlpt1x-jlpt2x)*abs(jlpt1x-jlpt2x)) ");
 					chkLen.Append(String.Format("end as LineLen, abs(jlpt1x-jlpt2x) as Xlen, abs(jlpt1y-jlpt2y) as Ylen from {0}.{1}line ",
 								  MainForm.localLib,
-						  MainForm.localPreFix
+						  MainForm.localPrefix
 
 									//MainForm.FClib,
 									//MainForm.FCprefix
 									));
-					chkLen.Append(String.Format("where jlrecord = {0} and jldwell = {1} order by jlsect,jlline# ", _currentParcel.Record, _currentParcel.Card));
+					chkLen.Append(String.Format("where jlrecord = {0} and jldwell = {1} order by jlsect,jlline# ", currentParcel.Record, currentParcel.Card));
 
 					DataSet fixl = dbConn.DBConnection.RunSelectStatement(chkLen.ToString());
 
@@ -5141,7 +5207,7 @@ End Joey's alternative Code */
 							StringBuilder updLine = new StringBuilder();
 							updLine.Append(String.Format("update {0}.{1}line set jlxlen = {2},jlylen = {3},jllinelen = {4} ",
 										   MainForm.localLib,
-										   MainForm.localPreFix,
+										   MainForm.localPrefix,
 
 											//MainForm.FClib,
 											//MainForm.FCprefix,
@@ -5149,8 +5215,8 @@ End Joey's alternative Code */
 											Convert.ToDecimal(fixl.Tables[0].Rows[i]["Ylen"].ToString()),
 											Convert.ToDecimal(fixl.Tables[0].Rows[i]["LineLen"].ToString())));
 							updLine.Append(String.Format("where jlrecord = {0} and jldwell = {1} and jlsect = '{2}' and jlline# = {3} ",
-									_currentParcel.Record,
-									_currentParcel.Card,
+									currentParcel.Record,
+									currentParcel.Card,
 									fixl.Tables[0].Rows[i]["jlsect"].ToString(),
 									Convert.ToInt32(fixl.Tables[0].Rows[i]["jlline#"].ToString())));
 
@@ -5163,9 +5229,9 @@ End Joey's alternative Code */
 
 		public void SplitLine()
 		{
-			int ln = _savedAttLine;
-			string asec = _savedAttSection;
-			string newSec = _nextSectLtr;
+			int attLineNum = savedAttachmentLine;
+			string attSec = SavedAttachmentSection;
+			string newSec = nextSectionLetter;
 			string tstdir = CurrentAttDir;
 			decimal begx = OrigStartX;
 			decimal begy = OrigStartY;
@@ -5197,29 +5263,29 @@ End Joey's alternative Code */
 
 			int chekattline = TempAttSplineNo;
 
-			_savedAttLine = AttSpLineNo;
+			savedAttachmentLine = AttSpLineNo;
 			if (AttSpLineNo == 0)
 			{
-				_savedAttLine = TempAttSplineNo;
+				savedAttachmentLine = TempAttSplineNo;
 				AttSpLineNo = TempAttSplineNo;
 			}
 
 			if (MultiSectionSelection.adjsec != String.Empty)
 			{
-				_savedAttSection = MultiSectionSelection.adjsec;
+				SavedAttachmentSection = MultiSectionSelection.adjsec;
 			}
 
 			StringBuilder sectable = new StringBuilder();
 			sectable.Append("select jlrecord,jldwell,jlsect,jlline#,jldirect,jlxlen,jlylen,jllinelen,jlangle,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach ");
 			sectable.Append(String.Format(" from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' ",
 						   MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 							//MainForm.FClib,
 							//MainForm.FCprefix,
-							_currentParcel.Record,
-							_currentParcel.Card,
-							_savedAttSection));
+							currentParcel.Record,
+							currentParcel.Card,
+							SavedAttachmentSection));
 
 			DataSet scl = dbConn.DBConnection.RunSelectStatement(sectable.ToString());
 
@@ -5230,8 +5296,8 @@ End Joey's alternative Code */
 				for (int i = 0; i < scl.Tables[0].Rows.Count; i++)
 				{
 					DataRow row = SectionTable.NewRow();
-					row["Record"] = _currentParcel.mrecno;
-					row["Card"] = _currentParcel.mdwell;
+					row["Record"] = currentParcel.mrecno;
+					row["Card"] = currentParcel.mdwell;
 					row["Sect"] = scl.Tables[0].Rows[i]["jlsect"].ToString().Trim();
 					row["LineNo"] = Convert.ToInt32(scl.Tables[0].Rows[i]["jlline#"].ToString());
 					row["Direct"] = scl.Tables[0].Rows[i]["jldirect"].ToString().Trim();
@@ -5257,14 +5323,14 @@ End Joey's alternative Code */
 
 			if (CurAttDir.Trim() != offsetDir.Trim())
 			{
-				string getNCurDir = string.Format("select jldirect from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' and jlline#= {5} ", MainForm.localLib, MainForm.localPreFix, _currentParcel.Record, _currentParcel.Card, _savedAttSection, AttSpLineNo);
+				string getNCurDir = string.Format("select jldirect from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' and jlline#= {5} ", MainForm.localLib, MainForm.localPrefix, currentParcel.Record, currentParcel.Card, SavedAttachmentSection, AttSpLineNo);
 
 				CurrentAttDir = dbConn.DBConnection.ExecuteScalar(getNCurDir.ToString()).ToString();
 			}
 
-			_savedAttLine = AttSpLineNo;
+			savedAttachmentLine = AttSpLineNo;
 
-			if (_savedAttLine == 0)
+			if (savedAttachmentLine == 0)
 			{
 			}
 
@@ -5273,14 +5339,14 @@ End Joey's alternative Code */
 				StringBuilder nxtAttDir = new StringBuilder();
 				nxtAttDir.Append(String.Format("select jldirect from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' and jlline# = {5} ",
 							   MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 								//MainForm.FClib,
 								//MainForm.FCprefix,
-								_currentParcel.mrecno,
-								_currentParcel.mdwell,
+								currentParcel.mrecno,
+								currentParcel.mdwell,
 								CurrentSecLtr,
-								_savedAttLine));
+								savedAttachmentLine));
 
 				NextAttDir = dbConn.DBConnection.ExecuteScalar(nxtAttDir.ToString()).ToString();
 			}
@@ -5293,14 +5359,14 @@ End Joey's alternative Code */
 				StringBuilder getoriglen = new StringBuilder();
 				getoriglen.Append(String.Format("select jllinelen,jlline# from {0}.{1}line where jlrecord = {2} and jldwell = {3}  and jlsect = '{4}' and jlline# = {5}",
 						  MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 							//MainForm.FClib,
 							//MainForm.FCprefix,
-							_currentParcel.mrecno,
-							_currentParcel.mdwell,
+							currentParcel.mrecno,
+							currentParcel.mdwell,
 							CurrentSecLtr,
-							_savedAttLine));
+							savedAttachmentLine));
 				getoriglen.Append(String.Format(" and jldirect = '{0}'", offsetDir));
 
 				DataSet myds = dbConn.DBConnection.RunSelectStatement(getoriglen.ToString());
@@ -5331,13 +5397,13 @@ End Joey's alternative Code */
 			StringBuilder getOrigEnds = new StringBuilder();
 			getOrigEnds.Append(String.Format("select jldirect,jlsect,jlline#,jlxlen,jlylen,jllinelen,jlpt1x,jlpt1y,jlpt2x,jlpt2y from {0}.{1}line ",
 						  MainForm.localLib,
-						  MainForm.localPreFix
+						  MainForm.localPrefix
 
 							//MainForm.FClib,
 							//MainForm.FCprefix
 							));
 			getOrigEnds.Append(String.Format("where jlrecord = {0} and jldwell = {1} and jlsect = '{2}' and jlline# = {3} ",
-				_currentParcel.mrecno, _currentParcel.mdwell, CurrentSecLtr, mylineNo));
+				currentParcel.mrecno, currentParcel.mdwell, CurrentSecLtr, mylineNo));
 
 			DataSet orgLin = dbConn.DBConnection.RunSelectStatement(getOrigEnds.ToString());
 
@@ -5382,15 +5448,15 @@ End Joey's alternative Code */
 				decimal ttue = splitLineDist;
 				StringBuilder incrLine = new StringBuilder();
 				incrLine.Append(String.Format("update {0}.{1}line set jlline# = jlline#+1 ",
-						  MainForm.localLib, MainForm.localPreFix));
-				incrLine.Append(String.Format("where jlrecord = {0} and jldwell = {1} and jlsect = '{2}' and jlline# > {3} ", _currentParcel.mrecno, _currentParcel.mdwell, CurrentSecLtr, _savedAttLine));
+						  MainForm.localLib, MainForm.localPrefix));
+				incrLine.Append(String.Format("where jlrecord = {0} and jldwell = {1} and jlsect = '{2}' and jlline# > {3} ", currentParcel.mrecno, currentParcel.mdwell, CurrentSecLtr, savedAttachmentLine));
 
 				//Ask Dave why this is not excecuting. Can this whole section be removed?
 				//fox.DBConnection.ExecuteNonSelectStatement(incrLine.ToString());
 
-				if (_savedAttLine > 0 && RemainderLineLength != 0)
+				if (savedAttachmentLine > 0 && RemainderLineLength != 0)
 				{
-					for (int i = _savedAttLine - 1; i < SectionTable.Rows.Count; i++)
+					for (int i = savedAttachmentLine - 1; i < SectionTable.Rows.Count; i++)
 					{
 						int tske = Convert.ToInt32(SectionTable.Rows[i]["LineNo"].ToString());
 
@@ -5404,7 +5470,7 @@ End Joey's alternative Code */
 				{
 					StringBuilder instLine = new StringBuilder();
 					instLine.Append(String.Format("insert into {0}.{1}line ",
-								  MainForm.localLib, MainForm.localPreFix));
+								  MainForm.localLib, MainForm.localPrefix));
 					instLine.Append(String.Format(" values ( {0},{1},'{2}',{3},'{4}',{5},{6},{7},{8},{9},{10},{11},{12},'{13}' ) ",
 										Convert.ToInt32(SectionTable.Rows[i]["Record"].ToString()),
 										Convert.ToInt32(SectionTable.Rows[i]["Card"].ToString()),
@@ -5483,7 +5549,7 @@ End Joey's alternative Code */
 				StringBuilder fixOrigLine = new StringBuilder();
 				fixOrigLine.Append(String.Format("update {0}.{1}line ",
 						  MainForm.localLib,
-						  MainForm.localPreFix
+						  MainForm.localPrefix
 
 							//MainForm.FClib,
 							//MainForm.FCprefix
@@ -5495,10 +5561,10 @@ End Joey's alternative Code */
 										NewSectionBeginPointX,
 										NewSectionBeginPointY));
 				fixOrigLine.Append(String.Format(" where jlrecord = {0} and jldwell = {1} and jlsect = '{2}' and jlline# = {3} ",
-								_currentParcel.mrecno,
-								_currentParcel.mdwell,
+								currentParcel.mrecno,
+								currentParcel.mdwell,
 								CurrentSecLtr,
-								_savedAttLine));
+								savedAttachmentLine));
 
 				//Ask Dave why this is not being called. Can it be removed?
 				//fox.DBConnection.ExecuteNonSelectStatement(fixOrigLine.ToString());
@@ -5534,7 +5600,7 @@ End Joey's alternative Code */
 				adjOldSecX = RemainderLineLength;
 			}
 
-			int newLineNbr = _savedAttLine + 1;
+			int newLineNbr = savedAttachmentLine + 1;
 
 			if (CurAttDir.Trim() != splitLineDir.Trim())
 			{
@@ -5620,7 +5686,7 @@ End Joey's alternative Code */
 		public void unDo(Dictionary<int, byte[]> curpic, int curclick)
 		{
 			savpic = curpic;
-			findends();
+			FindEnds();
 
 			decimal tstx = Convert.ToDecimal(delStartX);
 
@@ -5628,7 +5694,7 @@ End Joey's alternative Code */
 
 			bool ttsmm = draw;
 
-			string tstdir = _lastDir.Trim();
+			string tstdir = lastLineDirection.Trim();
 
 			float tstdist = distanceD;
 
@@ -5640,28 +5706,28 @@ End Joey's alternative Code */
 
 			float tstNexty = NextStartY;
 
-			if (_lastDir.Trim() == "N")
+			if (lastLineDirection.Trim() == "N")
 			{
 				// NextStartY = NextStartY + distanceD;
 
 				NextStartX = delStartX;
 				NextStartY = delStartY;
 			}
-			if (_lastDir.Trim() == "S")
+			if (lastLineDirection.Trim() == "S")
 			{
 				// NextStartY = NextStartY - distanceD;
 
 				NextStartX = delStartX;
 				NextStartY = delStartY;
 			}
-			if (_lastDir.Trim() == "E")
+			if (lastLineDirection.Trim() == "E")
 			{
 				// NextStartX = NextStartX - distanceD;
 
 				NextStartX = delStartX;
 				NextStartY = delStartY;
 			}
-			if (_lastDir.Trim() == "W")
+			if (lastLineDirection.Trim() == "W")
 			{
 				//NextStartX = NextStartX + distanceD;
 
@@ -5669,7 +5735,7 @@ End Joey's alternative Code */
 				NextStartY = delStartY;
 			}
 
-			if (_lastDir.Trim() == "NW")
+			if (lastLineDirection.Trim() == "NW")
 			{
 				//NextStartX = NextStartX - distanceDXF;
 				//NextStartY = NextStartY + distanceDYF;
@@ -5677,7 +5743,7 @@ End Joey's alternative Code */
 				NextStartX = delStartX;
 				NextStartY = delStartY;
 			}
-			if (_lastDir.Trim() == "NE")
+			if (lastLineDirection.Trim() == "NE")
 			{
 				//NextStartX = NextStartX + distanceDXF;
 				//NextStartY = NextStartY + distanceDYF;
@@ -5685,7 +5751,7 @@ End Joey's alternative Code */
 				NextStartX = delStartX;
 				NextStartY = delStartY;
 			}
-			if (_lastDir.Trim() == "SE")
+			if (lastLineDirection.Trim() == "SE")
 			{
 				//NextStartX = NextStartX + distanceDXF;
 				//NextStartY = NextStartY - distanceDYF;
@@ -5693,7 +5759,7 @@ End Joey's alternative Code */
 				NextStartX = delStartX;
 				NextStartY = delStartY;
 			}
-			if (_lastDir.Trim() == "SW")
+			if (lastLineDirection.Trim() == "SW")
 			{
 				//NextStartX = NextStartX - distanceDXF;
 				//NextStartY = NextStartY - distanceDYF;
@@ -5755,12 +5821,12 @@ End Joey's alternative Code */
 
 			if (MainForm.reopenSec != null)
 			{
-				_nextSectLtr = MainForm.reopenSec;
+				nextSectionLetter = MainForm.reopenSec;
 
 				NewSectionPoints.Clear();
 				lineCnt = undoPoints.Rows.Count;
 
-				int stxcnt = _StartX.Count;
+				int stxcnt = startPointX.Count;
 
 				for (int i = 0; i < undoPoints.Rows.Count; i++)
 				{
@@ -5772,23 +5838,23 @@ End Joey's alternative Code */
 
 					float y2 = Convert.ToSingle(undoPoints.Rows[i]["Y2pt"].ToString());
 
-					float x1s = ((x1 - ScaleBaseX) / _currentScale);
+					float x1s = ((x1 - ScaleBaseX) / currentScale);
 
-					float y1s = ((y1 - ScaleBaseY) / _currentScale);
+					float y1s = ((y1 - ScaleBaseY) / currentScale);
 
-					float x2s = ((x2 - ScaleBaseX) / _currentScale);
+					float x2s = ((x2 - ScaleBaseX) / currentScale);
 
-					float y2s = ((y2 - ScaleBaseY) / _currentScale);
+					float y2s = ((y2 - ScaleBaseY) / currentScale);
 
 					NewSectionPoints.Add(new PointF(x1s, y1s));
 				}
 			}
 
-			string thisnextSect = _nextSectLtr;
+			string thisnextSect = nextSectionLetter;
 
-			if (_nextSectLtr == String.Empty)
+			if (nextSectionLetter == String.Empty)
 			{
-				_nextSectLtr = "A";
+				nextSectionLetter = "A";
 				nonextsect = true;
 			}
 			if (thisnextSect != "A" && nonextsect == true)
@@ -5799,13 +5865,13 @@ End Joey's alternative Code */
 			StringBuilder delLine2 = new StringBuilder();
 			delLine2.Append(String.Format("select max(jlline#) from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' ",
 						   MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 							//MainForm.FClib,
 							//MainForm.FCprefix,
-							_currentParcel.Record,
-							_currentParcel.Card,
-							_nextSectLtr));
+							currentParcel.Record,
+							currentParcel.Card,
+							nextSectionLetter));
 
 			try
 			{
@@ -5820,14 +5886,14 @@ End Joey's alternative Code */
 				StringBuilder removelinex = new StringBuilder();
 				removelinex.Append(String.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlline# = {4} and jlsect = '{5}'  ",
 							  MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 								 // MainForm.FClib,
 								 // MainForm.FCprefix,
-								 _currentParcel.Record,
-								 _currentParcel.Card,
+								 currentParcel.Record,
+								 currentParcel.Card,
 								 maxLineCnt,
-								 _nextSectLtr));
+								 nextSectionLetter));
 
 				if (thisnextSect != String.Empty)
 				{
@@ -5840,13 +5906,13 @@ End Joey's alternative Code */
 					StringBuilder remsec = new StringBuilder();
 					remsec.Append(String.Format("delete from {0}.{1}section where jsrecord = {2} and jsdwell = {3} and jssect = '{4}' ",
 					  MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 						//MainForm.FClib,
 						//MainForm.FCprefix,
-						_currentParcel.mrecno,
-						_currentParcel.mdwell,
-						_nextSectLtr));
+						currentParcel.mrecno,
+						currentParcel.mdwell,
+						nextSectionLetter));
 
 					dbConn.DBConnection.ExecuteNonSelectStatement(remsec.ToString());
 				}
@@ -5864,8 +5930,8 @@ End Joey's alternative Code */
 
 					lineCnt--;
 
-					float txtsx = _StartX[maxLineCnt];
-					float txtsy = _StartY[maxLineCnt];
+					float txtsx = startPointX[maxLineCnt];
+					float txtsy = startPointY[maxLineCnt];
 
 					int tstclk = click;
 
@@ -5874,8 +5940,8 @@ End Joey's alternative Code */
 						ms = savpic[click];
 					}
 
-					StartX = _StartX[maxLineCnt - 1];
-					StartY = _StartY[maxLineCnt - 1];
+					StartX = startPointX[maxLineCnt - 1];
+					StartY = startPointY[maxLineCnt - 1];
 
 					CalculateClosure(pt2X, pt2Y);
 
@@ -5897,14 +5963,14 @@ End Joey's alternative Code */
 				StringBuilder removeLine = new StringBuilder();
 				removeLine.Append(String.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlline# = {4} and jlsect = '{5}'  ",
 							   MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 								//MainForm.FClib,
 								//MainForm.FCprefix,
-								_currentParcel.Record,
-								_currentParcel.Card,
+								currentParcel.Record,
+								currentParcel.Card,
 								maxLineCnt,
-								_nextSectLtr));
+								nextSectionLetter));
 
 				if (thisnextSect != String.Empty)
 				{
@@ -5918,8 +5984,8 @@ End Joey's alternative Code */
 
 					ms = savpic[click];
 
-					StartX = _StartX[click + 1];
-					StartY = _StartY[click + 1];
+					StartX = startPointX[click + 1];
+					StartY = startPointY[click + 1];
 
 					CalculateClosure(pt2X, pt2Y);
 
@@ -5966,9 +6032,9 @@ End Joey's alternative Code */
 					StringBuilder delXdir = new StringBuilder();
 					delXdir.Append(String.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jldirect = 'X'",
 							   MainForm.localLib,
-							  MainForm.localPreFix,
-									_currentParcel.Record,
-									_currentParcel.Card));
+							  MainForm.localPrefix,
+									currentParcel.Record,
+									currentParcel.Card));
 
 					dbConn.DBConnection.ExecuteNonSelectStatement(delXdir.ToString());
 
@@ -5993,12 +6059,12 @@ End Joey's alternative Code */
 
 			if (MainForm.reopenSec != null)
 			{
-				_nextSectLtr = MainForm.reopenSec;
+				nextSectionLetter = MainForm.reopenSec;
 
 				NewSectionPoints.Clear();
 				lineCnt = undoPoints.Rows.Count;
 
-				int stxcnt = _StartX.Count;
+				int stxcnt = startPointX.Count;
 
 				for (int i = 0; i < undoPoints.Rows.Count; i++)
 				{
@@ -6010,13 +6076,13 @@ End Joey's alternative Code */
 
 					float y2 = Convert.ToSingle(undoPoints.Rows[i]["Y2pt"].ToString());
 
-					float x1s = ((x1 - ScaleBaseX) / _currentScale);
+					float x1s = ((x1 - ScaleBaseX) / currentScale);
 
-					float y1s = ((y1 - ScaleBaseY) / _currentScale);
+					float y1s = ((y1 - ScaleBaseY) / currentScale);
 
-					float x2s = ((x2 - ScaleBaseX) / _currentScale);
+					float x2s = ((x2 - ScaleBaseX) / currentScale);
 
-					float y2s = ((y2 - ScaleBaseY) / _currentScale);
+					float y2s = ((y2 - ScaleBaseY) / currentScale);
 
 					NewSectionPoints.Add(new PointF(x1s, y1s));
 				}
@@ -6030,13 +6096,13 @@ End Joey's alternative Code */
 
 			click--;
 
-			float txtsx = _StartX[lineCnt];
-			float txtsy = _StartY[lineCnt];
+			float txtsx = startPointX[lineCnt];
+			float txtsy = startPointY[lineCnt];
 
 			ms = savpic[click];
 
-			StartX = _StartX[lineCnt];
-			StartY = _StartY[lineCnt];
+			StartX = startPointX[lineCnt];
+			StartY = startPointY[lineCnt];
 
 			_mainimage = byteArrayToImage(ms);
 			ExpSketchPBox.Image = _mainimage;
@@ -6049,7 +6115,7 @@ End Joey's alternative Code */
 			string Folder = String.Format(@"{0}:\{1}\{2}\{3}",
 				"C",
 			  MainForm.localLib,
-			   MainForm.localPreFix,
+			   MainForm.localPrefix,
 
 				//MainForm.FClib,
 				//MainForm.FCprefix,
@@ -6058,7 +6124,7 @@ End Joey's alternative Code */
 			filename = String.Format(@"{0}:\{1}\{2}\{3}\{4}",
 				"C",
 			   MainForm.localLib,
-			   MainForm.localPreFix,
+			   MainForm.localPrefix,
 
 			   //MainForm.FClib,
 			   //MainForm.FCprefix,
@@ -6072,12 +6138,12 @@ End Joey's alternative Code */
 
 			string query_sec = String.Format("select * from {0}.{1}section where jsrecord = {2} and jsdwell  = {3} ",
 					   MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 					   //MainForm.FClib,
 					   //MainForm.FCprefix,
-					   _currentParcel.Record,
-					   _currentParcel.Card);
+					   currentParcel.Record,
+					   currentParcel.Card);
 
 			DataSet dp_sec = dbConn.DBConnection.RunSelectStatement(query_sec);
 
@@ -6100,19 +6166,19 @@ End Joey's alternative Code */
 
 			string query_line = String.Format("select * from {0}.{1}line where jlrecord = {2} and jldwell = {3} ",
 						   MainForm.localLib,
-						  MainForm.localPreFix,
+						  MainForm.localPrefix,
 
 							//MainForm.FClib,
 							//MainForm.FCprefix,
-							_currentParcel.Record,
-							_currentParcel.Card);
+							currentParcel.Record,
+							currentParcel.Card);
 
 			DataSet dp_line = dbConn.DBConnection.RunSelectStatement(query_line);
 
 			filename = String.Format(@"{0}:\{1}\{2}\{3}\{4}",
 				"C",
 			  MainForm.localLib,
-			   MainForm.localPreFix,
+			   MainForm.localPrefix,
 
 				//MainForm.FClib,
 				//MainForm.FCprefix,

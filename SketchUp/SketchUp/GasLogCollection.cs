@@ -107,7 +107,7 @@ namespace SketchUp
 			this.Clear();
 			StringBuilder glsql = new StringBuilder();
 			glsql.Append("select grecno,gdwell,gnogas ");
-			glsql.Append(String.Format(" from {0}.{1}gaslg where grecno = {2} and gdwell = {3} ", MainForm.localLib, MainForm.localPreFix, record, card));
+			glsql.Append(String.Format(" from {0}.{1}gaslg where grecno = {2} and gdwell = {3} ", MainForm.localLib, MainForm.localPrefix, record, card));
 
 			DataSet ds = _fox.DBConnection.RunSelectStatement(glsql.ToString());
 			foreach (DataRow ireader in ds.Tables[0].Rows)

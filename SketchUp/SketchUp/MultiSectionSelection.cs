@@ -66,7 +66,7 @@ namespace SketchUp
 			StringBuilder getpts = new StringBuilder();
 			getpts.Append(String.Format("select distinct jlsect,jlline#,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach from {0}.{1}line ",
 						MainForm.localLib,
-						MainForm.localPreFix));
+						MainForm.localPrefix));
 			getpts.Append(String.Format("where jlrecord = {0} and jldwell = {1} and jlattach <> ' ' ",
 							record, dwell));
 

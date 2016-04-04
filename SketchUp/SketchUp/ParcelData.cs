@@ -1743,7 +1743,7 @@ namespace SketchUp
 			subParcel.Append(" mfill9,mgrntr,mcvmo,mcvda,mcvyr,mprout,mperr,mtbimp,mpuse,mcvexp,metxyr,mqapch,mqafil,mpict,meacre,mprcit,mprsta,mprzp1,mprzp4,mfp#,msfp#,mfl#, ");
 			subParcel.Append(" msfl#,mmfl#,miofp#,mstor#,mascom,mhrph#,mhrdat,mhrtim,mhrnam,mhrses,mhidpc,mhidnm,mcamo,mcada,mcayr,moldoc,substring(minwll,1,2) as walls, substring(minwll,3,2) as wall2, ");
 			subParcel.Append(" substring(minwll,5,2) as wall3, substring(minwll,7,2) as wall4, substring(mfloor,1,2) as floors, substring(mfloor,3,2) as floor2, substring(mfloor,5,2) as floor3, substring(mfloor,7,2) as floor4 ");
-			subParcel.Append(String.Format("from {0}.{1}mast ", MainForm.localLib, MainForm.localPreFix));
+			subParcel.Append(String.Format("from {0}.{1}mast ", MainForm.localLib, MainForm.localPrefix));
 			subParcel.Append(String.Format("  where mrecno = {0} and mdwell = {1} and moccup < 30 ", record, card));
 
 			DataSet Parcel = _fox.DBConnection.RunSelectStatement(subParcel.ToString());
@@ -2261,7 +2261,7 @@ namespace SketchUp
 				string chkStatus = String.Empty;
 				StringBuilder checkStatus = new StringBuilder();
 				checkStatus.Append(String.Format("select icstatus from parrevlib.{0}irchgd where icrecno = {1} and iccard = {2} and icseqno = 1 ",
-					MainForm.localPreFix, _parcel.mrecno, _parcel.mdwell));
+					MainForm.localPrefix, _parcel.mrecno, _parcel.mdwell));
 				try
 				{
 					DataSet cks = _fox.DBConnection.RunSelectStatement(checkStatus.ToString());

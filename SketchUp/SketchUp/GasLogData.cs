@@ -58,7 +58,7 @@ namespace SketchUp
 			{
 				if (IsNewRecord)
 				{
-					_fox.ExecuteNonSelectStatement(String.Format(_insertSQL, MainForm.localLib, MainForm.localPreFix, Record, Card, NbrGasFP));
+					_fox.ExecuteNonSelectStatement(String.Format(_insertSQL, MainForm.localLib, MainForm.localPrefix, Record, Card, NbrGasFP));
 				}
 				else
 				{
@@ -108,7 +108,7 @@ namespace SketchUp
 
 			StringBuilder glsql = new StringBuilder();
 			glsql.Append("select grecno,gdwell,gnogas ");
-			glsql.Append(String.Format("from {0}.{1}gaslg where grecno = {2} and gdwell = {3} ", MainForm.localLib, MainForm.localPreFix, recno, card));
+			glsql.Append(String.Format("from {0}.{1}gaslg where grecno = {2} and gdwell = {3} ", MainForm.localLib, MainForm.localPrefix, recno, card));
 
 			DataSet ds = fox.RunSelectStatement(glsql.ToString());
 

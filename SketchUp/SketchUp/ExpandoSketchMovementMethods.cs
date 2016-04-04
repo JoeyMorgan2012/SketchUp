@@ -13,7 +13,7 @@ namespace SketchUp
 
 		public void MoveEast(float startx, float starty)
 		{
-			if (_isKeyValid == true)
+			if (isValidKey == true)
 			{
 				StrxD = 0;
 				StryD = 0;
@@ -39,8 +39,8 @@ namespace SketchUp
 
 				distance = Convert.ToDecimal(distanceD);
 
-				_lenString = String.Format("{0} ft.", distanceD.ToString("N1"));
-				txtLocf = ((distanceD * _currentScale) / 2);
+				lengthLabelString = String.Format("{0} ft.", distanceD.ToString("N1"));
+				txtLocf = ((distanceD * currentScale) / 2);
 
 				decimal jup = Convert.ToDecimal(distanceD);
 
@@ -51,8 +51,8 @@ namespace SketchUp
 					Pen pen1 = new Pen(Color.Red, 2);
 					Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1, StartX, StartY, (StartX + (distanceD * _currentScale)), StartY);
-					g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
+					g.DrawLine(pen1, StartX, StartY, (StartX + (distanceD * currentScale)), StartY);
+					g.DrawString(lengthLabelString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
 				}
 
 				if (!draw)
@@ -62,15 +62,15 @@ namespace SketchUp
 					Pen pen1 = new Pen(Color.Cyan, 5);
 					Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1, StartX, StartY, (StartX + (distanceD * _currentScale)), StartY);
+					g.DrawLine(pen1, StartX, StartY, (StartX + (distanceD * currentScale)), StartY);
 					if (distance < 10)
 					{
-						g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 5)));
+						g.DrawString(lengthLabelString, f, brush, new PointF((StartX + txtLocf), (StartY - 5)));
 					}
-					g.DrawLine(pen1, StartX, StartY, (StartX + (distanceD * _currentScale)), StartY);
+					g.DrawLine(pen1, StartX, StartY, (StartX + (distanceD * currentScale)), StartY);
 					if (distance >= 10)
 					{
-						g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
+						g.DrawString(lengthLabelString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
 					}
 
 					BeginSplitX = BeginSplitX + distanceD;
@@ -78,10 +78,10 @@ namespace SketchUp
 					NextStartX = BeginSplitX;
 				}
 
-				EndX = StartX + (distanceD * _currentScale);
+				EndX = StartX + (distanceD * currentScale);
 				EndY = StartY;
 
-				decimal d1 = Math.Round(Convert.ToDecimal(distanceD * _currentScale), 1);
+				decimal d1 = Math.Round(Convert.ToDecimal(distanceD * currentScale), 1);
 
 				float EndX2 = StartX + (float)d1;
 
@@ -103,10 +103,10 @@ namespace SketchUp
 
 				ExpSketchPBox.Image = _mainimage;
 				click++;
-				_StartX.Remove(click);
-				_StartY.Remove(click);
-				_StartX.Add(click, PrevX);
-				_StartY.Add(click, PrevY);
+				startPointX.Remove(click);
+				startPointY.Remove(click);
+				startPointX.Add(click, PrevX);
+				startPointY.Add(click, PrevY);
 				savpic.Add(click, imageToByteArray(_mainimage));
 
 				decimal XadjD = 0;
@@ -114,84 +114,84 @@ namespace SketchUp
 
 				if (draw)
 				{
-					Xadj = (((ScaleBaseX - PrevX) / _currentScale) * -1);
-					Yadj = (((ScaleBaseY - PrevY) / _currentScale) * -1);
+					xAdjustment = (((ScaleBaseX - PrevX) / currentScale) * -1);
+					yAdjustment = (((ScaleBaseY - PrevY) / currentScale) * -1);
 
-					if (startx == 0 && startx != Xadj)
+					if (startx == 0 && startx != xAdjustment)
 					{
-						Xadj = startx;
+						xAdjustment = startx;
 					}
 
-					if (startx != 0 && startx != Xadj)
+					if (startx != 0 && startx != xAdjustment)
 					{
-						Xadj = startx;
+						xAdjustment = startx;
 					}
 
-					if (starty == 0 && starty != Yadj)
+					if (starty == 0 && starty != yAdjustment)
 					{
-						Yadj = starty;
+						yAdjustment = starty;
 					}
 
-					if (starty != 0 && starty != Yadj)
+					if (starty != 0 && starty != yAdjustment)
 					{
-						Yadj = starty;
+						yAdjustment = starty;
 					}
 
-					XadjD = (Math.Round(Convert.ToDecimal(Xadj), 1) + distance);
+					XadjD = (Math.Round(Convert.ToDecimal(xAdjustment), 1) + distance);
 
 					float X1adj = (float)XadjD;
 
-					if (Xadj != X1adj)
+					if (xAdjustment != X1adj)
 					{
-						Xadj = X1adj;
+						xAdjustment = X1adj;
 					}
 
-					YadjD = Math.Round(Convert.ToDecimal(Yadj), 1);
+					YadjD = Math.Round(Convert.ToDecimal(yAdjustment), 1);
 
 					float Y1adj = (float)YadjD;
 
-					if (Yadj != Y1adj)
+					if (yAdjustment != Y1adj)
 					{
-						Yadj = Y1adj;
+						yAdjustment = Y1adj;
 					}
 
 					if (NextStartX != (float)XadjD)
 					{
 						NextStartX = (float)XadjD;
-						Xadj = NextStartX;
+						xAdjustment = NextStartX;
 					}
 					if (NextStartY != (float)YadjD)
 					{
 						NextStartY = (float)YadjD;
-						Yadj = NextStartY;
+						yAdjustment = NextStartY;
 					}
 				}
 
 				if (!draw)
 				{
-					Xadj = BeginSplitX;
+					xAdjustment = BeginSplitX;
 
-					NextStartX = Xadj;
-					XadjD = Convert.ToDecimal(Xadj);
+					NextStartX = xAdjustment;
+					XadjD = Convert.ToDecimal(xAdjustment);
 
-					Yadj = BeginSplitY;
+					yAdjustment = BeginSplitY;
 
-					NextStartY = Yadj;
-					YadjD = Convert.ToDecimal(Yadj);
+					NextStartY = yAdjustment;
+					YadjD = Convert.ToDecimal(yAdjustment);
 				}
 				if (draw)
 				{
-					Xadj = NextStartX;
+					xAdjustment = NextStartX;
 
 					//Xadj = startx + distanceD;
 
-					NextStartX = Xadj;
-					XadjD = Convert.ToDecimal(Xadj);
+					NextStartX = xAdjustment;
+					XadjD = Convert.ToDecimal(xAdjustment);
 
-					Yadj = NextStartY;
+					yAdjustment = NextStartY;
 
-					NextStartY = Yadj;
-					YadjD = Convert.ToDecimal(Yadj);
+					NextStartY = yAdjustment;
+					YadjD = Convert.ToDecimal(yAdjustment);
 				}
 
 				PrevStartX = NextStartX - distanceD;
@@ -224,7 +224,7 @@ namespace SketchUp
 
 				string _direction = "E";
 				lineCnt++;
-				BuildAddSQL(PrevX, PrevY, distanceD, _direction, lineCnt, _isclosing, NextStartX, NextStartY, PrevStartX, PrevStartY);
+				BuildAddSQL(PrevX, PrevY, distanceD, _direction, lineCnt, isClosing, NextStartX, NextStartY, PrevStartX, PrevStartY);
 			}
 		}
 
@@ -236,7 +236,7 @@ namespace SketchUp
 			var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
 			UtilityMethods.LogMethodCall(fullStack, true);
 #endif
-			if (_isKeyValid == true)
+			if (isValidKey == true)
 			{
 				StrxD = 0;
 				StryD = 0;
@@ -258,8 +258,8 @@ namespace SketchUp
 
 				distance = Convert.ToDecimal(distanceD);
 
-				_lenString = String.Format("{0} ft.", distanceD.ToString("N1"));
-				txtLocf = ((distanceD * _currentScale) / 2);
+				lengthLabelString = String.Format("{0} ft.", distanceD.ToString("N1"));
+				txtLocf = ((distanceD * currentScale) / 2);
 
 				if (draw)
 				{
@@ -268,8 +268,8 @@ namespace SketchUp
 					Pen pen1 = new Pen(Color.Red, 2);
 					Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1, StartX, StartY, StartX, (StartY - (distanceD * _currentScale)));
-					g.DrawString(_lenString, f, brush, new PointF((StartX + 15), (StartY - txtLocf)));
+					g.DrawLine(pen1, StartX, StartY, StartX, (StartY - (distanceD * currentScale)));
+					g.DrawString(lengthLabelString, f, brush, new PointF((StartX + 15), (StartY - txtLocf)));
 				}
 				if (!draw)
 				{
@@ -278,14 +278,14 @@ namespace SketchUp
 					Pen pen1 = new Pen(Color.Cyan, 5);
 					Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1, StartX, StartY, StartX, (StartY - (distanceD * _currentScale)));
+					g.DrawLine(pen1, StartX, StartY, StartX, (StartY - (distanceD * currentScale)));
 					if (distance < 10)
 					{
-						g.DrawString(_lenString, f, brush, new PointF((StartX + 5), (StartY - txtLocf)));
+						g.DrawString(lengthLabelString, f, brush, new PointF((StartX + 5), (StartY - txtLocf)));
 					}
 					if (distance >= 10)
 					{
-						g.DrawString(_lenString, f, brush, new PointF((StartX + 10), (StartY - txtLocf)));
+						g.DrawString(lengthLabelString, f, brush, new PointF((StartX + 10), (StartY - txtLocf)));
 					}
 
 					if (startx == 0 && starty == 0)
@@ -301,11 +301,11 @@ namespace SketchUp
 
 				EndX = StartX;
 
-				decimal d1 = Math.Round(Convert.ToDecimal(distanceD * _currentScale), 1);
+				decimal d1 = Math.Round(Convert.ToDecimal(distanceD * currentScale), 1);
 
 				float EndY2 = StartY - (float)d1;
 
-				EndY = StartY - (distanceD * _currentScale);
+				EndY = StartY - (distanceD * currentScale);
 
 				EndY = EndY2;
 
@@ -327,10 +327,10 @@ namespace SketchUp
 
 				ExpSketchPBox.Image = _mainimage;
 				click++;
-				_StartX.Remove(click);
-				_StartY.Remove(click);
-				_StartX.Add(click, PrevX);
-				_StartY.Add(click, PrevY);
+				startPointX.Remove(click);
+				startPointY.Remove(click);
+				startPointX.Add(click, PrevX);
+				startPointY.Add(click, PrevY);
 				savpic.Add(click, imageToByteArray(_mainimage));
 
 				decimal XadjD = 0;
@@ -338,90 +338,90 @@ namespace SketchUp
 
 				if (draw)
 				{
-					Xadj = (((ScaleBaseX - PrevX) / _currentScale) * -1);
-					Yadj = (((ScaleBaseY - PrevY) / _currentScale) * -1);
+					xAdjustment = (((ScaleBaseX - PrevX) / currentScale) * -1);
+					yAdjustment = (((ScaleBaseY - PrevY) / currentScale) * -1);
 
-					if (startx == 0 && startx != Xadj)
+					if (startx == 0 && startx != xAdjustment)
 					{
-						Xadj = startx;
+						xAdjustment = startx;
 
-						Xadj = NextStartX;
+						xAdjustment = NextStartX;
 					}
 
-					if (startx != 0 && startx != Xadj)
+					if (startx != 0 && startx != xAdjustment)
 					{
-						Xadj = startx;
+						xAdjustment = startx;
 
-						Xadj = NextStartX;
+						xAdjustment = NextStartX;
 					}
 
-					if (starty == 0 && starty != Yadj)
+					if (starty == 0 && starty != yAdjustment)
 					{
-						Yadj = starty;
+						yAdjustment = starty;
 
-						Yadj = NextStartY;
+						yAdjustment = NextStartY;
 					}
 
-					if (starty != 0 && starty != Yadj)
+					if (starty != 0 && starty != yAdjustment)
 					{
-						Yadj = starty;
+						yAdjustment = starty;
 
-						Yadj = NextStartY;
+						yAdjustment = NextStartY;
 					}
 
-					XadjD = Math.Round(Convert.ToDecimal(Xadj), 1);
+					XadjD = Math.Round(Convert.ToDecimal(xAdjustment), 1);
 
 					float X1adj = (float)XadjD;
 
-					if (Xadj != X1adj)
+					if (xAdjustment != X1adj)
 					{
-						Xadj = X1adj;
+						xAdjustment = X1adj;
 					}
 
-					YadjD = (Math.Round(Convert.ToDecimal(Yadj), 1) - distance);
+					YadjD = (Math.Round(Convert.ToDecimal(yAdjustment), 1) - distance);
 
 					float Y1adj = (float)YadjD;
 
-					if (Yadj != Y1adj)
+					if (yAdjustment != Y1adj)
 					{
-						Yadj = Y1adj;
+						yAdjustment = Y1adj;
 					}
 
 					if (NextStartX != (float)XadjD)
 					{
 						NextStartX = (float)XadjD;
-						Xadj = NextStartX;
+						xAdjustment = NextStartX;
 					}
 					if (NextStartY != (float)YadjD)
 					{
 						NextStartY = (float)YadjD;
-						Yadj = NextStartY;
+						yAdjustment = NextStartY;
 					}
 				}
 
 				if (!draw)
 				{
-					Xadj = BeginSplitX;
+					xAdjustment = BeginSplitX;
 
-					NextStartX = Xadj;
-					XadjD = Convert.ToDecimal(Xadj);
+					NextStartX = xAdjustment;
+					XadjD = Convert.ToDecimal(xAdjustment);
 
-					Yadj = BeginSplitY;
+					yAdjustment = BeginSplitY;
 
-					NextStartY = Yadj;
-					YadjD = Convert.ToDecimal(Yadj);
+					NextStartY = yAdjustment;
+					YadjD = Convert.ToDecimal(yAdjustment);
 				}
 				if (draw)
 				{
-					Xadj = NextStartX;
+					xAdjustment = NextStartX;
 
-					NextStartX = Xadj;
-					XadjD = Convert.ToDecimal(Xadj);
+					NextStartX = xAdjustment;
+					XadjD = Convert.ToDecimal(xAdjustment);
 
-					Yadj = NextStartY;
+					yAdjustment = NextStartY;
 
-					NextStartY = Yadj;
-					YadjD = Convert.ToDecimal(Yadj);
+					NextStartY = yAdjustment;
+					YadjD = Convert.ToDecimal(yAdjustment);
 				}
 
 				PrevStartX = NextStartX;
@@ -454,7 +454,7 @@ namespace SketchUp
 
 				string _direction = "N";
 				lineCnt++;
-				BuildAddSQL(PrevX, PrevY, distanceD, _direction, lineCnt, _isclosing, NextStartX, NextStartY, PrevStartX, PrevStartY);
+				BuildAddSQL(PrevX, PrevY, distanceD, _direction, lineCnt, isClosing, NextStartX, NextStartY, PrevStartX, PrevStartY);
 			}
 		}
 
@@ -466,7 +466,7 @@ namespace SketchUp
 			var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
 			UtilityMethods.LogMethodCall(fullStack, true);
 #endif
-			if (_isKeyValid == true)
+			if (isValidKey == true)
 			{
 				StrxD = 0;
 				StryD = 0;
@@ -500,9 +500,9 @@ namespace SketchUp
 				distanceDXF = (float)distanceDX;
 				distanceDYF = (float)distanceDY;
 
-				_lenString = String.Format("{0} ft.", distanceD1.ToString("N1"));
+				lengthLabelString = String.Format("{0} ft.", distanceD1.ToString("N1"));
 
-				txtLocf = ((distanceD * _currentScale) / 2);
+				txtLocf = ((distanceD * currentScale) / 2);
 
 				if (draw)
 				{
@@ -511,8 +511,8 @@ namespace SketchUp
 					Pen pen1 = new Pen(Color.Red, 2);
 					Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1, StartX, StartY, (StartX + (Convert.ToInt16(AngD1) * _currentScale)), (StartY - (Convert.ToInt16(AngD2) * _currentScale)));
-					g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
+					g.DrawLine(pen1, StartX, StartY, (StartX + (Convert.ToInt16(AngD1) * currentScale)), (StartY - (Convert.ToInt16(AngD2) * currentScale)));
+					g.DrawString(lengthLabelString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
 				}
 
 				if (!draw)
@@ -522,20 +522,20 @@ namespace SketchUp
 					Pen pen1 = new Pen(Color.Cyan, 5);
 					Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1, StartX, StartY, (StartX + (Convert.ToInt16(AngD1) * _currentScale)), (StartY - (Convert.ToInt16(AngD2) * _currentScale)));
+					g.DrawLine(pen1, StartX, StartY, (StartX + (Convert.ToInt16(AngD1) * currentScale)), (StartY - (Convert.ToInt16(AngD2) * currentScale)));
 					if (distance < 10)
 					{
-						g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 5)));
+						g.DrawString(lengthLabelString, f, brush, new PointF((StartX + txtLocf), (StartY - 5)));
 					}
-					g.DrawLine(pen1, StartX, StartY, (StartX + (Convert.ToInt16(AngD1) * _currentScale)), (StartY - (Convert.ToInt16(AngD2) * _currentScale)));
+					g.DrawLine(pen1, StartX, StartY, (StartX + (Convert.ToInt16(AngD1) * currentScale)), (StartY - (Convert.ToInt16(AngD2) * currentScale)));
 					if (distance >= 10)
 					{
-						g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
+						g.DrawString(lengthLabelString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
 					}
 				}
 
-				EndX = StartX + (Convert.ToInt16(AngD1) * _currentScale);
-				EndY = StartY - (Convert.ToInt16(AngD2) * _currentScale);
+				EndX = StartX + (Convert.ToInt16(AngD1) * currentScale);
+				EndY = StartY - (Convert.ToInt16(AngD2) * currentScale);
 				txtX = (_mouseX + txtLocf);
 				txtY = (_mouseY - 15);
 
@@ -554,18 +554,18 @@ namespace SketchUp
 
 				ExpSketchPBox.Image = _mainimage;
 				click++;
-				_StartX.Remove(click);
-				_StartY.Remove(click);
-				_StartX.Add(click, PrevX);
-				_StartY.Add(click, PrevY);
+				startPointX.Remove(click);
+				startPointY.Remove(click);
+				startPointX.Add(click, PrevX);
+				startPointY.Add(click, PrevY);
 				savpic.Add(click, imageToByteArray(_mainimage));
 
-				Xadj = (((ScaleBaseX - PrevX) / _currentScale) * -1);
-				Yadj = (((ScaleBaseY - PrevY) / _currentScale) * -1);
+				xAdjustment = (((ScaleBaseX - PrevX) / currentScale) * -1);
+				yAdjustment = (((ScaleBaseY - PrevY) / currentScale) * -1);
 
-				decimal XadjD = (Math.Round(Convert.ToDecimal(Xadj), 1) + distance);
+				decimal XadjD = (Math.Round(Convert.ToDecimal(xAdjustment), 1) + distance);
 
-				decimal YadjD = Math.Round(Convert.ToDecimal(Yadj), 1);
+				decimal YadjD = Math.Round(Convert.ToDecimal(yAdjustment), 1);
 
 				if (JumpTable.Rows.Count > 0)
 				{
@@ -589,10 +589,10 @@ namespace SketchUp
 
 				string _direction = "NE";
 				lineCnt++;
-				BuildAddSQLAng(PrevX, PrevY, distanceDX, distanceDY, _direction, distanceD1, lineCnt, _isclosing, NextStartX, NextStartY);
+				BuildAddSQLAng(PrevX, PrevY, distanceDX, distanceDY, _direction, distanceD1, lineCnt, isClosing, NextStartX, NextStartY);
 			}
 
-			_isAngle = false;
+			isAngle = false;
 			AngleForm.NorthEast = false;
 			AngleForm.NorthWest = false;
 			AngleForm.SouthEast = false;
@@ -607,7 +607,7 @@ namespace SketchUp
 			var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
 			UtilityMethods.LogMethodCall(fullStack, true);
 #endif
-			if (_isKeyValid == true)
+			if (isValidKey == true)
 			{
 				StrxD = 0;
 				StryD = 0;
@@ -639,9 +639,9 @@ namespace SketchUp
 				distanceDXF = (float)distanceDX;
 				distanceDYF = (float)distanceDY;
 
-				_lenString = String.Format("{0} ft.", distanceD1.ToString("N1"));
+				lengthLabelString = String.Format("{0} ft.", distanceD1.ToString("N1"));
 
-				txtLocf = ((distanceD * _currentScale) / 2);
+				txtLocf = ((distanceD * currentScale) / 2);
 
 				if (draw)
 				{
@@ -650,8 +650,8 @@ namespace SketchUp
 					Pen pen1 = new Pen(Color.Red, 2);
 					Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * _currentScale)), (StartY - (Convert.ToInt16(AngD2) * _currentScale)));
-					g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
+					g.DrawLine(pen1, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * currentScale)), (StartY - (Convert.ToInt16(AngD2) * currentScale)));
+					g.DrawString(lengthLabelString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
 				}
 
 				if (!draw)
@@ -661,20 +661,20 @@ namespace SketchUp
 					Pen pen1 = new Pen(Color.Cyan, 5);
 					Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * _currentScale)), (StartY - (Convert.ToInt16(AngD2) * _currentScale)));
+					g.DrawLine(pen1, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * currentScale)), (StartY - (Convert.ToInt16(AngD2) * currentScale)));
 					if (distance < 10)
 					{
-						g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 5)));
+						g.DrawString(lengthLabelString, f, brush, new PointF((StartX + txtLocf), (StartY - 5)));
 					}
-					g.DrawLine(pen1, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * _currentScale)), (StartY - (Convert.ToInt16(AngD2) * _currentScale)));
+					g.DrawLine(pen1, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * currentScale)), (StartY - (Convert.ToInt16(AngD2) * currentScale)));
 					if (distance >= 10)
 					{
-						g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
+						g.DrawString(lengthLabelString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
 					}
 				}
 
-				EndX = StartX - (Convert.ToInt16(AngD1) * _currentScale);
-				EndY = StartY - (Convert.ToInt16(AngD2) * _currentScale);
+				EndX = StartX - (Convert.ToInt16(AngD1) * currentScale);
+				EndY = StartY - (Convert.ToInt16(AngD2) * currentScale);
 				txtX = (_mouseX + txtLocf);
 				txtY = (_mouseY - 15);
 
@@ -693,18 +693,18 @@ namespace SketchUp
 
 				ExpSketchPBox.Image = _mainimage;
 				click++;
-				_StartX.Remove(click);
-				_StartY.Remove(click);
-				_StartX.Add(click, PrevX);
-				_StartY.Add(click, PrevY);
+				startPointX.Remove(click);
+				startPointY.Remove(click);
+				startPointX.Add(click, PrevX);
+				startPointY.Add(click, PrevY);
 				savpic.Add(click, imageToByteArray(_mainimage));
 
-				Xadj = (((ScaleBaseX - PrevX) / _currentScale) * -1);
-				Yadj = (((ScaleBaseY - PrevY) / _currentScale) * -1);
+				xAdjustment = (((ScaleBaseX - PrevX) / currentScale) * -1);
+				yAdjustment = (((ScaleBaseY - PrevY) / currentScale) * -1);
 
-				decimal XadjD = (Math.Round(Convert.ToDecimal(Xadj), 1) + distance);
+				decimal XadjD = (Math.Round(Convert.ToDecimal(xAdjustment), 1) + distance);
 
-				decimal YadjD = Math.Round(Convert.ToDecimal(Yadj), 1);
+				decimal YadjD = Math.Round(Convert.ToDecimal(yAdjustment), 1);
 
 				if (JumpTable.Rows.Count > 0)
 				{
@@ -728,10 +728,10 @@ namespace SketchUp
 
 				string _direction = "NW";
 				lineCnt++;
-				BuildAddSQLAng(PrevX, PrevY, distanceDX, distanceDY, _direction, distanceD1, lineCnt, _isclosing, NextStartX, NextStartY);
+				BuildAddSQLAng(PrevX, PrevY, distanceDX, distanceDY, _direction, distanceD1, lineCnt, isClosing, NextStartX, NextStartY);
 			}
 
-			_isAngle = false;
+			isAngle = false;
 			AngleForm.NorthEast = false;
 			AngleForm.NorthWest = false;
 			AngleForm.SouthEast = false;
@@ -746,7 +746,7 @@ namespace SketchUp
 			var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
 			UtilityMethods.LogMethodCall(fullStack, true);
 #endif
-			if (_isKeyValid == true)
+			if (isValidKey == true)
 			{
 				StrxD = 0;
 				StryD = 0;
@@ -768,8 +768,8 @@ namespace SketchUp
 
 				distance = Convert.ToDecimal(distanceD);
 
-				_lenString = String.Format("{0} ft.", distanceD.ToString("N1"));
-				txtLocf = ((distanceD * _currentScale) / 2);
+				lengthLabelString = String.Format("{0} ft.", distanceD.ToString("N1"));
+				txtLocf = ((distanceD * currentScale) / 2);
 
 				if (draw)
 				{
@@ -778,8 +778,8 @@ namespace SketchUp
 					Pen pen1 = new Pen(Color.Red, 2);
 					Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1, StartX, StartY, StartX, (StartY + (distanceD * _currentScale)));
-					g.DrawString(_lenString, f, brush, new PointF((StartX + 15), (StartY + txtLocf)));
+					g.DrawLine(pen1, StartX, StartY, StartX, (StartY + (distanceD * currentScale)));
+					g.DrawString(lengthLabelString, f, brush, new PointF((StartX + 15), (StartY + txtLocf)));
 				}
 				if (!draw)
 				{
@@ -788,14 +788,14 @@ namespace SketchUp
 					Pen pen1 = new Pen(Color.Cyan, 5);
 					Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1, StartX, StartY, StartX, (StartY + (distanceD * _currentScale)));
+					g.DrawLine(pen1, StartX, StartY, StartX, (StartY + (distanceD * currentScale)));
 					if (distance < 10)
 					{
-						g.DrawString(_lenString, f, brush, new PointF((StartX + 5), (StartY - txtLocf)));
+						g.DrawString(lengthLabelString, f, brush, new PointF((StartX + 5), (StartY - txtLocf)));
 					}
 					if (distance >= 10)
 					{
-						g.DrawString(_lenString, f, brush, new PointF((StartX + 10), (StartY - txtLocf)));
+						g.DrawString(lengthLabelString, f, brush, new PointF((StartX + 10), (StartY - txtLocf)));
 					}
 
 					BeginSplitY = BeginSplitY + distanceD;
@@ -805,11 +805,11 @@ namespace SketchUp
 
 				EndX = StartX;
 
-				decimal d1 = Math.Round(Convert.ToDecimal(distanceD * _currentScale), 1);
+				decimal d1 = Math.Round(Convert.ToDecimal(distanceD * currentScale), 1);
 
 				float EndY2 = StartY + (float)d1;
 
-				EndY = StartY + (distanceD * _currentScale);
+				EndY = StartY + (distanceD * currentScale);
 
 				EndY = EndY2;
 
@@ -832,10 +832,10 @@ namespace SketchUp
 				ExpSketchPBox.Image = _mainimage;
 
 				click++;
-				_StartX.Remove(click);
-				_StartY.Remove(click);
-				_StartX.Add(click, PrevX);
-				_StartY.Add(click, PrevY);
+				startPointX.Remove(click);
+				startPointY.Remove(click);
+				startPointX.Add(click, PrevX);
+				startPointY.Add(click, PrevY);
 				savpic.Add(click, imageToByteArray(_mainimage));
 
 				decimal XadjD = 0;
@@ -843,81 +843,81 @@ namespace SketchUp
 
 				if (draw)
 				{
-					Xadj = (((ScaleBaseX - PrevX) / _currentScale) * -1);
-					Yadj = (((ScaleBaseY - PrevY) / _currentScale) * -1);
+					xAdjustment = (((ScaleBaseX - PrevX) / currentScale) * -1);
+					yAdjustment = (((ScaleBaseY - PrevY) / currentScale) * -1);
 
-					if (startx == 0 && startx != Xadj)
+					if (startx == 0 && startx != xAdjustment)
 					{
-						Xadj = startx;
+						xAdjustment = startx;
 					}
 
-					if (startx != 0 && startx != Xadj)
+					if (startx != 0 && startx != xAdjustment)
 					{
-						Xadj = startx;
+						xAdjustment = startx;
 					}
-					if (starty == 0 && starty != Yadj)
+					if (starty == 0 && starty != yAdjustment)
 					{
-						Yadj = starty;
-					}
-
-					if (starty != 0 && starty != Yadj)
-					{
-						Yadj = starty;
+						yAdjustment = starty;
 					}
 
-					XadjD = Math.Round(Convert.ToDecimal(Xadj), 1);
+					if (starty != 0 && starty != yAdjustment)
+					{
+						yAdjustment = starty;
+					}
+
+					XadjD = Math.Round(Convert.ToDecimal(xAdjustment), 1);
 
 					float X1adj = (float)XadjD;
 
-					if (Xadj != X1adj)
+					if (xAdjustment != X1adj)
 					{
-						Xadj = X1adj;
+						xAdjustment = X1adj;
 					}
 
-					YadjD = (Math.Round(Convert.ToDecimal(Yadj), 1) + distance);
+					YadjD = (Math.Round(Convert.ToDecimal(yAdjustment), 1) + distance);
 
 					float Y1adj = (float)YadjD;
 
-					if (Yadj != Y1adj)
+					if (yAdjustment != Y1adj)
 					{
-						Yadj = Y1adj;
+						yAdjustment = Y1adj;
 					}
 
 					if (NextStartX != (float)XadjD)
 					{
 						NextStartX = (float)XadjD;
-						Xadj = NextStartX;
+						xAdjustment = NextStartX;
 					}
 					if (NextStartY != (float)YadjD)
 					{
 						NextStartY = (float)YadjD;
-						Yadj = NextStartY;
+						yAdjustment = NextStartY;
 					}
 				}
 
 				if (!draw)
 				{
-					Xadj = BeginSplitX;
+					xAdjustment = BeginSplitX;
 
-					NextStartX = Xadj;
-					XadjD = Convert.ToDecimal(Xadj);
+					NextStartX = xAdjustment;
+					XadjD = Convert.ToDecimal(xAdjustment);
 
-					Yadj = BeginSplitY;
+					yAdjustment = BeginSplitY;
 
-					NextStartY = Yadj;
-					YadjD = Convert.ToDecimal(Yadj);
+					NextStartY = yAdjustment;
+					YadjD = Convert.ToDecimal(yAdjustment);
 				}
 				if (draw)
 				{
-					Xadj = NextStartX;
+					xAdjustment = NextStartX;
 
-					NextStartX = Xadj;
-					XadjD = Convert.ToDecimal(Xadj);
+					NextStartX = xAdjustment;
+					XadjD = Convert.ToDecimal(xAdjustment);
 
 					//Yadj = NextStartY + distanceD;
 
-					NextStartY = Yadj;
-					YadjD = Convert.ToDecimal(Yadj);
+					NextStartY = yAdjustment;
+					YadjD = Convert.ToDecimal(yAdjustment);
 				}
 
 				PrevStartX = NextStartX;
@@ -950,7 +950,7 @@ namespace SketchUp
 
 				string _direction = "S";
 				lineCnt++;
-				BuildAddSQL(PrevX, PrevY, distanceD, _direction, lineCnt, _isclosing, NextStartX, NextStartY, PrevStartX, PrevStartY);
+				BuildAddSQL(PrevX, PrevY, distanceD, _direction, lineCnt, isClosing, NextStartX, NextStartY, PrevStartX, PrevStartY);
 			}
 		}
 
@@ -962,7 +962,7 @@ namespace SketchUp
 			var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
 			UtilityMethods.LogMethodCall(fullStack, true);
 #endif
-			if (_isKeyValid == true)
+			if (isValidKey == true)
 			{
 				StrxD = 0;
 				StryD = 0;
@@ -996,9 +996,9 @@ namespace SketchUp
 				distanceDXF = (float)distanceDX;
 				distanceDYF = (float)distanceDY;
 
-				_lenString = String.Format("{0} ft.", distanceD1.ToString("N1"));
+				lengthLabelString = String.Format("{0} ft.", distanceD1.ToString("N1"));
 
-				txtLocf = ((distanceD * _currentScale) / 2);
+				txtLocf = ((distanceD * currentScale) / 2);
 
 				if (draw)
 				{
@@ -1007,8 +1007,8 @@ namespace SketchUp
 					Pen pen1 = new Pen(Color.Red, 2);
 					Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1, StartX, StartY, (StartX + (Convert.ToInt16(AngD1) * _currentScale)), (StartY + (Convert.ToInt16(AngD2) * _currentScale)));
-					g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
+					g.DrawLine(pen1, StartX, StartY, (StartX + (Convert.ToInt16(AngD1) * currentScale)), (StartY + (Convert.ToInt16(AngD2) * currentScale)));
+					g.DrawString(lengthLabelString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
 				}
 
 				if (!draw)
@@ -1018,20 +1018,20 @@ namespace SketchUp
 					Pen pen1 = new Pen(Color.Cyan, 5);
 					Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1, StartX, StartY, (StartX + (Convert.ToInt16(AngD1) * _currentScale)), (StartY + (Convert.ToInt16(AngD2) * _currentScale)));
+					g.DrawLine(pen1, StartX, StartY, (StartX + (Convert.ToInt16(AngD1) * currentScale)), (StartY + (Convert.ToInt16(AngD2) * currentScale)));
 					if (distance < 10)
 					{
-						g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 5)));
+						g.DrawString(lengthLabelString, f, brush, new PointF((StartX + txtLocf), (StartY - 5)));
 					}
-					g.DrawLine(pen1, StartX, StartY, (StartX + (Convert.ToInt16(AngD1) * _currentScale)), (StartY + (Convert.ToInt16(AngD2) * _currentScale)));
+					g.DrawLine(pen1, StartX, StartY, (StartX + (Convert.ToInt16(AngD1) * currentScale)), (StartY + (Convert.ToInt16(AngD2) * currentScale)));
 					if (distance >= 10)
 					{
-						g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
+						g.DrawString(lengthLabelString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
 					}
 				}
 
-				EndX = StartX + (Convert.ToInt16(AngD1) * _currentScale);
-				EndY = StartY + (Convert.ToInt16(AngD2) * _currentScale);
+				EndX = StartX + (Convert.ToInt16(AngD1) * currentScale);
+				EndY = StartY + (Convert.ToInt16(AngD2) * currentScale);
 				txtX = (_mouseX + txtLocf);
 				txtY = (_mouseY - 15);
 
@@ -1050,18 +1050,18 @@ namespace SketchUp
 
 				ExpSketchPBox.Image = _mainimage;
 				click++;
-				_StartX.Remove(click);
-				_StartY.Remove(click);
-				_StartX.Add(click, PrevX);
-				_StartY.Add(click, PrevY);
+				startPointX.Remove(click);
+				startPointY.Remove(click);
+				startPointX.Add(click, PrevX);
+				startPointY.Add(click, PrevY);
 				savpic.Add(click, imageToByteArray(_mainimage));
 
-				Xadj = (((ScaleBaseX - PrevX) / _currentScale) * -1);
-				Yadj = (((ScaleBaseY - PrevY) / _currentScale) * -1);
+				xAdjustment = (((ScaleBaseX - PrevX) / currentScale) * -1);
+				yAdjustment = (((ScaleBaseY - PrevY) / currentScale) * -1);
 
-				decimal XadjD = (Math.Round(Convert.ToDecimal(Xadj), 1) + distance);
+				decimal XadjD = (Math.Round(Convert.ToDecimal(xAdjustment), 1) + distance);
 
-				decimal YadjD = Math.Round(Convert.ToDecimal(Yadj), 1);
+				decimal YadjD = Math.Round(Convert.ToDecimal(yAdjustment), 1);
 
 				if (JumpTable.Rows.Count > 0)
 				{
@@ -1085,10 +1085,10 @@ namespace SketchUp
 
 				string _direction = "SE";
 				lineCnt++;
-				BuildAddSQLAng(PrevX, PrevY, distanceDX, distanceDY, _direction, distanceD1, lineCnt, _isclosing, NextStartX, NextStartY);
+				BuildAddSQLAng(PrevX, PrevY, distanceDX, distanceDY, _direction, distanceD1, lineCnt, isClosing, NextStartX, NextStartY);
 			}
 
-			_isAngle = false;
+			isAngle = false;
 			AngleForm.NorthEast = false;
 			AngleForm.NorthWest = false;
 			AngleForm.SouthEast = false;
@@ -1103,7 +1103,7 @@ namespace SketchUp
 			var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
 			UtilityMethods.LogMethodCall(fullStack, true);
 #endif
-			if (_isKeyValid == true)
+			if (isValidKey == true)
 			{
 				StrxD = 0;
 				StryD = 0;
@@ -1137,9 +1137,9 @@ namespace SketchUp
 				distanceDXF = (float)distanceDX;
 				distanceDYF = (float)distanceDY;
 
-				_lenString = String.Format("{0} ft.", distanceD1.ToString("N1"));
+				lengthLabelString = String.Format("{0} ft.", distanceD1.ToString("N1"));
 
-				txtLocf = ((distanceD * _currentScale) / 2);
+				txtLocf = ((distanceD * currentScale) / 2);
 
 				if (draw)
 				{
@@ -1149,8 +1149,8 @@ namespace SketchUp
 					Pen pen2 = new Pen(Color.Green, 2);
 					Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * _currentScale)), (StartY + (Convert.ToInt16(AngD2) * _currentScale)));
-					g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
+					g.DrawLine(pen1, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * currentScale)), (StartY + (Convert.ToInt16(AngD2) * currentScale)));
+					g.DrawString(lengthLabelString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
 				}
 
 				if (!draw)
@@ -1160,20 +1160,20 @@ namespace SketchUp
 					Pen pen1 = new Pen(Color.Cyan, 5);
 					Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * _currentScale)), (StartY + (Convert.ToInt16(AngD2) * _currentScale)));
+					g.DrawLine(pen1, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * currentScale)), (StartY + (Convert.ToInt16(AngD2) * currentScale)));
 					if (distance < 10)
 					{
-						g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 5)));
+						g.DrawString(lengthLabelString, f, brush, new PointF((StartX + txtLocf), (StartY - 5)));
 					}
-					g.DrawLine(pen1, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * _currentScale)), (StartY + (Convert.ToInt16(AngD2) * _currentScale)));
+					g.DrawLine(pen1, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * currentScale)), (StartY + (Convert.ToInt16(AngD2) * currentScale)));
 					if (distance >= 10)
 					{
-						g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
+						g.DrawString(lengthLabelString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
 					}
 				}
 
-				EndX = StartX - (Convert.ToInt16(AngD1) * _currentScale);
-				EndY = StartY + (Convert.ToInt16(AngD2) * _currentScale);
+				EndX = StartX - (Convert.ToInt16(AngD1) * currentScale);
+				EndY = StartY + (Convert.ToInt16(AngD2) * currentScale);
 				txtX = (_mouseX + txtLocf);
 				txtY = (_mouseY - 15);
 
@@ -1192,18 +1192,18 @@ namespace SketchUp
 
 				ExpSketchPBox.Image = _mainimage;
 				click++;
-				_StartX.Remove(click);
-				_StartY.Remove(click);
-				_StartX.Add(click, PrevX);
-				_StartY.Add(click, PrevY);
+				startPointX.Remove(click);
+				startPointY.Remove(click);
+				startPointX.Add(click, PrevX);
+				startPointY.Add(click, PrevY);
 				savpic.Add(click, imageToByteArray(_mainimage));
 
-				Xadj = (((ScaleBaseX - PrevX) / _currentScale) * -1);
-				Yadj = (((ScaleBaseY - PrevY) / _currentScale) * -1);
+				xAdjustment = (((ScaleBaseX - PrevX) / currentScale) * -1);
+				yAdjustment = (((ScaleBaseY - PrevY) / currentScale) * -1);
 
-				decimal XadjD = (Math.Round(Convert.ToDecimal(Xadj), 1) + distance);
+				decimal XadjD = (Math.Round(Convert.ToDecimal(xAdjustment), 1) + distance);
 
-				decimal YadjD = Math.Round(Convert.ToDecimal(Yadj), 1);
+				decimal YadjD = Math.Round(Convert.ToDecimal(yAdjustment), 1);
 
 				if (JumpTable.Rows.Count > 0)
 				{
@@ -1227,10 +1227,10 @@ namespace SketchUp
 
 				string _direction = "SW";
 				lineCnt++;
-				BuildAddSQLAng(PrevX, PrevY, distanceDX, distanceDY, _direction, distanceD1, lineCnt, _isclosing, NextStartX, NextStartY);
+				BuildAddSQLAng(PrevX, PrevY, distanceDX, distanceDY, _direction, distanceD1, lineCnt, isClosing, NextStartX, NextStartY);
 			}
 
-			_isAngle = false;
+			isAngle = false;
 			AngleForm.NorthEast = false;
 			AngleForm.NorthWest = false;
 			AngleForm.SouthEast = false;
@@ -1245,7 +1245,7 @@ namespace SketchUp
 			var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
 			UtilityMethods.LogMethodCall(fullStack, true);
 #endif
-			if (_isKeyValid == true)
+			if (isValidKey == true)
 			{
 				StrxD = 0;
 				StryD = 0;
@@ -1267,8 +1267,8 @@ namespace SketchUp
 
 				distance = Convert.ToDecimal(distanceD);
 
-				_lenString = String.Format("{0} ft.", distanceD.ToString("N1"));
-				txtLocf = ((distanceD * _currentScale) / 2);
+				lengthLabelString = String.Format("{0} ft.", distanceD.ToString("N1"));
+				txtLocf = ((distanceD * currentScale) / 2);
 
 				if (draw)
 				{
@@ -1277,8 +1277,8 @@ namespace SketchUp
 					Pen pen1 = new Pen(Color.Red, 2);
 					Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1, StartX, StartY, (StartX - (distanceD * _currentScale)), StartY);
-					g.DrawString(_lenString, f, brush, new PointF((StartX - txtLocf), (StartY - 15)));
+					g.DrawLine(pen1, StartX, StartY, (StartX - (distanceD * currentScale)), StartY);
+					g.DrawString(lengthLabelString, f, brush, new PointF((StartX - txtLocf), (StartY - 15)));
 				}
 				if (!draw)
 				{
@@ -1287,14 +1287,14 @@ namespace SketchUp
 					Pen pen1 = new Pen(Color.Cyan, 5);
 					Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1, StartX, StartY, (StartX - (distanceD * _currentScale)), StartY);
+					g.DrawLine(pen1, StartX, StartY, (StartX - (distanceD * currentScale)), StartY);
 					if (distance < 10)
 					{
-						g.DrawString(_lenString, f, brush, new PointF((StartX - txtLocf), (StartY - 5)));
+						g.DrawString(lengthLabelString, f, brush, new PointF((StartX - txtLocf), (StartY - 5)));
 					}
 					if (distance >= 10)
 					{
-						g.DrawString(_lenString, f, brush, new PointF((StartX - txtLocf), (StartY - 15)));
+						g.DrawString(lengthLabelString, f, brush, new PointF((StartX - txtLocf), (StartY - 15)));
 					}
 
 					BeginSplitX = BeginSplitX - distanceD;
@@ -1302,10 +1302,10 @@ namespace SketchUp
 					NextStartX = BeginSplitX;
 				}
 
-				EndX = StartX - (distanceD * _currentScale);
+				EndX = StartX - (distanceD * currentScale);
 				EndY = StartY;
 
-				decimal d1 = Math.Round(Convert.ToDecimal(distanceD * _currentScale), 1);
+				decimal d1 = Math.Round(Convert.ToDecimal(distanceD * currentScale), 1);
 
 				float EndX2 = StartX - (float)d1;
 
@@ -1329,10 +1329,10 @@ namespace SketchUp
 
 				ExpSketchPBox.Image = _mainimage;
 				click++;
-				_StartX.Remove(click);
-				_StartY.Remove(click);
-				_StartX.Add(click, PrevX);
-				_StartY.Add(click, PrevY);
+				startPointX.Remove(click);
+				startPointY.Remove(click);
+				startPointX.Add(click, PrevX);
+				startPointY.Add(click, PrevY);
 
 				savpic.Add(click, imageToByteArray(_mainimage));
 
@@ -1341,83 +1341,83 @@ namespace SketchUp
 
 				if (draw)
 				{
-					Xadj = (((ScaleBaseX - PrevX) / _currentScale) * -1);
-					Yadj = (((ScaleBaseY - PrevY) / _currentScale) * -1);
+					xAdjustment = (((ScaleBaseX - PrevX) / currentScale) * -1);
+					yAdjustment = (((ScaleBaseY - PrevY) / currentScale) * -1);
 
-					if (startx == 0 && startx != Xadj)
+					if (startx == 0 && startx != xAdjustment)
 					{
-						Xadj = startx;
+						xAdjustment = startx;
 					}
 
-					if (startx != 0 && startx != Xadj)
+					if (startx != 0 && startx != xAdjustment)
 					{
-						Xadj = startx;
+						xAdjustment = startx;
 					}
 
-					if (starty == 0 && starty != Yadj)
+					if (starty == 0 && starty != yAdjustment)
 					{
-						Yadj = starty;
+						yAdjustment = starty;
 					}
 
-					if (starty != 0 && starty != Yadj)
+					if (starty != 0 && starty != yAdjustment)
 					{
-						Yadj = starty;
+						yAdjustment = starty;
 					}
 
-					XadjD = (Math.Round(Convert.ToDecimal(Xadj), 1) - distance);
+					XadjD = (Math.Round(Convert.ToDecimal(xAdjustment), 1) - distance);
 					;
 
 					float X1adj = (float)XadjD;
 
-					if (Xadj != X1adj && X1adj != startx)
+					if (xAdjustment != X1adj && X1adj != startx)
 					{
-						Xadj = startx - distanceD;
+						xAdjustment = startx - distanceD;
 					}
 
-					YadjD = Math.Round(Convert.ToDecimal(Yadj), 1);
+					YadjD = Math.Round(Convert.ToDecimal(yAdjustment), 1);
 
 					float Y1adj = (float)YadjD;
 
-					if (Yadj != Y1adj)
+					if (yAdjustment != Y1adj)
 					{
-						Yadj = Y1adj;
+						yAdjustment = Y1adj;
 					}
 
 					if (NextStartX != (float)XadjD)
 					{
 						NextStartX = (float)XadjD;
-						Xadj = NextStartX;
+						xAdjustment = NextStartX;
 					}
 					if (NextStartY != (float)YadjD)
 					{
 						NextStartY = (float)YadjD;
-						Yadj = NextStartY;
+						yAdjustment = NextStartY;
 					}
 				}
 
 				if (!draw)
 				{
-					Xadj = BeginSplitX;
+					xAdjustment = BeginSplitX;
 
-					NextStartX = Xadj;
-					XadjD = Convert.ToDecimal(Xadj);
+					NextStartX = xAdjustment;
+					XadjD = Convert.ToDecimal(xAdjustment);
 
-					Yadj = BeginSplitY;
+					yAdjustment = BeginSplitY;
 
-					NextStartY = Yadj;
-					YadjD = Convert.ToDecimal(Yadj);
+					NextStartY = yAdjustment;
+					YadjD = Convert.ToDecimal(yAdjustment);
 				}
 				if (draw)
 				{
-					Xadj = NextStartX;
+					xAdjustment = NextStartX;
 
-					NextStartX = Xadj;
-					XadjD = Convert.ToDecimal(Xadj);
+					NextStartX = xAdjustment;
+					XadjD = Convert.ToDecimal(xAdjustment);
 
-					Yadj = NextStartY;
+					yAdjustment = NextStartY;
 
-					NextStartY = Yadj;
-					YadjD = Convert.ToDecimal(Yadj);
+					NextStartY = yAdjustment;
+					YadjD = Convert.ToDecimal(yAdjustment);
 				}
 
 				PrevStartX = NextStartX + distanceD;
@@ -1450,19 +1450,19 @@ namespace SketchUp
 
 				string _direction = "W";
 				lineCnt++;
-				BuildAddSQL(PrevX, PrevY, distanceD, _direction, lineCnt, _isclosing, NextStartX, NextStartY, PrevStartX, PrevStartY);
+				BuildAddSQL(PrevX, PrevY, distanceD, _direction, lineCnt, isClosing, NextStartX, NextStartY, PrevStartX, PrevStartY);
 			}
 		}
 
 		private void HandleEastKeys()
 		{
-			_lastDir = "E";
-			if (_isAngle == false)
+			lastLineDirection = "E";
+			if (isAngle == false)
 			{
 				MoveEast(NextStartX, NextStartY);
 				DistText.Focus();
 			}
-			if (_isAngle == true)
+			if (isAngle == true)
 			{
 				MeasureAngle();
 			}
@@ -1470,15 +1470,15 @@ namespace SketchUp
 
 		private void HandleNorthKeys()
 		{
-			_isKeyValid = IsValidDirection("N");
+			isValidKey = IsValidDirection("N");
 
-			_lastDir = "N";
-			if (_isAngle == false)
+			lastLineDirection = "N";
+			if (isAngle == false)
 			{
 				MoveNorth(NextStartX, NextStartY);
 				DistText.Focus();
 			}
-			if (_isAngle == true)
+			if (isAngle == true)
 			{
 				MeasureAngle();
 			}
@@ -1486,14 +1486,14 @@ namespace SketchUp
 
 		private void HandleSouthKeys()
 		{
-			_isKeyValid = IsValidDirection("S");
-			_lastDir = "S";
-			if (_isAngle == false)
+			isValidKey = IsValidDirection("S");
+			lastLineDirection = "S";
+			if (isAngle == false)
 			{
 				MoveSouth(NextStartX, NextStartY);
 				DistText.Focus();
 			}
-			if (_isAngle == true)
+			if (isAngle == true)
 			{
 				MeasureAngle();
 			}
@@ -1501,14 +1501,14 @@ namespace SketchUp
 
 		private void HandleWestKeys()
 		{
-			_isKeyValid = IsValidDirection("W");
-			_lastDir = "W";
-			if (_isAngle == false)
+			isValidKey = IsValidDirection("W");
+			lastLineDirection = "W";
+			if (isAngle == false)
 			{
 				MoveWest(NextStartX, NextStartY);
 				DistText.Focus();
 			}
-			if (_isAngle == true)
+			if (isAngle == true)
 			{
 				MeasureAngle();
 			}

@@ -57,7 +57,7 @@ namespace SketchUp
 			iisql.Append("select udesc,uqty,uprice,utotal ");
 			iisql.Append(String.Format(" from {0}.{1}bimp where urecno = {2} and udwell = {3} and useqno = {4} ",
 				MainForm.localLib,
-				MainForm.localPreFix,
+				MainForm.localPrefix,
 				recno,
 				card,
 				seqno));

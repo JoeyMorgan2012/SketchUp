@@ -140,29 +140,29 @@ namespace SketchUp
 		private Point[] unadj_pts;
 		private decimal XadjR = 0;
 		private decimal YadjR = 0;
-		private SWallTech.CAMRA_Connection _conn = null;
-		private int _curLineCnt = 0;
-		private ParcelData _currentParcel = null;
-		private float _currentScale = 0;
+		// TODO: Remove if not needed:	private SWallTech.CAMRA_Connection dbConnection = null;
+		private int currentLineCount = 0;
+		private ParcelData currentParcel = null;
+		private float currentScale = 0;
 		private SectionDataCollection _currentSection = null;
-		private bool _isAngle = false;
-		private bool _isclosing = false;
-		private bool _isJumpMode = false;
-		private bool _isKeyValid = false;
-		private string _lenString = String.Empty;
-		private int _newIndex = 0;
+		private bool isAngle = false;
+		private bool isClosing = false;
+		private bool jumpModeActive = false;
+		private bool isValidKey = false;
+		private string lengthLabelString = String.Empty;
+		private int newIndex = 0;
 		private List<PointF> _newSectionPoints;
-		private int _nextLineCount = 0;
-		private string _nextSectType = String.Empty;
-		private decimal _nextStoryHeight = 0;
-		private bool _openForm = false;
-		private string _priorDirection = "";
-		private bool _reOpenSec = false;
-		private int _savedAttLine;
-		private string _savedAttSection = "";
-		private float _scale = 1.0f;
-		private Dictionary<int, float> _StartX = null;
-		private Dictionary<int, float> _StartY = null;
+		private int nextLineCount = 0;
+		private string nextSectionType = String.Empty;
+		private decimal nextStoryHeight = 0;
+		private bool openForm = false;
+		private string priorDirection = "";
+		private bool reopenTheSection = false;
+		private int savedAttachmentLine;
+		private string savedAttachmentSection = "";
+		private float drawingScale = 1.0f;
+		private Dictionary<int, float> startPointX = null;
+		private Dictionary<int, float> startPointY = null;
 
 		#endregion private fields
 
@@ -176,7 +176,7 @@ namespace SketchUp
 		public int CPcnt = 0;
 		public decimal CPSize = 0;
 		public int CurSecLineCnt = 0;
-		public SWallTech.CAMRA_Connection dbConn = null;
+		public CAMRA_Connection dbConn = null;
 		public float delStartX = 0;
 		public float delStartY = 0;
 		public decimal distance = 0;
@@ -211,9 +211,9 @@ namespace SketchUp
 		public float UNextStartY = 0;
 		public float UPrevStartX = 0;
 		public float UPrevStartY = 0;
-		public float Xadj = 0;
+		public float xAdjustment = 0;
 		public float XadjP = 0;
-		public float Yadj = 0;
+		public float yAdjustment = 0;
 		public float YadjP = 0;
 		public bool _addSection = false;
 		public decimal _calcNextSectArea = 0;
@@ -228,9 +228,9 @@ namespace SketchUp
 		public static bool _isClosed = false;
 		public bool _isNewSketch = false;
 		public string _lastAngDir = String.Empty;
-		public string _lastDir = String.Empty;
+		public string lastLineDirection = String.Empty;
 		public decimal _nextSectArea = 0;
-		public static string _nextSectLtr = String.Empty;
+		public static string nextSectionLetter = String.Empty;
 		public bool _undoJump = false;
 		public bool _undoLine = false;
 		public static bool _undoMode = false;
@@ -314,6 +314,19 @@ namespace SketchUp
 				this.section = value;
 				this.unadj_pts = this.section.SectionPoints;
 				this.LoadSection();
+			}
+		}
+
+		public string SavedAttachmentSection
+		{
+			get
+			{
+				return savedAttachmentSection;
+			}
+
+			set
+			{
+				savedAttachmentSection = value;
 			}
 		}
 

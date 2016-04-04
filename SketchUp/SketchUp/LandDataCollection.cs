@@ -152,7 +152,7 @@ namespace SketchUp
 			this.Clear();
 			StringBuilder lsql = new StringBuilder();
 			lsql.Append("select lrecno,ldwell,lseqno,lhs,laccod ");
-			lsql.Append(String.Format("from {0}.{1}land where lrecno = {2} and ldwell = {3} order by lseqno", MainForm.localLib, MainForm.localPreFix, record, card));
+			lsql.Append(String.Format("from {0}.{1}land where lrecno = {2} and ldwell = {3} order by lseqno", MainForm.localLib, MainForm.localPrefix, record, card));
 
 			DataSet ds = fox.DBConnection.RunSelectStatement(lsql.ToString());
 			int wrkSeq = 0;
@@ -237,7 +237,7 @@ namespace SketchUp
 		{
 			StringBuilder subLand = new StringBuilder();
 			subLand.Append(" select lid,lrecno,ldwell,lseqno,laccod,lhs,lacre,lvalue,llp,ladj,lacren,ltotal,ldescr,lwater,lsewer,lutil ");
-			subLand.Append(String.Format(" from {0}.{1}land where lrecno = {2} and ldwell = {3} ", MainForm.localLib, MainForm.localPreFix, _record, _card));
+			subLand.Append(String.Format(" from {0}.{1}land where lrecno = {2} and ldwell = {3} ", MainForm.localLib, MainForm.localPrefix, _record, _card));
 			subLand.Append(" and laccod > 0 order by lseqno ");
 
 			//subLand.Append(" order by lseqno ");
@@ -269,7 +269,7 @@ namespace SketchUp
 			}
 
 			StringBuilder sum_land = new StringBuilder();
-			sum_land.Append(String.Format("select sum(ltotal) from {0}.{1}land where lrecno = {2} and ldwell = {3} and laccod > 0 ", MainForm.localLib, MainForm.localPreFix, _record, _card));
+			sum_land.Append(String.Format("select sum(ltotal) from {0}.{1}land where lrecno = {2} and ldwell = {3} and laccod > 0 ", MainForm.localLib, MainForm.localPrefix, _record, _card));
 
 			try
 			{

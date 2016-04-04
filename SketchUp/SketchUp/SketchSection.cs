@@ -953,7 +953,7 @@ namespace SketchUp
 
 			string cntCP = string.Format("select count(*) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} and jstype = '{4}' ",
 							MainForm.localLib,
-							MainForm.localPreFix,
+							MainForm.localPrefix,
 							_currentParcel.mrecno,
 							_currentParcel.mdwell,
 							garcptype.Trim());
@@ -989,7 +989,7 @@ namespace SketchUp
 
 			string cntgar = string.Format("select mgart2 from {0}.{1}mast where mrecno = {2} and mdwell = {3} ",
 									MainForm.localLib,
-									MainForm.localPreFix,
+									MainForm.localPrefix,
 									_currentParcel.mrecno,
 									_currentParcel.mdwell);
 
@@ -1373,7 +1373,7 @@ namespace SketchUp
 		{
 			string fixl = string.Format("update {0}.{1}line set jlsect = '{2}' where jlrecord = {3} and jldwell = {4} and jlsect = '{5}' ",
 							MainForm.localLib,
-							MainForm.localPreFix,
+							MainForm.localPrefix,
 							lltr,
 							_currentParcel.mrecno,
 							_currentParcel.mdwell,
@@ -1385,7 +1385,7 @@ namespace SketchUp
 			//UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "fixl", fixl);
 			string fixatt = string.Format("update {0}.{1}line set jlattach = '{2}' where jlrecord = {3} and jldwell = {4} and jlattach = '{5}' ",
 							MainForm.localLib,
-							MainForm.localPreFix,
+							MainForm.localPrefix,
 							lltr,
 							_currentParcel.mrecno,
 							_currentParcel.mdwell,
@@ -1401,7 +1401,7 @@ namespace SketchUp
 		{
 			string fixsect = string.Format("update {0}.{1}section set jssect = '{2}' where jsrecord = {3} and jsdwell = {4} and jssect = '{5}' ",
 							MainForm.localLib,
-							MainForm.localPreFix,
+							MainForm.localPrefix,
 							ltr,
 							_currentParcel.mrecno,
 							_currentParcel.mdwell,
@@ -1446,7 +1446,7 @@ namespace SketchUp
 
 			string addcp = string.Format("update {0}.{1}mast set mgar#2 = {2} where mrecno = {3} and mdwell = {4} ",
 					MainForm.localLib,
-					MainForm.localPreFix,
+					MainForm.localPrefix,
 					newgarcnt,
 					_currentParcel.mrecno,
 					_currentParcel.mdwell);
@@ -1467,7 +1467,7 @@ namespace SketchUp
 			{
 				string fixCp = string.Format("update {0}.{1}mast set mgart = {2},mgar#c = {3} where mrecno = {4} and mdwell = {5} ",
 				 MainForm.localLib,
-					 MainForm.localPreFix,
+					 MainForm.localPrefix,
 					MissingGarageData.GarCode,
 					MissingGarageData.GarNbr,
 					_currentParcel.mrecno,
@@ -2176,7 +2176,7 @@ namespace SketchUp
 			StringBuilder cntsect = new StringBuilder();
 			cntsect.Append(String.Format("select jssect from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ",
 								MainForm.localLib,
-								MainForm.localPreFix,
+								MainForm.localPrefix,
 								_currentParcel.mrecno,
 								_currentParcel.mdwell));
 
@@ -2185,7 +2185,7 @@ namespace SketchUp
 			StringBuilder cntline = new StringBuilder();
 			cntline.Append(String.Format("select jlsect from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlline# = 1 ",
 						MainForm.localLib,
-						MainForm.localPreFix,
+						MainForm.localPrefix,
 						_currentParcel.mrecno,
 						_currentParcel.mdwell));
 
@@ -2400,7 +2400,7 @@ namespace SketchUp
 						StringBuilder fixCp = new StringBuilder();
 						fixCp.Append(String.Format("update {0}.{1}mast set mcarpt = {2},mcar#c = {3} ",
 						 MainForm.localLib,
-							 MainForm.localPreFix,
+							 MainForm.localPrefix,
 
 							//MainForm.FClib,
 							//MainForm.FCprefix,
@@ -2420,7 +2420,7 @@ namespace SketchUp
 					StringBuilder carupd = new StringBuilder();
 					carupd.Append(String.Format("update {0}.{1}mast set mcarpt = 65,mcar#c = 1 where mrecno = {2} and mdwell = {3} ",
 									MainForm.localLib,
-									MainForm.localPreFix,
+									MainForm.localPrefix,
 									_currentParcel.mrecno,
 									_currentParcel.mdwell));
 
@@ -2445,7 +2445,7 @@ namespace SketchUp
 					StringBuilder addcp = new StringBuilder();
 					addcp.Append(String.Format("update {0}.{1}mast set mcar#c = {2} where mrecno = {3} and mdwell = {4} ",
 							MainForm.localLib,
-							MainForm.localPreFix,
+							MainForm.localPrefix,
 							newcpcnt,
 							_currentParcel.mrecno,
 							_currentParcel.mdwell));
@@ -2463,7 +2463,7 @@ namespace SketchUp
 		{
 			string zerocp = string.Format("update {0}.{1}mast set mcarpt = 67, mcar#c = 0 where mrecno = {2} and mdwell = {3} ",
 									MainForm.localLib,
-									MainForm.localPreFix,
+									MainForm.localPrefix,
 									_currentParcel.mrecno,
 									_currentParcel.mdwell);
 
@@ -2477,7 +2477,7 @@ namespace SketchUp
 		{
 			string zerogar = string.Format("update {0}.{1}mast set mgart = 63, mgar#c = 0,mgart2 = 0,mgar#2 = 0 where mrecno = {2} and mdwell = {3} ",
 													MainForm.localLib,
-													MainForm.localPreFix,
+													MainForm.localPrefix,
 													_currentParcel.mrecno,
 													_currentParcel.mdwell);
 
@@ -2670,7 +2670,7 @@ namespace SketchUp
 					{
 						string fixgar2 = string.Format("update {0}.{1}mast set mgart2 = 0,mgar#2 = 0, mgart = {2}, mgar#c = {3} where mrecno = {4} and mdwell = {5} ",
 										MainForm.localLib,
-										MainForm.localPreFix,
+										MainForm.localPrefix,
 										_currentParcel.orig_mgart,
 										_currentParcel.orig_mgarNc,
 										_currentParcel.mrecno,
@@ -2691,7 +2691,7 @@ namespace SketchUp
 
 						if (MissingGarageData.GarCode != _currentParcel.orig_mgart2)
 						{
-							string fixCp = string.Format("update {0}.{1}mast set mgart2 = {2},mgar#2 = {3} where mrecno = {4} and mdwell = {5} ", MainForm.localLib, MainForm.localPreFix, MissingGarageData.GarCode, MissingGarageData.GarNbr, _currentParcel.mrecno, _currentParcel.mdwell);
+							string fixCp = string.Format("update {0}.{1}mast set mgart2 = {2},mgar#2 = {3} where mrecno = {4} and mdwell = {5} ", MainForm.localLib, MainForm.localPrefix, MissingGarageData.GarCode, MissingGarageData.GarNbr, _currentParcel.mrecno, _currentParcel.mdwell);
 
 							//UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "fixCp", fixCp);
 							conn.DBConnection.ExecuteNonSelectStatement(fixCp);

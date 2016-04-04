@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
@@ -12,6 +11,20 @@ namespace SketchUp
 {
 	public static class UtilityMethods
 	{
+		public static void DeleteXLines(CAMRA_Connection dbConnection, int record, int card, string library, string localityPrefix)
+		{
+			string delXline = string.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jldirect = 'X' ", library, localityPrefix, record, card);
+
+			dbConnection.DBConnection.ExecuteNonSelectStatement(delXline);
+		}
+
+		public static int SectionCount(CAMRA_Connection dbConnection, int record, int card, string library, string localityPrefix)
+		{
+			string checkSect = string.Format("select count(*) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ", library, localityPrefix, record, card);
+
+			int sectionCount = Convert.ToInt32(dbConnection.DBConnection.ExecuteScalar(checkSect));
+			return sectionCount;
+		}
 		
 		public static string NextLetter(string lastLetter = "A")
 		{
