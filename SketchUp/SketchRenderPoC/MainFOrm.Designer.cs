@@ -1,6 +1,8 @@
-﻿namespace SketchRenderPoC
+﻿using System.Windows.Forms;
+
+namespace SketchRenderPoC
 {
-	partial class MainForm
+	partial class MainForm :Form
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -119,7 +121,6 @@
 			this.tsb2DSketch.Name = "tsb2DSketch";
 			this.tsb2DSketch.Size = new System.Drawing.Size(107, 24);
 			this.tsb2DSketch.Text = "CheckFonts";
-			this.tsb2DSketch.Click += new System.EventHandler(this.tsb2DSketch_Click);
 			// 
 			// pctMain
 			// 
@@ -130,8 +131,6 @@
 			this.pctMain.Size = new System.Drawing.Size(1415, 657);
 			this.pctMain.TabIndex = 4;
 			this.pctMain.TabStop = false;
-			this.pctMain.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.pctMain_MouseDoubleClick);
-			this.pctMain.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pctMain_MouseMove);
 			// 
 			// MainForm
 			// 
