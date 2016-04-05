@@ -1,0 +1,13 @@
+C:\Users\joey\Source\Repos\SketchManager\SketchManager.Tests\bin\Debug\SketchManager.Tests.dll
+C:\Users\joey\Source\Repos\SketchManager\SketchManager.Tests\bin\Debug\SketchManager.Tests.pdb
+C:\Users\joey\Source\Repos\SketchManager\SketchManager.Tests\bin\Debug\SketchManager.dll
+C:\Users\joey\Source\Repos\SketchManager\SketchManager.Tests\bin\Debug\SWallTech.dll
+C:\Users\joey\Source\Repos\SketchManager\SketchManager.Tests\bin\Debug\IBM.Data.DB2.iSeries.dll
+C:\Users\joey\Source\Repos\SketchManager\SketchManager.Tests\bin\Debug\SWallTech.pdb
+C:\Users\joey\Source\Repos\SketchManager\SketchManager.Tests\bin\Debug\SketchManager.pdb
+C:\Users\joey\Source\Repos\SketchManager\SketchManager.Tests\bin\Debug\IBM.Data.DB2.iSeries.xml
+C:\Users\joey\Source\Repos\SketchManager\SketchManager.Tests\obj\Debug\SketchManager.Tests.csprojResolveAssemblyReference.cache
+C:\Users\joey\Source\Repos\SketchManager\SketchManager.Tests\obj\Debug\SketchManager.Tests.dll
+C:\Users\joey\Source\Repos\SketchManager\SketchManager.Tests\obj\Debug\SketchManager.Tests.pdb
+C:\Users\joey\Source\Repos\SketchManager\SketchManager.Tests\bin\Debug\SketchUp.exe
+C:\Users\joey\Source\Repos\SketchManager\SketchManager.Tests\bin\Debug\SketchUp.pdb

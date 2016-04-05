@@ -1,0 +1,12 @@
+C:\Users\joey\Source\Repos\SketchManager\SketchManager\bin\Debug\SketchManager.dll.config
+C:\Users\joey\Source\Repos\SketchManager\SketchManager\bin\Debug\SketchManager.dll
+C:\Users\joey\Source\Repos\SketchManager\SketchManager\bin\Debug\SketchManager.pdb
+C:\Users\joey\Source\Repos\SketchManager\SketchManager\bin\Debug\SWallTech.dll
+C:\Users\joey\Source\Repos\SketchManager\SketchManager\bin\Debug\IBM.Data.DB2.iSeries.dll
+C:\Users\joey\Source\Repos\SketchManager\SketchManager\bin\Debug\SWallTech.pdb
+C:\Users\joey\Source\Repos\SketchManager\SketchManager\bin\Debug\IBM.Data.DB2.iSeries.xml
+C:\Users\joey\Source\Repos\SketchManager\SketchManager\obj\Debug\SketchManager.csprojResolveAssemblyReference.cache
+C:\Users\joey\Source\Repos\SketchManager\SketchManager\obj\Debug\SketchManager.dll
+C:\Users\joey\Source\Repos\SketchManager\SketchManager\obj\Debug\SketchManager.pdb
+C:\Users\joey\Source\Repos\SketchManager\SketchManager\obj\Debug\SWallTech.AddSectionForm.resources
+C:\Users\joey\Source\Repos\SketchManager\SketchManager\obj\Debug\SketchManager.csproj.GenerateResource.Cache

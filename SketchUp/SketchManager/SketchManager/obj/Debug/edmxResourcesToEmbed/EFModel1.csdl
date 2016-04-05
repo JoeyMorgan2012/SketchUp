@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="EFModel1" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+  <EntityContainer Name="EFModel1Container" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="MainSketches" EntityType="EFModel1.MainSketch" />
+    <EntitySet Name="SketchBuildingSections" EntityType="EFModel1.SketchBuildingSection" />
+  </EntityContainer>
+  <EntityType Name="MainSketch">
+    <Key>
+      <PropertyRef Name="Record" />
+      <PropertyRef Name="Card" />
+    </Key>
+    <Property Name="Record" Type="Int32" Nullable="false" />
+    <Property Name="Card" Type="Int32" Nullable="false" />
+    <Property Name="HasSketch" Type="String" Nullable="true" />
+    <Property Name="Storeys" Type="String" Nullable="false" />
+    <Property Name="StoreyEx" Type="String" Nullable="true" />
+    <Property Name="SketchScale" Type="String" Nullable="false" />
+    <Property Name="SqFeet" Type="String" Nullable="false" />
+    <Property Name="ESketch" Type="String" Nullable="false" />
+  </EntityType>
+  <EntityType Name="SketchBuildingSection">
+    <Property Name="SectionLetter" Type="String" Nullable="false" />
+    <Property Name="SectionType" Type="String" Nullable="false" />
+    <Property Name="Storeys" Type="String" Nullable="false" />
+    <Property Name="Description" Type="String" Nullable="false" />
+    <Property Name="Property1" Type="String" Nullable="false" />
+  </EntityType>
+</Schema>

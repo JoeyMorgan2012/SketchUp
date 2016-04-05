@@ -1,0 +1,92 @@
+sqllocaldb stop "v12.0" -k
+sqllocaldb delete "v12.0"
+sqllocaldb create "v12.0" 
+sqllocaldb start "v12.0"
+
+sqllocaldb stop "v13.0" -k
+sqllocaldb delete "v13.0"
+sqllocaldb create "v13.0" 
+sqllocaldb start "v13.0"
+Microsoft Windows [Version 6.1.7601]
+Copyright (c) 2009 Microsoft Corporation.  All rights reserved.
+
+C:\Users\joey>cd ":\Program Files\Microsoft SQL Server\110\Tools\Binn"
+The filename, directory name, or volume label syntax is incorrect.
+
+C:\Users\joey>cd "C:\Program Files\Microsoft SQL Server\110\Tools\Binn"
+
+C:\Program Files\Microsoft SQL Server\110\Tools\Binn>sqllocaldb stop "v11.0" -k
+LocalDB instance "v11.0" stopped.
+
+C:\Program Files\Microsoft SQL Server\110\Tools\Binn>sqllocaldb delete "v11.0"
+LocalDB instance "v11.0" deleted.
+
+C:\Program Files\Microsoft SQL Server\110\Tools\Binn>sqllocaldb create "v11.0"
+Creation of LocalDB instance "v11.0" with version 11.0 failed because of the fol
+lowing error:
+Unexpected error occurred inside a LocalDB instance API method call. See the Win
+dows Application event log for error details.
+
+C:\Program Files\Microsoft SQL Server\110\Tools\Binn>sqllocaldb create "v11.0"
+Creation of LocalDB instance "v11.0" with version 11.0 failed because of the fol
+lowing error:
+Unexpected error occurred inside a LocalDB instance API method call. See the Win
+dows Application event log for error details.
+
+C:\Program Files\Microsoft SQL Server\110\Tools\Binn>sqllocaldb /?
+Microsoft (R) SQL Server Express LocalDB Command Line Tool
+Version 11.0.2100.60
+Copyright (c) Microsoft Corporation.  All rights reserved.
+
+Usage: SqlLocalDB operation [parameters...]
+
+Operations:
+
+  -?
+    Prints this information
+
+  create|c "instance name" [version-number] [-s]
+    Creates a new LocalDB instance with a specified name and version
+    If the [version-number] parameter is omitted, it defaults to the
+    SqlLocalDB product version.
+    -s starts the new LocalDB instance after it's created
+
+  delete|d "instance name"
+    Deletes the LocalDB instance with the specified name
+
+  start|s "instance name"
+    Starts the LocalDB instance with the specified name
+
+  stop|p "instance name" [-i|-k]
+    Stops the LocalDB instance with the specified name,
+    after current queries finish
+    -i request LocalDB instance shutdown with NOWAIT option
+    -k kills LocalDB instance process without contacting it
+
+  share|h ["owner SID or account"] "private name" "shared name"
+    Shares the specified private instance using the specified shared name.
+    If the user SID or account name is omitted, it defaults to current user.
+
+  unshare|u "shared name"
+    Stops the sharing of the specified shared LocalDB instance.
+
+  info|i
+    Lists all existing LocalDB instances owned by the current user
+    and all shared LocalDB instances.
+
+  info|i "instance name"
+    Prints the information about the specified LocalDB instance.
+
+  versions|v
+    Lists all LocalDB versions installed on the computer.
+
+  trace|t on|off
+    Turns tracing on and off
+
+SqlLocalDB treats spaces as delimiters. It is necessary to surround
+instance names that contain spaces and special characters with quotes.
+For example:
+SqlLocalDB create "My LocalDB Instance"
+
+Data Source=(LocalDB)\v13.0;AttachDbFilename=;Initial Catalog=master;Integrated Security=True;Enlist=False;Asynchronous Processing=True;MultipleActiveResultSets=True;Connect Timeout=30.
+C:\Program Files\Microsoft SQL Server\130\Tools\Binn>

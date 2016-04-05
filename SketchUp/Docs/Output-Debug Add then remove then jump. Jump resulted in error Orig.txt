@@ -1,0 +1,863 @@
+﻿Exception thrown: 'System.Deployment.Application.InvalidDeploymentException' in System.Deployment.dll
+Getting UWP anewGetting CWP anewPath caching is ONSketchUp.ParcelData.getParcel(SWallTech.CAMRA_Connection, int, int) called by SketchUp.MainForm.LoadInitialSketch - {3/17/2016 11:56:03 AM}
+SketchUp.ParcelData.ParcelData() called by SketchUp.ParcelData.getParcel - {3/17/2016 11:56:04 AM}
+Exception thrown at 0x000007FEFD52965D in SketchUp.exe: Microsoft C++ exception: DcHostException at memory location 0x00000000003D6920.
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2SQLErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2SQLErrorException' in SWallTech.dll
+Exception thrown: 'System.ArgumentOutOfRangeException' in mscorlib.dll
+Exception thrown: 'System.IndexOutOfRangeException' in System.Data.dll
+SketchUp.ParcelData.BuildSketchData() called by SketchUp.ParcelData.getParcel - {3/17/2016 11:56:08 AM}
+SketchUp.SketchMaster.SketchMaster(SWallTech.CAMRA_Connection, int, int, int) called by SketchUp.ParcelData.BuildSketchData - {3/17/2016 11:56:08 AM}
+SketchUp.SketchMaster.GetSections() called by SketchUp.SketchMaster.SketchMaster - {3/17/2016 11:56:08 AM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 11:56:09 AM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 11:56:10 AM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 11:56:10 AM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 11:56:10 AM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 11:56:10 AM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 11:56:10 AM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 11:56:11 AM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.ParcelData.GetClassValue(string) called by SketchUp.ParcelData.SetOriginalValues - {3/17/2016 11:56:12 AM}
+SketchUp.ParcelData.GetClassValue(string) called by SketchUp.ParcelData.SetOriginalValues - {3/17/2016 11:56:12 AM}
+SketchUp.ParcelData.CalculateParcel() called by SketchUp.ParcelData.BasementArea.set - {3/17/2016 11:56:12 AM}
+SketchUp.ParcelData.CalculateParcel() called by SketchUp.ParcelData.BasementPercentage.set - {3/17/2016 11:56:12 AM}
+SketchUp.ParcelData.CalculateParcel() called by SketchUp.ParcelData.getParcel - {3/17/2016 11:56:12 AM}
+SketchUp.ParcelData.CalculateParcel() called by SketchUp.ParcelData.FunctionalDeprc.set - {3/17/2016 11:56:12 AM}
+SketchUp.ParcelData.GetClassValue(string) called by SketchUp.ParcelData.CalculateParcel - {3/17/2016 11:56:12 AM}
+SketchUp.SectionDataCollection.SectionDataCollection(SWallTech.CAMRA_Connection, int, int) called by SketchUp.MainForm.LoadInitialSketch - {3/17/2016 11:56:12 AM}
+SketchUp.SectionDataCollection.getSection() called by SketchUp.SectionDataCollection.SectionDataCollection - {3/17/2016 11:56:12 AM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 11:56:12 AM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 11:56:12 AM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 11:56:12 AM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 11:56:12 AM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 11:56:12 AM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 11:56:12 AM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 11:56:12 AM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 11:56:12 AM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 11:56:12 AM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 11:56:12 AM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 11:56:12 AM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 11:56:12 AM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 11:56:13 AM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 11:56:13 AM}
+SketchUp.ParcelData.GetSketchImage(int) called by SketchUp.MainForm.LoadInitialSketch - {3/17/2016 11:56:13 AM}
+SketchUp.ParcelData.GetSketchImage(int, int, int, int, int, out float) called by SketchUp.ParcelData.GetSketchImage - {3/17/2016 11:56:13 AM}
+SketchUp.BuildingSketcher.BuildingSketcher(SketchUp.BuildingSectionCollection) called by SketchUp.ParcelData.GetSketchImage - {3/17/2016 11:56:13 AM}
+SketchUp.BuildingSketcher.DrawSketch(int, int, int, int, int, out float) called by SketchUp.ParcelData.GetSketchImage - {3/17/2016 11:56:13 AM}
+SketchUp.SectionDataCollection.SectionDataCollection(SWallTech.CAMRA_Connection, int, int) called by SketchUp.MainForm.GetSelectedImages - {3/17/2016 12:11:09 PM}
+SketchUp.SectionDataCollection.getSection() called by SketchUp.SectionDataCollection.SectionDataCollection - {3/17/2016 12:11:09 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:10 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:10 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:10 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:10 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:10 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:10 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:10 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:10 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:10 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:10 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:10 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:10 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:10 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:10 PM}
+SketchUp.ParcelData.BuildSketchData() called by SketchUp.MainForm.GetSelectedImages - {3/17/2016 12:11:10 PM}
+SketchUp.SketchMaster.SketchMaster(SWallTech.CAMRA_Connection, int, int, int) called by SketchUp.ParcelData.BuildSketchData - {3/17/2016 12:11:11 PM}
+SketchUp.SketchMaster.GetSections() called by SketchUp.SketchMaster.SketchMaster - {3/17/2016 12:11:11 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:11 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:11 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:11 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:11 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:12 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:12 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:12 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.ParcelData.GetSketchImage(int) called by SketchUp.MainForm.GetSelectedImages - {3/17/2016 12:11:12 PM}
+SketchUp.ParcelData.GetSketchImage(int, int, int, int, int, out float) called by SketchUp.ParcelData.GetSketchImage - {3/17/2016 12:11:12 PM}
+SketchUp.BuildingSketcher.BuildingSketcher(SketchUp.BuildingSectionCollection) called by SketchUp.ParcelData.GetSketchImage - {3/17/2016 12:11:12 PM}
+SketchUp.BuildingSketcher.DrawSketch(int, int, int, int, int, out float) called by SketchUp.ParcelData.GetSketchImage - {3/17/2016 12:11:12 PM}
+SketchUp.ExpandoSketch.ExpandoSketch(SketchUp.ParcelData, string, string, string, string, SWallTech.CAMRA_Connection, SketchUp.SectionDataCollection, bool, System.Drawing.Image, bool) called by SketchUp.MainForm.GetSelectedImages - {3/17/2016 12:11:12 PM}
+SketchUp.ExpandoSketch.ExpandoSketch(SketchUp.ParcelData, string, string, string, string, SWallTech.CAMRA_Connection, SketchUp.SectionDataCollection, bool, System.Drawing.Image, bool) called by SketchUp.MainForm.GetSelectedImages - {3/17/2016 12:11:12 PM}
+SketchUp.SectionDataCollection.SectionDataCollection(SWallTech.CAMRA_Connection, int, int) called by SketchUp.ExpandoSketch.ExpandoSketch - {3/17/2016 12:11:13 PM}
+SketchUp.SectionDataCollection.getSection() called by SketchUp.SectionDataCollection.SectionDataCollection - {3/17/2016 12:11:13 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:13 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:13 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:13 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:13 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:13 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:13 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:13 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:13 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:13 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:13 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:13 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:13 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:13 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:13 PM}
+SketchUp.ParcelData.GetSketchImage(int, int, int, int, int, out float) called by SketchUp.ExpandoSketch.ExpandoSketch - {3/17/2016 12:11:13 PM}
+SketchUp.BuildingSketcher.BuildingSketcher(SketchUp.BuildingSectionCollection) called by SketchUp.ParcelData.GetSketchImage - {3/17/2016 12:11:13 PM}
+SketchUp.BuildingSketcher.DrawSketch(int, int, int, int, int, out float) called by SketchUp.ParcelData.GetSketchImage - {3/17/2016 12:11:13 PM}
+SketchUp.ExpandoSketch.AddNewPoint() called by SketchUp.ExpandoSketch.AddSectionBtn_Click - {3/17/2016 12:11:23 PM}
+SketchUp.ExpandoSketch.AddNewPoint() called by SketchUp.ExpandoSketch.AddSectionBtn_Click - {3/17/2016 12:11:23 PM}
+Exception thrown: 'System.ArgumentException' in mscorlib.dll
+SketchUp.ExpandoSketch.MoveSouth(float, float) called by SketchUp.ExpandoSketch.HandleSouthKeys - {3/17/2016 12:11:29 PM}
+SketchUp.ExpandoSketch.getSplitLine() called by SketchUp.ExpandoSketch.BeginSectionBtn_Click - {3/17/2016 12:11:31 PM}
+SketchUp.ExpandoSketch.getSplitLine() called by SketchUp.ExpandoSketch.BeginSectionBtn_Click - {3/17/2016 12:11:31 PM}
+Exception thrown: 'System.ArgumentException' in mscorlib.dll
+SketchUp.ExpandoSketch.MoveEast(float, float) called by SketchUp.ExpandoSketch.HandleEastKeys - {3/17/2016 12:11:33 PM}
+Exception thrown: 'System.InvalidCastException' in mscorlib.dll
+SketchUp.ExpandoSketch.MoveSouth(float, float) called by SketchUp.ExpandoSketch.HandleSouthKeys - {3/17/2016 12:11:36 PM}
+SketchUp.ExpandoSketch.MoveWest(float, float) called by SketchUp.ExpandoSketch.HandleWestKeys - {3/17/2016 12:11:38 PM}
+SketchUp.SectionDataCollection.SectionDataCollection(SWallTech.CAMRA_Connection, int, int) called by SketchUp.ExpandoSketch.AddSectionSQL - {3/17/2016 12:11:42 PM}
+SketchUp.SectionDataCollection.getSection() called by SketchUp.SectionDataCollection.SectionDataCollection - {3/17/2016 12:11:42 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:43 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:43 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:43 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:43 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:43 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:43 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:43 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:43 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:43 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:43 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:43 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:43 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:43 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:43 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:44 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:44 PM}
+SketchUp.ExpandoSketch.SplitLine() called by SketchUp.ExpandoSketch.AddSectionSQL - {3/17/2016 12:11:44 PM}
+SketchUp.ExpandoSketch.SplitLine() called by SketchUp.ExpandoSketch.AddSectionSQL - {3/17/2016 12:11:44 PM}
+SketchUp.ExpandoSketch.setAttPnts() called by SketchUp.ExpandoSketch.AutoClose - {3/17/2016 12:11:48 PM}
+SketchUp.ExpandoSketch.setAttPnts() called by SketchUp.ExpandoSketch.AutoClose - {3/17/2016 12:11:48 PM}
+SketchUp.ParcelData.getParcel(SWallTech.CAMRA_Connection, int, int) called by SketchUp.ExpandoSketch.Reorder - {3/17/2016 12:11:51 PM}
+SketchUp.ParcelData.ParcelData() called by SketchUp.ParcelData.getParcel - {3/17/2016 12:11:52 PM}
+Exception thrown at 0x000007FEFD52965D in SketchUp.exe: Microsoft C++ exception: DcHostException at memory location 0x00000000003D4780.
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2SQLErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2SQLErrorException' in SWallTech.dll
+Exception thrown: 'System.ArgumentOutOfRangeException' in mscorlib.dll
+Exception thrown: 'System.IndexOutOfRangeException' in System.Data.dll
+SketchUp.ParcelData.BuildSketchData() called by SketchUp.ParcelData.getParcel - {3/17/2016 12:11:53 PM}
+SketchUp.SketchMaster.SketchMaster(SWallTech.CAMRA_Connection, int, int, int) called by SketchUp.ParcelData.BuildSketchData - {3/17/2016 12:11:53 PM}
+SketchUp.SketchMaster.GetSections() called by SketchUp.SketchMaster.SketchMaster - {3/17/2016 12:11:53 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:54 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:54 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:54 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:54 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:54 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:55 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:55 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:55 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.ParcelData.GetClassValue(string) called by SketchUp.ParcelData.SetOriginalValues - {3/17/2016 12:11:55 PM}
+SketchUp.ParcelData.GetClassValue(string) called by SketchUp.ParcelData.SetOriginalValues - {3/17/2016 12:11:55 PM}
+SketchUp.ParcelData.CalculateParcel() called by SketchUp.ParcelData.BasementArea.set - {3/17/2016 12:11:55 PM}
+SketchUp.ParcelData.CalculateParcel() called by SketchUp.ParcelData.BasementPercentage.set - {3/17/2016 12:11:55 PM}
+SketchUp.ParcelData.CalculateParcel() called by SketchUp.ParcelData.getParcel - {3/17/2016 12:11:56 PM}
+SketchUp.ParcelData.CalculateParcel() called by SketchUp.ParcelData.FunctionalDeprc.set - {3/17/2016 12:11:56 PM}
+SketchUp.ParcelData.GetClassValue(string) called by SketchUp.ParcelData.CalculateParcel - {3/17/2016 12:11:56 PM}
+SketchUp.ParcelData.getParcel(SWallTech.CAMRA_Connection, int, int) called by SketchUp.MainForm.GetSelectedImages - {3/17/2016 12:11:56 PM}
+SketchUp.ParcelData.ParcelData() called by SketchUp.ParcelData.getParcel - {3/17/2016 12:11:56 PM}
+Exception thrown at 0x000007FEFD52965D in SketchUp.exe: Microsoft C++ exception: DcHostException at memory location 0x00000000003D61A0.
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2SQLErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2SQLErrorException' in SWallTech.dll
+Exception thrown: 'System.ArgumentOutOfRangeException' in mscorlib.dll
+Exception thrown: 'System.IndexOutOfRangeException' in System.Data.dll
+SketchUp.ParcelData.BuildSketchData() called by SketchUp.ParcelData.getParcel - {3/17/2016 12:11:56 PM}
+SketchUp.SketchMaster.SketchMaster(SWallTech.CAMRA_Connection, int, int, int) called by SketchUp.ParcelData.BuildSketchData - {3/17/2016 12:11:56 PM}
+SketchUp.SketchMaster.GetSections() called by SketchUp.SketchMaster.SketchMaster - {3/17/2016 12:11:56 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:57 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:57 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:57 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:57 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:57 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:57 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:57 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:58 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.ParcelData.GetClassValue(string) called by SketchUp.ParcelData.SetOriginalValues - {3/17/2016 12:11:58 PM}
+SketchUp.ParcelData.GetClassValue(string) called by SketchUp.ParcelData.SetOriginalValues - {3/17/2016 12:11:58 PM}
+SketchUp.ParcelData.CalculateParcel() called by SketchUp.ParcelData.BasementArea.set - {3/17/2016 12:11:58 PM}
+SketchUp.ParcelData.CalculateParcel() called by SketchUp.ParcelData.BasementPercentage.set - {3/17/2016 12:11:58 PM}
+SketchUp.ParcelData.CalculateParcel() called by SketchUp.ParcelData.getParcel - {3/17/2016 12:11:58 PM}
+SketchUp.ParcelData.CalculateParcel() called by SketchUp.ParcelData.FunctionalDeprc.set - {3/17/2016 12:11:58 PM}
+SketchUp.ParcelData.GetClassValue(string) called by SketchUp.ParcelData.CalculateParcel - {3/17/2016 12:11:58 PM}
+SketchUp.SectionDataCollection.SectionDataCollection(SWallTech.CAMRA_Connection, int, int) called by SketchUp.MainForm.GetSelectedImages - {3/17/2016 12:11:58 PM}
+SketchUp.SectionDataCollection.getSection() called by SketchUp.SectionDataCollection.SectionDataCollection - {3/17/2016 12:11:58 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:58 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:58 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:58 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:58 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:58 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:59 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:59 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:59 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:59 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:59 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:59 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:59 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:59 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:59 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:59 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:11:59 PM}
+SketchUp.ParcelData.BuildSketchData() called by SketchUp.MainForm.GetSelectedImages - {3/17/2016 12:11:59 PM}
+SketchUp.SketchMaster.SketchMaster(SWallTech.CAMRA_Connection, int, int, int) called by SketchUp.ParcelData.BuildSketchData - {3/17/2016 12:11:59 PM}
+SketchUp.SketchMaster.GetSections() called by SketchUp.SketchMaster.SketchMaster - {3/17/2016 12:11:59 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:59 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:11:59 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:12:00 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:12:00 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:12:00 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:12:00 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:12:00 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:12:00 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.ParcelData.GetSketchImage(int) called by SketchUp.MainForm.GetSelectedImages - {3/17/2016 12:12:01 PM}
+SketchUp.ParcelData.GetSketchImage(int, int, int, int, int, out float) called by SketchUp.ParcelData.GetSketchImage - {3/17/2016 12:12:01 PM}
+SketchUp.BuildingSketcher.BuildingSketcher(SketchUp.BuildingSectionCollection) called by SketchUp.ParcelData.GetSketchImage - {3/17/2016 12:12:01 PM}
+SketchUp.BuildingSketcher.DrawSketch(int, int, int, int, int, out float) called by SketchUp.ParcelData.GetSketchImage - {3/17/2016 12:12:01 PM}
+SketchUp.SectionDataCollection.SectionDataCollection(SWallTech.CAMRA_Connection, int, int) called by SketchUp.MainForm.GetSelectedImages - {3/17/2016 12:12:04 PM}
+SketchUp.SectionDataCollection.getSection() called by SketchUp.SectionDataCollection.SectionDataCollection - {3/17/2016 12:12:04 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:04 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:04 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:04 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:04 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:04 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:04 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:04 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:04 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:04 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:04 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:04 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:04 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:04 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:04 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:04 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:04 PM}
+SketchUp.ParcelData.BuildSketchData() called by SketchUp.MainForm.GetSelectedImages - {3/17/2016 12:12:04 PM}
+SketchUp.SketchMaster.SketchMaster(SWallTech.CAMRA_Connection, int, int, int) called by SketchUp.ParcelData.BuildSketchData - {3/17/2016 12:12:05 PM}
+SketchUp.SketchMaster.GetSections() called by SketchUp.SketchMaster.SketchMaster - {3/17/2016 12:12:05 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:12:05 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:12:05 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:12:05 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:12:05 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:12:05 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:12:06 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:12:06 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:12:06 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.ParcelData.GetSketchImage(int) called by SketchUp.MainForm.GetSelectedImages - {3/17/2016 12:12:06 PM}
+SketchUp.ParcelData.GetSketchImage(int, int, int, int, int, out float) called by SketchUp.ParcelData.GetSketchImage - {3/17/2016 12:12:06 PM}
+SketchUp.BuildingSketcher.BuildingSketcher(SketchUp.BuildingSectionCollection) called by SketchUp.ParcelData.GetSketchImage - {3/17/2016 12:12:06 PM}
+SketchUp.BuildingSketcher.DrawSketch(int, int, int, int, int, out float) called by SketchUp.ParcelData.GetSketchImage - {3/17/2016 12:12:06 PM}
+SketchUp.ExpandoSketch.ExpandoSketch(SketchUp.ParcelData, string, string, string, string, SWallTech.CAMRA_Connection, SketchUp.SectionDataCollection, bool, System.Drawing.Image, bool) called by SketchUp.MainForm.GetSelectedImages - {3/17/2016 12:12:06 PM}
+SketchUp.ExpandoSketch.ExpandoSketch(SketchUp.ParcelData, string, string, string, string, SWallTech.CAMRA_Connection, SketchUp.SectionDataCollection, bool, System.Drawing.Image, bool) called by SketchUp.MainForm.GetSelectedImages - {3/17/2016 12:12:06 PM}
+SketchUp.SectionDataCollection.SectionDataCollection(SWallTech.CAMRA_Connection, int, int) called by SketchUp.ExpandoSketch.ExpandoSketch - {3/17/2016 12:12:06 PM}
+SketchUp.SectionDataCollection.getSection() called by SketchUp.SectionDataCollection.SectionDataCollection - {3/17/2016 12:12:06 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:06 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:06 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:07 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:07 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:07 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:07 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:07 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:07 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:07 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:07 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:07 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:07 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:07 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:07 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:07 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:12:07 PM}
+SketchUp.ParcelData.GetSketchImage(int, int, int, int, int, out float) called by SketchUp.ExpandoSketch.ExpandoSketch - {3/17/2016 12:12:07 PM}
+SketchUp.BuildingSketcher.BuildingSketcher(SketchUp.BuildingSectionCollection) called by SketchUp.ParcelData.GetSketchImage - {3/17/2016 12:12:07 PM}
+SketchUp.BuildingSketcher.DrawSketch(int, int, int, int, int, out float) called by SketchUp.ParcelData.GetSketchImage - {3/17/2016 12:12:07 PM}
+SketchUp.SectionDataCollection.SectionDataCollection(SWallTech.CAMRA_Connection, int, int) called by SketchUp.ExpandoSketch.AddSectionSQL - {3/17/2016 12:13:17 PM}
+SketchUp.SectionDataCollection.getSection() called by SketchUp.SectionDataCollection.SectionDataCollection - {3/17/2016 12:13:17 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:17 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:17 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:17 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:17 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:17 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:17 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:18 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:18 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:18 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:18 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:18 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:18 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:18 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:18 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:18 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:18 PM}
+SketchUp.ExpandoSketch.setAttPnts() called by SketchUp.ExpandoSketch.AutoClose - {3/17/2016 12:13:20 PM}
+SketchUp.ExpandoSketch.setAttPnts() called by SketchUp.ExpandoSketch.AutoClose - {3/17/2016 12:13:20 PM}
+SketchUp.ParcelData.getParcel(SWallTech.CAMRA_Connection, int, int) called by SketchUp.ExpandoSketch.Reorder - {3/17/2016 12:13:22 PM}
+SketchUp.ParcelData.ParcelData() called by SketchUp.ParcelData.getParcel - {3/17/2016 12:13:22 PM}
+Exception thrown at 0x000007FEFD52965D in SketchUp.exe: Microsoft C++ exception: DcHostException at memory location 0x00000000003D4780.
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2SQLErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2SQLErrorException' in SWallTech.dll
+Exception thrown: 'System.ArgumentOutOfRangeException' in mscorlib.dll
+Exception thrown: 'System.IndexOutOfRangeException' in System.Data.dll
+SketchUp.ParcelData.BuildSketchData() called by SketchUp.ParcelData.getParcel - {3/17/2016 12:13:23 PM}
+SketchUp.SketchMaster.SketchMaster(SWallTech.CAMRA_Connection, int, int, int) called by SketchUp.ParcelData.BuildSketchData - {3/17/2016 12:13:23 PM}
+SketchUp.SketchMaster.GetSections() called by SketchUp.SketchMaster.SketchMaster - {3/17/2016 12:13:23 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:23 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:24 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:24 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:24 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:24 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:25 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:25 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:25 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.ParcelData.GetClassValue(string) called by SketchUp.ParcelData.SetOriginalValues - {3/17/2016 12:13:25 PM}
+SketchUp.ParcelData.GetClassValue(string) called by SketchUp.ParcelData.SetOriginalValues - {3/17/2016 12:13:25 PM}
+SketchUp.ParcelData.CalculateParcel() called by SketchUp.ParcelData.BasementArea.set - {3/17/2016 12:13:25 PM}
+SketchUp.ParcelData.CalculateParcel() called by SketchUp.ParcelData.BasementPercentage.set - {3/17/2016 12:13:25 PM}
+SketchUp.ParcelData.CalculateParcel() called by SketchUp.ParcelData.getParcel - {3/17/2016 12:13:26 PM}
+SketchUp.ParcelData.CalculateParcel() called by SketchUp.ParcelData.FunctionalDeprc.set - {3/17/2016 12:13:26 PM}
+SketchUp.ParcelData.GetClassValue(string) called by SketchUp.ParcelData.CalculateParcel - {3/17/2016 12:13:26 PM}
+SketchUp.ParcelData.getParcel(SWallTech.CAMRA_Connection, int, int) called by SketchUp.MainForm.GetSelectedImages - {3/17/2016 12:13:26 PM}
+SketchUp.ParcelData.ParcelData() called by SketchUp.ParcelData.getParcel - {3/17/2016 12:13:26 PM}
+Exception thrown at 0x000007FEFD52965D in SketchUp.exe: Microsoft C++ exception: DcHostException at memory location 0x00000000003D61A0.
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2SQLErrorException' in IBM.Data.DB2.iSeries.dll
+Exception thrown: 'IBM.Data.DB2.iSeries.iDB2SQLErrorException' in SWallTech.dll
+Exception thrown: 'System.ArgumentOutOfRangeException' in mscorlib.dll
+Exception thrown: 'System.IndexOutOfRangeException' in System.Data.dll
+SketchUp.ParcelData.BuildSketchData() called by SketchUp.ParcelData.getParcel - {3/17/2016 12:13:26 PM}
+SketchUp.SketchMaster.SketchMaster(SWallTech.CAMRA_Connection, int, int, int) called by SketchUp.ParcelData.BuildSketchData - {3/17/2016 12:13:26 PM}
+SketchUp.SketchMaster.GetSections() called by SketchUp.SketchMaster.SketchMaster - {3/17/2016 12:13:27 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:27 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:27 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:27 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:28 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:28 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:28 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:28 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:28 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.ParcelData.GetClassValue(string) called by SketchUp.ParcelData.SetOriginalValues - {3/17/2016 12:13:29 PM}
+SketchUp.ParcelData.GetClassValue(string) called by SketchUp.ParcelData.SetOriginalValues - {3/17/2016 12:13:29 PM}
+SketchUp.ParcelData.CalculateParcel() called by SketchUp.ParcelData.BasementArea.set - {3/17/2016 12:13:29 PM}
+SketchUp.ParcelData.CalculateParcel() called by SketchUp.ParcelData.BasementPercentage.set - {3/17/2016 12:13:29 PM}
+SketchUp.ParcelData.CalculateParcel() called by SketchUp.ParcelData.getParcel - {3/17/2016 12:13:29 PM}
+SketchUp.ParcelData.CalculateParcel() called by SketchUp.ParcelData.FunctionalDeprc.set - {3/17/2016 12:13:29 PM}
+SketchUp.ParcelData.GetClassValue(string) called by SketchUp.ParcelData.CalculateParcel - {3/17/2016 12:13:29 PM}
+SketchUp.SectionDataCollection.SectionDataCollection(SWallTech.CAMRA_Connection, int, int) called by SketchUp.MainForm.GetSelectedImages - {3/17/2016 12:13:29 PM}
+SketchUp.SectionDataCollection.getSection() called by SketchUp.SectionDataCollection.SectionDataCollection - {3/17/2016 12:13:29 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:29 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:29 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:29 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:29 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:29 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:29 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:29 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:30 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:30 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:30 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:30 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:30 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:30 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:30 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:30 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:30 PM}
+SketchUp.ParcelData.BuildSketchData() called by SketchUp.MainForm.GetSelectedImages - {3/17/2016 12:13:30 PM}
+SketchUp.SketchMaster.SketchMaster(SWallTech.CAMRA_Connection, int, int, int) called by SketchUp.ParcelData.BuildSketchData - {3/17/2016 12:13:30 PM}
+SketchUp.SketchMaster.GetSections() called by SketchUp.SketchMaster.SketchMaster - {3/17/2016 12:13:30 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:30 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:30 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:31 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:31 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:31 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:31 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:31 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:31 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.ParcelData.GetSketchImage(int) called by SketchUp.MainForm.GetSelectedImages - {3/17/2016 12:13:32 PM}
+SketchUp.ParcelData.GetSketchImage(int, int, int, int, int, out float) called by SketchUp.ParcelData.GetSketchImage - {3/17/2016 12:13:32 PM}
+SketchUp.BuildingSketcher.BuildingSketcher(SketchUp.BuildingSectionCollection) called by SketchUp.ParcelData.GetSketchImage - {3/17/2016 12:13:32 PM}
+SketchUp.BuildingSketcher.DrawSketch(int, int, int, int, int, out float) called by SketchUp.ParcelData.GetSketchImage - {3/17/2016 12:13:32 PM}
+SketchUp.SectionDataCollection.SectionDataCollection(SWallTech.CAMRA_Connection, int, int) called by SketchUp.MainForm.GetSelectedImages - {3/17/2016 12:13:33 PM}
+SketchUp.SectionDataCollection.getSection() called by SketchUp.SectionDataCollection.SectionDataCollection - {3/17/2016 12:13:34 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:34 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:34 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:34 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:34 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:34 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:34 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:34 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:34 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:34 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:34 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:34 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:34 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:34 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:34 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:34 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:34 PM}
+SketchUp.ParcelData.BuildSketchData() called by SketchUp.MainForm.GetSelectedImages - {3/17/2016 12:13:34 PM}
+SketchUp.SketchMaster.SketchMaster(SWallTech.CAMRA_Connection, int, int, int) called by SketchUp.ParcelData.BuildSketchData - {3/17/2016 12:13:34 PM}
+SketchUp.SketchMaster.GetSections() called by SketchUp.SketchMaster.SketchMaster - {3/17/2016 12:13:34 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:35 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:35 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:35 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:35 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:35 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:35 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:36 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetSections - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster.GetLines(string) called by SketchUp.SketchMaster.GetSections - {3/17/2016 12:13:36 PM}
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.SketchMaster._fox.get() called by SketchUp.SketchMaster.GetLines - error CS0103: The name 'DateTime' does not exist in the current context
+SketchUp.ParcelData.GetSketchImage(int) called by SketchUp.MainForm.GetSelectedImages - {3/17/2016 12:13:36 PM}
+SketchUp.ParcelData.GetSketchImage(int, int, int, int, int, out float) called by SketchUp.ParcelData.GetSketchImage - {3/17/2016 12:13:36 PM}
+SketchUp.BuildingSketcher.BuildingSketcher(SketchUp.BuildingSectionCollection) called by SketchUp.ParcelData.GetSketchImage - {3/17/2016 12:13:36 PM}
+SketchUp.BuildingSketcher.DrawSketch(int, int, int, int, int, out float) called by SketchUp.ParcelData.GetSketchImage - {3/17/2016 12:13:36 PM}
+SketchUp.ExpandoSketch.ExpandoSketch(SketchUp.ParcelData, string, string, string, string, SWallTech.CAMRA_Connection, SketchUp.SectionDataCollection, bool, System.Drawing.Image, bool) called by SketchUp.MainForm.GetSelectedImages - {3/17/2016 12:13:36 PM}
+SketchUp.ExpandoSketch.ExpandoSketch(SketchUp.ParcelData, string, string, string, string, SWallTech.CAMRA_Connection, SketchUp.SectionDataCollection, bool, System.Drawing.Image, bool) called by SketchUp.MainForm.GetSelectedImages - {3/17/2016 12:13:36 PM}
+SketchUp.SectionDataCollection.SectionDataCollection(SWallTech.CAMRA_Connection, int, int) called by SketchUp.ExpandoSketch.ExpandoSketch - {3/17/2016 12:13:36 PM}
+SketchUp.SectionDataCollection.getSection() called by SketchUp.SectionDataCollection.SectionDataCollection - {3/17/2016 12:13:36 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:37 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:37 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:37 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:37 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:37 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:37 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:37 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:37 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:37 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:37 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:37 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:37 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:37 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:37 PM}
+SketchUp.SectionData.CreateNewSection(int, int, string, bool) called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:37 PM}
+SketchUp.SectionData.SetOriginalValues() called by SketchUp.SectionDataCollection.getSection - {3/17/2016 12:13:37 PM}
+SketchUp.ParcelData.GetSketchImage(int, int, int, int, int, out float) called by SketchUp.ExpandoSketch.ExpandoSketch - {3/17/2016 12:13:37 PM}
+SketchUp.BuildingSketcher.BuildingSketcher(SketchUp.BuildingSectionCollection) called by SketchUp.ParcelData.GetSketchImage - {3/17/2016 12:13:37 PM}
+SketchUp.BuildingSketcher.DrawSketch(int, int, int, int, int, out float) called by SketchUp.ParcelData.GetSketchImage - {3/17/2016 12:13:37 PM}
+Exception thrown: 'System.ArgumentOutOfRangeException' in mscorlib.dll
+Exception thrown: 'System.ArgumentOutOfRangeException' in SketchUp.exe
+Exception thrown: 'System.ArgumentOutOfRangeException' in SketchUp.exe
+System.Transactions Critical: 0 : <TraceRecord xmlns="http://schemas.microsoft.com/2004/10/E2ETraceEvent/TraceRecord" Severity="Critical"><TraceIdentifier>http://msdn.microsoft.com/TraceCodes/System/ActivityTracing/2004/07/Reliability/Exception/Unhandled</TraceIdentifier><Description>Unhandled exception</Description><AppDomain>SketchUp.exe</AppDomain><Exception><ExceptionType>System.ArgumentOutOfRangeException, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</ExceptionType><Message>Index was out of range. Must be non-negative and less than the size of the collection.
+Parameter name: index</Message><StackTrace>   at System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   at System.Collections.Generic.List`1.get_Item(Int32 index)
+   at SketchUp.ExpandoSketch.JumptoCorner() in C:\Users\joey\Source\Repos\SketchUp\SketchUp\SketchUp\ExpandoSketch.cs:line 3850
+   at SketchUp.ExpandoSketch.jumpToolStripMenuItem_Click(Object sender, EventArgs e) in C:\Users\joey\Source\Repos\SketchUp\SketchUp\SketchUp\ExpandoSketch.cs:line 1190
+   at System.Windows.Forms.ToolStripItem.RaiseEvent(Object key, EventArgs e)
+   at System.Windows.Forms.ToolStripMenuItem.OnClick(EventArgs e)
+   at System.Windows.Forms.ToolStripItem.HandleClick(EventArgs e)
+   at System.Windows.Forms.ToolStripItem.HandleMouseUp(MouseEventArgs e)
+   at System.Windows.Forms.ToolStrip.OnMouseUp(MouseEventArgs mea)
+   at System.Windows.Forms.ToolStripDropDown.OnMouseUp(MouseEventArgs mea)
+   at System.Windows.Forms.Control.WmMouseUp(Message&amp;amp; m, MouseButtons button, Int32 clicks)
+   at System.Windows.Forms.Control.WndProc(Message&amp;amp; m)
+   at System.Windows.Forms.ToolStrip.WndProc(Message&amp;amp; m)
+   at System.Windows.Forms.ToolStripDropDown.WndProc(Message&amp;amp; m)
+   at System.Windows.Forms.NativeWindow.DebuggableCallback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)
+   at System.Windows.Forms.UnsafeNativeMethods.DispatchMessageW(MSG&amp;amp; msg)
+   at System.Windows.Forms.Application.ComponentManager.System.Windows.Forms.UnsafeNativeMethods.IMsoComponentManager.FPushMessageLoop(IntPtr dwComponentID, Int32 reason, Int32 pvLoopData)
+   at System.Windows.Forms.Application.ThreadContext.RunMessageLoopInner(Int32 reason, ApplicationContext context)
+   at System.Windows.Forms.Application.ThreadContext.RunMessageLoop(Int32 reason, ApplicationContext context)
+   at System.Windows.Forms.Form.ShowDialog(IWin32Window owner)
+   at SketchUp.MainForm.GetSelectedImages() in C:\Users\joey\Source\Repos\SketchUp\SketchUp\SketchUp\MainForm.cs:line 787
+   at SketchUp.MainForm.EditImage_Click(Object sender, EventArgs e) in C:\Users\joey\Source\Repos\SketchUp\SketchUp\SketchUp\MainForm.cs:line 721
+   at System.Windows.Forms.Control.OnClick(EventArgs e)
+   at System.Windows.Forms.Button.OnClick(EventArgs e)
+   at System.Windows.Forms.Button.OnMouseUp(MouseEventArgs mevent)
+   at System.Windows.Forms.Control.WmMouseUp(Message&amp;amp; m, MouseButtons button, Int32 clicks)
+   at System.Windows.Forms.Control.WndProc(Message&amp;amp; m)
+   at System.Windows.Forms.ButtonBase.WndProc(Message&amp;amp; m)
+   at System.Windows.Forms.Button.WndProc(Message&amp;amp; m)
+   at System.Windows.Forms.NativeWindow.DebuggableCallback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)
+   at System.Windows.Forms.UnsafeNativeMethods.DispatchMessageW(MSG&amp;amp; msg)
+   at System.Windows.Forms.Application.ComponentManager.System.Windows.Forms.UnsafeNativeMethods.IMsoComponentManager.FPushMessageLoop(IntPtr dwComponentID, Int32 reason, Int32 pvLoopData)
+   at System.Windows.Forms.Application.ThreadContext.RunMessageLoopInner(Int32 reason, ApplicationContext context)
+   at System.Windows.Forms.Application.ThreadContext.RunMessageLoop(Int32 reason, ApplicationContext context)
+   at Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase.OnRun()
+   at Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase.DoApplicationModel()
+   at Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase.Run(String[] commandLine)
+   at SketchUp.Program.Main() in C:\Users\joey\Source\Repos\SketchUp\SketchUp\SketchUp\Program.cs:line 76</StackTrace><ExceptionString>System.ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection.
+Parameter name: index
+   at System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   at System.Collections.Generic.List`1.get_Item(Int32 index)
+   at SketchUp.ExpandoSketch.JumptoCorner() in C:\Users\joey\Source\Repos\SketchUp\SketchUp\SketchUp\ExpandoSketch.cs:line 3850
+   at SketchUp.ExpandoSketch.jumpToolStripMenuItem_Click(Object sender, EventArgs e) in C:\Users\joey\Source\Repos\SketchUp\SketchUp\SketchUp\ExpandoSketch.cs:line 1190
+   at System.Windows.Forms.ToolStripItem.RaiseEvent(Object key, EventArgs e)
+   at System.Windows.Forms.ToolStripMenuItem.OnClick(EventArgs e)
+   at System.Windows.Forms.ToolStripItem.HandleClick(EventArgs e)
+   at System.Windows.Forms.ToolStripItem.HandleMouseUp(MouseEventArgs e)
+   at System.Windows.Forms.ToolStrip.OnMouseUp(MouseEventArgs mea)
+   at System.Windows.Forms.ToolStripDropDown.OnMouseUp(MouseEventArgs mea)
+   at System.Windows.Forms.Control.WmMouseUp(Message&amp;amp; m, MouseButtons button, Int32 clicks)
+   at System.Windows.Forms.Control.WndProc(Message&amp;amp; m)
+   at System.Windows.Forms.ToolStrip.WndProc(Message&amp;amp; m)
+   at System.Windows.Forms.ToolStripDropDown.WndProc(Message&amp;amp; m)
+   at System.Windows.Forms.NativeWindow.DebuggableCallback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)
+   at System.Windows.Forms.UnsafeNativeMethods.DispatchMessageW(MSG&amp;amp; msg)
+   at System.Windows.Forms.Application.ComponentManager.System.Windows.Forms.UnsafeNativeMethods.IMsoComponentManager.FPushMessageLoop(IntPtr dwComponentID, Int32 reason, Int32 pvLoopData)
+   at System.Windows.Forms.Application.ThreadContext.RunMessageLoopInner(Int32 reason, ApplicationContext context)
+   at System.Windows.Forms.Application.ThreadContext.RunMessageLoop(Int32 reason, ApplicationContext context)
+   at System.Windows.Forms.Form.ShowDialog(IWin32Window owner)
+   at SketchUp.MainForm.GetSelectedImages() in C:\Users\joey\Source\Repos\SketchUp\SketchUp\SketchUp\MainForm.cs:line 787
+   at SketchUp.MainForm.EditImage_Click(Object sender, EventArgs e) in C:\Users\joey\Source\Repos\SketchUp\SketchUp\SketchUp\MainForm.cs:line 721
+   at System.Windows.Forms.Control.OnClick(EventArgs e)
+   at System.Windows.Forms.Button.OnClick(EventArgs e)
+   at System.Windows.Forms.Button.OnMouseUp(MouseEventArgs mevent)
+   at System.Windows.Forms.Control.WmMouseUp(Message&amp;amp; m, MouseButtons button, Int32 clicks)
+   at System.Windows.Forms.Control.WndProc(Message&amp;amp; m)
+   at System.Windows.Forms.ButtonBase.WndProc(Message&amp;amp; m)
+   at System.Windows.Forms.Button.WndProc(Message&amp;amp; m)
+   at System.Windows.Forms.NativeWindow.DebuggableCallback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)
+   at System.Windows.Forms.UnsafeNativeMethods.DispatchMessageW(MSG&amp;amp; msg)
+   at System.Windows.Forms.Application.ComponentManager.System.Windows.Forms.UnsafeNativeMethods.IMsoComponentManager.FPushMessageLoop(IntPtr dwComponentID, Int32 reason, Int32 pvLoopData)
+   at System.Windows.Forms.Application.ThreadContext.RunMessageLoopInner(Int32 reason, ApplicationContext context)
+   at System.Windows.Forms.Application.ThreadContext.RunMessageLoop(Int32 reason, ApplicationContext context)
+   at Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase.OnRun()
+   at Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase.DoApplicationModel()
+   at Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase.Run(String[] commandLine)
+   at SketchUp.Program.Main() in C:\Users\joey\Source\Repos\SketchUp\SketchUp\SketchUp\Program.cs:line 76</ExceptionString></Exception></TraceRecord>
+An unhandled exception of type 'System.ArgumentOutOfRangeException' occurred in SketchUp.exe
+Additional information: Index was out of range. Must be non-negative and less than the size of the collection.
+
