@@ -53,7 +53,7 @@
             this.beginToolStripMenuItem});
 			this.MainMenu.Location = new System.Drawing.Point(0, 0);
 			this.MainMenu.Name = "MainMenu";
-			this.MainMenu.Size = new System.Drawing.Size(1427, 28);
+			this.MainMenu.Size = new System.Drawing.Size(1065, 28);
 			this.MainMenu.TabIndex = 0;
 			this.MainMenu.Text = "Menu";
 			// 
@@ -74,9 +74,9 @@
 			this.StatusMain.ImageScalingSize = new System.Drawing.Size(20, 20);
 			this.StatusMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MouseLocationLabel});
-			this.StatusMain.Location = new System.Drawing.Point(0, 718);
+			this.StatusMain.Location = new System.Drawing.Point(0, 543);
 			this.StatusMain.Name = "StatusMain";
-			this.StatusMain.Size = new System.Drawing.Size(1427, 22);
+			this.StatusMain.Size = new System.Drawing.Size(1065, 22);
 			this.StatusMain.TabIndex = 2;
 			this.StatusMain.Text = "Status";
 			// 
@@ -94,7 +94,7 @@
             this.tsb2DSketch});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 28);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(1427, 27);
+			this.toolStrip1.Size = new System.Drawing.Size(1065, 27);
 			this.toolStrip1.TabIndex = 3;
 			this.toolStrip1.Text = "Tests";
 			// 
@@ -114,11 +114,11 @@
 			// 
 			// tsb2DSketch
 			// 
-			this.tsb2DSketch.Image = global::SketchRenderPoC.Properties.Resources.Font_16x;
+			this.tsb2DSketch.Image = global::SketchRenderPoC.Properties.Resources.RedRectangle;
 			this.tsb2DSketch.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tsb2DSketch.Name = "tsb2DSketch";
-			this.tsb2DSketch.Size = new System.Drawing.Size(107, 24);
-			this.tsb2DSketch.Text = "CheckFonts";
+			this.tsb2DSketch.Size = new System.Drawing.Size(126, 24);
+			this.tsb2DSketch.Text = "Draw With 2D";
 			this.tsb2DSketch.Click += new System.EventHandler(this.tsb2DSketch_Click);
 			// 
 			// pctMain
@@ -127,7 +127,7 @@
 			this.pctMain.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.pctMain.Location = new System.Drawing.Point(0, 58);
 			this.pctMain.Name = "pctMain";
-			this.pctMain.Size = new System.Drawing.Size(1415, 657);
+			this.pctMain.Size = new System.Drawing.Size(1053, 482);
 			this.pctMain.TabIndex = 4;
 			this.pctMain.TabStop = false;
 			this.pctMain.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.pctMain_MouseDoubleClick);
@@ -138,7 +138,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-			this.ClientSize = new System.Drawing.Size(1427, 740);
+			this.ClientSize = new System.Drawing.Size(1065, 565);
 			this.Controls.Add(this.pctMain);
 			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.StatusMain);
