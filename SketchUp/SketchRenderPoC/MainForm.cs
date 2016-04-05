@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -67,7 +68,9 @@ namespace SketchRenderPoC
 
 		#region Fields
 
-		private Brush blueBrush = Brushes.Blue;
+		private Brush blueBrush = Brushes.DarkBlue;
+		private Brush greenBrush = Brushes.DarkGreen;
+		private Brush redBrush = Brushes.DarkRed;
 		private Pen bluePen;
 		private Graphics graphics;
 		private GraphicsPath graphicsPath = new GraphicsPath();
@@ -159,6 +162,10 @@ namespace SketchRenderPoC
 
 		private void DrawLine(SMLine line)
 		{
+#if DEBUG
+
+			 Debug.WriteLine(string.Format("Line {0}-{1}: {2},{3}-{4},{5}", line.SectionLetter,line.LineNumber, line.ScaledStartPoint.X + SketchOrigin.X, line.ScaledStartPoint.Y + SketchOrigin.Y, line.ScaledEndPoint.X + SketchOrigin.X, line.ScaledEndPoint.Y + SketchOrigin.Y));
+#endif
 			PointF drawLineStart = new PointF(line.ScaledStartPoint.X + SketchOrigin.X, line.ScaledStartPoint.Y + SketchOrigin.Y);
 			PointF drawLineEnd = new PointF(line.ScaledEndPoint.X + SketchOrigin.X, line.ScaledEndPoint.Y + SketchOrigin.Y);
 
@@ -249,6 +256,9 @@ namespace SketchRenderPoC
 			var xLocation = (ParcelWorkingCopy.OffsetX * ParcelWorkingCopy.Scale) + paddingX;
 			var yLocation = (ParcelWorkingCopy.OffsetY * ParcelWorkingCopy.Scale) + paddingY;
 			SketchOrigin = new PointF((float)xLocation, (float)yLocation);
+#if DEBUG
+			Debug.WriteLine(string.Format("Sketch scale {0}, origin at {1},{2}", parcelWorkingCopy.Scale, xLocation, yLocation));
+#endif
 		}
 
 		private void SetSketchScale()
@@ -259,19 +269,38 @@ namespace SketchRenderPoC
 			decimal xScale = Math.Floor(boxWidth / ParcelWorkingCopy.SketchXSize);
 			decimal yScale = Math.Floor(boxHeight / ParcelWorkingCopy.SketchYSize);
 			ParcelWorkingCopy.Scale = (decimal)SMGlobal.SmallerDouble(xScale, yScale);
+
+#if DEBUG
+			string message = string.Format("xScale: {0}/{1}={2}, yScale {3}/{4}={5}", boxWidth, ParcelWorkingCopy.SketchXSize, xScale, boxHeight, ParcelWorkingCopy.SketchYSize, yScale);
+			 Console.WriteLine(message);
+			MessageBox.Show(message);
+#endif
+		}
+
+		private void ComputeScaledPoints(decimal sketchScale)
+		{
 			if (ParcelWorkingCopy != null && ParcelWorkingCopy.Sections != null)
 			{
 				foreach (SMSection s in ParcelWorkingCopy.Sections)
 				{
 					foreach (SMLine line in s.Lines)
 					{
-						var lineStartX = (float)((decimal)line.StartX * line.ParentParcel.Scale + (decimal)SketchOrigin.X);
-						var lineStartY = (float)((decimal)line.StartY * line.ParentParcel.Scale + (decimal)SketchOrigin.Y);
-						var lineEndX = (float)((decimal)lineStartX + ((decimal)line.XLength * line.ParentParcel.Scale));
-						var lineEndY = (float)((decimal)lineStartY + ((decimal)line.YLength * line.ParentParcel.Scale));
-
+						var lineStartX = (float)(((decimal)line.StartX * sketchScale) + (decimal)SketchOrigin.X);
+						var lineStartY = (float)(((decimal)line.StartY * sketchScale) + (decimal)SketchOrigin.Y);
+						var lineEndX = (float)((decimal)lineStartX + ((decimal)line.XLength * sketchScale));
+						var lineEndY = (float)((decimal)lineStartY + ((decimal)line.YLength * sketchScale));
+#if DEBUG
+						string message = string.Format("Line: {0}-{1} {2},{3} +{4}x,{5}y becomes {6},{7} at scale {8}", line.SectionLetter, line.LineNumber, line.StartX, line.StartY, SketchOrigin.X, SketchOrigin.Y, lineStartX, lineStartY, sketchScale);
+						Console.WriteLine(message);
+						message=string.Format("Line: {0}-{1} Length of {2} becomes length of {3}", line.SectionLetter, line.LineNumber, line.LineLength, line.LineLength * sketchScale);
+	Console.WriteLine(message);
+#endif
 						line.ScaledStartPoint = new PointF(lineStartX, lineStartY);
 						line.ScaledEndPoint = new PointF(lineEndX, lineEndY);
+#if DEBUG
+						graphics.DrawString(string.Format("{0:N2},{1:N2} ({2:N2},{3:N2})", lineStartX, lineStartY, line.StartX, line.StartY), DefaultFont, greenBrush, new PointF(lineStartX + 12, lineStartY + 12));
+						graphics.DrawString(string.Format("{0:N2},{1:N2} ({2:N2},{3:N2})", lineEndX, lineEndY, line.EndX, line.EndY), DefaultFont, redBrush, new PointF(lineEndX + 12, lineEndY + 12));
+#endif
 					}
 				}
 			}
@@ -299,11 +328,11 @@ namespace SketchRenderPoC
 
 			SetSketchScale();
 			SetSketchOrigin();
-
+			ComputeScaledPoints(ParcelWorkingCopy.Scale);
 			//DebugOnlyDisplayResults();
 			DrawSections();
 		}
 
-		#endregion Private Methods
+#endregion Private Methods
 	}
 }
