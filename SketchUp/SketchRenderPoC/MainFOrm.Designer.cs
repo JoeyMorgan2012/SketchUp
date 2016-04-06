@@ -38,8 +38,13 @@
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
 			this.tsbGetSketch = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.tsb2DSketch = new System.Windows.Forms.ToolStripButton();
 			this.pctMain = new System.Windows.Forms.PictureBox();
+			this.wholeSketchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.sectionAToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.sectionBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.sectionCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.sectionDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.sectionFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainMenu.SuspendLayout();
 			this.StatusMain.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
@@ -59,15 +64,22 @@
 			// 
 			// beginToolStripMenuItem
 			// 
+			this.beginToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.wholeSketchToolStripMenuItem,
+            this.sectionAToolStripMenuItem,
+            this.sectionBToolStripMenuItem,
+            this.sectionCToolStripMenuItem,
+            this.sectionDToolStripMenuItem,
+            this.sectionFToolStripMenuItem});
 			this.beginToolStripMenuItem.Name = "beginToolStripMenuItem";
-			this.beginToolStripMenuItem.Size = new System.Drawing.Size(59, 24);
-			this.beginToolStripMenuItem.Text = "Begin";
+			this.beginToolStripMenuItem.Size = new System.Drawing.Size(56, 24);
+			this.beginToolStripMenuItem.Text = "Draw";
 			// 
 			// contextMenuStrip1
 			// 
 			this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(67, 4);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
 			// 
 			// StatusMain
 			// 
@@ -90,8 +102,7 @@
 			this.toolStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsbGetSketch,
-            this.toolStripSeparator1,
-            this.tsb2DSketch});
+            this.toolStripSeparator1});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 28);
 			this.toolStrip1.Name = "toolStrip1";
 			this.toolStrip1.Size = new System.Drawing.Size(1427, 27);
@@ -112,15 +123,6 @@
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
 			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
 			// 
-			// tsb2DSketch
-			// 
-			this.tsb2DSketch.Image = global::SketchRenderPoC.Properties.Resources.Font_16x;
-			this.tsb2DSketch.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.tsb2DSketch.Name = "tsb2DSketch";
-			this.tsb2DSketch.Size = new System.Drawing.Size(107, 24);
-			this.tsb2DSketch.Text = "CheckFonts";
-			this.tsb2DSketch.Click += new System.EventHandler(this.tsb2DSketch_Click);
-			// 
 			// pctMain
 			// 
 			this.pctMain.BackColor = System.Drawing.SystemColors.ButtonHighlight;
@@ -132,6 +134,47 @@
 			this.pctMain.TabStop = false;
 			this.pctMain.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.pctMain_MouseDoubleClick);
 			this.pctMain.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pctMain_MouseMove);
+			// 
+			// wholeSketchToolStripMenuItem
+			// 
+			this.wholeSketchToolStripMenuItem.Name = "wholeSketchToolStripMenuItem";
+			this.wholeSketchToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+			this.wholeSketchToolStripMenuItem.Text = "Whole Sketch";
+			// 
+			// sectionAToolStripMenuItem
+			// 
+			this.sectionAToolStripMenuItem.Name = "sectionAToolStripMenuItem";
+			this.sectionAToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+			this.sectionAToolStripMenuItem.Text = "Section A";
+			this.sectionAToolStripMenuItem.Click += new System.EventHandler(this.sectionAToolStripMenuItem_Click);
+			// 
+			// sectionBToolStripMenuItem
+			// 
+			this.sectionBToolStripMenuItem.Name = "sectionBToolStripMenuItem";
+			this.sectionBToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+			this.sectionBToolStripMenuItem.Text = "Section B";
+			this.sectionBToolStripMenuItem.Click += new System.EventHandler(this.sectionBToolStripMenuItem_Click);
+			// 
+			// sectionCToolStripMenuItem
+			// 
+			this.sectionCToolStripMenuItem.Name = "sectionCToolStripMenuItem";
+			this.sectionCToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+			this.sectionCToolStripMenuItem.Text = "Section C";
+			this.sectionCToolStripMenuItem.Click += new System.EventHandler(this.sectionCToolStripMenuItem_Click);
+			// 
+			// sectionDToolStripMenuItem
+			// 
+			this.sectionDToolStripMenuItem.Name = "sectionDToolStripMenuItem";
+			this.sectionDToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+			this.sectionDToolStripMenuItem.Text = "Section D";
+			this.sectionDToolStripMenuItem.Click += new System.EventHandler(this.sectionDToolStripMenuItem_Click);
+			// 
+			// sectionFToolStripMenuItem
+			// 
+			this.sectionFToolStripMenuItem.Name = "sectionFToolStripMenuItem";
+			this.sectionFToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+			this.sectionFToolStripMenuItem.Text = "Section F";
+			this.sectionFToolStripMenuItem.Click += new System.EventHandler(this.sectionFToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -166,10 +209,15 @@
 		private System.Windows.Forms.ToolStrip toolStrip1;
 		private System.Windows.Forms.ToolStripButton tsbGetSketch;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-		private System.Windows.Forms.ToolStripButton tsb2DSketch;
 		private System.Windows.Forms.ToolStripMenuItem beginToolStripMenuItem;
 		private System.Windows.Forms.PictureBox pctMain;
 		private System.Windows.Forms.ToolStripStatusLabel MouseLocationLabel;
+		private System.Windows.Forms.ToolStripMenuItem wholeSketchToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem sectionAToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem sectionBToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem sectionCToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem sectionDToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem sectionFToolStripMenuItem;
 	}
 }
 

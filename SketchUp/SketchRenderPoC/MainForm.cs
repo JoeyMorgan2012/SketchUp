@@ -1,25 +1,35 @@
-﻿using System;
+﻿using SWallTech;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using SWallTech;
 
 namespace SketchRenderPoC
 {
 	public partial class MainForm : Form
 	{
+		private const int recordNumber = 11787;
 		#region Constructor
 
 		public MainForm()
 		{
 			InitializeComponent();
 			graphics = pctMain.CreateGraphics();
-			bluePen = new Pen(Color.DarkBlue, 3);
+			BluePen = new Pen(Color.DarkBlue, 3);
+			RedPen = new Pen(Color.Red, 2);
+			InitializeSketch(recordNumber);
+		}
 
-			redPen = new Pen(Color.Red, 2);
+		private void InitializeSketch(int record)
+		{
+			GetSelectedParcelData(record);
+			SetSketchScale();
+			SetSketchOrigin();
+			SetScaledStartPoints();
 		}
 
 		#endregion Constructor
@@ -55,7 +65,7 @@ namespace SketchRenderPoC
 		private void DebugOnlyDisplayResults()
 		{
 #if DEBUG
-			graphics.DrawRectangle(bluePen, SketchOrigin.X, SketchOrigin.Y, 2, 2);
+			graphics.DrawRectangle(BluePen, SketchOrigin.X, SketchOrigin.Y, 2, 2);
 			Brush redBrush = Brushes.Red;
 			Font textFont = new Font("Arial", 12);
 			graphics.DrawString(string.Format("Origin: {0},{1}", SketchOrigin.X, SketchOrigin.Y), textFont, redBrush, SketchOrigin.X + 10, SketchOrigin.Y + 10);
@@ -67,59 +77,18 @@ namespace SketchRenderPoC
 
 		#region Fields
 
-		private Brush blueBrush = Brushes.Blue;
+		private Brush blueBrush;
 		private Pen bluePen;
 		private Graphics graphics;
 		private GraphicsPath graphicsPath = new GraphicsPath();
+		private Brush greenBrush;
 		private SMParcel parcelWorkingCopy;
-		private Pen redPen = new Pen(Color.Red, 1);
+		private Brush redBrush;
+		private Pen redPen;
 		private SMParcel selectedParcel;
 		private PointF sketchOrigin;
 
 		#endregion Fields
-
-		#region Properties
-
-		public SMParcel ParcelWorkingCopy
-		{
-			get
-			{
-				return parcelWorkingCopy;
-			}
-
-			set
-			{
-				parcelWorkingCopy = value;
-			}
-		}
-
-		public SMParcel SelectedParcel
-		{
-			get
-			{
-				return selectedParcel;
-			}
-
-			set
-			{
-				selectedParcel = value;
-			}
-		}
-
-		public PointF SketchOrigin
-		{
-			get
-			{
-				return sketchOrigin;
-			}
-
-			set
-			{
-				sketchOrigin = value;
-			}
-		}
-
-		#endregion Properties
 
 		#region Private Methods
 
@@ -150,19 +119,20 @@ namespace SketchRenderPoC
 		private void DrawLabel(SMLine line)
 		{
 			string label = line.LineLabel;
-			Brush redBrush = Brushes.Red;
-			Font font = new Font("Lucida Sans Unicode", 10, FontStyle.Bold, GraphicsUnit.Point);
+
+			Font font = new Font("Lucida Sans Unicode", 8, FontStyle.Regular, GraphicsUnit.Point);
 
 			PointF labelStartPoint = line.LineLabelPlacementPoint(SketchOrigin);
-			graphics.DrawString(label, font, redBrush, labelStartPoint);
+			graphics.DrawString(label, font, GreenBrush, labelStartPoint);
 		}
 
 		private void DrawLine(SMLine line)
 		{
-			PointF drawLineStart = new PointF(line.ScaledStartPoint.X + SketchOrigin.X, line.ScaledStartPoint.Y + SketchOrigin.Y);
-			PointF drawLineEnd = new PointF(line.ScaledEndPoint.X + SketchOrigin.X, line.ScaledEndPoint.Y + SketchOrigin.Y);
-
-			graphics.DrawLine(bluePen, drawLineStart, drawLineEnd);
+			//PointF drawLineStart = new PointF(line.ScaledStartPoint.X + SketchOrigin.X, line.ScaledStartPoint.Y + SketchOrigin.Y);
+			//PointF drawLineEnd = new PointF(line.ScaledEndPoint.X + SketchOrigin.X, line.ScaledEndPoint.Y + SketchOrigin.Y);
+			PointF drawLineStart = new PointF(line.ScaledStartPoint.X, line.ScaledStartPoint.Y);
+			PointF drawLineEnd = new PointF(line.ScaledEndPoint.X, line.ScaledEndPoint.Y);
+			graphics.DrawLine(BluePen, drawLineStart, drawLineEnd);
 			DrawLabel(line);
 		}
 
@@ -177,6 +147,10 @@ namespace SketchRenderPoC
 
 		private void DrawSections()
 		{
+			if (parcelWorkingCopy==null)
+			{
+				InitializeSketch(recordNumber);
+			}
 			if (ParcelWorkingCopy.Sections != null)
 			{
 				foreach (SMSection sms in ParcelWorkingCopy.Sections.OrderBy(l => l.SectionLetter))
@@ -210,7 +184,19 @@ namespace SketchRenderPoC
 			int dwelling = 1;
 			string locality = "AUG";
 			string password = "CAMRA2";
-			int record = 11787;
+			int record = recordNumber;
+			string userName = "CAMRA2";
+			SketchRepository sr = new SketchRepository(dataSource, userName, password, locality);
+			SelectedParcel = GetParcel(dwelling, record, sr);
+			ParcelWorkingCopy = SelectedParcel;
+		}
+		private void GetSelectedParcelData(int record)
+		{
+			string dataSource = "192.168.176.241";
+			int dwelling = 1;
+			string locality = "AUG";
+			string password = "CAMRA2";
+		
 			string userName = "CAMRA2";
 			SketchRepository sr = new SketchRepository(dataSource, userName, password, locality);
 			SelectedParcel = GetParcel(dwelling, record, sr);
@@ -237,6 +223,34 @@ namespace SketchRenderPoC
 			return labelStartPoint;
 		}
 
+		private void SetScaledStartPoints()
+		{
+			if (ParcelWorkingCopy != null && ParcelWorkingCopy.Sections != null)
+			{
+				decimal sketchScale = ParcelWorkingCopy.Scale;
+				foreach (SMSection s in ParcelWorkingCopy.Sections)
+				{
+					foreach (SMLine line in s.Lines)
+					{
+						
+						var lineStartX = (float)((line.StartX * sketchScale) + (decimal)SketchOrigin.X);
+						var lineStartY = (float)((line.StartY * sketchScale) + (decimal)SketchOrigin.Y);
+						line.ScaledStartPoint = new PointF(lineStartX, lineStartY);
+#if DEBUG
+
+						StringBuilder traceOut = new StringBuilder();
+						traceOut.AppendLine(string.Format("{4}-{5} Original Start: {0},{1}, scaled start {2},{3}", line.StartPoint.X, line.StartPoint.Y, lineStartX, lineStartY,line.SectionLetter,line.LineNumber));
+						traceOut.AppendLine(string.Format("Original End: {0},{1}, scaled end {2},{3}", line.EndPoint.X, line.EndPoint.Y, line.ScaledEndPoint.X, line.ScaledEndPoint.Y));
+						Console.WriteLine(string.Format("{0}", traceOut.ToString()));
+#endif
+
+						
+						
+					}
+				}
+			}
+		}
+
 		private void SetSketchOrigin()
 		{
 			//Using the scale and the offsets, determine the point to be considered as "0,0" for the sketch;
@@ -244,11 +258,24 @@ namespace SketchRenderPoC
 			var sketchAreaHeight = pctMain.Height - 20;
 
 			PointF pictureBoxCorner = pctMain.Location;
-			var paddingX = ((sketchAreaWidth - (ParcelWorkingCopy.SketchXSize * ParcelWorkingCopy.Scale)) / 2);
-			var paddingY = ((sketchAreaHeight - (ParcelWorkingCopy.SketchYSize * ParcelWorkingCopy.Scale)) / 2);
+			var extraWidth = (pctMain.Width-20) - (ParcelWorkingCopy.Scale * ParcelWorkingCopy.SketchXSize);
+			var extraHeight = (pctMain.Height-20) - (parcelWorkingCopy.Scale * ParcelWorkingCopy.SketchYSize);
+			var paddingX = (extraWidth/ 2)+10;
+			var paddingY = (extraHeight / 2) + 10;
 			var xLocation = (ParcelWorkingCopy.OffsetX * ParcelWorkingCopy.Scale) + paddingX;
 			var yLocation = (ParcelWorkingCopy.OffsetY * ParcelWorkingCopy.Scale) + paddingY;
+			
 			SketchOrigin = new PointF((float)xLocation, (float)yLocation);
+
+		}
+
+		private void ShowPoint(string pointLabel, PointF sketchOriginPoint)
+		{
+			PointF[] region = new PointF[] {new PointF(sketchOriginPoint.X-4,sketchOriginPoint.Y-4), new PointF(sketchOriginPoint.X - 4, sketchOriginPoint.Y + 4), new PointF(sketchOriginPoint.X + 4, sketchOriginPoint.Y + 4), new PointF(sketchOriginPoint.X + 4, sketchOriginPoint.Y - 4) };
+			PolygonF pointPolygon = new PolygonF(region);
+
+			graphics.DrawPolygon(BluePen, region);
+			graphics.DrawString(pointLabel, DefaultFont, GreenBrush, new PointF(sketchOriginPoint.X -16, sketchOriginPoint.Y -16));
 		}
 
 		private void SetSketchScale()
@@ -259,22 +286,6 @@ namespace SketchRenderPoC
 			decimal xScale = Math.Floor(boxWidth / ParcelWorkingCopy.SketchXSize);
 			decimal yScale = Math.Floor(boxHeight / ParcelWorkingCopy.SketchYSize);
 			ParcelWorkingCopy.Scale = (decimal)SMGlobal.SmallerDouble(xScale, yScale);
-			if (ParcelWorkingCopy != null && ParcelWorkingCopy.Sections != null)
-			{
-				foreach (SMSection s in ParcelWorkingCopy.Sections)
-				{
-					foreach (SMLine line in s.Lines)
-					{
-						var lineStartX = (float)((decimal)line.StartX * line.ParentParcel.Scale + (decimal)SketchOrigin.X);
-						var lineStartY = (float)((decimal)line.StartY * line.ParentParcel.Scale + (decimal)SketchOrigin.Y);
-						var lineEndX = (float)((decimal)lineStartX + ((decimal)line.XLength * line.ParentParcel.Scale));
-						var lineEndY = (float)((decimal)lineStartY + ((decimal)line.YLength * line.ParentParcel.Scale));
-
-						line.ScaledStartPoint = new PointF(lineStartX, lineStartY);
-						line.ScaledEndPoint = new PointF(lineEndX, lineEndY);
-					}
-				}
-			}
 		}
 
 		private void ShowNearestCorners(PointF mouseLocation)
@@ -287,6 +298,7 @@ namespace SketchRenderPoC
 			foreach (SMLine l in nearestLines)
 			{
 				PointF location = PointF.Add(l.ScaledEndPoint, new SizeF(SketchOrigin));
+
 				//DrawLine(l, new Pen(Color.DarkGreen, 6));
 				graphics.DrawString("*", font, violetBrush, location);
 				graphics.DrawEllipse(new Pen(Color.Green), (new RectangleF(location, new SizeF(2, 2))));
@@ -299,11 +311,184 @@ namespace SketchRenderPoC
 
 			SetSketchScale();
 			SetSketchOrigin();
+			SetScaledStartPoints();
 
 			//DebugOnlyDisplayResults();
 			DrawSections();
 		}
+		private void ShowSketch(string sectionLetter)
+		{
 
+
+#if DEBUG
+			float xLocation = SketchOrigin.X;
+			float yLocation = SketchOrigin.Y;
+			string message = string.Format("Origin: {0},{1}", xLocation, yLocation);
+			//MessageBox.Show(message);
+			ShowPoint(message, new PointF((float)xLocation, (float)yLocation));
+#endif
+			//DebugOnlyDisplayResults();
+			//DrawSections(sectionLetter);
+		}
+
+		private void DrawSections(string sectionLetter)
+		{
+			if (parcelWorkingCopy == null)
+			{
+				InitializeSketch(recordNumber);
+			}
+			if (ParcelWorkingCopy.Sections != null)
+			{
+				SMSection selectedSection = (from s in ParcelWorkingCopy.Sections where s.SectionLetter == sectionLetter select s).FirstOrDefault<SMSection>();
+				
+					if (selectedSection.Lines != null)
+					{
+						foreach (SMLine l in selectedSection.Lines.OrderBy(n => n.LineNumber))
+						{
+							DrawLine(l);
+						}
+					}
+				
+			}
+		}
 		#endregion Private Methods
+
+		#region Properties
+
+		public Brush BlueBrush
+		{
+			get
+			{
+				blueBrush = Brushes.DarkBlue;
+				return blueBrush;
+			}
+			set
+			{
+				blueBrush = value;
+			}
+		}
+
+		public Brush GreenBrush
+		{
+			get
+			{
+				greenBrush = Brushes.DarkGreen;
+				return greenBrush;
+			}
+			set
+			{
+				greenBrush = value;
+			}
+		}
+
+		public SMParcel ParcelWorkingCopy
+		{
+			get
+			{
+				return parcelWorkingCopy;
+			}
+			set
+			{
+				parcelWorkingCopy = value;
+			}
+		}
+
+		public Brush RedBrush
+		{
+			get
+			{
+				redBrush = Brushes.DarkRed;
+				return redBrush;
+			}
+			set
+			{
+				redBrush = value;
+			}
+		}
+
+		public SMParcel SelectedParcel
+		{
+			get
+			{
+				return selectedParcel;
+			}
+			set
+			{
+				selectedParcel = value;
+			}
+		}
+
+		public PointF SketchOrigin
+		{
+			get
+			{
+				return sketchOrigin;
+			}
+			set
+			{
+				sketchOrigin = value;
+			}
+		}
+
+		public Pen BluePen
+		{
+			get
+			{
+				bluePen = new Pen(Color.DarkBlue, 1);
+				return bluePen;
+			}
+
+			set
+			{
+				bluePen = value;
+			}
+		}
+
+		public Pen RedPen
+		{
+			get
+			{
+				redPen = new Pen(Color.DarkRed, 1);
+				return redPen;
+			}
+
+			set
+			{
+				redPen = value;
+			}
+		}
+
+		#endregion Properties
+
+		private void tsbDrawA_Click(object sender, EventArgs e)
+		{
+
+			
+		}
+
+		private void sectionAToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+ShowSketch("A");
+		}
+
+		private void sectionBToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			DrawSections("B");
+		}
+
+		private void sectionCToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			DrawSections("C");
+		}
+
+		private void sectionDToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			DrawSections("D");
+		}
+
+		private void sectionFToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			DrawSections("F");
+		}
 	}
 }
