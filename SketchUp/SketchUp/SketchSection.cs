@@ -276,7 +276,7 @@ namespace SketchUp
 
 				reOpenSecLtr = SectDGView.CurrentRow.Cells["Section"].Value.ToString().Trim();
 
-				MainForm.reopenSec = reOpenSecLtr;
+				SketchUpGlobals.ReOpenSection = reOpenSecLtr;
 
 				this.Close();
 			}
@@ -381,8 +381,8 @@ namespace SketchUp
 					}
 					StringBuilder fixstory = new StringBuilder();
 					fixstory.Append(String.Format("update {0}.{1}mast set mstor# = {2},mstory = '{3}' ",
-									MainForm.FClib,
-									MainForm.FCprefix,
+									SketchUpGlobals.FcLib,
+									SketchUpGlobals.FcLocalityPrefix,
 									newStory,
 									NewSLSF));
 					fixstory.Append(String.Format("where mrecno = {0} and mdwell = {1} ",
@@ -395,8 +395,8 @@ namespace SketchUp
 					//UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "fixstory", fixstory);
 					StringBuilder fixsecstry = new StringBuilder();
 					fixsecstry.Append(String.Format("update {0}.{1}section set jsstory = {2},jstype = '{3}' where jsrecord = {4} and jsdwell = {5} and jssect = 'A' ",
-								MainForm.FClib,
-								MainForm.FCprefix,
+								SketchUpGlobals.FcLib,
+								SketchUpGlobals.FcLocalityPrefix,
 								newStory,
 								upDateSection,
 								_currentParcel.mrecno,
@@ -409,8 +409,8 @@ namespace SketchUp
 
 					StringBuilder fixSketMaster = new StringBuilder();
 					fixSketMaster.Append(String.Format("update {0}.{1}master set jmstory = {2},jmtotsqft = {3} ",
-								MainForm.FClib,
-								MainForm.FCprefix,
+								SketchUpGlobals.FcLib,
+								SketchUpGlobals.FcLocalityPrefix,
 								newStory,
 								SketchSection.sumSize));
 
@@ -423,8 +423,8 @@ namespace SketchUp
 				{
 					StringBuilder fixsecstry = new StringBuilder();
 					fixsecstry.Append(String.Format("update {0}.{1}section set jsstory = {2},jstype = '{3}' where jsrecord = {4} and jsdwell = {5} and jssect = '{6}' ",
-								MainForm.FClib,
-								MainForm.FCprefix,
+								SketchUpGlobals.FcLib,
+								SketchUpGlobals.FcLocalityPrefix,
 								newStory,
 								upDateSection,
 								_currentParcel.mrecno,
@@ -453,8 +453,8 @@ namespace SketchUp
 						}
 						StringBuilder fixstory = new StringBuilder();
 						fixstory.Append(String.Format("update {0}.{1}mast set mstor# = {2},mstory = '{3}' ",
-									MainForm.FClib,
-									MainForm.FCprefix,
+									SketchUpGlobals.FcLib,
+									SketchUpGlobals.FcLocalityPrefix,
 									newStory,
 									NewSLSF));
 						fixstory.Append(String.Format("where mrecno = {0} and mdwell = {1} ",
@@ -467,8 +467,8 @@ namespace SketchUp
 						//UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "fixstory", fixstory);
 						StringBuilder fixsecstry = new StringBuilder();
 						fixsecstry.Append(String.Format("update {0}.{1}section set jsstory = {2} where jsrecord = {3} and jsdwell = {4} and jssect = 'A' ",
-									MainForm.FClib,
-									MainForm.FCprefix,
+									SketchUpGlobals.FcLib,
+									SketchUpGlobals.FcLocalityPrefix,
 									newStory,
 									_currentParcel.mrecno,
 									_currentParcel.mdwell));
@@ -480,8 +480,8 @@ namespace SketchUp
 
 						StringBuilder fixSketMaster = new StringBuilder();
 						fixSketMaster.Append(String.Format("update {0}.{1}master set jmstory = {2},jmtotsqft = {3} ",
-									MainForm.FClib,
-									MainForm.FCprefix,
+									SketchUpGlobals.FcLib,
+									SketchUpGlobals.FcLocalityPrefix,
 									newStory,
 									SketchSection.sumSize));
 
@@ -494,8 +494,8 @@ namespace SketchUp
 					{
 						StringBuilder fixsecstry = new StringBuilder();
 						fixsecstry.Append(String.Format("update {0}.{1}section set jsstory = {2} where jsrecord = {3} and jsdwell = {4} and jssect = 'A' ",
-									MainForm.FClib,
-									MainForm.FCprefix,
+									SketchUpGlobals.FcLib,
+									SketchUpGlobals.FcLocalityPrefix,
 									_currentParcel.orig_mstorN,
 									_currentParcel.mrecno,
 									_currentParcel.mdwell));
@@ -533,8 +533,8 @@ namespace SketchUp
 
 					StringBuilder chgSec = new StringBuilder();
 					chgSec.Append(String.Format("update {0}.{1}section set jstype = '{2}', jsstory = {3}, jssqft = {4},js0depr = '{5}', ",
-								MainForm.FClib,
-								MainForm.FCprefix,
+								SketchUpGlobals.FcLib,
+								SketchUpGlobals.FcLocalityPrefix,
 								upDateSection.Trim(),
 								newStory,
 								newSize,
@@ -566,7 +566,7 @@ namespace SketchUp
 
 		public void setAttPnts()
 		{
-			string attPnts = string.Format("select jlrecord,jldwell,jlsect,jldirect,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlline# = 1 and jlsect <> 'A' ", MainForm.FClib, MainForm.FCprefix, _currentParcel.Record, _currentParcel.Card);
+			string attPnts = string.Format("select jlrecord,jldwell,jlsect,jldirect,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlline# = 1 and jlsect <> 'A' ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, _currentParcel.Record, _currentParcel.Card);
 			DataSet ap = conn.DBConnection.RunSelectStatement(attPnts);
 
 			if (ap.Tables[0].Rows.Count > 0)
@@ -596,7 +596,7 @@ namespace SketchUp
 				AddAttachmentPoints();
 			}
 
-			string DupattPnts = string.Format("select jlrecord,jldwell,jlsect,jldirect,jlline#,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach from {0}.{1}line  where jlrecord = {2} and jldwell = {3} and jlattach <> ' ' order by jlattach,jlsect ", MainForm.FClib, MainForm.FCprefix, _currentParcel.Record, _currentParcel.Card);
+			string DupattPnts = string.Format("select jlrecord,jldwell,jlsect,jldirect,jlline#,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach from {0}.{1}line  where jlrecord = {2} and jldwell = {3} and jlattach <> ' ' order by jlattach,jlsect ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, _currentParcel.Record, _currentParcel.Card);
 
 			DataSet Dupap = conn.DBConnection.RunSelectStatement(DupattPnts);
 
@@ -609,8 +609,8 @@ namespace SketchUp
 			attList.Clear();
 
 			string sortAtt = string.Format("select jlattach from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlattach <> ' ' ",
-						 MainForm.FClib,
-						 MainForm.FCprefix,
+						 SketchUpGlobals.FcLib,
+						 SketchUpGlobals.FcLocalityPrefix,
 						 _currentParcel.Record,
 						 _currentParcel.Card);
 
@@ -625,8 +625,8 @@ namespace SketchUp
 			}
 
 			string delAtt = string.Format("update {0}.{1}line set jlattach = ' ' where jlrecord = {2} and jldwell = {3} ",
-						 MainForm.FClib,
-						 MainForm.FCprefix,
+						 SketchUpGlobals.FcLib,
+						 SketchUpGlobals.FcLocalityPrefix,
 						 _currentParcel.Record,
 						 _currentParcel.Card);
 
@@ -650,8 +650,8 @@ namespace SketchUp
 
 					StringBuilder addAttPnt1 = new StringBuilder();
 					addAttPnt1.Append(String.Format("update {0}.{1}line set jlattach = '{2}' ",
-									MainForm.FClib,
-									MainForm.FCprefix,
+									SketchUpGlobals.FcLib,
+									SketchUpGlobals.FcLocalityPrefix,
 									curSection));
 					addAttPnt1.Append(String.Format(" where jlrecord = {0} and jldwell = {1} and jlpt1x = {2} and jlpt1y = {3} ",
 									record,
@@ -689,8 +689,8 @@ namespace SketchUp
 
 						StringBuilder addAttPnt = new StringBuilder();
 						addAttPnt.Append(String.Format("update {0}.{1}line set jlattach = '{2}' ",
-										MainForm.FClib,
-										MainForm.FCprefix,
+										SketchUpGlobals.FcLib,
+										SketchUpGlobals.FcLocalityPrefix,
 										curSect));
 						addAttPnt.Append(String.Format(" where jlrecord = {0} and jldwell = {1} and jlpt1x = {2} and jlpt1y = {3} ", record, card, X1, Y1));
 						addAttPnt.Append(String.Format(" and jlpt2x = {0} and jlpt2y = {1} ", X2, Y2));
@@ -788,7 +788,7 @@ namespace SketchUp
 				decimal X1 = Convert.ToDecimal(AttachPoints.Rows[i]["Xpt1"].ToString());
 				decimal Y1 = Convert.ToDecimal(AttachPoints.Rows[i]["Ypt1"].ToString());
 
-				string addAttPnt = string.Format("update {0}.{1}line set jlattach = '{2}' where jlrecord = {3} and jldwell = {4} and jlpt2x = {5} and jlpt2y = {6}  and jlsect <> '{7}' ", MainForm.FClib, MainForm.FCprefix, curSect, record, card, X1, Y1, curSect);
+				string addAttPnt = string.Format("update {0}.{1}line set jlattach = '{2}' where jlrecord = {3} and jldwell = {4} and jlpt2x = {5} and jlpt2y = {6}  and jlsect <> '{7}' ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, curSect, record, card, X1, Y1, curSect);
 
 				//UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "addAttPnt", addAttPnt);
 				conn.DBConnection.ExecuteNonSelectStatement(addAttPnt);
@@ -823,7 +823,7 @@ namespace SketchUp
 		{
 			for (int i = 0; i < currentSection.Count; i++)
 			{
-				string getDesc = string.Format("select rclar,rclbr,rclcr,rcldr,rrpsf,rdesc from {0}.{1}rat1 where rid in ( 'C','P') and rsecto = '{2}' ", MainForm.FClib, MainForm.FCprefix, currentSection[i].jstype.ToString().Trim());
+				string getDesc = string.Format("select rclar,rclbr,rclcr,rcldr,rrpsf,rdesc from {0}.{1}rat1 where rid in ( 'C','P') and rsecto = '{2}' ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, currentSection[i].jstype.ToString().Trim());
 
 				DataSet rates = conn.DBConnection.RunSelectStatement(getDesc);
 				_getUnitRate(currentSection[i].jstype, currentSection[i].jsclass);
@@ -853,8 +853,8 @@ namespace SketchUp
 		{
 			StringBuilder delAtt = new StringBuilder();
 			delAtt.Append(String.Format("update {0}.{1}line set jlattach = ' ' where jlrecord = {2} and jldwell = {3} ",
-							MainForm.FClib,
-							MainForm.FCprefix,
+							SketchUpGlobals.FcLib,
+							SketchUpGlobals.FcLocalityPrefix,
 							_currentParcel.Record,
 							_currentParcel.Card));
 
@@ -864,8 +864,8 @@ namespace SketchUp
 			//UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "delAtt", delAtt);
 			StringBuilder attPnts = new StringBuilder();
 			attPnts.Append(String.Format("select jlrecord,jldwell,jlsect,jldirect,jlpt1x,jlpt1y,jlpt2x,jlpt2y from {0}.{1}line ",
-								MainForm.FClib,
-								MainForm.FCprefix));
+								SketchUpGlobals.FcLib,
+								SketchUpGlobals.FcLocalityPrefix));
 			attPnts.Append(String.Format(" where jlrecord = {0} and jldwell = {1} and jlline# = 1 ",
 								_currentParcel.Record,
 								_currentParcel.Card));
@@ -902,8 +902,8 @@ namespace SketchUp
 
 					StringBuilder addAttPnt = new StringBuilder();
 					addAttPnt.Append(String.Format("update {0}.{1}line set jlattach = '{2}' ",
-									MainForm.FClib,
-									MainForm.FCprefix, curSect));
+									SketchUpGlobals.FcLib,
+									SketchUpGlobals.FcLocalityPrefix, curSect));
 					addAttPnt.Append(String.Format(" where jlrecord = {0} and jldwell = {1} and jlpt2x = {2} and jlpt2y = {3} ",
 									record,
 									card,
@@ -952,8 +952,8 @@ namespace SketchUp
 			ncp = 0;
 
 			string cntCP = string.Format("select count(*) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} and jstype = '{4}' ",
-							MainForm.localLib,
-							MainForm.localPreFix,
+							SketchUpGlobals.LocalLib,
+							SketchUpGlobals.LocalityPreFix,
 							_currentParcel.mrecno,
 							_currentParcel.mdwell,
 							garcptype.Trim());
@@ -967,7 +967,7 @@ namespace SketchUp
 					if (CPTypes.Contains(OriginalUnitType.Trim()))
 					{
 						string fixCP = string.Format("update {0}.{1}mast set mcarpt = 67, mcar#c = 0 where mrecno = {2} and mdwell = {3} ",
-							 MainForm.FClib, MainForm.FCprefix, _currentParcel.mrecno, _currentParcel.mdwell);
+							 SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, _currentParcel.mrecno, _currentParcel.mdwell);
 
 						//UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "fixCP", fixCP);
 						conn.DBConnection.ExecuteNonSelectStatement(fixCP);
@@ -988,8 +988,8 @@ namespace SketchUp
 			ngar = 1;
 
 			string cntgar = string.Format("select mgart2 from {0}.{1}mast where mrecno = {2} and mdwell = {3} ",
-									MainForm.localLib,
-									MainForm.localPreFix,
+									SketchUpGlobals.LocalLib,
+									SketchUpGlobals.LocalityPreFix,
 									_currentParcel.mrecno,
 									_currentParcel.mdwell);
 
@@ -1007,7 +1007,7 @@ namespace SketchUp
 					if (GarTypes.Contains(OriginalUnitType.Trim()))
 					{
 						string fixGar = string.Format("update {0}.{1}mast set mgart = 63, mgar#c = 0 where mrecno = {2} and mdwell = {3} ",
-							MainForm.FClib, MainForm.FCprefix, _currentParcel.mrecno, _currentParcel.mdwell);
+							SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, _currentParcel.mrecno, _currentParcel.mdwell);
 
 						//UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "fixGar (ngar == 1)", fixGar);
 						conn.DBConnection.ExecuteNonSelectStatement(fixGar.ToString());
@@ -1024,7 +1024,7 @@ namespace SketchUp
 			if (ngar == 2)
 			{
 				string fixGar = string.Format("update {0}.{1}mast set mgart2 = 0, mgar#2 = 0 where mrecno = {2} and mdwell = {3} ",
-					MainForm.FClib, MainForm.FCprefix, _currentParcel.mrecno, _currentParcel.mdwell);
+					SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, _currentParcel.mrecno, _currentParcel.mdwell);
 
 				//UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "fixGar (ngar == 2)", fixGar);
 				conn.DBConnection.ExecuteNonSelectStatement(fixGar.ToString());
@@ -1124,7 +1124,7 @@ namespace SketchUp
 
 		private void DeleteAttachmentPoints()
 		{
-			string delapts = string.Format("update {0}.{1}line set jlattach = ' ' where jlrecord = {2} and jldwell = {3} and jlattach <> ' ' ", MainForm.FClib, MainForm.FCprefix, _currentParcel.mrecno, _currentParcel.mdwell);
+			string delapts = string.Format("update {0}.{1}line set jlattach = ' ' where jlrecord = {2} and jldwell = {3} and jlattach <> ' ' ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, _currentParcel.mrecno, _currentParcel.mdwell);
 
 			//UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "delapts", delapts);
 			conn.DBConnection.ExecuteNonSelectStatement(delapts.ToString());
@@ -1145,7 +1145,7 @@ namespace SketchUp
 				SectDGView.CurrentRow.Cells[i].Style.BackColor = Color.Salmon;
 			}
 
-			string garcp = string.Format("select rsecto from {0}.{1}rat1 where rid = 'P' and rdesc like '%GAR%' and rrpsf <> 0 ", MainForm.FClib, MainForm.FCprefix);
+			string garcp = string.Format("select rsecto from {0}.{1}rat1 where rid = 'P' and rdesc like '%GAR%' and rrpsf <> 0 ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix);
 
 			try
 			{
@@ -1166,7 +1166,7 @@ namespace SketchUp
 			{
 			}
 
-			string cptype = string.Format("select rsecto from {0}.{1}rat1 where rid = 'P' and rdesc like '%CAR%' and rrpsf <> 0 ", MainForm.FClib, MainForm.FCprefix);
+			string cptype = string.Format("select rsecto from {0}.{1}rat1 where rid = 'P' and rdesc like '%CAR%' and rrpsf <> 0 ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix);
 
 			try
 			{
@@ -1186,7 +1186,7 @@ namespace SketchUp
 			catch
 			{
 			}
-			string garcode = string.Format("select ttelem from {0}.{1}stab where ttid = 'GAR' and tdesc not like '%NONE%' and tdesc not like '%DETACHED%' ", MainForm.FClib, MainForm.FCprefix);
+			string garcode = string.Format("select ttelem from {0}.{1}stab where ttid = 'GAR' and tdesc not like '%NONE%' and tdesc not like '%DETACHED%' ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix);
 
 			try
 			{
@@ -1207,7 +1207,7 @@ namespace SketchUp
 			{
 			}
 
-			string cpcode = string.Format("select ttelem from {0}.{1}stab where ttid = 'CAR' and tdesc not like '%NONE%' and tdesc not like '%DETACHED%' ", MainForm.FClib, MainForm.FCprefix);
+			string cpcode = string.Format("select ttelem from {0}.{1}stab where ttid = 'CAR' and tdesc not like '%NONE%' and tdesc not like '%DETACHED%' ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix);
 
 			try
 			{
@@ -1233,7 +1233,7 @@ namespace SketchUp
 				if (GarTypes.Contains(dType))
 				{
 					//TODO: See if this can be refactored later to pass in the mgart and mgarNc values and use a single method for garages.
-					string fixGar = string.Format("update {0}.{1}mast set mgart = 63, mgar#c = 0 where mrecno = {2} and mdwell = {3} ", MainForm.FClib, MainForm.FCprefix, _currentParcel.mrecno, _currentParcel.mdwell);
+					string fixGar = string.Format("update {0}.{1}mast set mgart = 63, mgar#c = 0 where mrecno = {2} and mdwell = {3} ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, _currentParcel.mrecno, _currentParcel.mdwell);
 
 					conn.DBConnection.ExecuteNonSelectStatement(fixGar);
 
@@ -1251,7 +1251,7 @@ namespace SketchUp
 					//TODO: Look for refacroting opportunity by passing in mcarpt and mcarNc
 					StringBuilder fixCP = new StringBuilder();
 					fixCP.Append(String.Format("update {0}.{1}mast set mcarpt = 67, mcar#c = 0 where mrecno = {2} and mdwell = {3} ",
-						 MainForm.FClib, MainForm.FCprefix, _currentParcel.mrecno, _currentParcel.mdwell));
+						 SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, _currentParcel.mrecno, _currentParcel.mdwell));
 
 					//UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "fixCP", fixCP);
 					conn.DBConnection.ExecuteNonSelectStatement(fixCP.ToString());
@@ -1287,26 +1287,26 @@ namespace SketchUp
 					StringBuilder chkeaccess = new StringBuilder();
 
 					chkeaccess.Append(String.Format("select mlnam from {0}.{1}mast where mrecno = {2} and mdwell = {3} ",
-									MainForm.FClib, MainForm.FCprefix, _currentParcel.mrecno, _currentParcel.mdwell));
+									SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, _currentParcel.mrecno, _currentParcel.mdwell));
 
 					string testename = conn.DBConnection.ExecuteScalar(chkeaccess.ToString()).ToString().Trim();
 
 					StringBuilder delLine = new StringBuilder();
 					delLine.Append(String.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}'",
-									 MainForm.FClib, MainForm.FCprefix, _currentParcel.Record, _currentParcel.Card, _Djsect));
+									 SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, _currentParcel.Record, _currentParcel.Card, _Djsect));
 
 					conn.DBConnection.ExecuteNonSelectStatement(delLine.ToString());
 
 					StringBuilder delSect = new StringBuilder();
 					delSect.Append(String.Format("delete from {0}.{1}section where jsrecord = {2} and jsdwell = {3} and jssect = '{4}'",
-									MainForm.FClib, MainForm.FCprefix, _currentParcel.Record, _currentParcel.Card, _Djsect));
+									SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, _currentParcel.Record, _currentParcel.Card, _Djsect));
 
 					conn.DBConnection.ExecuteNonSelectStatement(delSect.ToString());
 
 					StringBuilder delAttc = new StringBuilder();
 					delAttc.Append(String.Format("update {0}.{1}line set jlattach = ' ' where jlrecord = {2} and jldwell = {3} and jlattach = '{4}' ",
-									MainForm.FClib,
-									MainForm.FCprefix,
+									SketchUpGlobals.FcLib,
+									SketchUpGlobals.FcLocalityPrefix,
 									_currentParcel.Record,
 									_currentParcel.Card,
 									_Djsect));
@@ -1372,8 +1372,8 @@ namespace SketchUp
 		private void fixLine(string lltr, string lcltr)
 		{
 			string fixl = string.Format("update {0}.{1}line set jlsect = '{2}' where jlrecord = {3} and jldwell = {4} and jlsect = '{5}' ",
-							MainForm.localLib,
-							MainForm.localPreFix,
+							SketchUpGlobals.LocalLib,
+							SketchUpGlobals.LocalityPreFix,
 							lltr,
 							_currentParcel.mrecno,
 							_currentParcel.mdwell,
@@ -1384,8 +1384,8 @@ namespace SketchUp
 
 			//UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "fixl", fixl);
 			string fixatt = string.Format("update {0}.{1}line set jlattach = '{2}' where jlrecord = {3} and jldwell = {4} and jlattach = '{5}' ",
-							MainForm.localLib,
-							MainForm.localPreFix,
+							SketchUpGlobals.LocalLib,
+							SketchUpGlobals.LocalityPreFix,
 							lltr,
 							_currentParcel.mrecno,
 							_currentParcel.mdwell,
@@ -1400,8 +1400,8 @@ namespace SketchUp
 		private void fixSection(string ltr, string cltr)
 		{
 			string fixsect = string.Format("update {0}.{1}section set jssect = '{2}' where jsrecord = {3} and jsdwell = {4} and jssect = '{5}' ",
-							MainForm.localLib,
-							MainForm.localPreFix,
+							SketchUpGlobals.LocalLib,
+							SketchUpGlobals.LocalityPreFix,
 							ltr,
 							_currentParcel.mrecno,
 							_currentParcel.mdwell,
@@ -1418,7 +1418,7 @@ namespace SketchUp
 		{
 			for (int j = 0; j < ds.Tables[0].Rows.Count; j++)
 			{
-				string fixSect = string.Format("update {0}.{1}section set jssect = '{2}' where jsrecord = {3} and jsdwell = {4} and jssect = '{5}'", MainForm.FClib, MainForm.FCprefix, SectionLtrs.Rows[j]["NewSecLtr"].ToString().Trim(), _currentParcel.Record, _currentParcel.Card, SectionLtrs.Rows[j]["CurSecLtr"].ToString().Trim());
+				string fixSect = string.Format("update {0}.{1}section set jssect = '{2}' where jsrecord = {3} and jsdwell = {4} and jssect = '{5}'", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, SectionLtrs.Rows[j]["NewSecLtr"].ToString().Trim(), _currentParcel.Record, _currentParcel.Card, SectionLtrs.Rows[j]["CurSecLtr"].ToString().Trim());
 
 				//UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "fixSect", fixSect);
 				conn.DBConnection.ExecuteNonSelectStatement(fixSect);
@@ -1445,8 +1445,8 @@ namespace SketchUp
 			int newgarcnt = _currentParcel.mgarN2 + MissingGarageData.GarNbr;
 
 			string addcp = string.Format("update {0}.{1}mast set mgar#2 = {2} where mrecno = {3} and mdwell = {4} ",
-					MainForm.localLib,
-					MainForm.localPreFix,
+					SketchUpGlobals.LocalLib,
+					SketchUpGlobals.LocalityPreFix,
 					newgarcnt,
 					_currentParcel.mrecno,
 					_currentParcel.mdwell);
@@ -1466,8 +1466,8 @@ namespace SketchUp
 			if (MissingGarageData.GarCode != _currentParcel.orig_mgart)
 			{
 				string fixCp = string.Format("update {0}.{1}mast set mgart = {2},mgar#c = {3} where mrecno = {4} and mdwell = {5} ",
-				 MainForm.localLib,
-					 MainForm.localPreFix,
+				 SketchUpGlobals.LocalLib,
+					 SketchUpGlobals.LocalityPreFix,
 					MissingGarageData.GarCode,
 					MissingGarageData.GarNbr,
 					_currentParcel.mrecno,
@@ -1483,7 +1483,7 @@ namespace SketchUp
 
 		private void GetRatesFromTables(string type)
 		{
-			string getDesc = string.Format("select rclar,rclbr,rclcr,rcldr,rrpsf,rdesc from {0}.{1}rat1 where rid in ( 'C','P') and rsecto = '{2}'", MainForm.FClib, MainForm.FCprefix
+			string getDesc = string.Format("select rclar,rclbr,rclcr,rcldr,rrpsf,rdesc from {0}.{1}rat1 where rid in ( 'C','P') and rsecto = '{2}'", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix
 			, type.Trim());
 
 			DataSet rates = conn.DBConnection.RunSelectStatement(getDesc);
@@ -2104,8 +2104,8 @@ namespace SketchUp
 			int tkic = _currentParcel.orig_mgarNc;
 
 			string getSect = string.Format("select jsrecord,jsdwell,jssect,jstype,jssqft from {0}.{1}section where jsrecord = {2} and jsdwell = {3}  order by jssect ",
-							 MainForm.FClib,
-							 MainForm.FCprefix,
+							 SketchUpGlobals.FcLib,
+							 SketchUpGlobals.FcLocalityPrefix,
 							 _currentParcel.Record,
 							 _currentParcel.Card);
 
@@ -2175,8 +2175,8 @@ namespace SketchUp
 
 			StringBuilder cntsect = new StringBuilder();
 			cntsect.Append(String.Format("select jssect from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ",
-								MainForm.localLib,
-								MainForm.localPreFix,
+								SketchUpGlobals.LocalLib,
+								SketchUpGlobals.LocalityPreFix,
 								_currentParcel.mrecno,
 								_currentParcel.mdwell));
 
@@ -2184,8 +2184,8 @@ namespace SketchUp
 
 			StringBuilder cntline = new StringBuilder();
 			cntline.Append(String.Format("select jlsect from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlline# = 1 ",
-						MainForm.localLib,
-						MainForm.localPreFix,
+						SketchUpGlobals.LocalLib,
+						SketchUpGlobals.LocalityPreFix,
 						_currentParcel.mrecno,
 						_currentParcel.mdwell));
 
@@ -2399,11 +2399,11 @@ namespace SketchUp
 					{
 						StringBuilder fixCp = new StringBuilder();
 						fixCp.Append(String.Format("update {0}.{1}mast set mcarpt = {2},mcar#c = {3} ",
-						 MainForm.localLib,
-							 MainForm.localPreFix,
+						 SketchUpGlobals.LocalLib,
+							 SketchUpGlobals.LocalityPreFix,
 
-							//MainForm.FClib,
-							//MainForm.FCprefix,
+							//SketchUpGlobals.FcLib,
+							//SketchUpGlobals.FcLocalityPrefix,
 							MissingGarageData.CPCode,
 							MissingGarageData.CpNbr));
 						fixCp.Append(String.Format("where mrecno = {0} and mdwell = {1} ", _currentParcel.mrecno, _currentParcel.mdwell));
@@ -2419,8 +2419,8 @@ namespace SketchUp
 				{
 					StringBuilder carupd = new StringBuilder();
 					carupd.Append(String.Format("update {0}.{1}mast set mcarpt = 65,mcar#c = 1 where mrecno = {2} and mdwell = {3} ",
-									MainForm.localLib,
-									MainForm.localPreFix,
+									SketchUpGlobals.LocalLib,
+									SketchUpGlobals.LocalityPreFix,
 									_currentParcel.mrecno,
 									_currentParcel.mdwell));
 
@@ -2444,8 +2444,8 @@ namespace SketchUp
 
 					StringBuilder addcp = new StringBuilder();
 					addcp.Append(String.Format("update {0}.{1}mast set mcar#c = {2} where mrecno = {3} and mdwell = {4} ",
-							MainForm.localLib,
-							MainForm.localPreFix,
+							SketchUpGlobals.LocalLib,
+							SketchUpGlobals.LocalityPreFix,
 							newcpcnt,
 							_currentParcel.mrecno,
 							_currentParcel.mdwell));
@@ -2462,8 +2462,8 @@ namespace SketchUp
 		private void UpdateForZeroCP()
 		{
 			string zerocp = string.Format("update {0}.{1}mast set mcarpt = 67, mcar#c = 0 where mrecno = {2} and mdwell = {3} ",
-									MainForm.localLib,
-									MainForm.localPreFix,
+									SketchUpGlobals.LocalLib,
+									SketchUpGlobals.LocalityPreFix,
 									_currentParcel.mrecno,
 									_currentParcel.mdwell);
 
@@ -2476,8 +2476,8 @@ namespace SketchUp
 		private void UpdateForZeroGarage()
 		{
 			string zerogar = string.Format("update {0}.{1}mast set mgart = 63, mgar#c = 0,mgart2 = 0,mgar#2 = 0 where mrecno = {2} and mdwell = {3} ",
-													MainForm.localLib,
-													MainForm.localPreFix,
+													SketchUpGlobals.LocalLib,
+													SketchUpGlobals.LocalityPreFix,
 													_currentParcel.mrecno,
 													_currentParcel.mdwell);
 
@@ -2516,7 +2516,7 @@ namespace SketchUp
 				StringBuilder garcp2 = new StringBuilder();
 
 				//garcp.Append("select rsecto from rat1 where rid = 'P' and rdesc like '%GAR%' and rrpsf <> 0 and rincsf = 'Y' ");
-				garcp2.Append(String.Format("select rsecto from {0}.{1}rat1 where rid = 'P' and rdesc like '%GAR%' and rrpsf <> 0 ", MainForm.FClib, MainForm.FCprefix));
+				garcp2.Append(String.Format("select rsecto from {0}.{1}rat1 where rid = 'P' and rdesc like '%GAR%' and rrpsf <> 0 ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
 
 				try
 				{
@@ -2540,7 +2540,7 @@ namespace SketchUp
 				StringBuilder cptype2 = new StringBuilder();
 
 				//cptype.Append("select rsecto from rat1 where rid = 'P' and rdesc like '%CAR%' and rrpsf <> 0 and rincsf = 'Y' ");
-				cptype2.Append(String.Format("select rsecto from {0}.{1}rat1 where rid = 'P' and rdesc like '%CAR%' and rrpsf <> 0 ", MainForm.FClib, MainForm.FCprefix));
+				cptype2.Append(String.Format("select rsecto from {0}.{1}rat1 where rid = 'P' and rdesc like '%CAR%' and rrpsf <> 0 ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
 
 				try
 				{
@@ -2563,7 +2563,7 @@ namespace SketchUp
 
 				StringBuilder garcode = new StringBuilder();
 				garcode.Append(String.Format("select ttelem from {0}.{1}stab where ttid = 'GAR' and tdesc not like '%NONE%' and tdesc not like '%DETACHED%' ",
-					MainForm.FClib, MainForm.FCprefix));
+					SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
 
 				try
 				{
@@ -2586,7 +2586,7 @@ namespace SketchUp
 
 				StringBuilder cpcode = new StringBuilder();
 				cpcode.Append(String.Format("select ttelem from {0}.{1}stab where ttid = 'CAR' and tdesc not like '%NONE%' and tdesc not like '%DETACHED%' ",
-					MainForm.FClib, MainForm.FCprefix));
+					SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
 
 				try
 				{
@@ -2619,7 +2619,7 @@ namespace SketchUp
 						{
 							StringBuilder fixGar = new StringBuilder();
 							fixGar.Append(String.Format("update {0}.{1}mast set mgart = 63, mgar#c = 0 where mrecno = {2} and mdwell = {3} ",
-								MainForm.FClib, MainForm.FCprefix, _currentParcel.mrecno, _currentParcel.mdwell));
+								SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, _currentParcel.mrecno, _currentParcel.mdwell));
 
 							//UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "fixGar (ngar == 0)", fixGar);
 							conn.DBConnection.ExecuteNonSelectStatement(fixGar.ToString());
@@ -2640,7 +2640,7 @@ namespace SketchUp
 					{
 						StringBuilder fixCP = new StringBuilder();
 						fixCP.Append(String.Format("update {0}.{1}mast set mcarpt = 67, mcar#c = 0 where mrecno = {2} and mdwell = {3} ",
-							 MainForm.FClib, MainForm.FCprefix, _currentParcel.mrecno, _currentParcel.mdwell));
+							 SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, _currentParcel.mrecno, _currentParcel.mdwell));
 
 						//UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "fixCP (CPTypes.Contains(dType2))", fixCP);
 						conn.DBConnection.ExecuteNonSelectStatement(fixCP.ToString());
@@ -2669,8 +2669,8 @@ namespace SketchUp
 					if (_sectDelete == true && _currentParcel.mgart == 63)
 					{
 						string fixgar2 = string.Format("update {0}.{1}mast set mgart2 = 0,mgar#2 = 0, mgart = {2}, mgar#c = {3} where mrecno = {4} and mdwell = {5} ",
-										MainForm.localLib,
-										MainForm.localPreFix,
+										SketchUpGlobals.LocalLib,
+										SketchUpGlobals.LocalityPreFix,
 										_currentParcel.orig_mgart,
 										_currentParcel.orig_mgarNc,
 										_currentParcel.mrecno,
@@ -2691,7 +2691,7 @@ namespace SketchUp
 
 						if (MissingGarageData.GarCode != _currentParcel.orig_mgart2)
 						{
-							string fixCp = string.Format("update {0}.{1}mast set mgart2 = {2},mgar#2 = {3} where mrecno = {4} and mdwell = {5} ", MainForm.localLib, MainForm.localPreFix, MissingGarageData.GarCode, MissingGarageData.GarNbr, _currentParcel.mrecno, _currentParcel.mdwell);
+							string fixCp = string.Format("update {0}.{1}mast set mgart2 = {2},mgar#2 = {3} where mrecno = {4} and mdwell = {5} ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix, MissingGarageData.GarCode, MissingGarageData.GarNbr, _currentParcel.mrecno, _currentParcel.mdwell);
 
 							//UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "fixCp", fixCp);
 							conn.DBConnection.ExecuteNonSelectStatement(fixCp);
@@ -2714,8 +2714,8 @@ namespace SketchUp
 		{
 			StringBuilder fixLine = new StringBuilder();
 			fixLine.Append(String.Format("update {0}.{1}line set jlsect = '{2}' where jlrecord = {3} and jldwell = {4} ",
-							MainForm.FClib,
-							MainForm.FCprefix,
+							SketchUpGlobals.FcLib,
+							SketchUpGlobals.FcLocalityPrefix,
 							newLtr,
 							_currentParcel.Record,
 							_currentParcel.Card));

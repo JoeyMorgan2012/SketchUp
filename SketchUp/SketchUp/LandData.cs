@@ -211,7 +211,7 @@ namespace SketchUp
 			{
 				if (IsNewRecord)
 				{
-					_fox.DBConnection.ExecuteNonSelectStatement(String.Format(_insertSQL, MainForm.localLib, MainForm.localPreFix,
+					_fox.DBConnection.ExecuteNonSelectStatement(String.Format(_insertSQL, SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix,
 						lrecno, ldwell, lseqno, laccod, lhs, lacre, lvalue, llp, ladj, lacren, ltotal, ldescr, lwater, lsewer, lutil));
 				}
 				else
@@ -306,7 +306,7 @@ namespace SketchUp
 
 			//subLand.Append(String.Format(" from land where lrecno = {0} and ldwell = {1} and lseqno = {2} and laccod > 0 ", record, card,seqno));
 			//subLand.Append(String.Format(" from land where lrecno = {0} and ldwell = {1} and laccod > 0 order by lseqno ", record, card));
-			subLand.Append(String.Format(" from {0}.{1}land where lrecno = {2} and ldwell = {3} order by lseqno ", MainForm.localLib, MainForm.localPreFix, record, card));
+			subLand.Append(String.Format(" from {0}.{1}land where lrecno = {2} and ldwell = {3} order by lseqno ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix, record, card));
 
 			DataSet Land = _fox.DBConnection.RunSelectStatement(subLand.ToString());
 
@@ -356,7 +356,7 @@ namespace SketchUp
 
 				//sumLand.Append(String.Format("select sum(ltotal) from land where lrecno = {0} and ldwell = {1}", record, card));
 				sumLand.Append(String.Format("select sum(ltotal) as totalLand from {0}.{1}land where lrecno = {2} and ldwell = {3} and laccod  > 0 ",
-					MainForm.localLib, MainForm.localPreFix, record, card));
+					SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix, record, card));
 
 				_land.orig_sumltotal = 0;
 				_land.sumltotal = 0;

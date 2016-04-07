@@ -243,6 +243,7 @@
     <Compile Include="SketchSection.Designer.cs">
       <DependentUpon>SketchSection.cs</DependentUpon>
     </Compile>
+    <Compile Include="SketchUpGlobals.cs" />
     <Compile Include="UpdateInfo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -351,6 +352,10 @@
     <Content Include="StonewallTechIcon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\SketchManager\SketchManager\SketchManager.csproj">
+      <Project>{949e3885-9ffc-4200-bde7-4b67832d9faf}</Project>
+      <Name>SketchManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\SWallTech\SWallTech.csproj">
       <Project>{2af09c76-344e-4151-9ced-e745234e0437}</Project>
       <Name>SWallTech</Name>

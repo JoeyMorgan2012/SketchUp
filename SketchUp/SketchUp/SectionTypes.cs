@@ -65,7 +65,7 @@ namespace SketchUp
 
 			StringBuilder secSql = new StringBuilder();
 			secSql.Append(String.Format("select max(jssect) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ",
-						  MainForm.FClib, MainForm.FCprefix, _record, _card));
+						  SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, _record, _card));
 
 			try
 			{
@@ -274,7 +274,7 @@ namespace SketchUp
 								_currentParcel.mstorN = _sty;
 
 								StringBuilder maststory = new StringBuilder();
-								maststory.Append(String.Format("update {0}.{1}mast set mstor# = {2} ", MainForm.FClib, MainForm.FCprefix, _sty));
+								maststory.Append(String.Format("update {0}.{1}mast set mstor# = {2} ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, _sty));
 								maststory.Append(String.Format("where mrecno = {0} and mdwell = {1} ", _currentParcel.mrecno, _currentParcel.mdwell));
 
 								//UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "maststory", maststory);
@@ -321,7 +321,7 @@ namespace SketchUp
 								_currentParcel.mstorN = _sty;
 
 								StringBuilder maststory = new StringBuilder();
-								maststory.Append(String.Format("update {0}.{1}mast set mstor# = {2} ", MainForm.FClib, MainForm.FCprefix, _sty));
+								maststory.Append(String.Format("update {0}.{1}mast set mstor# = {2} ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, _sty));
 								maststory.Append(String.Format("where mrecno = {0} and mdwell = {1} ", _currentParcel.mrecno, _currentParcel.mdwell));
 
 								//UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "maststory", maststory);

@@ -34,7 +34,7 @@ namespace SketchUp
 			Lines.Columns.Add("Y-Len", typeof(decimal));
 
 			StringBuilder getLine = new StringBuilder();
-			getLine.Append(String.Format("select jlsect,jldirect,jllinelen,jlxlen,jlylen from {0}.{1}line ", MainForm.FClib, MainForm.FCprefix));
+			getLine.Append(String.Format("select jlsect,jldirect,jllinelen,jlxlen,jlylen from {0}.{1}line ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
 			getLine.Append(String.Format(" where jlrecord = {0} and jldwell = {1} and jlsect = '{2}' ", _record, _card, _section));
 
 			DataSet ds = conn.DBConnection.RunSelectStatement(getLine.ToString());

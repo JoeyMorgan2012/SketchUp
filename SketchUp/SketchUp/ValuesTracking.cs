@@ -70,7 +70,7 @@ namespace SketchUp
 
 			StringBuilder vtSql = new StringBuilder();
 			vtSql.Append("select vland,vimpr,vtotal,vreasn,vusrid,vchgmo,vchgda,vchgyr,veftxy ");
-			vtSql.Append(String.Format("from {0}.{1}valu ", MainForm.localLib, MainForm.localPreFix));
+			vtSql.Append(String.Format("from {0}.{1}valu ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
 			vtSql.Append(String.Format("where vrecno = {0} and vdwell = {1} and vseqno = {2} ", recno, card, seqno));
 			vtSql.Append("order by vseqno desc ");
 

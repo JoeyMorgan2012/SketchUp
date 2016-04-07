@@ -17,7 +17,7 @@ namespace SketchUp
 
 			StringBuilder amsql = new StringBuilder();
 			amsql.Append("select atmap# as attached ");
-			amsql.Append(String.Format("from {0}.{1}amap ", MainForm.localLib, MainForm.localPreFix));
+			amsql.Append(String.Format("from {0}.{1}amap ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
 			amsql.Append(String.Format("where atpmap = '{0}' ", parcel.mmap));
 
 			DataSet ds = parcel.Connection.DBConnection.RunSelectStatement(amsql.ToString());

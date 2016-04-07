@@ -86,7 +86,7 @@ namespace SketchUp
 
 			StringBuilder shsql = new StringBuilder();
 			shsql.Append("select fseqno,flnam,fsellp,fyrsld,fdbook,fdpage,fintyp,fintyr,finno# as finno ");
-			shsql.Append(String.Format(" from {0}.{1}trnf ", MainForm.localLib, MainForm.localPreFix));
+			shsql.Append(String.Format(" from {0}.{1}trnf ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
 			shsql.Append(String.Format(" where frecno = {0} and fdwell = {1} ",
 				record,
 				card));

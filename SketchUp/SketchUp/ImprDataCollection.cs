@@ -53,7 +53,7 @@ namespace SketchUp
 		{
 			StringBuilder subImpr = new StringBuilder();
 			subImpr.Append(" select iid,irecno,idwell,iseqno,idesc,ilen,iwid,icond,ifill1,itotv,idepr,irate,ifill2,icode,ifill3 ");
-			subImpr.Append(String.Format(" from {0}.{1}impr where irecno = {2} and idwell = {3} ", MainForm.localLib, MainForm.localPreFix, Record, Card));
+			subImpr.Append(String.Format(" from {0}.{1}impr where irecno = {2} and idwell = {3} ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix, Record, Card));
 			subImpr.Append("and idesc <> ' ' order by iseqno");
 
 			DataSet Impr = _fox.DBConnection.RunSelectStatement(subImpr.ToString());

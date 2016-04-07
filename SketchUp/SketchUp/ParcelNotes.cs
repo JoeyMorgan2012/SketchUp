@@ -142,7 +142,7 @@ namespace SketchUp
 			ntSql.Append("select clin1,clin2,clin3,clin4,clin5,clin6,clin7,clin8,clin9,clin10, ");
 			ntSql.Append("clin11,clin12,clin13,clin14,clin15,clin16,clin17,clin18,clin19,clin20,clin21 ");
 			ntSql.Append(String.Format("from {0}.{1}note where crecno = {2} and cdwell = {3} and cseqno = {4} ",
-			   MainForm.localLib, MainForm.localPreFix, _rec, _card, _seqno));
+			   SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix, _rec, _card, _seqno));
 
 			DataSet ds = db.RunSelectStatement(ntSql.ToString());
 

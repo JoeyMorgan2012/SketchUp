@@ -22,7 +22,7 @@ namespace SketchUp
 			Record = record;
 			Card = cardnum;
 			Occupancy = occupancy;
-			prefix = MainForm.localPreFix;
+			prefix = SketchUpGlobals.LocalityPreFix;
 
 			GetSections();
 		}
@@ -103,7 +103,7 @@ namespace SketchUp
 
 			StringBuilder buildingLineSql = new StringBuilder();
 			buildingLineSql.Append(" select jlsect, jlline# , jldirect, jlxlen, jlylen,jllinelen,jlangle,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach ");
-			buildingLineSql.Append(String.Format(" from {0}.{1}line", MainForm.localLib, MainForm.localPreFix));
+			buildingLineSql.Append(String.Format(" from {0}.{1}line", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
 			buildingLineSql.Append(String.Format(" where jlrecord = {0} and jldwell = {1} and jlsect = '{2}'", Record, Card, sectionLetter));
 			buildingLineSql.Append(" order by jlline# ");
 
@@ -239,7 +239,7 @@ namespace SketchUp
 		{
 			try
 			{
-				string clrlinex = string.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jldirect = 'X' ", MainForm.FClib, MainForm.FCprefix, Record, Card);
+				string clrlinex = string.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jldirect = 'X' ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, Record, Card);
 
 				dbConnection.DBConnection.ExecuteNonSelectStatement(clrlinex.ToString());
 			}
@@ -295,7 +295,7 @@ namespace SketchUp
 		}
 		private DataSet SelectBuildingSections(int record, int card)
 		{
-			string buildingSectionSelectSql = string.Format(" select jsrecord, jsdwell, jssect, jstype,jsstory,jsdesc,jssketch,jssqft,js0depr, jsclass,jsvalue, jsfactor, jsdeprc from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ", MainForm.localLib, MainForm.localPreFix, record, card);
+			string buildingSectionSelectSql = string.Format(" select jsrecord, jsdwell, jssect, jstype,jsstory,jsdesc,jssketch,jssqft,js0depr, jsclass,jsvalue, jsfactor, jsdeprc from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix, record, card);
 
 			DataSet buildingSectionData = CamraDbConnection.DBConnection.RunSelectStatement(buildingSectionSelectSql);
 			return buildingSectionData;

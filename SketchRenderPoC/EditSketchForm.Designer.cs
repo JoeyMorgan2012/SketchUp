@@ -1,4 +1,4 @@
-﻿namespace CamraSketchUp
+﻿namespace SketchRenderPoC
 {
 	partial class EditSketchForm
 	{
@@ -33,8 +33,8 @@
 			this.beginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.drawingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.flipSketchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-			this.deleteSketchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.tsMenuExitForm = new System.Windows.Forms.ToolStripMenuItem();
 			this.drawSketchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,12 +47,12 @@
 			this.cmenuDrawing = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.StatusMain = new System.Windows.Forms.StatusStrip();
 			this.MouseLocationLabel = new System.Windows.Forms.ToolStripStatusLabel();
-			this.flipSketchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pctMain = new System.Windows.Forms.PictureBox();
 			this.addSectionTsMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.editSectionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.flipHorizontalEWToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.flipVerticalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.deleteSketchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmenuJump = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainMenu.SuspendLayout();
 			this.cmenuDrawing.SuspendLayout();
@@ -64,9 +64,9 @@
 			// 
 			this.MainMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
 			this.MainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.beginToolStripMenuItem,
-			this.drawingToolStripMenuItem,
-			this.drawSketchToolStripMenuItem});
+            this.beginToolStripMenuItem,
+            this.drawingToolStripMenuItem,
+            this.drawSketchToolStripMenuItem});
 			this.MainMenu.Location = new System.Drawing.Point(0, 0);
 			this.MainMenu.Name = "MainMenu";
 			this.MainMenu.Size = new System.Drawing.Size(1427, 28);
@@ -81,14 +81,14 @@
 			// drawingToolStripMenuItem
 			// 
 			this.drawingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.addSectionTsMenu,
-			this.editSectionsToolStripMenuItem,
-			this.toolStripSeparator1,
-			this.flipSketchToolStripMenuItem,
-			this.toolStripSeparator2,
-			this.deleteSketchToolStripMenuItem,
-			this.toolStripSeparator3,
-			this.tsMenuExitForm});
+            this.addSectionTsMenu,
+            this.editSectionsToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.flipSketchToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.deleteSketchToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.tsMenuExitForm});
 			this.drawingToolStripMenuItem.Name = "drawingToolStripMenuItem";
 			this.drawingToolStripMenuItem.Size = new System.Drawing.Size(104, 24);
 			this.drawingToolStripMenuItem.Text = "Sketch Tools";
@@ -98,18 +98,19 @@
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
 			this.toolStripSeparator1.Size = new System.Drawing.Size(235, 6);
 			// 
+			// flipSketchToolStripMenuItem
+			// 
+			this.flipSketchToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.flipHorizontalEWToolStripMenuItem,
+            this.flipVerticalToolStripMenuItem});
+			this.flipSketchToolStripMenuItem.Name = "flipSketchToolStripMenuItem";
+			this.flipSketchToolStripMenuItem.Size = new System.Drawing.Size(238, 26);
+			this.flipSketchToolStripMenuItem.Text = "Flip Sketch";
+			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
 			this.toolStripSeparator2.Size = new System.Drawing.Size(235, 6);
-			// 
-			// deleteSketchToolStripMenuItem
-			// 
-			this.deleteSketchToolStripMenuItem.Image = global::SketchUp.Properties.Resources.DeleteListItem_32x;
-			this.deleteSketchToolStripMenuItem.Name = "deleteSketchToolStripMenuItem";
-			this.deleteSketchToolStripMenuItem.Size = new System.Drawing.Size(238, 26);
-			this.deleteSketchToolStripMenuItem.Text = "Delete Sketch";
-			this.deleteSketchToolStripMenuItem.Click += new System.EventHandler(this.deleteSketchToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator3
 			// 
@@ -168,7 +169,7 @@
 			this.cmenuDrawing.DropShadowEnabled = false;
 			this.cmenuDrawing.ImageScalingSize = new System.Drawing.Size(20, 20);
 			this.cmenuDrawing.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.cmenuJump});
+            this.cmenuJump});
 			this.cmenuDrawing.Name = "cmenuDrawing";
 			this.cmenuDrawing.Size = new System.Drawing.Size(163, 30);
 			// 
@@ -176,7 +177,7 @@
 			// 
 			this.StatusMain.ImageScalingSize = new System.Drawing.Size(20, 20);
 			this.StatusMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.MouseLocationLabel});
+            this.MouseLocationLabel});
 			this.StatusMain.Location = new System.Drawing.Point(0, 718);
 			this.StatusMain.Name = "StatusMain";
 			this.StatusMain.Size = new System.Drawing.Size(1427, 22);
@@ -188,23 +189,17 @@
 			this.MouseLocationLabel.Name = "MouseLocationLabel";
 			this.MouseLocationLabel.Size = new System.Drawing.Size(0, 17);
 			// 
-			// flipSketchToolStripMenuItem
-			// 
-			this.flipSketchToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.flipHorizontalEWToolStripMenuItem,
-			this.flipVerticalToolStripMenuItem});
-			this.flipSketchToolStripMenuItem.Name = "flipSketchToolStripMenuItem";
-			this.flipSketchToolStripMenuItem.Size = new System.Drawing.Size(238, 26);
-			this.flipSketchToolStripMenuItem.Text = "Flip Sketch";
-			// 
 			// pctMain
 			// 
 			this.pctMain.BackColor = System.Drawing.SystemColors.ButtonHighlight;
 			this.pctMain.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.pctMain.ContextMenuStrip = this.cmenuDrawing;
-			this.pctMain.Location = new System.Drawing.Point(0, 58);
+			this.pctMain.ErrorImage = global::SketchUp.Properties.Resources.NoSketch;
+			this.pctMain.Image = global::SketchUp.Properties.Resources.NoSketch;
+			this.pctMain.Location = new System.Drawing.Point(400, 100);
 			this.pctMain.Name = "pctMain";
-			this.pctMain.Size = new System.Drawing.Size(1415, 657);
+			this.pctMain.Size = new System.Drawing.Size(954, 514);
+			this.pctMain.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
 			this.pctMain.TabIndex = 4;
 			this.pctMain.TabStop = false;
 			this.pctMain.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pctMain_MouseMove);
@@ -247,6 +242,14 @@
 			this.flipVerticalToolStripMenuItem.Text = "Flip Vertical";
 			this.flipVerticalToolStripMenuItem.Click += new System.EventHandler(this.flipVerticalMenuItem_Click);
 			// 
+			// deleteSketchToolStripMenuItem
+			// 
+			this.deleteSketchToolStripMenuItem.Image = global::SketchUp.Properties.Resources.DeleteListItem_32x;
+			this.deleteSketchToolStripMenuItem.Name = "deleteSketchToolStripMenuItem";
+			this.deleteSketchToolStripMenuItem.Size = new System.Drawing.Size(238, 26);
+			this.deleteSketchToolStripMenuItem.Text = "Delete Sketch";
+			this.deleteSketchToolStripMenuItem.Click += new System.EventHandler(this.deleteSketchToolStripMenuItem_Click);
+			// 
 			// cmenuJump
 			// 
 			this.cmenuJump.AutoToolTip = true;
@@ -257,7 +260,7 @@
 			this.cmenuJump.Text = "Jump";
 			this.cmenuJump.ToolTipText = "Jump to the nearest corner";
 			// 
-			// MainForm
+			// EditSketchForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -267,7 +270,7 @@
 			this.Controls.Add(this.StatusMain);
 			this.Controls.Add(this.MainMenu);
 			this.MainMenuStrip = this.MainMenu;
-			this.Name = "MainForm";
+			this.Name = "EditSketchForm";
 			this.Text = "Render Initial Sketch";
 			this.MainMenu.ResumeLayout(false);
 			this.MainMenu.PerformLayout();

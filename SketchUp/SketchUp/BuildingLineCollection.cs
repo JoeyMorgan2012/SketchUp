@@ -43,7 +43,7 @@ namespace SketchUp
 		{
 			BuildingLineCollection sectionLines = new BuildingLineCollection();
 
-			string blsql = string.Format("select jlsect, jlline# as jlline, jldirect, jlxlen, jlylen, jlattach from {0}.{1}line where jlrecord = {2} and jldwell = {3} order by jlsect, jlline ", MainForm.FClib, MainForm.FCprefix, Record, Dwell);
+			string blsql = string.Format("select jlsect, jlline# as jlline, jldirect, jlxlen, jlylen, jlattach from {0}.{1}line where jlrecord = {2} and jldwell = {3} order by jlsect, jlline ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, Record, Dwell);
 			DataSet ds = fox.DBConnection.RunSelectStatement(blsql);
 
 			if (ds.Tables[0].Rows.Count > 0)

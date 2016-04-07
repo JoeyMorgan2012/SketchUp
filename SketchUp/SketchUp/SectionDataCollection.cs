@@ -53,7 +53,7 @@ namespace SketchUp
 		{
 			StringBuilder subSection = new StringBuilder();
 			subSection.Append("select jssect,jstype,jsstory,jsdesc,jssketch,jssqft,js0depr,jsclass,jsvalue,jsfactor,jsdeprc ");
-			subSection.Append(String.Format("from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ", MainForm.FClib, MainForm.FCprefix, Record, Card));
+			subSection.Append(String.Format("from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, Record, Card));
 			subSection.Append("order by jssect ");
 
 			IDataReader _Section = DatabaseConnection.DBConnection.getDataReader(subSection.ToString());

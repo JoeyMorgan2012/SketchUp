@@ -561,14 +561,14 @@ namespace SketchUp
 			// Get GasLogRate
 
 			StringBuilder sqlGasLog = new StringBuilder();
-			sqlGasLog.Append(String.Format(" select sysvalue from {0}.{1}sys where systype like 'GAS%' ", MainForm.localLib, MainForm.localPreFix));
+			sqlGasLog.Append(String.Format(" select sysvalue from {0}.{1}sys where systype like 'GAS%' ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
 
 			Rates.GasLogRate = ((Convert.ToDecimal(db.ExecuteScalar(sqlGasLog.ToString()))) / 100);
 
 			// Get NoMaxAc
 
 			StringBuilder sqlMaxAc = new StringBuilder();
-			sqlMaxAc.Append(String.Format(" select sysvalue from {0}.{1}sys where systype like 'NOMAXAC%' ", MainForm.localLib, MainForm.localPreFix));
+			sqlMaxAc.Append(String.Format(" select sysvalue from {0}.{1}sys where systype like 'NOMAXAC%' ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
 
 			NoMaxAc = db.ExecuteScalar(sqlMaxAc.ToString()).ToString().Trim();
 
@@ -577,7 +577,7 @@ namespace SketchUp
 			StringBuilder sqlRat2 = new StringBuilder();
 			sqlRat2.AppendLine("select rdca,rdcb,rdcc,rdcd,rdce,rdcm,rbrate,rdate,rekit,yadjy1,rpier,rslab ");
 			sqlRat2.AppendLine(",racamt,rplfix,rfinbs,rcondg,rconda,rcondf,rcondp,roblim ");
-			sqlRat2.AppendLine(String.Format(" from {0}.{1}rat2 where rsect2 = '0001'", MainForm.localLib, MainForm.localPreFix));
+			sqlRat2.AppendLine(String.Format(" from {0}.{1}rat2 where rsect2 = '0001'", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
 
 			//DataSet ds = db.RunSelectStatement(String.Format(
 			//    "select rdca,rdcb,rdcc,rdcd,rdce,rdcm,rbrate,rdate,rekit,yadjy1,rpier,rslab,racamt,rplfix,rfinbs from native.{0}rat2 where rsect2 = '0001'", prefix));
@@ -644,7 +644,7 @@ namespace SketchUp
 
 			StringBuilder caprate = new StringBuilder();
 			caprate.Append((String.Format("select cid,cmtgr,cmtgt,clvr,ceyld,chold,cetax,cchgr,cproj,cdisc,crevc,cincg,cexpci, " +
-					" cexpcr,cvcla,ctcra from parrevlib.{0}rentr", MainForm.localPreFix)));
+					" cexpcr,cvcla,ctcra from parrevlib.{0}rentr", SketchUpGlobals.LocalityPreFix)));
 
 			try
 			{
@@ -679,7 +679,7 @@ namespace SketchUp
 			// Get Map Coordinates
 
 			DataSet ds_mapXY = db.RunSelectStatement(String.Format(
-				"select qmapid,qxaxis,qyaxis from {0}.{1}map ", MainForm.localLib, MainForm.localPreFix));
+				"select qmapid,qxaxis,qyaxis from {0}.{1}map ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
 			foreach (DataRow row in ds_mapXY.Tables[0].Rows)
 			{
 				var mapXYCode = new MapCoordinates()
@@ -698,7 +698,7 @@ namespace SketchUp
 			StringBuilder getrents = new StringBuilder();
 			getrents.Append(String.Format("select rid,rusecd,rtype,rclvr,rclgr,rclar,rclfr,rclpr,rmult,roiv,roig,roia,roif,roip,rvclv, " +
 				" rvclg,rvcla,rvclf,rvclp,roerv,roerg,roera,roerf,roerp,rgimv,rgimg,rgima,rgimf, " +
-				" rgimp from parrevlib.{0}rent order by rid,rusecd ", MainForm.localPreFix));
+				" rgimp from parrevlib.{0}rent order by rid,rusecd ", SketchUpGlobals.LocalityPreFix));
 
 			try
 			{
@@ -784,8 +784,8 @@ namespace SketchUp
 			// Deck Types
 			StringBuilder getDeck = new StringBuilder();
 			getDeck.Append(String.Format("select rsecto,rdesc from {0}.{1}rat1 where rid = 'P' and rdesc like '%DECK%' ",
-							MainForm.localLib,
-							MainForm.localPreFix));
+							SketchUpGlobals.LocalLib,
+							SketchUpGlobals.LocalityPreFix));
 			DataSet ds_deck = db.RunSelectStatement(getDeck.ToString());
 
 			if (ds_deck.Tables[0].Rows.Count > 0)
@@ -801,8 +801,8 @@ namespace SketchUp
 			// Porch Types
 			StringBuilder getPor = new StringBuilder();
 			getPor.Append(String.Format("select rsecto,rdesc from {0}.{1}rat1 where rid = 'P' and rdesc like '%POR%' ",
-							MainForm.localLib,
-							MainForm.localPreFix));
+							SketchUpGlobals.LocalLib,
+							SketchUpGlobals.LocalityPreFix));
 			getPor.Append(" and rdesc not like '%CAR%' and rdesc not like '%ENCL%' and rdesc not like '%SCR%' ");
 			DataSet ds_por = db.RunSelectStatement(getPor.ToString());
 
@@ -819,8 +819,8 @@ namespace SketchUp
 			// Screen Porch Types
 			StringBuilder getSPor = new StringBuilder();
 			getSPor.Append(String.Format("select rsecto,rdesc from {0}.{1}rat1 where rid = 'P' and rdesc like '%POR%' ",
-							MainForm.localLib,
-							MainForm.localPreFix));
+							SketchUpGlobals.LocalLib,
+							SketchUpGlobals.LocalityPreFix));
 			getSPor.Append(" and rdesc not like '%CAR%' and rdesc not like '%ENCL%' and rdesc like '%SCR%' ");
 			DataSet ds_spor = db.RunSelectStatement(getSPor.ToString());
 
@@ -837,8 +837,8 @@ namespace SketchUp
 			//   Encl Porch Types
 			StringBuilder getEPor = new StringBuilder();
 			getEPor.Append(String.Format("select rsecto,rdesc from {0}.{1}rat1 where rid = 'P' and rdesc like '%POR%' ",
-							MainForm.localLib,
-							MainForm.localPreFix));
+							SketchUpGlobals.LocalLib,
+							SketchUpGlobals.LocalityPreFix));
 			getEPor.Append(" and rdesc not like '%CAR%' and rdesc like '%ENCL%' and rdesc not like '%SCR%' ");
 			DataSet ds_epor = db.RunSelectStatement(getSPor.ToString());
 
@@ -855,8 +855,8 @@ namespace SketchUp
 			// Patio Types
 			StringBuilder getPat = new StringBuilder();
 			getPat.Append(String.Format("select rsecto,rdesc from {0}.{1}rat1 where rid = 'P' and rdesc like '%PAT%' ",
-							MainForm.localLib,
-							MainForm.localPreFix));
+							SketchUpGlobals.LocalLib,
+							SketchUpGlobals.LocalityPreFix));
 			DataSet ds_pat = db.RunSelectStatement(getPat.ToString());
 
 			if (ds_pat.Tables[0].Rows.Count > 0)
@@ -872,8 +872,8 @@ namespace SketchUp
 			// Gargage Type List
 			StringBuilder getgar = new StringBuilder();
 			getgar.Append(String.Format("select rsecto,rdesc from {0}.{1}rat1 where rid = 'P' and rdesc like '%GAR%' ",
-							MainForm.localLib,
-							MainForm.localPreFix));
+							SketchUpGlobals.LocalLib,
+							SketchUpGlobals.LocalityPreFix));
 			getgar.Append("and rdesc not like '%ENC%' and rdesc not like '%COM%' and rdesc not like '%APT%' and rdesc not like '%LIV%' ");
 
 			DataSet ds_gar = db.RunSelectStatement(getgar.ToString());
@@ -891,8 +891,8 @@ namespace SketchUp
 			// Carport Type List
 			StringBuilder getcp = new StringBuilder();
 			getcp.Append(String.Format("select rsecto,rdesc from {0}.{1}rat1 where rid = 'P' and rdesc like '%CAR%' and rdesc not like '%ENC%'  ",
-							MainForm.localLib,
-							MainForm.localPreFix));
+							SketchUpGlobals.LocalLib,
+							SketchUpGlobals.LocalityPreFix));
 
 			DataSet ds_cp = db.RunSelectStatement(getcp.ToString());
 
@@ -908,7 +908,7 @@ namespace SketchUp
 
 			// Get USER Code Description
 			DataSet ds_user = db.RunSelectStatement(String.Format(
-				" select rsecto,rdesc from {0}.{1}rat1 where rid = 'U' ", MainForm.localLib, MainForm.localPreFix));
+				" select rsecto,rdesc from {0}.{1}rat1 where rid = 'U' ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
 			foreach (DataRow row in ds_user.Tables[0].Rows)
 			{
 				string userCode = String.Format("{0} - {1}",
@@ -925,7 +925,7 @@ namespace SketchUp
 
 			// Get Subdivision Code Description
 			DataSet ds_subdivCode = db.RunSelectStatement(String.Format(
-				" select rsecto,rdesc,rincsf from {0}.{1}rat1 where rid = 'D' ", MainForm.localLib, MainForm.localPreFix));
+				" select rsecto,rdesc,rincsf from {0}.{1}rat1 where rid = 'D' ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
 			foreach (DataRow row in ds_subdivCode.Tables[0].Rows)
 			{
 				string subDivCode = String.Format("{0} - {1}",
@@ -943,7 +943,7 @@ namespace SketchUp
 
 			// Magisterial Districts
 			DataSet ds_magDistCode = db.RunSelectStatement(String.Format(
-				" select rsecto,rdesc from {0}.{1}rat1 where rid = 'M' ", MainForm.localLib, MainForm.localPreFix));
+				" select rsecto,rdesc from {0}.{1}rat1 where rid = 'M' ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
 			foreach (DataRow row in ds_magDistCode.Tables[0].Rows)
 			{
 				string magDistCode = String.Format("{0} - {1}",
@@ -963,7 +963,7 @@ namespace SketchUp
 
 			// WaterRates
 			DataSet ds_WaterRates = db.RunSelectStatement(String.Format(
-				" select rsecto,rdesc,rtid,rtelem,rrpa from {0}.{1}rat1 where rid = 'S' and rtid = 'WAT' ", MainForm.localLib, MainForm.localPreFix));
+				" select rsecto,rdesc,rtid,rtelem,rrpa from {0}.{1}rat1 where rid = 'S' and rtid = 'WAT' ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
 			foreach (DataRow row in ds_WaterRates.Tables[0].Rows)
 			{
 				var watRate = new WaterRates()
@@ -977,7 +977,7 @@ namespace SketchUp
 
 			// SewerRates
 			DataSet ds_SewerRates = db.RunSelectStatement(String.Format(
-				" select rsecto,rdesc,rtid,rtelem,rrpa from {0}.{1}rat1 where rid = 'S' and rtid = 'SEW' ", MainForm.localLib, MainForm.localPreFix));
+				" select rsecto,rdesc,rtid,rtelem,rrpa from {0}.{1}rat1 where rid = 'S' and rtid = 'SEW' ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
 			foreach (DataRow row in ds_SewerRates.Tables[0].Rows)
 			{
 				var sewRate = new SewerRates()
@@ -991,7 +991,7 @@ namespace SketchUp
 
 			// Other Improvement Code
 			DataSet ds_OICodes = db.RunSelectStatement(String.Format(
-				" select rsecto,rdesc from {0}.{1}rat1 where rid = 'I' ", MainForm.localLib, MainForm.localPreFix));
+				" select rsecto,rdesc from {0}.{1}rat1 where rid = 'I' ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
 			foreach (DataRow row in ds_OICodes.Tables[0].Rows)
 			{
 				string oiDesc = String.Format("{0} - {1}",
@@ -1010,7 +1010,7 @@ namespace SketchUp
 
 			// Get Assessor Inital Code Description
 			DataSet ds_assInitCode = db.RunSelectStatement(String.Format(
-				" select rsecto,rdesc,rtid from {0}.{1}rat1 where rid = 'B' and substr(rsecto,1,2) = 'BA' ", MainForm.localLib, MainForm.localPreFix));
+				" select rsecto,rdesc,rtid from {0}.{1}rat1 where rid = 'B' and substr(rsecto,1,2) = 'BA' ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
 			foreach (DataRow row in ds_assInitCode.Tables[0].Rows)
 			{
 				string assInitial = String.Format("{0} - {1}",
@@ -1027,7 +1027,7 @@ namespace SketchUp
 
 			// Get Data Entry Operator Description
 			DataSet ds_dataEntryOpCode = db.RunSelectStatement(String.Format(
-				" select rsecto,rdesc,rtid from {0}.{1}rat1 where rid = 'B' and substr(rsecto,1,2) = 'BD' ", MainForm.localLib, MainForm.localPreFix));
+				" select rsecto,rdesc,rtid from {0}.{1}rat1 where rid = 'B' and substr(rsecto,1,2) = 'BD' ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
 			foreach (DataRow row in ds_dataEntryOpCode.Tables[0].Rows)
 			{
 				string dataOpInitial = String.Format("{0} - {1}",
@@ -1044,7 +1044,7 @@ namespace SketchUp
 
 			// Get Occupancy List & Descriptions
 			DataSet ds_occupancyDescriptions = db.RunSelectStatement(string.Format(
-				"select ttid,ttelem,tdesc from {0}.{1}stab where ttid = 'OCC' ", MainForm.FClib, MainForm.FCprefix));
+				"select ttid,ttelem,tdesc from {0}.{1}stab where ttid = 'OCC' ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
 			foreach (DataRow row in ds_occupancyDescriptions.Tables[0].Rows)
 			{
 				string occdescription = String.Format("{0} - {1}",
@@ -1064,7 +1064,7 @@ namespace SketchUp
 			DataSet ds_residentialSection = db.RunSelectStatement(String.Format(
 
 			//"select rsecto,rdesc,rrpsf from native.{0}rat1 where rid = 'P' and rrpsf > 0 ", prefix));
-			"select rsecto,rdesc,rrpsf from {0}.{1}rat1 where rid = 'P' ", MainForm.localLib, MainForm.localPreFix));
+			"select rsecto,rdesc,rrpsf from {0}.{1}rat1 where rid = 'P' ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
 			foreach (DataRow row in ds_residentialSection.Tables[0].Rows)
 			{
 				string residentialSectionType = Convert.ToString(row["rsecto"].ToString());
@@ -1078,7 +1078,7 @@ namespace SketchUp
 			}
 
 			DataSet ds_commercialSection = db.RunSelectStatement(String.Format(
-				"select rsecto,rdesc,rclar,rclbr,rclcr,rcldr,rclmr from {0}.{1}rat1 where rid = 'C' and rrpsf = 0 ", MainForm.localLib, MainForm.localPreFix));
+				"select rsecto,rdesc,rclar,rclbr,rclcr,rcldr,rclmr from {0}.{1}rat1 where rid = 'C' and rrpsf = 0 ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
 			foreach (DataRow row in ds_commercialSection.Tables[0].Rows)
 			{
 				string commercialSectionType = Convert.ToString(row["rsecto"].ToString().Trim());
@@ -1096,7 +1096,7 @@ namespace SketchUp
 			}
 
 			DataSet ds_commercialIncomeSection = db.RunSelectStatement(String.Format(
-			  "select rsecto,rdesc,rclar,rclbr,rclcr,rcldr,rclmr from {0}.{1}rat1 where rid = 'C' and rrpsf = 0 and substr(rsecto,1,1) in ('A','B','C','I','H') ", MainForm.localLib, MainForm.localPreFix));
+			  "select rsecto,rdesc,rclar,rclbr,rclcr,rcldr,rclmr from {0}.{1}rat1 where rid = 'C' and rrpsf = 0 and substr(rsecto,1,1) in ('A','B','C','I','H') ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
 			foreach (DataRow row in ds_commercialIncomeSection.Tables[0].Rows)
 			{
 				string commercialIncomeSectionType = Convert.ToString(row["rsecto"].ToString().Trim());
@@ -1109,7 +1109,7 @@ namespace SketchUp
 			}
 
 			DataSet ds_flrAbrev = db.RunSelectStatement(String.Format(
-				"select ttid,ttelem,tdesc,tloc from {0}.{1}stab where ttid = 'FLR'", MainForm.FClib, MainForm.FCprefix));
+				"select ttid,ttelem,tdesc,tloc from {0}.{1}stab where ttid = 'FLR'", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
 			foreach (DataRow row in ds_flrAbrev.Tables[0].Rows)
 			{
 				var flrAbrvCode = new FloorAbreviation()
@@ -1121,7 +1121,7 @@ namespace SketchUp
 			}
 
 			DataSet ds_wallAbrev = db.RunSelectStatement(String.Format(
-				"select ttid,ttelem,tdesc,tloc from {0}.{1}stab where ttid = 'INW'", MainForm.FClib, MainForm.FCprefix));
+				"select ttid,ttelem,tdesc,tloc from {0}.{1}stab where ttid = 'INW'", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
 			foreach (DataRow row in ds_wallAbrev.Tables[0].Rows)
 			{
 				var wallAbrvCode = new InWallAbreviation()
@@ -1136,7 +1136,7 @@ namespace SketchUp
 			// Get STAB data
 			//TODO: Modify for location-specific STAB and DESC files
 			DataSet ds_stab = db.RunSelectStatement(String.Format(
-				"select ttid,ttelem,tdescp,tdesc,tloc from {0}.{1}stab", MainForm.FClib, MainForm.FCprefix));
+				"select ttid,ttelem,tdescp,tdesc,tloc from {0}.{1}stab", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
 
 			foreach (DataRow row in ds_stab.Tables[0].Rows)
 			{

@@ -83,6 +83,16 @@ namespace SketchUp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ConnectionOffline_64x {
+            get {
+                object obj = ResourceManager.GetObject("ConnectionOffline_64x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap DeleteCell_16x {
             get {
                 object obj = ResourceManager.GetObject("DeleteCell_16x", resourceCulture);
@@ -246,6 +256,16 @@ namespace SketchUp.Properties {
         internal static System.Drawing.Bitmap Keyboard {
             get {
                 object obj = ResourceManager.GetObject("Keyboard", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap NoSketch {
+            get {
+                object obj = ResourceManager.GetObject("NoSketch", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

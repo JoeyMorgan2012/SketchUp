@@ -178,7 +178,7 @@ namespace SketchUp
 
 			StringBuilder bssql = new StringBuilder();
 			bssql.Append(" select jsrecord, jsdwell, jssect, jstype, jsclass, jssqft, jsfactor, jsdeprc, js0depr ");
-			bssql.Append(String.Format(" from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ", MainForm.localLib, MainForm.localPreFix, record, card));
+			bssql.Append(String.Format(" from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix, record, card));
 
 			DataSet ds = _conn.DBConnection.RunSelectStatement(bssql.ToString());
 			string sectionType = String.Empty;
