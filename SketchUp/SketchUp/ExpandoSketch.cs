@@ -747,8 +747,6 @@ namespace SketchUp
 
 		private void AddSectionBtn_Click(object sender, EventArgs e)
 		{
-			//TODO: Change back to true
-			checkDirection = false;
 			AddSections();
 			AddNewPoint();
 			_deleteMaster = false;
@@ -1363,21 +1361,18 @@ namespace SketchUp
 
 			DupAttPoints = ConstructDupAttPointsTable();
 
-			StrtPts = new DataTable();
-			StrtPts.Columns.Add("Sect", typeof(string));
-			StrtPts.Columns.Add("Sx1", typeof(decimal));
-			StrtPts.Columns.Add("Sy1", typeof(decimal));
+			StrtPts=ConstructStartPointsTable();
 
-			dt = new DataTable();
+			displayDataTable = new DataTable();
 
 			DataColumn col_sect = new DataColumn("Dir", Type.GetType("System.String"));
-			dt.Columns.Add(col_sect);
+			displayDataTable.Columns.Add(col_sect);
 			DataColumn col_desc = new DataColumn("North", Type.GetType("System.Decimal"));
-			dt.Columns.Add(col_desc);
+			displayDataTable.Columns.Add(col_desc);
 			DataColumn col_sqft = new DataColumn("East", Type.GetType("System.Decimal"));
-			dt.Columns.Add(col_sqft);
+			displayDataTable.Columns.Add(col_sqft);
 			DataColumn col_att = new DataColumn("Att", Type.GetType("System.String"));
-			dt.Columns.Add(col_att);
+			displayDataTable.Columns.Add(col_att);
 
 			DataGridTableStyle style = new DataGridTableStyle();
 			DataGridTextBoxColumn SectColumn = new DataGridTextBoxColumn();
@@ -1404,7 +1399,7 @@ namespace SketchUp
 			AttColumn.Width = 30;
 			style.GridColumnStyles.Add(AttColumn);
 
-			this.dgSections.DataSource = this.dt;
+			this.dgSections.DataSource = displayDataTable;
 
 			float tstScale = _scale;
 
@@ -1474,6 +1469,15 @@ namespace SketchUp
 
 			click++;
 			savpic.Add(click, imageToByteArray(_mainimage));
+		}
+
+		private DataTable ConstructStartPointsTable()
+		{
+			DataTable startPts = new DataTable();
+			startPts.Columns.Add("Sect", typeof(string));
+			startPts.Columns.Add("Sx1", typeof(decimal));
+			startPts.Columns.Add("Sy1", typeof(decimal));
+			return startPts;
 		}
 
 		private void AddXLine(string thisSection)
@@ -3750,7 +3754,7 @@ End Joey's alternative Code */
 
 		private bool IsMovementAllowed(MoveDirections direction)
 		{
-			bool isAllowed = (this.dt.Rows.Count > 0);
+			bool isAllowed = (this.displayDataTable.Rows.Count > 0);
 
 			if (isAllowed && this.isInAddNewPointMode)
 			{
@@ -3765,7 +3769,7 @@ End Joey's alternative Code */
 
 			if (isAllowed)
 			{
-				string dir = dt.Rows[this.dgSections.CurrentRow.Index]["Dir"].ToString();
+				string dir = displayDataTable.Rows[this.dgSections.CurrentRow.Index]["Dir"].ToString();
 				if (!dir.Equals(direction.ToString()))
 				{
 					this.ShowMessageBox("Illegal Direction");
@@ -3781,12 +3785,12 @@ End Joey's alternative Code */
 				{
 					case MoveDirections.N:
 					case MoveDirections.S:
-						len = Convert.ToDecimal(dt.Rows[this.dgSections.CurrentRow.Index]["North"].ToString());
+						len = Convert.ToDecimal(displayDataTable.Rows[this.dgSections.CurrentRow.Index]["North"].ToString());
 						break;
 
 					case MoveDirections.E:
 					case MoveDirections.W:
-						len = Convert.ToDecimal(dt.Rows[this.dgSections.CurrentRow.Index]["East"].ToString());
+						len = Convert.ToDecimal(displayDataTable.Rows[this.dgSections.CurrentRow.Index]["East"].ToString());
 						break;
 
 					default:
@@ -3872,17 +3876,17 @@ End Joey's alternative Code */
 
 		private void LoadSection()
 		{
-			this.dt.Rows.Clear();
+			this.displayDataTable.Rows.Clear();
 			if (this.section.SectionLines != null)
 			{
 				foreach (var line in this.section.SectionLines)
 				{
-					DataRow dr = this.dt.NewRow();
+					DataRow dr = this.displayDataTable.NewRow();
 					dr["Dir"] = line.Directional.Trim();
 					dr["North"] = line.YLength.ToString();
 					dr["East"] = line.XLength.ToString();
 					dr["Att"] = line.Attachment.Trim();
-					this.dt.Rows.Add(dr);
+					this.displayDataTable.Rows.Add(dr);
 				}
 			}
 		}
@@ -4046,7 +4050,7 @@ End Joey's alternative Code */
 
 					decimal length = Convert.ToDecimal(this.DistText.Text);
 
-					DataRow dr = this.dt.NewRow();
+					DataRow dr = this.displayDataTable.NewRow();
 					string dir = "";
 
 					for (int i = 0; i < this.pts.Length; i++)
@@ -4083,9 +4087,9 @@ End Joey's alternative Code */
 									dir = "N";
 									dr["North"] = length.ToString();
 									dr["East"] = "0.0";
-									decimal old = Convert.ToDecimal(this.dt.Rows[this.dgSections.CurrentRow.Index]["North"]);
+									decimal old = Convert.ToDecimal(this.displayDataTable.Rows[this.dgSections.CurrentRow.Index]["North"]);
 									old -= length;
-									dt.Rows[this.dgSections.CurrentRow.Index]["North"] = old.ToString();
+									displayDataTable.Rows[this.dgSections.CurrentRow.Index]["North"] = old.ToString();
 									int adjLength = 0 - Convert.ToInt32(length);
 									if (isLastLine)
 									{
@@ -4104,9 +4108,9 @@ End Joey's alternative Code */
 									dir = "S";
 									dr["North"] = length.ToString();
 									dr["East"] = "0.0";
-									old = Convert.ToDecimal(this.dt.Rows[this.dgSections.CurrentRow.Index]["North"]);
+									old = Convert.ToDecimal(this.displayDataTable.Rows[this.dgSections.CurrentRow.Index]["North"]);
 									old -= length;
-									dt.Rows[this.dgSections.CurrentRow.Index]["North"] = old.ToString();
+									displayDataTable.Rows[this.dgSections.CurrentRow.Index]["North"] = old.ToString();
 									adjLength = Convert.ToInt32(length);
 									if (isLastLine)
 									{
@@ -4125,9 +4129,9 @@ End Joey's alternative Code */
 									dir = "E";
 									dr["North"] = "0.0";
 									dr["East"] = length.ToString();
-									old = Convert.ToDecimal(this.dt.Rows[this.dgSections.CurrentRow.Index]["East"]);
+									old = Convert.ToDecimal(this.displayDataTable.Rows[this.dgSections.CurrentRow.Index]["East"]);
 									old -= length;
-									dt.Rows[this.dgSections.CurrentRow.Index]["East"] = old.ToString();
+									displayDataTable.Rows[this.dgSections.CurrentRow.Index]["East"] = old.ToString();
 									adjLength = Convert.ToInt32(length);
 									if (isLastLine)
 									{
@@ -4146,9 +4150,9 @@ End Joey's alternative Code */
 									dir = "W";
 									dr["North"] = "0.0";
 									dr["East"] = length.ToString();
-									old = Convert.ToDecimal(this.dt.Rows[this.dgSections.CurrentRow.Index]["East"]);
+									old = Convert.ToDecimal(this.displayDataTable.Rows[this.dgSections.CurrentRow.Index]["East"]);
 									old -= length;
-									dt.Rows[this.dgSections.CurrentRow.Index]["East"] = old.ToString();
+									displayDataTable.Rows[this.dgSections.CurrentRow.Index]["East"] = old.ToString();
 									adjLength = 0 - Convert.ToInt32(length);
 									if (isLastLine)
 									{
@@ -4190,7 +4194,7 @@ End Joey's alternative Code */
 					dr["Dir"] = dir;
 					dr["Att"] = "";
 
-					this.dt.Rows.InsertAt(dr, this.dgSections.CurrentRow.Index);
+					this.displayDataTable.Rows.InsertAt(dr, this.dgSections.CurrentRow.Index);
 
 					this.DistText.Text = "";
 					this.DrawSketch(this.dgSections.CurrentRow.Index);
@@ -4753,11 +4757,11 @@ End Joey's alternative Code */
 				{
 					this.section.SectionLines.TrimExcess();
 					int lastLine = this.section.SectionLines.Count;
-					int lastRow = this.dt.Rows.Count - 1;
+					int lastRow = this.displayDataTable.Rows.Count - 1;
 
 					var prevLine = this.section.SectionLines[lastLine];
-					prevLine.YLength = Convert.ToDecimal(this.dt.Rows[lastRow]["North"].ToString());
-					prevLine.XLength = Convert.ToDecimal(this.dt.Rows[lastRow]["East"].ToString());
+					prevLine.YLength = Convert.ToDecimal(this.displayDataTable.Rows[lastRow]["North"].ToString());
+					prevLine.XLength = Convert.ToDecimal(this.displayDataTable.Rows[lastRow]["East"].ToString());
 					prevLine.Point1X = Convert.ToDecimal(this.unadj_pts[lastRow].X);
 					prevLine.Point1Y = Convert.ToDecimal(this.unadj_pts[lastRow].Y);
 					prevLine.Point2X = Convert.ToDecimal(this.unadj_pts[0].X);
@@ -4771,9 +4775,9 @@ End Joey's alternative Code */
 					newLine.Card = this.section.Card;
 					newLine.SectionLetter = this.section.SectionLetter;
 					newLine.LineNumber = lastLine;
-					newLine.Directional = this.dt.Rows[lastRow - 1]["Dir"].ToString();
-					newLine.YLength = Convert.ToDecimal(this.dt.Rows[lastRow - 1]["North"].ToString());
-					newLine.XLength = Convert.ToDecimal(this.dt.Rows[lastRow - 1]["East"].ToString());
+					newLine.Directional = this.displayDataTable.Rows[lastRow - 1]["Dir"].ToString();
+					newLine.YLength = Convert.ToDecimal(this.displayDataTable.Rows[lastRow - 1]["North"].ToString());
+					newLine.XLength = Convert.ToDecimal(this.displayDataTable.Rows[lastRow - 1]["East"].ToString());
 					newLine.Point1X = Convert.ToDecimal(this.unadj_pts[lastRow - 1].X);
 					newLine.Point1Y = Convert.ToDecimal(this.unadj_pts[lastRow - 1].Y);
 					newLine.Point2X = Convert.ToDecimal(this.unadj_pts[lastRow].X);
@@ -4783,8 +4787,8 @@ End Joey's alternative Code */
 				else
 				{
 					var prevLine = this.section.SectionLines[NewPointIndex];
-					prevLine.YLength = Convert.ToDecimal(this.dt.Rows[NewPointIndex]["North"].ToString());
-					prevLine.XLength = Convert.ToDecimal(this.dt.Rows[NewPointIndex]["East"].ToString());
+					prevLine.YLength = Convert.ToDecimal(this.displayDataTable.Rows[NewPointIndex]["North"].ToString());
+					prevLine.XLength = Convert.ToDecimal(this.displayDataTable.Rows[NewPointIndex]["East"].ToString());
 					prevLine.Point1X = Convert.ToDecimal(this.unadj_pts[NewPointIndex].X);
 					prevLine.Point1Y = Convert.ToDecimal(this.unadj_pts[NewPointIndex].Y);
 					prevLine.Point2X = Convert.ToDecimal(this.unadj_pts[NewPointIndex + 1].X);
@@ -4798,9 +4802,9 @@ End Joey's alternative Code */
 					newLine.Card = this.section.Card;
 					newLine.SectionLetter = this.section.SectionLetter;
 					newLine.LineNumber = this.NewPointIndex;
-					newLine.Directional = this.dt.Rows[NewPointIndex - 1]["Dir"].ToString();
-					newLine.YLength = Convert.ToDecimal(this.dt.Rows[NewPointIndex - 1]["North"].ToString());
-					newLine.XLength = Convert.ToDecimal(this.dt.Rows[NewPointIndex - 1]["East"].ToString());
+					newLine.Directional = this.displayDataTable.Rows[NewPointIndex - 1]["Dir"].ToString();
+					newLine.YLength = Convert.ToDecimal(this.displayDataTable.Rows[NewPointIndex - 1]["North"].ToString());
+					newLine.XLength = Convert.ToDecimal(this.displayDataTable.Rows[NewPointIndex - 1]["East"].ToString());
 					newLine.Point1X = Convert.ToDecimal(this.unadj_pts[NewPointIndex - 1].X);
 					newLine.Point1Y = Convert.ToDecimal(this.unadj_pts[NewPointIndex - 1].Y);
 					newLine.Point2X = Convert.ToDecimal(this.unadj_pts[NewPointIndex].X);
@@ -6116,6 +6120,16 @@ End Joey's alternative Code */
 		}
 
 		private void beginPointToolStripMenuItem_Click_1(object sender, EventArgs e)
+		{
+
+		}
+
+		private void SaveSketchBtn_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void autoCloseToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 
 		}

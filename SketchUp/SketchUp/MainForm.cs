@@ -116,14 +116,13 @@ namespace SketchUp
 			{
 				InitializeComponent();
 				timer.Start();
-				splash = ShowSpashScreen();
+				splash = ShowSplashScreen();
 				splash.UpdateProgress(10);
 				Application.DoEvents();
 				_isMinimized = false;
 				splash.UpdateProgress(20);
 				Application.DoEvents();
-				// TODO: Remove if not needed:	bool test = ExpandoSketch.RefreshEditImageBtn;
-
+				
 				DBAccessManager _connDB = null;
 				splash.UpdateProgress(30);
 				Application.DoEvents();
@@ -151,7 +150,7 @@ namespace SketchUp
 			{
 				InitializeComponent();
 				timer.Start();
-				splash = ShowSpashScreen();
+				splash = ShowSplashScreen();
 				splash.UpdateProgress(10);
 				Application.DoEvents();
 				_isMinimized = false;
@@ -650,7 +649,7 @@ namespace SketchUp
 			}
 		}
 
-		private FormSplash ShowSpashScreen()
+		private FormSplash ShowSplashScreen()
 		{
 			FormSplash splash = new FormSplash();
 			splash.Show();
@@ -716,20 +715,12 @@ namespace SketchUp
 			}
 			catch (Exception ex)
 			{
-				Logger.Error(ex, MethodBase.GetCurrentMethod().Module.Name);
-				Console.WriteLine(string.Format("Error occurred in {0}, in procedure {1}.", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name));
-				throw;
+				Console.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
 			}
 		}
 
 		private void GetSelectedImages()
 		{
-#if DEBUG
-
-			//Debugging Code -- remove for production release
-			var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-			UtilityMethods.LogMethodCall(fullStack, true);
-#endif
 
 			_subSections = new SectionDataCollection(_conn, _currentParcel.mrecno, _currentParcel.mdwell);
 

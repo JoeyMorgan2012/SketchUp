@@ -18,24 +18,12 @@ namespace SketchUp
 		//Refactored stringbuilders to strings and extracted long code runs into separate methods. JMM Feb 2016
 		public BuildingSketcher(BuildingSectionCollection sections)
 		{
-#if DEBUG
-
-			//Debugging Code -- remove for production release
-			//var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-			//UtilityMethods.LogMethodCall(fullStack, true);
-#endif
-
 			Sections = sections;
 		}
 
 		private BuildingSketcher()
 		{
-#if DEBUG
 
-			//Debugging Code -- remove for production release
-			//var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-			//UtilityMethods.LogMethodCall(fullStack, true);
-#endif
 		}
 
 		#endregion Constructors
@@ -109,12 +97,6 @@ namespace SketchUp
 
 		public Bitmap DrawSketch()
 		{
-#if DEBUG
-
-			//Debugging Code -- remove for production release
-			//var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-			//UtilityMethods.LogMethodCall(fullStack, true);
-#endif
 
 			try
 			{
@@ -133,26 +115,14 @@ namespace SketchUp
 
 		public Bitmap DrawSketch(int sizeInPixels)
 		{
-			//return DrawSketch(sizeInPixels, sizeInPixels, sizeInPixels);
+		
 			float scale = 1.0f;
-#if DEBUG
-
-			//Debugging Code -- remove for production release
-			//var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-			//UtilityMethods.LogMethodCall(fullStack, true);
-#endif
 
 			return DrawSketch(sizeInPixels, sizeInPixels, sizeInPixels, sizeInPixels, sizeInPixels, out scale);
 		}
 
 		public Bitmap DrawSketch(int bitmapWidth, int bitmapHeight, int sizeXinPixels, int sizeYinPixels, int sizeInPixels, out float scaleOut)
 		{
-#if DEBUG
-
-			//Debugging Code -- remove for production release
-			//var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-			//UtilityMethods.LogMethodCall(fullStack, true);
-#endif
 
 			scaleOut = 1.0f;
 			if (Sections == null || Sections.Count == 0)
@@ -487,12 +457,7 @@ namespace SketchUp
 
 		private float CreateSketchFromLines(int bitmapWidth, int bitmapHeight, int sizeXinPixels, int sizeYinPixels, int sizeInPixels, float scaleOut, Pen pen, Pen base_pen, Brush brush, Font font, List<string> noLabelTypes, SortedList<string, SectionInfo> sections, decimal MINX, decimal MAXX, decimal MINY, decimal MAXY)
 		{
-#if DEBUG
 
-			//Debugging Code -- remove for production release
-			//var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-			//UtilityMethods.LogMethodCall(fullStack, true);
-#endif
 			if (sections.Values.Count > 0)
 			{
 				_sketch = new Bitmap(bitmapWidth, bitmapHeight, PixelFormat.Format32bppPArgb);
@@ -587,12 +552,6 @@ namespace SketchUp
 
 		private int DrawTheSection(Pen pen, Pen base_pen, Brush brush, Font font, List<string> noLabelTypes, SortedList<string, SectionInfo> sections, Graphics g, float scale, float TOTAL_X_ADJ, float TOTAL_Y_ADJ, int secCnt, SectionInfo sect)
 		{
-#if DEBUG
-
-			//Debugging Code -- remove for production release
-			//var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-			//UtilityMethods.LogMethodCall(fullStack, true);
-#endif
 			secCnt++;
 			int linCnt = 0;
 			for (int i = 0; i < sect.POINTS.Length; i++)

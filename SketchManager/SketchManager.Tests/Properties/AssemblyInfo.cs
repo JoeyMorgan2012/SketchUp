@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SketchRenderPoC")]
+[assembly: AssemblyTitle("SketchManager.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SketchRenderPoC")]
+[assembly: AssemblyProduct("SketchManager.Tests")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("d1dba3f0-3186-4db7-b819-b16acf683161")]
+[assembly: Guid("e7316520-d017-4ac9-9d62-28614c55d503")]
 
 // Version information for an assembly consists of the following four values:
 //

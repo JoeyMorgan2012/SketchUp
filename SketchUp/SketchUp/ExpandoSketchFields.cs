@@ -55,7 +55,7 @@ namespace SketchUp
 		private List<int> cpCodes = null;
 		private List<String> cpTypes = null;
 		private int currentAttachmentLine = 0;
-		private DataTable dt = null;
+		private DataTable displayDataTable = null;
 		private DataTable DupAttPoints = null;
 		private float endOldSecX = 0;
 		private float endOldSecY = 0;

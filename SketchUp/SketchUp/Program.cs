@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Deployment.Application;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Web;
 using System.Windows.Forms;
 using SWallTech;
@@ -36,22 +34,9 @@ namespace SketchUp
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-#if DEBUG
-
-			//Debugging Code -- remove for production release
-			var fullStack = new System.Diagnostics.StackTrace(false).GetFrames();
-			UtilityMethods.LogMethodCall(fullStack, true);
-#endif
 
 			try
 			{
-#if DEBUG
-
-				//Debugging Code -- remove for production release
-				fullStack = new System.Diagnostics.StackTrace(false).GetFrames();
-				UtilityMethods.LogMethodCall(fullStack, true);
-#endif
-
 				if (ApplicationDeployment.IsNetworkDeployed)
 				{
 					FormatNetworkDeployedArguments();
@@ -68,12 +53,11 @@ namespace SketchUp
 			}
 			catch (Exception ex)
 			{
+				string message = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+				Console.WriteLine(message);
 #if DEBUG
-
 				MessageBox.Show(ex.Message);
 #endif
-				Logger.Error(ex, string.Format("{0}.{1}", MethodBase.GetCurrentMethod().Module.Name, MethodBase.GetCurrentMethod().Name));
-				throw;
 			}
 		}
 
@@ -102,12 +86,7 @@ namespace SketchUp
 
 		private static void FormatNetworkDeployedArguments()
 		{
-#if DEBUG
 
-			//Debugging Code -- remove for production release
-			//var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-			//UtilityMethods.LogMethodCall(fullStack, true);
-#endif
 			if (args == null || args.Length == 0)
 			{
 				string[] inputArgs = AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData;
@@ -127,12 +106,7 @@ namespace SketchUp
 
 		public static string[] GetArguments()
 		{
-#if DEBUG
 
-			//Debugging Code -- remove for production release
-			//var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-			//UtilityMethods.LogMethodCall(fullStack, true);
-#endif
 			var commandLineArgs = new List<string>();
 			string startupUrl = String.Empty;
 
@@ -154,12 +128,7 @@ namespace SketchUp
 
 		private static void AddActivationArgsIfPresent(List<string> commandLineArgs, string startupUrl)
 		{
-#if DEBUG
 
-			//Debugging Code -- remove for production release
-			//var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-			//UtilityMethods.LogMethodCall(fullStack, true);
-#endif
 			var activationArgs = AppDomain.CurrentDomain.SetupInformation.ActivationArguments;
 			if (activationArgs != null && activationArgs.ActivationData.Length > 0)
 			{
@@ -169,12 +138,7 @@ namespace SketchUp
 
 		private static string FormatClickOnceCommandLines(List<string> commandLineArgs)
 		{
-#if DEBUG
 
-			//Debugging Code -- remove for production release
-			//var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-			//UtilityMethods.LogMethodCall(fullStack, true);
-#endif
 			string startupUrl;
 
 			// Add the EXE name at the front
@@ -201,12 +165,6 @@ namespace SketchUp
 
 		private static void ParseArgs(string[] args)
 		{
-#if DEBUG
-
-			//Debugging Code -- remove for production release
-			//var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-			//UtilityMethods.LogMethodCall(fullStack, true);
-#endif
 			if (args == null || args.Length < 2)
 			{
 				commandLineArgs = new CommandLineArguments();
