@@ -43,6 +43,7 @@ namespace SketchUp
 				SetConnectionLibraryParameters(SketchUpGlobals.DbAccessMgr);
 				splash.UpdateProgress(85);
 				Application.DoEvents();
+				InitializeSketchRepository();
 			}
 			else
 			{
@@ -82,27 +83,55 @@ namespace SketchUp
 			Application.DoEvents();
 
 			EstablishCamraConnection();
+
 			splash.UpdateProgress(65);
 			Application.DoEvents();
 			SetConnectionLibraryParameters(SketchUpGlobals.DbAccessMgr);
-			splash.UpdateProgress(85);
+			
+			
+splash.UpdateProgress(85);
 			Application.DoEvents();
-			SketchUpGlobals.SketchMgrRepo = InitializeSketchRepository();
-			SketchUpGlobals.CurrentSMParcel = CopyParcelDataToSMParcel(SketchUpGlobals.SketchMgrRepo, SketchUpGlobals.CurrentParcel);
+		
+			SketchUpGlobals.ParcelWorkingCopy = SketchUpGlobals.CurrentSMParcel;
 			splash.UpdateProgress(100);
 			Application.DoEvents();
 		}
+		#endregion Constructor
+		#region SMParcel Initializations
 
-		private SMParcel CopyParcelDataToSMParcel(SketchRepository sketchMgrRepo, ParcelData currentParcel)
+		private SMParcel GetParcelFromDatabase(int record, int dwelling, SketchRepository sr)
 		{
-			throw new NotImplementedException();
+			SMParcel parcel = sr.SelectParcelData(record, dwelling);
+			parcel.Sections = sr.SelectParcelSections(parcel);
+			foreach (SMSection sms in parcel.Sections)
+			{
+				sms.Lines = sr.SelectSectionLines(sms);
+			}
+			parcel.IdentifyAttachedToSections();
+			return parcel;
 		}
 
 		private SketchRepository InitializeSketchRepository()
 		{
-			SketchRepository sr = new SketchRepository(SketchUpGlobals.CamraDbConn.DataSource, SketchUpGlobals.CamraDbConn.User, SketchUpGlobals.CamraDbConn.Password, SketchUpGlobals.CamraDbConn.LocalityPrefix);
-			return sr;
+			try
+			{
+				SketchRepository sr = new SketchRepository(SketchUpGlobals.CamraDbConn.DataSource, SketchUpGlobals.CamraDbConn.User, SketchUpGlobals.CamraDbConn.Password, SketchUpGlobals.LocalityPreFix);
+				return sr;
+			}
+			catch (Exception ex)
+			{
+				string message = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+				Console.WriteLine(message);
+#if DEBUG
+				MessageBox.Show(message);
+#endif
+				throw;
+			}
 		}
+
+		//TODO: COnsider how SOLID this is and maybe refactor.
+
+		#endregion SMParcel Initializations
 
 		private void UpdateProgressBar(object sender, ElapsedEventArgs e)
 		{
@@ -114,7 +143,7 @@ namespace SketchUp
 			Invoke(reportProgress);
 		}
 
-		#endregion Constructor
+
 
 		#region fields
 
@@ -135,16 +164,27 @@ namespace SketchUp
 
 		private void EditImage_Click(object sender, EventArgs e)
 		{
-			//SketchUpGlobals.CurrentParcel = ParcelData.getParcel(SketchUpGlobals.DbAccessMgr, record, card);
-			//_subSections = new SectionDataCollection(SketchUpGlobals.DbAccessMgr, record, card);
 			try
 			{
-				GetSelectedImages();
+				SketchUpGlobals.SketchMgrRepo = InitializeSketchRepository();
+				SketchUpGlobals.CurrentSMParcel = GetParcelFromDatabase(SketchUpGlobals.Record, SketchUpGlobals.Card, SketchUpGlobals.SketchMgrRepo);
+				SketchUpGlobals.ParcelWorkingCopy = SketchUpGlobals.CurrentSMParcel;
+				EditSketch(SketchUpGlobals.ParcelWorkingCopy);
+
+				//GetSelectedImages();
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
 			}
+		}
+
+		private void EditSketch(SMParcel workingCopyOfParcel)
+		{
+			
+			EditSketchForm editor = new EditSketchForm(workingCopyOfParcel);
+			editor.ShowDialog(this);
+			
 		}
 
 		private void GetSelectedImages()
@@ -402,6 +442,7 @@ namespace SketchUp
 
 			if (goodIP)
 			{
+				
 				SketchUpGlobals.CamraDbConn = new CAMRA_Connection
 				{
 					DataSource = SketchUp.Properties.Settings.Default.IPAddress,
@@ -622,7 +663,7 @@ namespace SketchUp
 		private void SetConnectionLibraryParameters(DBAccessManager _db)
 		{
 			Application.DoEvents();
-			if (SketchUpGlobals.DbAccessMgr == null || SketchUpGlobals.CamraDbConn.DBConnection == null)
+			if (SketchUpGlobals.CamraDbConn == null || SketchUpGlobals.CamraDbConn.DBConnection == null)
 			{
 				UpdateStatus("CAMRA connection is null");
 			}
@@ -679,11 +720,13 @@ namespace SketchUp
 		{
 			SketchUpGlobals.FcLib = Program.commandLineArgs.Library;
 			SketchUpGlobals.FcLocalityPrefix = Program.commandLineArgs.Locality;
-			SketchUpGlobals.InitalRecord = Program.commandLineArgs.Record;
+			
 			SketchUpGlobals.FcCard = Program.commandLineArgs.Card;
 			SketchUpGlobals.FcIpAddress = Program.commandLineArgs.IPAddress;
 			SketchUpGlobals.FcRecord = Program.commandLineArgs.Record;
+			SketchUpGlobals.InitalRecord = Program.commandLineArgs.Record;
 			SketchUpGlobals.InitalCard = Program.commandLineArgs.Card;
+			SketchUpGlobals.LocalityPreFix= Program.commandLineArgs.Locality;
 		}
 
 		private void SetSketchBoxValues(ref string sketchpath)

@@ -139,6 +139,12 @@
     <Compile Include="DeleteReview.Designer.cs">
       <DependentUpon>DeleteReview.cs</DependentUpon>
     </Compile>
+    <Compile Include="EditSketchForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditSketchForm.Designer.cs">
+      <DependentUpon>EditSketchForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ExpandoSketch.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -259,6 +265,9 @@
     <EmbeddedResource Include="DeleteReview.resx">
       <DependentUpon>DeleteReview.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="EditSketchForm.resx">
+      <DependentUpon>EditSketchForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ExpandoSketch.resx">
       <DependentUpon>ExpandoSketch.cs</DependentUpon>
     </EmbeddedResource>
@@ -349,6 +358,32 @@
     <None Include="Resources\STONE TECH LOGO.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\AddControl_16x_32.bmp" />
+    <None Include="Resources\at-work-cookie-monster.gif" />
+    <None Include="Resources\Close_16x.png" />
+    <None Include="Resources\ConnectionOffline_64x.jpg" />
+    <None Include="Resources\DeleteCell_16x.png" />
+    <None Include="Resources\DeleteListItem_32x.png" />
+    <None Include="Resources\DeleteListItem_32x_24.bmp" />
+    <None Include="Resources\Edit_16xMD.png" />
+    <None Include="Resources\Edit_32xMD.png" />
+    <None Include="Resources\Edit_32xSM.png" />
+    <None Include="Resources\Edit_grey_24x.png" />
+    <None Include="Resources\Edit_grey_32x.png" />
+    <None Include="Resources\Edit_grey_32xMD.png" />
+    <None Include="Resources\F12_CloseErrorBoxGrey.png" />
+    <None Include="Resources\FlipHorizontal_16x_32.bmp" />
+    <None Include="Resources\FlipVertical_16x_32.bmp" />
+    <None Include="Resources\Font_16x.png" />
+    <None Include="Resources\FormBackground.png" />
+    <None Include="Resources\HideMember_16x_32.bmp" />
+    <None Include="Resources\Jump Point.png" />
+    <None Include="Resources\Keyboard.png" />
+    <None Include="Resources\NoSketch.jpg" />
+    <None Include="Resources\RedRectangle.png" />
+    <None Include="Resources\Splash Screen Background.png" />
+    <None Include="Resources\VSO_Export_16x.png" />
+    <None Include="Resources\VSO_Home_16x.png" />
     <Content Include="StonewallTechIcon.ico" />
   </ItemGroup>
   <ItemGroup>

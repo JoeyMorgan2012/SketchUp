@@ -1063,7 +1063,6 @@ namespace SketchUp
 			// Get Building Section Types & Rates
 			DataSet ds_residentialSection = db.RunSelectStatement(String.Format(
 
-			//"select rsecto,rdesc,rrpsf from native.{0}rat1 where rid = 'P' and rrpsf > 0 ", prefix));
 			"select rsecto,rdesc,rrpsf from {0}.{1}rat1 where rid = 'P' ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
 			foreach (DataRow row in ds_residentialSection.Tables[0].Rows)
 			{

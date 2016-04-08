@@ -93,7 +93,7 @@
 			// 
 			this.logoPicture.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
 			this.logoPicture.Dock = System.Windows.Forms.DockStyle.Top;
-			this.logoPicture.Image = global::SketchUp.Properties.Resources.STONE_TECH_LOGO;
+			//this.logoPicture.Image = global::SketchUp.Properties.Resources.STONE_TECH_LOGO;
 			this.logoPicture.Location = new System.Drawing.Point(2, 2);
 			this.logoPicture.Name = "logoPicture";
 			this.logoPicture.Size = new System.Drawing.Size(503, 96);
