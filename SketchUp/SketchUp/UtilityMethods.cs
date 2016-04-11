@@ -13,61 +13,7 @@ namespace SketchUp
 	public static class UtilityMethods
 	{
 		
-		public static string NextLetter(string lastLetter = "A")
-		{
-			string nextLetter = string.Empty;
-			switch (lastLetter)
-			{
-				case "A":
-					nextLetter = "B";
-					break;
-
-				case "B":
-					nextLetter = "C";
-					break;
-
-				case "C":
-					nextLetter = "D";
-					break;
-
-				case "D":
-					nextLetter = "F";
-					break;
-
-				case "F":
-					nextLetter = "G";
-					break;
-
-				case "G":
-					nextLetter = "H";
-					break;
-
-				case "H":
-					nextLetter = "I";
-					break;
-
-				case "I":
-					nextLetter = "J";
-					break;
-
-				case "J":
-					nextLetter = "K";
-					break;
-
-				case "K":
-					nextLetter = "L";
-					break;
-
-				case "L":
-					nextLetter = "M";
-					break;
-
-				default:
-					nextLetter = string.Empty;
-					break;
-			}
-			return nextLetter;
-		}
+		
 
 		#region Logging Utilities
 
@@ -206,7 +152,61 @@ namespace SketchUp
 		#endregion Logging Utilities
 
 		#region String Utilities
+public static string NextLetter(string lastLetter = "A")
+		{
+			string nextLetter = string.Empty;
+			switch (lastLetter)
+			{
+				case "A":
+					nextLetter = "B";
+					break;
 
+				case "B":
+					nextLetter = "C";
+					break;
+
+				case "C":
+					nextLetter = "D";
+					break;
+
+				case "D":
+					nextLetter = "F";
+					break;
+
+				case "F":
+					nextLetter = "G";
+					break;
+
+				case "G":
+					nextLetter = "H";
+					break;
+
+				case "H":
+					nextLetter = "I";
+					break;
+
+				case "I":
+					nextLetter = "J";
+					break;
+
+				case "J":
+					nextLetter = "K";
+					break;
+
+				case "K":
+					nextLetter = "L";
+					break;
+
+				case "L":
+					nextLetter = "M";
+					break;
+
+				default:
+					nextLetter = string.Empty;
+					break;
+			}
+			return nextLetter;
+		}
 		public static string NextLetter(SWallTech.CAMRA_Connection conn, int record, int card)
 		{
 			var lastLetter = string.Empty;

@@ -44,6 +44,7 @@ namespace SketchUp
 				splash.UpdateProgress(85);
 				Application.DoEvents();
 				InitializeSketchRepository();
+                
 			}
 			else
 			{

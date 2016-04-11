@@ -1,38 +1,56 @@
-﻿using System;
+﻿using SWallTech;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using SWallTech;
 
 namespace SketchRenderPoC
 {
 	public partial class EditSketchForm : Form
 	{
-		private const int recordNumber = 11787;
+        #region Constructor
 
-		#region Constructor
+       //TODO: Remove debugging code
+        const int recordNumber = 11787;
 
-		public EditSketchForm()
+        //public EditSketchForm(SMParcel workingCopyOfParcel)
+        //{
+        //	ParcelWorkingCopy = workingCopyOfParcel;
+        //	SelectedParcel = workingCopyOfParcel;
+        //	InitializeComponent();
+        //	graphics = pctMain.CreateGraphics();
+        //	BluePen = new Pen(Color.DarkBlue, 3);
+        //	RedPen = new Pen(Color.Red, 2);
+        //	firstTimeLoaded = true;
+        //	InitializeSketch();
+
+        //}
+        public EditSketchForm()
+
+        {
+            GetSelectedParcelData();
+            InitializeComponent();
+            graphics = pctMain.CreateGraphics();
+            BluePen = new Pen(Color.DarkBlue, 3);
+            RedPen = new Pen(Color.Red, 2);
+            firstTimeLoaded = true;
+            InitializeSketch();
+
+        }
+
+        private void InitializeSketch()
 		{
-			InitializeComponent();
-			graphics = pctMain.CreateGraphics();
-			BluePen = new Pen(Color.DarkBlue, 3);
-			RedPen = new Pen(Color.Red, 2);
-			InitializeSketch(recordNumber);
-			
-		}
 
-		private void InitializeSketch(int record)
-		{
-			GetSelectedParcelData(record);
-			SetSketchScale();
-			SetSketchOrigin();
-			SetScaledStartPoints();
-			
+			if (FirstTimeLoaded)
+			{
+				SetSketchScale();
+				SetSketchOrigin();
+				SetScaledStartPoints();
+                SetSectionCenterPoints();
+			}
+			DrawSections();
 		}
 
 		#endregion Constructor
@@ -50,7 +68,6 @@ namespace SketchRenderPoC
 			MouseLocationLabel.Text = string.Format("({0},{1})", e.X, e.Y);
 		}
 
-	
 		private void tsbGetSketch_Click(object sender, EventArgs e)
 		{
 			ShowSketch();
@@ -75,6 +92,7 @@ namespace SketchRenderPoC
 
 		#region Fields
 
+		private Brush blackBrush;
 		private Brush blueBrush;
 		private Pen bluePen;
 		private Graphics graphics;
@@ -85,22 +103,32 @@ namespace SketchRenderPoC
 		private Pen redPen;
 		private SMParcel selectedParcel;
 		private PointF sketchOrigin;
-		private SketchRepository sketchRepo;
 
 		#endregion Fields
 
 		#region Private Methods
 
-		
 		private void DrawLabel(SMLine line)
 		{
 			string label = line.LineLabel;
 
-			Font font = new Font("Lucida Sans Unicode", 10, FontStyle.Bold, GraphicsUnit.Point);
+			Font font = new Font("Segoe UI", 8, FontStyle.Regular, GraphicsUnit.Point);
 
 			PointF labelStartPoint = line.LineLabelPlacementPoint(SketchOrigin);
-			graphics.DrawString(label, font, GreenBrush, labelStartPoint);
+			graphics.DrawString(label, font, BlackBrush, labelStartPoint);
 		}
+
+        private void DrawLabel(SMSection section)
+        {
+            string label = section.SectionLabel;
+
+            Font font = new Font("Segoe UI", 10, FontStyle.Bold, GraphicsUnit.Point);
+            int labelLength = (int)section.SectionLabel.Length;
+
+            PointF labelLocation = section.ScaledSectionCenter;
+
+            graphics.DrawString(label, font, RedBrush, labelLocation);
+        }
 
 		private void DrawLine(SMLine line)
 		{
@@ -121,11 +149,11 @@ namespace SketchRenderPoC
 			DrawLabel(line);
 		}
 
-		private void DrawSections()
+        private void DrawSections()
 		{
 			if (parcelWorkingCopy == null)
 			{
-				InitializeSketch(recordNumber);
+				InitializeSketch();
 			}
 			if (ParcelWorkingCopy.Sections != null)
 			{
@@ -138,17 +166,32 @@ namespace SketchRenderPoC
 							DrawLine(l);
 						}
 					}
-					LabelSection(section);
+					DrawLabel(section);
 				}
 			}
 		}
 
-		private void LabelSection(SMSection section)
+        private void DrawSections(string sectionLetter)
 		{
-			
+			if (parcelWorkingCopy == null)
+			{
+				InitializeSketch();
+			}
+			if (ParcelWorkingCopy.Sections != null)
+			{
+				SMSection selectedSection = (from s in ParcelWorkingCopy.Sections where s.SectionLetter == sectionLetter select s).FirstOrDefault<SMSection>();
+
+				if (selectedSection.Lines != null)
+				{
+					foreach (SMLine l in selectedSection.Lines.OrderBy(n => n.LineNumber))
+					{
+						DrawLine(l);
+					}
+				}
+			}
 		}
 
-		private SMParcel GetParcel(int dwelling, int record, SketchRepository sr)
+		private SMParcel GetParcel(int record, int dwelling, SketchRepository sr)
 		{
 			SMParcel parcel = sr.SelectParcelData(record, dwelling);
 			parcel.Sections = sr.SelectParcelSections(parcel);
@@ -160,30 +203,35 @@ namespace SketchRenderPoC
 			return parcel;
 		}
 
-		private void GetSelectedParcelData()
-		{
-			string dataSource = "192.168.176.241";
-			int dwelling = 1;
-			string locality = "AUG";
-			string password = "CAMRA2";
-			int record = recordNumber;
-			string userName = "CAMRA2";
-			SketchRepository sr = new SketchRepository(dataSource, userName, password, locality);
-			SelectedParcel = GetParcel(dwelling, record, sr);
-			ParcelWorkingCopy = SelectedParcel;
-		}
+        private void GetSelectedParcelData()
+        {
+            string dataSource = "192.168.176.241";
+            int dwelling = 1;
+            string locality = "AUG";
+            string password = "CAMRA2";
+            int record = recordNumber;
+            string userName = "CAMRA2";
+            SketchRepository sr = new SketchRepository(dataSource, userName, password, locality);
+            SelectedParcel = GetParcel(record, dwelling, sr);
+            ParcelWorkingCopy = SelectedParcel;
+        }
 
-		private void GetSelectedParcelData(int record)
-		{
-			string dataSource = "192.168.176.241";
-			int dwelling = 1;
-			string locality = "AUG";
-			string password = "CAMRA2";
+        private void GetSelectedParcelData(int record)
+        {
+            string dataSource = "192.168.176.241";
+            int dwelling = 1;
+            string locality = "AUG";
+            string password = "CAMRA2";
 
-			string userName = "CAMRA2";
-			SketchRepository sr = new SketchRepository(dataSource, userName, password, locality);
-			SelectedParcel = GetParcel(dwelling, record, sr);
-			ParcelWorkingCopy = SelectedParcel;
+            string userName = "CAMRA2";
+            SketchRepository sr = new SketchRepository(dataSource, userName, password, locality);
+            SelectedParcel = GetParcel(record, dwelling, sr);
+            ParcelWorkingCopy = SelectedParcel;
+        }
+
+        private void LabelSection(SMSection section)
+		{
+
 		}
 
 		private List<SMPointComparer> PointDistances(PointF referencePoint, List<SMLine> lines)
@@ -223,6 +271,24 @@ namespace SketchRenderPoC
 			}
 		}
 
+        private void SetSectionCenterPoints()
+        {
+            List<PointF> sectionPoints = new List<PointF>();
+            foreach (SMSection section in ParcelWorkingCopy.Sections)
+            {
+                sectionPoints = new List<PointF>();
+                foreach (SMLine line in section.Lines)
+                {
+                    sectionPoints.Add(line.ScaledStartPoint);
+                    sectionPoints.Add(line.ScaledEndPoint);
+                }
+                PolygonF sectionBounds = new PolygonF(sectionPoints.ToArray<PointF>());
+                section.ScaledSectionCenter = PointF.Add(sectionBounds.CenterPointOfBounds, new SizeF(0,-12));
+
+
+            }
+        }
+
 		private void SetSketchOrigin()
 		{
 			//Using the scale and the offsets, determine the point to be considered as "0,0" for the sketch;
@@ -238,15 +304,6 @@ namespace SketchRenderPoC
 			var yLocation = (ParcelWorkingCopy.OffsetY * ParcelWorkingCopy.Scale) + paddingY;
 
 			SketchOrigin = new PointF((float)xLocation, (float)yLocation);
-		}
-
-		private void ShowPoint(string pointLabel, PointF sketchOriginPoint)
-		{
-			PointF[] region = new PointF[] { new PointF(sketchOriginPoint.X - 4, sketchOriginPoint.Y - 4), new PointF(sketchOriginPoint.X - 4, sketchOriginPoint.Y + 4), new PointF(sketchOriginPoint.X + 4, sketchOriginPoint.Y + 4), new PointF(sketchOriginPoint.X + 4, sketchOriginPoint.Y - 4) };
-			PolygonF pointPolygon = new PolygonF(region);
-
-			graphics.DrawPolygon(BluePen, region);
-			graphics.DrawString(pointLabel, DefaultFont, GreenBrush, new PointF(sketchOriginPoint.X - 16, sketchOriginPoint.Y - 16));
 		}
 
 		private void SetSketchScale()
@@ -276,39 +333,38 @@ namespace SketchRenderPoC
 			}
 		}
 
-		private void ShowSketch()
+		private void ShowPoint(string pointLabel, PointF sketchOriginPoint)
 		{
-			GetSelectedParcelData();
-			SetSketchScale();
-			SetSketchOrigin();
-			SetScaledStartPoints();
-			DrawSections();
+			PointF[] region = new PointF[] { new PointF(sketchOriginPoint.X - 4, sketchOriginPoint.Y - 4), new PointF(sketchOriginPoint.X - 4, sketchOriginPoint.Y + 4), new PointF(sketchOriginPoint.X + 4, sketchOriginPoint.Y + 4), new PointF(sketchOriginPoint.X + 4, sketchOriginPoint.Y - 4) };
+			PolygonF pointPolygon = new PolygonF(region);
+
+			graphics.DrawPolygon(BluePen, region);
+			graphics.DrawString(pointLabel, DefaultFont, GreenBrush, new PointF(sketchOriginPoint.X - 16, sketchOriginPoint.Y - 16));
 		}
 
-
-		private void DrawSections(string sectionLetter)
+		public void ShowSketch()
 		{
-			if (parcelWorkingCopy == null)
-			{
-				InitializeSketch(recordNumber);
-			}
-			if (ParcelWorkingCopy.Sections != null)
-			{
-				SMSection selectedSection = (from s in ParcelWorkingCopy.Sections where s.SectionLetter == sectionLetter select s).FirstOrDefault<SMSection>();
-
-				if (selectedSection.Lines != null)
-				{
-					foreach (SMLine l in selectedSection.Lines.OrderBy(n => n.LineNumber))
-					{
-						DrawLine(l);
-					}
-				}
-			}
+			DrawSections();
+			graphics.Flush();
+			pctMain.BringToFront();
 		}
 
 		#endregion Private Methods
 
 		#region Properties
+
+		public Brush BlackBrush
+		{
+			get
+			{
+				blackBrush = Brushes.Black;
+				return blackBrush;
+			}
+			set
+			{
+				blackBrush = value;
+			}
+		}
 
 		public Brush BlueBrush
 		{
@@ -317,10 +373,34 @@ namespace SketchRenderPoC
 				blueBrush = Brushes.DarkBlue;
 				return blueBrush;
 			}
-
 			set
 			{
 				blueBrush = value;
+			}
+		}
+
+		public Pen BluePen
+		{
+			get
+			{
+				bluePen = new Pen(Color.DarkBlue, 1);
+				return bluePen;
+			}
+			set
+			{
+				bluePen = value;
+			}
+		}
+
+		public bool FirstTimeLoaded
+		{
+			get
+			{
+				return firstTimeLoaded;
+			}
+			set
+			{
+				firstTimeLoaded = value;
 			}
 		}
 
@@ -331,7 +411,6 @@ namespace SketchRenderPoC
 				greenBrush = Brushes.DarkGreen;
 				return greenBrush;
 			}
-
 			set
 			{
 				greenBrush = value;
@@ -344,7 +423,6 @@ namespace SketchRenderPoC
 			{
 				return parcelWorkingCopy;
 			}
-
 			set
 			{
 				parcelWorkingCopy = value;
@@ -358,10 +436,22 @@ namespace SketchRenderPoC
 				redBrush = Brushes.DarkRed;
 				return redBrush;
 			}
-
 			set
 			{
 				redBrush = value;
+			}
+		}
+
+		public Pen RedPen
+		{
+			get
+			{
+				redPen = new Pen(Color.DarkRed, 1);
+				return redPen;
+			}
+			set
+			{
+				redPen = value;
 			}
 		}
 
@@ -371,7 +461,6 @@ namespace SketchRenderPoC
 			{
 				return selectedParcel;
 			}
-
 			set
 			{
 				selectedParcel = value;
@@ -384,38 +473,9 @@ namespace SketchRenderPoC
 			{
 				return sketchOrigin;
 			}
-
 			set
 			{
 				sketchOrigin = value;
-			}
-		}
-
-		public Pen BluePen
-		{
-			get
-			{
-				bluePen = new Pen(Color.DarkBlue, 1);
-				return bluePen;
-			}
-
-			set
-			{
-				bluePen = value;
-			}
-		}
-
-		public Pen RedPen
-		{
-			get
-			{
-				redPen = new Pen(Color.DarkRed, 1);
-				return redPen;
-			}
-
-			set
-			{
-				redPen = value;
 			}
 		}
 
@@ -427,9 +487,9 @@ namespace SketchRenderPoC
 			MessageBox.Show(message);
 		}
 
-		private void editSectionsToolStripMenuItem_Click(object sender, EventArgs e)
+		private void changeSectionToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			string message = string.Format("{0}", "edit sections");
+			string message = string.Format("{0}", "change section");
 			MessageBox.Show(message);
 		}
 
@@ -440,15 +500,46 @@ namespace SketchRenderPoC
 
 		}
 
-		private void changeSectionToolStripMenuItem_Click(object sender, EventArgs e)
+		private void DeleteSketch()
 		{
-			string message = string.Format("{0}", "change section");
+			DialogResult response = MessageBox.Show("If you delete this sketch, you will have to rebuild it from scratch. This action cannot be undone. Proceed?", "Confirm Deletion", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+			if (response == DialogResult.OK)
+			{
+
+				DeleteSketchData(ParcelWorkingCopy);
+			}
+		}
+
+		private void DeleteSketchData(SMParcel parcelWorkingCopy)
+		{
+			MessageBox.Show("Deleting Sections");
+		}
+
+		private void deleteSketchToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			DeleteSketch();
+		}
+
+		private void drawSketchToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ShowSketch();
+		}
+
+		private void editSectionsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			string message = string.Format("{0}", "edit sections");
 			MessageBox.Show(message);
 		}
 
-			private void flipHorizontalMenuItem_Click(object sender, EventArgs e)
+		private void EditSketchForm_Paint(object sender, PaintEventArgs e)
 		{
-string message = string.Format("{0}", "Flip Sketch horizontally");
+			ShowSketch();
+			graphics.Flush();
+		}
+
+		private void flipHorizontalMenuItem_Click(object sender, EventArgs e)
+		{
+			string message = string.Format("{0}", "Flip Sketch horizontally");
 			MessageBox.Show(message);
 		}
 
@@ -458,30 +549,12 @@ string message = string.Format("{0}", "Flip Sketch horizontally");
 			MessageBox.Show(message);
 		}
 
-		private void deleteSketchToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			DeleteSketch();
-		}
-
-		private void DeleteSketch()
-		{
-			DialogResult response = MessageBox.Show("If you delete this sketch, you will have to rebuild it from scratch. This action cannot be undone. Proceed?", "Confirm Deletion", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning,MessageBoxDefaultButton.Button2);
-			if (response==DialogResult.OK)
-			{
-				
-				//DeleteSketchData(ParcelWorkingCopy);
-			}
-		}
-
 		private void tsMenuExitForm_Click(object sender, EventArgs e)
 		{
 			string message = string.Format("{0}", "Exit Sketch Form");
 			MessageBox.Show(message);
 		}
 
-		private void drawSketchToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			ShowSketch();
-		}
+		bool firstTimeLoaded = false;
 	}
 }

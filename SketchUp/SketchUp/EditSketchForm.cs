@@ -33,15 +33,40 @@ namespace SketchUp
 				SetSketchScale();
 				SetSketchOrigin();
 				SetScaledStartPoints();
+                SetSectionCenterPoints();
+
 			}
 			DrawSections();
 		}
 
-		#endregion Constructor
+        private void SetSectionCenterPoints()
+        {
+            List<PointF> sectionPoints = new List<PointF>();
+            foreach (SMSection section in ParcelWorkingCopy.Sections)
+            {
+                sectionPoints = new List<PointF>();
+                foreach (SMLine line in section.Lines)
+                {
+                    sectionPoints.Add(line.ScaledStartPoint);
+                    sectionPoints.Add(line.ScaledEndPoint);
+#if DEBUG
+                    Console.WriteLine(string.Format("{0}-{1} {2},{3} to {4,5}", section.SectionLetter,line.LineNumber,line.ScaledStartPoint.X,line.ScaledStartPoint.Y,line.ScaledEndPoint.X,line.ScaledEndPoint.Y));
+#endif 
+                }
+             PolygonF sectionBounds = new PolygonF(sectionPoints.ToArray<PointF>());
+                section.ScaledSectionCenter = sectionBounds.CenterPointOfBounds;
+#if DEBUG
+                 Console.WriteLine(string.Format("Section {0} center: {1}.{2}", section.SectionLetter,section.ScaledSectionCenter.X,section.ScaledSectionCenter.Y));
+#endif   
 
-		#region control events
+            }
+        }
 
-		private void pctMain_MouseDoubleClick(object sender, MouseEventArgs e)
+        #endregion Constructor
+
+        #region control events
+
+        private void pctMain_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
 			PointF mouseLocation = new PointF(e.X, e.Y);
 			ShowNearestCorners(mouseLocation);
@@ -102,8 +127,19 @@ namespace SketchUp
 			PointF labelStartPoint = line.LineLabelPlacementPoint(SketchOrigin);
 			graphics.DrawString(label, font, BlackBrush, labelStartPoint);
 		}
+        private void DrawLabel(SMSection section)
+        {
+            string label = section.SectionLabel;
 
-		private void DrawLine(SMLine line)
+            Font font = new Font("Segoe UI", 8, FontStyle.Bold, GraphicsUnit.Point);
+            int labelLength = (int)section.SectionLabel.Length;
+            float labelX = section.ScaledSectionCenter.X - labelLength / 2;
+            float labelY = section.ScaledSectionCenter.Y;
+            PointF labelLocation = new PointF(labelX, labelY);
+       
+            graphics.DrawString(label, font, BlackBrush, labelLocation);
+        }
+        private void DrawLine(SMLine line)
 		{
 			//PointF drawLineStart = new PointF(line.ScaledStartPoint.X + SketchOrigin.X, line.ScaledStartPoint.Y + SketchOrigin.Y);
 			//PointF drawLineEnd = new PointF(line.ScaledEndPoint.X + SketchOrigin.X, line.ScaledEndPoint.Y + SketchOrigin.Y);
@@ -139,7 +175,7 @@ namespace SketchUp
 							DrawLine(l);
 						}
 					}
-					LabelSection(section);
+				DrawLabel(section);
 				}
 			}
 		}
@@ -204,8 +240,10 @@ namespace SketchUp
 
 		private void LabelSection(SMSection section)
 		{
+            DrawLabel(section);
+            
 
-		}
+        }
 
 		private List<SMPointComparer> PointDistances(PointF referencePoint, List<SMLine> lines)
 
@@ -218,15 +256,7 @@ namespace SketchUp
 			return comparisons;
 		}
 
-		private PointF SectionLabelPlacementPoint(SMSection section)
-		{
-			//Get the origin and its diagonal points
-			SMLine firstLine = (from l in section.Lines where l.LineNumber == 1 select l).FirstOrDefault<SMLine>();
-
-			PointF labelStartPoint = new PointF();
-			return labelStartPoint;
-		}
-
+		
 		private void SetScaledStartPoints()
 		{
 			if (ParcelWorkingCopy != null && ParcelWorkingCopy.Sections != null)

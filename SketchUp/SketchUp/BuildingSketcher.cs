@@ -515,12 +515,7 @@ namespace SketchUp
 
 		private bool DrawPolygonIfPresent(Pen pen, Pen base_pen, Graphics g, SectionInfo sect, bool isSketchDrawn)
 		{
-#if DEBUG
 
-			//Debugging Code -- remove for production release
-			//var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-			//UtilityMethods.LogMethodCall(fullStack, true);
-#endif
 			try
 			{
 				if (sect.POINTS != null && sect.POINTS.Count() >= 3)
