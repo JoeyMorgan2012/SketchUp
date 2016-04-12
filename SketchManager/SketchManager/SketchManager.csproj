@@ -61,7 +61,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SMPointComparer.cs" />
     <Compile Include="SMSection.cs" />
-    <Compile Include="SketchSnapshotCollection.cs" />
+    <Compile Include="UtilityMethods.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\SWallTech\SWallTech.csproj">

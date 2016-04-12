@@ -409,6 +409,20 @@ namespace SketchUp
 			}
 		}
 
+        public static List<SMParcel> ParcelSnapshots
+        {
+            get
+            {
+                return parcelSnapshots;
+            }
+
+            set
+            {
+                parcelSnapshots = value;
+            }
+        }
+
+        private static List<SMParcel> parcelSnapshots;
 		private static bool mainFormIsClosed = false;
 		private static string _selectedPath = String.Empty;
 		private static string _selectedPicPath = String.Empty;
