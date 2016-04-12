@@ -203,14 +203,16 @@ namespace SketchRenderPoC
 			return parcel;
 		}
 
+        #region Testing code
         private void GetSelectedParcelData()
         {
-            string dataSource = "192.168.176.241";
-            int dwelling = 1;
+            string dataSource = SketchUp.Properties.Settings.Default.IPAddress;
+            string password = SketchUp.Properties.Settings.Default.UserName;
+            string userName = SketchUp.Properties.Settings.Default.Password;
             string locality = "AUG";
-            string password = "CAMRA2";
             int record = recordNumber;
-            string userName = "CAMRA2";
+            int dwelling = 1;
+
             SketchRepository sr = new SketchRepository(dataSource, userName, password, locality);
             SelectedParcel = GetParcel(record, dwelling, sr);
             ParcelWorkingCopy = SelectedParcel;
@@ -218,17 +220,18 @@ namespace SketchRenderPoC
 
         private void GetSelectedParcelData(int record)
         {
-            string dataSource = "192.168.176.241";
-            int dwelling = 1;
+            string dataSource = SketchUp.Properties.Settings.Default.IPAddress;
+            string password = SketchUp.Properties.Settings.Default.UserName;
+            string userName = SketchUp.Properties.Settings.Default.Password;
             string locality = "AUG";
-            string password = "CAMRA2";
+            int dwelling = 1;
 
-            string userName = "CAMRA2";
             SketchRepository sr = new SketchRepository(dataSource, userName, password, locality);
             SelectedParcel = GetParcel(record, dwelling, sr);
             ParcelWorkingCopy = SelectedParcel;
         }
 
+        #endregion
         private void LabelSection(SMSection section)
 		{
 

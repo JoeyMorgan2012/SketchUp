@@ -174,7 +174,7 @@ namespace SketchUp
 
 		private List<String> CPTypes = null;
 
-		private int CRindex = 0;
+		private int currentRowIndex = 0;
 
 		private List<string> cursectltr = null;
 
@@ -752,7 +752,7 @@ namespace SketchUp
 		{
 			if (rowselected == true)
 			{
-				CRindex = SectDGView.CurrentRow.Index;
+				currentRowIndex = SectDGView.CurrentRow.Index;
 
 				OriginalUnitRate = Convert.ToDecimal(SectDGView.CurrentRow.Cells["Rate"].Value.ToString());
 			}
@@ -797,26 +797,26 @@ namespace SketchUp
 			}
 		}
 
-		private void AddNewTypeToCommercialTypes(string newType, out string newDesc, out int thisSect, string curSect, out int cx)
+		private void AddNewTypeToCommercialTypes(string newType, out string newDesc, out int thisSect, string curSect, out int commercialNewTypeIndex)
 		{
-			cx = ComTypes.IndexOf(newType);
+			commercialNewTypeIndex = ComTypes.IndexOf(newType);
 
 			thisSect = ComTypes.IndexOf(curSect.Trim());
 
 			CommercialSectionCbox.SelectedIndex = thisSect + 1;
 
-			newDesc = CamraSupport.CommercialSectionTypeCollection[cx]._commSectionDescription.ToString().Trim();
+			newDesc = CamraSupport.CommercialSectionTypeCollection[commercialNewTypeIndex]._commSectionDescription.ToString().Trim();
 		}
 
-		private void AddNewTypeToResidentialTypes(string newType, out string newDesc, out int thisSect, string curSect, out int rx)
+		private void AddNewTypeToResidentialTypes(string newType, out string newDesc, out int thisSect, string curSect, out int residentialNewTypeIndex)
 		{
-			rx = ResTypes.IndexOf(newType);
+			residentialNewTypeIndex = ResTypes.IndexOf(newType);
 
 			thisSect = ResTypes.IndexOf(curSect.Trim());
 
 			ResidentialSectionCbox.SelectedIndex = thisSect + 1;
 
-			newDesc = CamraSupport.ResidentialSectionTypeCollection[rx]._resSectionDescription.ToString().Trim();
+			newDesc = CamraSupport.ResidentialSectionTypeCollection[residentialNewTypeIndex]._resSectionDescription.ToString().Trim();
 		}
 
 		private void AddRowsToSections(SectionDataCollection currentSection)
@@ -851,40 +851,39 @@ namespace SketchUp
 
 		private void AdjustAttachments()
 		{
-			StringBuilder delAtt = new StringBuilder();
-			delAtt.Append(String.Format("update {0}.{1}line set jlattach = ' ' where jlrecord = {2} and jldwell = {3} ",
+			StringBuilder delAttachmentPointsSql = new StringBuilder();
+			delAttachmentPointsSql.Append(String.Format("update {0}.{1}line set jlattach = ' ' where jlrecord = {2} and jldwell = {3} ",
 							SketchUpGlobals.FcLib,
 							SketchUpGlobals.FcLocalityPrefix,
 							_currentParcel.Record,
 							_currentParcel.Card));
 
-			//UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "delAtt", delAtt);
-			conn.DBConnection.ExecuteNonSelectStatement(delAtt.ToString());
+			
+			conn.DBConnection.ExecuteNonSelectStatement(delAttachmentPointsSql.ToString());
 
-			//UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "delAtt", delAtt);
-			StringBuilder attPnts = new StringBuilder();
-			attPnts.Append(String.Format("select jlrecord,jldwell,jlsect,jldirect,jlpt1x,jlpt1y,jlpt2x,jlpt2y from {0}.{1}line ",
+			StringBuilder selectFirstLineSql = new StringBuilder();
+			selectFirstLineSql.Append(String.Format("select jlrecord,jldwell,jlsect,jldirect,jlpt1x,jlpt1y,jlpt2x,jlpt2y from {0}.{1}line ",
 								SketchUpGlobals.FcLib,
 								SketchUpGlobals.FcLocalityPrefix));
-			attPnts.Append(String.Format(" where jlrecord = {0} and jldwell = {1} and jlline# = 1 ",
+			selectFirstLineSql.Append(String.Format(" where jlrecord = {0} and jldwell = {1} and jlline# = 1 ",
 								_currentParcel.Record,
 								_currentParcel.Card));
 
-			DataSet ap = conn.DBConnection.RunSelectStatement(attPnts.ToString());
+			DataSet attachmentPointsDS = conn.DBConnection.RunSelectStatement(selectFirstLineSql.ToString());
 
-			if (ap.Tables[0].Rows.Count > 0)
+			if (attachmentPointsDS.Tables[0].Rows.Count > 0)
 			{
-				for (int i = 0; i < ap.Tables[0].Rows.Count; i++)
+				for (int i = 0; i < attachmentPointsDS.Tables[0].Rows.Count; i++)
 				{
 					DataRow row = AttachPoints.NewRow();
 					row["RecNo"] = _currentParcel.Record;
 					row["CardNo"] = _currentParcel.Card;
-					row["Sect"] = ap.Tables[0].Rows[i]["jlsect"].ToString().Trim();
-					row["Direct"] = ap.Tables[0].Rows[i]["jldirect"].ToString().Trim();
-					row["Xpt1"] = Convert.ToDecimal(ap.Tables[0].Rows[i]["jlpt1x"].ToString());
-					row["Ypt1"] = Convert.ToDecimal(ap.Tables[0].Rows[i]["jlpt1y"].ToString());
-					row["Xpt2"] = Convert.ToDecimal(ap.Tables[0].Rows[i]["jlpt2x"].ToString());
-					row["Ypt2"] = Convert.ToDecimal(ap.Tables[0].Rows[i]["jlpt2y"].ToString());
+					row["Sect"] = attachmentPointsDS.Tables[0].Rows[i]["jlsect"].ToString().Trim();
+					row["Direct"] = attachmentPointsDS.Tables[0].Rows[i]["jldirect"].ToString().Trim();
+					row["Xpt1"] = Convert.ToDecimal(attachmentPointsDS.Tables[0].Rows[i]["jlpt1x"].ToString());
+					row["Ypt1"] = Convert.ToDecimal(attachmentPointsDS.Tables[0].Rows[i]["jlpt1y"].ToString());
+					row["Xpt2"] = Convert.ToDecimal(attachmentPointsDS.Tables[0].Rows[i]["jlpt2x"].ToString());
+					row["Ypt2"] = Convert.ToDecimal(attachmentPointsDS.Tables[0].Rows[i]["jlpt2y"].ToString());
 
 					AttachPoints.Rows.Add(row);
 				}
@@ -900,21 +899,19 @@ namespace SketchUp
 					decimal X1 = Convert.ToDecimal(AttachPoints.Rows[i]["Xpt1"].ToString());
 					decimal Y1 = Convert.ToDecimal(AttachPoints.Rows[i]["Ypt1"].ToString());
 
-					StringBuilder addAttPnt = new StringBuilder();
-					addAttPnt.Append(String.Format("update {0}.{1}line set jlattach = '{2}' ",
+					StringBuilder addAttachPointSql = new StringBuilder();
+					addAttachPointSql.Append(String.Format("update {0}.{1}line set jlattach = '{2}' ",
 									SketchUpGlobals.FcLib,
 									SketchUpGlobals.FcLocalityPrefix, curSect));
-					addAttPnt.Append(String.Format(" where jlrecord = {0} and jldwell = {1} and jlpt2x = {2} and jlpt2y = {3} ",
+					addAttachPointSql.Append(String.Format(" where jlrecord = {0} and jldwell = {1} and jlpt2x = {2} and jlpt2y = {3} ",
 									record,
 									card,
 									X1,
 									Y1));
-					addAttPnt.Append(String.Format(" and jlsect <> '{0}' ", curSect));
+					addAttachPointSql.Append(String.Format(" and jlsect <> '{0}' ", curSect));
 
-					//UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "addAttPnt", addAttPnt);
-					conn.DBConnection.ExecuteNonSelectStatement(addAttPnt.ToString());
-
-					//UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "addAttPnt", addAttPnt);
+					conn.DBConnection.ExecuteNonSelectStatement(addAttachPointSql.ToString());
+                    
 				}
 			}
 		}
@@ -1512,17 +1509,17 @@ namespace SketchUp
 			ResTypes = new List<string>();
 			ComTypes = new List<string>();
 
-			int ressectcnt = CamraSupport.ResidentialSectionTypeCollection.Count;
-			int comsectcnt = CamraSupport.CommercialSectionTypeCollection.Count;
+			int residentialSectionCount = CamraSupport.ResidentialSectionTypeCollection.Count;
+			int commercialSectionCount = CamraSupport.CommercialSectionTypeCollection.Count;
 
-			if (ressectcnt > 0)
+			if (residentialSectionCount > 0)
 			{
-				PopulateResidentialSectionsComboBox(ressectcnt);
+				PopulateResidentialSectionsComboBox(residentialSectionCount);
 			}
 
-			if (comsectcnt > 0)
+			if (commercialSectionCount > 0)
 			{
-				PopulateCommercialSectionComboBox(comsectcnt);
+				PopulateCommercialSectionComboBox(commercialSectionCount);
 			}
 
 			ResidentialSectionCbox.SelectedIndex = 0;
@@ -1574,13 +1571,13 @@ namespace SketchUp
 			}
 		}
 
-		private void PreventResidentialChangeNewCOmmercialClass()
+		private void PreventResidentialChangeNewCommercialClass()
 		{
 			MessageBox.Show("Residential Change not Allowed");
 
-			CRindex = SectDGView.CurrentRow.Index;
+			currentRowIndex = SectDGView.CurrentRow.Index;
 			SectDGView.CurrentRow.Cells["Class"].Style.BackColor = Color.White;
-			SectDGView.CurrentRow.Cells["Class"].Value = _currentSection[CRindex].orig_jsclass.ToUpper();
+			SectDGView.CurrentRow.Cells["Class"].Value = _currentSection[currentRowIndex].orig_jsclass.ToUpper();
 			SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.White;
 		}
 
@@ -1588,10 +1585,10 @@ namespace SketchUp
 		{
 			MessageBox.Show("Residential Change not Allowed");
 
-			CRindex = SectDGView.CurrentRow.Index;
+			currentRowIndex = SectDGView.CurrentRow.Index;
 
 			SectDGView.CurrentRow.Cells["0Depr"].Style.BackColor = Color.White;
-			SectDGView.CurrentRow.Cells["0Depr"].Value = _currentSection[CRindex].orig_js0depr.ToUpper();
+			SectDGView.CurrentRow.Cells["0Depr"].Value = _currentSection[currentRowIndex].orig_js0depr.ToUpper();
 			SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.White;
 		}
 
@@ -1599,21 +1596,6 @@ namespace SketchUp
 		{
 			if (SectDGView.Columns[e.ColumnIndex].Name == "Rate")
 			{
-				#region Stuff Commented Out by Joel - 1
-
-				//TODO: Figure out what this is designed to do.
-				//if (!CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
-				//{
-				// //CRindex = SectDGView.CurrentRow.Index;
-
-				// ////MessageBox.Show("Rate Change not Allowed");
-
-				// //SectDGView.CurrentRow.Cells["Rate"].Style.BackColor = Color.White;
-				// //SectDGView.CurrentRow.Cells["Rate"].Value = OriginalUnitRate;
-				// //SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.White;
-				//}
-
-				#endregion Stuff Commented Out by Joel - 1
 
 				if (CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
 				{
@@ -1623,7 +1605,7 @@ namespace SketchUp
 
 			if (SectDGView.Columns[e.ColumnIndex].Name == "Type")
 			{
-				CRindex = SectDGView.CurrentRow.Index;
+				currentRowIndex = SectDGView.CurrentRow.Index;
 
 				string newType = String.Empty;
 				string newDesc = String.Empty;
@@ -1638,7 +1620,7 @@ namespace SketchUp
 
 					SectDGView.CurrentRow.Cells[1].Value = newType;
 
-					_currentSection[CRindex].jstype = newType;
+					_currentSection[currentRowIndex].jstype = newType;
 
 					int rx = 0;
 					if (ResTypes.Contains(newType))
@@ -1652,24 +1634,24 @@ namespace SketchUp
 						AddNewTypeToCommercialTypes(newType, out newDesc, out thisSect, curSect, out cx);
 					}
 
-					_getUnitRate(_currentSection[CRindex].jstype, _currentSection[CRindex].jsclass);
-					_getUnitValue(_currentSection[CRindex].js0depr, _currentSection[CRindex].jssqft, _currentSection[CRindex].jsfactor, _currentSection[CRindex].jsdeprc);
+					_getUnitRate(_currentSection[currentRowIndex].jstype, _currentSection[currentRowIndex].jsclass);
+					_getUnitValue(_currentSection[currentRowIndex].js0depr, _currentSection[currentRowIndex].jssqft, _currentSection[currentRowIndex].jsfactor, _currentSection[currentRowIndex].jsdeprc);
 
-					_currentSection[CRindex].jsdesc = newDesc;
+					_currentSection[currentRowIndex].jsdesc = newDesc;
 
 					SectDGView.CurrentRow.Cells["Rate"].Value = UnitRate;
 					SectDGView.CurrentRow.Cells["Value"].Value = _value;
 
 					SectDGView.CurrentRow.Cells["Desc"].Value = newDesc;
 
-					if (_currentSection[CRindex].orig_jstype != _currentSection[CRindex].jstype)
+					if (_currentSection[currentRowIndex].orig_jstype != _currentSection[currentRowIndex].jstype)
 					{
 						SectDGView.CurrentRow.Cells["Type"].Style.BackColor = Color.PaleGreen;
 						SectDGView.CurrentRow.Cells["Desc"].Style.BackColor = Color.PaleGreen;
 						SectDGView.CurrentRow.Cells["Rate"].Style.BackColor = Color.PaleGreen;
 						SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.PaleGreen;
 					}
-					if (_currentSection[CRindex].orig_jstype == _currentSection[CRindex].jstype)
+					if (_currentSection[currentRowIndex].orig_jstype == _currentSection[currentRowIndex].jstype)
 					{
 						SectDGView.CurrentRow.Cells["Type"].Style.BackColor = Color.White;
 						SectDGView.CurrentRow.Cells["Desc"].Style.BackColor = Color.White;
@@ -1704,7 +1686,7 @@ namespace SketchUp
 				}
 				if (CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
 				{
-					PreventResidentialChangeNewCOmmercialClass();
+					PreventResidentialChangeNewCommercialClass();
 				}
 			}
 
@@ -1712,10 +1694,10 @@ namespace SketchUp
 			{
 				if (!CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
 				{
-					CRindex = SectDGView.CurrentRow.Index;
+					currentRowIndex = SectDGView.CurrentRow.Index;
 
 					newFactor = Convert.ToDecimal(SectDGView.CurrentRow.Cells["Factor"].Value.ToString());
-					_jfactor = _currentSection[CRindex].orig_jsfactor;
+					_jfactor = _currentSection[currentRowIndex].orig_jsfactor;
 
 					if (newFactor >= 1m)
 					{
@@ -1725,13 +1707,13 @@ namespace SketchUp
 
 					SectDGView.CurrentRow.Cells["Factor"].Value = newFactor;
 
-					_getUnitRate(_currentSection[CRindex].jstype, _currentSection[CRindex].jsclass);
-					_getUnitValue(_currentSection[CRindex].js0depr, _currentSection[CRindex].jssqft, newFactor, _currentSection[CRindex].jsdeprc);
+					_getUnitRate(_currentSection[currentRowIndex].jstype, _currentSection[currentRowIndex].jsclass);
+					_getUnitValue(_currentSection[currentRowIndex].js0depr, _currentSection[currentRowIndex].jssqft, newFactor, _currentSection[currentRowIndex].jsdeprc);
 
 					SectDGView.CurrentRow.Cells["Value"].Value = _value;
 
-					_currentSection[CRindex].jsvalue = _value;
-					_currentSection[CRindex].jsfactor = newFactor;
+					_currentSection[currentRowIndex].jsvalue = _value;
+					_currentSection[currentRowIndex].jsfactor = newFactor;
 
 					if (newFactor != _jfactor)
 					{
@@ -1749,9 +1731,9 @@ namespace SketchUp
 				{
 					MessageBox.Show("Residential Change not Allowed");
 
-					CRindex = SectDGView.CurrentRow.Index;
+					currentRowIndex = SectDGView.CurrentRow.Index;
 					SectDGView.CurrentRow.Cells["Factor"].Style.BackColor = Color.White;
-					SectDGView.CurrentRow.Cells["Facotr"].Value = _currentSection[CRindex].orig_jsfactor;
+					SectDGView.CurrentRow.Cells["Facotr"].Value = _currentSection[currentRowIndex].orig_jsfactor;
 					SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.White;
 				}
 			}
@@ -1760,17 +1742,17 @@ namespace SketchUp
 			{
 				if (!CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
 				{
-					CRindex = SectDGView.CurrentRow.Index;
+					currentRowIndex = SectDGView.CurrentRow.Index;
 					newDeprec = 0;
 					alowNoDep = false;
 
 					newDeprec = Convert.ToDecimal(SectDGView.CurrentRow.Cells["Deprec"].Value);
-					_jdeprec = _currentSection[CRindex].orig_jsdeprc;
+					_jdeprec = _currentSection[currentRowIndex].orig_jsdeprc;
 
 					if (NewZeroDep == "Y" && newDeprec > 0)
 					{
 						SectDGView.CurrentRow.Cells["0Depr"].Value = String.Empty;
-						_currentSection[CRindex].js0depr = String.Empty;
+						_currentSection[currentRowIndex].js0depr = String.Empty;
 						NewZeroDep = String.Empty;
 					}
 					if (NewZeroDep == "Y" && newDeprec == 0)
@@ -1778,13 +1760,13 @@ namespace SketchUp
 						newDeprec = 0;
 
 						//SectDGView.CurrentRow.Cells["Deprec"].Value = 0;
-						_currentSection[CRindex].jsdeprc = 0;
+						_currentSection[currentRowIndex].jsdeprc = 0;
 					}
 
 					if (newDeprec >= 1)
 					{
 						newDeprec = (newDeprec / 100m);
-						_currentSection[CRindex].jsdeprc = newDeprec;
+						_currentSection[currentRowIndex].jsdeprc = newDeprec;
 						SectDGView.CurrentRow.Cells["Deprec"].Value = newDeprec;
 					}
 
@@ -1797,7 +1779,7 @@ namespace SketchUp
 						if (OKNoDep == DialogResult.Yes)
 						{
 							alowNoDep = true;
-							_currentSection[CRindex].js0depr = "Y";
+							_currentSection[currentRowIndex].js0depr = "Y";
 							SectDGView.CurrentRow.Cells["0Depr"].Value = "Y";
 
 							//SectDGView.CurrentRow.Cells["Deprec"].Value = newDeprec;
@@ -1807,31 +1789,31 @@ namespace SketchUp
 						}
 					}
 
-					if (newDeprec == 0 && _currentSection[CRindex].js0depr != "Y")
+					if (newDeprec == 0 && _currentSection[currentRowIndex].js0depr != "Y")
 					{
-						_getDefaultDepr(newDeprec, _currentSection[CRindex].js0depr);
+						_getDefaultDepr(newDeprec, _currentSection[currentRowIndex].js0depr);
 
 						newDeprec = _defDepr;
 
 						SectDGView.CurrentRow.Cells["Deprec"].Value = newDeprec;
 					}
 
-					if (newDeprec == 0 && _currentSection[CRindex].js0depr == "Y")
+					if (newDeprec == 0 && _currentSection[currentRowIndex].js0depr == "Y")
 					{
-						_getDefaultDepr(newDeprec, _currentSection[CRindex].js0depr);
+						_getDefaultDepr(newDeprec, _currentSection[currentRowIndex].js0depr);
 
 						newDeprec = _defDepr;
 
 						SectDGView.CurrentRow.Cells["Deprec"].Value = newDeprec;
 					}
 
-					_getUnitRate(_currentSection[CRindex].jstype, _currentSection[CRindex].jsclass);
-					_getUnitValue(_currentSection[CRindex].js0depr, _currentSection[CRindex].jssqft, _currentSection[CRindex].jsfactor, newDeprec);
+					_getUnitRate(_currentSection[currentRowIndex].jstype, _currentSection[currentRowIndex].jsclass);
+					_getUnitValue(_currentSection[currentRowIndex].js0depr, _currentSection[currentRowIndex].jssqft, _currentSection[currentRowIndex].jsfactor, newDeprec);
 
 					SectDGView.CurrentRow.Cells["Value"].Value = _value;
 
 					//SectDGView.CurrentRow.Cells["Deprec"].Value = newDeprec;
-					_currentSection[CRindex].jsdeprc = newDeprec;
+					_currentSection[currentRowIndex].jsdeprc = newDeprec;
 
 					if (newDeprec != _jdeprec)
 					{
@@ -1848,9 +1830,9 @@ namespace SketchUp
 				{
 					MessageBox.Show("Residential Change not Allowed");
 
-					CRindex = SectDGView.CurrentRow.Index;
+					currentRowIndex = SectDGView.CurrentRow.Index;
 					SectDGView.CurrentRow.Cells["Deprec"].Style.BackColor = Color.White;
-					SectDGView.CurrentRow.Cells["Deprec"].Value = _currentSection[CRindex].orig_jsdeprc;
+					SectDGView.CurrentRow.Cells["Deprec"].Value = _currentSection[currentRowIndex].orig_jsdeprc;
 					SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.White;
 				}
 			}
@@ -1863,7 +1845,7 @@ namespace SketchUp
 
 		private void ProcessNewClass()
 		{
-			CRindex = SectDGView.CurrentRow.Index;
+			currentRowIndex = SectDGView.CurrentRow.Index;
 			newClass = String.Empty;
 
 			List<string> clsList = new List<string>();
@@ -1875,7 +1857,7 @@ namespace SketchUp
 			clsList.Add("M");
 
 			newClass = SectDGView.CurrentRow.Cells["Class"].Value.ToString().ToUpper().Substring(0, 1).Trim();
-			_jclass = _currentSection[CRindex].orig_jsclass;
+			_jclass = _currentSection[currentRowIndex].orig_jsclass;
 
 			if (!clsList.Contains(newClass))
 			{
@@ -1887,14 +1869,14 @@ namespace SketchUp
 				{
 					int colIndex = SectDGView.CurrentRow.Cells["Class"].ColumnIndex;
 					SectDGView.CurrentRow.Cells["Class"].Value = _jclass.ToUpper();
-					_currentSection[CRindex].jsclass = _jclass;
+					_currentSection[currentRowIndex].jsclass = _jclass;
 				}
 			}
 
 			if (clsList.Contains(newClass))
 			{
 				SectDGView.CurrentRow.Cells["Class"].Value = newClass.ToUpper();
-				_currentSection[CRindex].jsclass = newClass;
+				_currentSection[currentRowIndex].jsclass = newClass;
 
 				if (newClass != _jclass)
 				{
@@ -1906,8 +1888,8 @@ namespace SketchUp
 				}
 			}
 
-			_getUnitRate(_currentSection[CRindex].jstype, newClass);
-			_getUnitValue(_currentSection[CRindex].js0depr, _currentSection[CRindex].jssqft, _currentSection[CRindex].jsfactor, _currentSection[CRindex].jsdeprc);
+			_getUnitRate(_currentSection[currentRowIndex].jstype, newClass);
+			_getUnitValue(_currentSection[currentRowIndex].js0depr, _currentSection[currentRowIndex].jssqft, _currentSection[currentRowIndex].jsfactor, _currentSection[currentRowIndex].jsdeprc);
 
 			SectDGView.CurrentRow.Cells["Value"].Value = _value;
 			SectDGView.CurrentRow.Cells["Rate"].Value = UnitRate;
@@ -1926,30 +1908,30 @@ namespace SketchUp
 
 		private void ProcessNewStory()
 		{
-			CRindex = SectDGView.CurrentRow.Index;
+			currentRowIndex = SectDGView.CurrentRow.Index;
 
 			decimal newStory = 0;
 
 			newStory = Convert.ToDecimal(SectDGView.CurrentRow.Cells["Story"].Value.ToString().ToUpper().Trim());
-			_jstory = _currentSection[CRindex].orig_jsstory;
+			_jstory = _currentSection[currentRowIndex].orig_jsstory;
 
-			_jssqft = _currentSection[CRindex].orig_jssqft;
+			_jssqft = _currentSection[currentRowIndex].orig_jssqft;
 
 			if (_jstory == 0)
 			{
 				_jstory = 1;
-				_currentSection[CRindex].orig_jsstory = 1;
+				_currentSection[currentRowIndex].orig_jsstory = 1;
 			}
 
 			decimal tststory = (newStory / _jstory);
 
-			_currentSection[CRindex].jsstory = newStory;
+			_currentSection[currentRowIndex].jsstory = newStory;
 
-			_jssqft = Convert.ToDecimal(Math.Round(Convert.ToDecimal(_currentSection[CRindex].orig_jssqft * tststory), 1));
-			_currentSection[CRindex].jssqft = _jssqft;
+			_jssqft = Convert.ToDecimal(Math.Round(Convert.ToDecimal(_currentSection[currentRowIndex].orig_jssqft * tststory), 1));
+			_currentSection[currentRowIndex].jssqft = _jssqft;
 
-			_getUnitRate(_currentSection[CRindex].jstype, _currentSection[CRindex].jsclass);
-			_getUnitValue(_currentSection[CRindex].js0depr, _currentSection[CRindex].jssqft, _currentSection[CRindex].jsfactor, _currentSection[CRindex].jsdeprc);
+			_getUnitRate(_currentSection[currentRowIndex].jstype, _currentSection[currentRowIndex].jsclass);
+			_getUnitValue(_currentSection[currentRowIndex].js0depr, _currentSection[currentRowIndex].jssqft, _currentSection[currentRowIndex].jsfactor, _currentSection[currentRowIndex].jsdeprc);
 
 			SectDGView.CurrentRow.Cells["Value"].Value = _value;
 			SectDGView.CurrentRow.Cells["Size"].Value = _jssqft.ToString();
@@ -1970,7 +1952,7 @@ namespace SketchUp
 
 		private void ProcessTypeChangeRequestResidential()
 		{
-			CRindex = SectDGView.CurrentRow.Index;
+			currentRowIndex = SectDGView.CurrentRow.Index;
 
 			if (typeChange == false)
 			{
@@ -1990,11 +1972,11 @@ namespace SketchUp
 
 		private void ProcessZeroDepr()
 		{
-			CRindex = SectDGView.CurrentRow.Index;
+			currentRowIndex = SectDGView.CurrentRow.Index;
 			NewZeroDep = String.Empty;
 
 			NewZeroDep = SectDGView.CurrentRow.Cells["0Depr"].Value.ToString().ToUpper().Trim();
-			_j0depr = _currentSection[CRindex].orig_js0depr;
+			_j0depr = _currentSection[currentRowIndex].orig_js0depr;
 
 			if (NewZeroDep.ToUpper().Trim() != "Y" && NewZeroDep.ToUpper().Trim() != String.Empty)
 			{
@@ -2012,18 +1994,18 @@ namespace SketchUp
 					{
 						SectDGView.CurrentRow.Cells["0Depr"].Value = "Y";
 						NewZeroDep = "Y";
-						_currentSection[CRindex].js0depr = NewZeroDep;
+						_currentSection[currentRowIndex].js0depr = NewZeroDep;
 					}
 
 					if (noDep2 == DialogResult.No || noDep2 == DialogResult.Cancel)
 					{
 						SectDGView.CurrentRow.Cells["0Depr"].Value = String.Empty;
 						NewZeroDep = String.Empty;
-						_currentSection[CRindex].js0depr = String.Empty;
+						_currentSection[currentRowIndex].js0depr = String.Empty;
 					}
 				}
 			}
-			if (NewZeroDep.ToUpper().Trim() == "Y" && _currentSection[CRindex].jsdeprc != 0)
+			if (NewZeroDep.ToUpper().Trim() == "Y" && _currentSection[currentRowIndex].jsdeprc != 0)
 			{
 				DialogResult useDefault;
 				useDefault = MessageBox.Show("Want No Depreciation", "Zero Depreciation Warning",
@@ -2032,36 +2014,36 @@ namespace SketchUp
 				if (useDefault == DialogResult.OK)
 				{
 					SectDGView.CurrentRow.Cells["0Depr"].Value = NewZeroDep;
-					_currentSection[CRindex].js0depr = "Y";
+					_currentSection[currentRowIndex].js0depr = "Y";
 					SectDGView.CurrentRow.Cells["Deprec"].Value = 0;
-					_currentSection[CRindex].jsdeprc = 0;
+					_currentSection[currentRowIndex].jsdeprc = 0;
 				}
 			}
 
 			if (NewZeroDep.ToUpper().Trim() == "Y")
 			{
-				_getUnitRate(_currentSection[CRindex].jstype, _currentSection[CRindex].jsclass);
-				_getUnitValue(NewZeroDep, _currentSection[CRindex].jssqft, _currentSection[CRindex].jsfactor, _currentSection[CRindex].jsdeprc);
+				_getUnitRate(_currentSection[currentRowIndex].jstype, _currentSection[currentRowIndex].jsclass);
+				_getUnitValue(NewZeroDep, _currentSection[currentRowIndex].jssqft, _currentSection[currentRowIndex].jsfactor, _currentSection[currentRowIndex].jsdeprc);
 
 				SectDGView.CurrentRow.Cells["Deprec"].Value = 0;
-				_currentSection[CRindex].jsdeprc = 0;
+				_currentSection[currentRowIndex].jsdeprc = 0;
 
 				SectDGView.CurrentRow.Cells["Deprec"].Style.BackColor = Color.PaleGreen;
 				SectDGView.CurrentRow.Cells["Value"].Value = _value;
-				_currentSection[CRindex].jsvalue = _value;
+				_currentSection[currentRowIndex].jsvalue = _value;
 			}
 			if (NewZeroDep.Trim() == String.Empty)
 			{
-				_getUnitRate(_currentSection[CRindex].jstype, _currentSection[CRindex].jsclass);
-				_getUnitValue(NewZeroDep, _currentSection[CRindex].jssqft, _currentSection[CRindex].jsfactor, _currentSection[CRindex].jsdeprc);
+				_getUnitRate(_currentSection[currentRowIndex].jstype, _currentSection[currentRowIndex].jsclass);
+				_getUnitValue(NewZeroDep, _currentSection[currentRowIndex].jssqft, _currentSection[currentRowIndex].jsfactor, _currentSection[currentRowIndex].jsdeprc);
 
 				SectDGView.CurrentRow.Cells["Value"].Value = _value;
-				_currentSection[CRindex].jsvalue = _value;
+				_currentSection[currentRowIndex].jsvalue = _value;
 			}
 
-			if (NewZeroDep.Trim() == String.Empty && _currentSection[CRindex].jsdeprc == 0)
+			if (NewZeroDep.Trim() == String.Empty && _currentSection[currentRowIndex].jsdeprc == 0)
 			{
-				_getDefaultDepr(_currentSection[CRindex].jsdeprc, NewZeroDep.Trim());
+				_getDefaultDepr(_currentSection[currentRowIndex].jsdeprc, NewZeroDep.Trim());
 
 				newDeprec = _defDepr;
 
@@ -2069,7 +2051,7 @@ namespace SketchUp
 			}
 
 			SectDGView.CurrentRow.Cells["0Depr"].Value = NewZeroDep;
-			_currentSection[CRindex].js0depr = NewZeroDep.Trim();
+			_currentSection[currentRowIndex].js0depr = NewZeroDep.Trim();
 
 			if (NewZeroDep != _j0depr)
 			{
@@ -2079,11 +2061,11 @@ namespace SketchUp
 			{
 				SectDGView.CurrentRow.Cells["0Depr"].Style.BackColor = Color.White;
 			}
-			if (_currentSection[CRindex].jsvalue != _currentSection[CRindex].orig_jsvalue)
+			if (_currentSection[currentRowIndex].jsvalue != _currentSection[currentRowIndex].orig_jsvalue)
 			{
 				SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.PaleGreen;
 			}
-			if (_currentSection[CRindex].jsvalue == _currentSection[CRindex].orig_jsvalue)
+			if (_currentSection[currentRowIndex].jsvalue == _currentSection[currentRowIndex].orig_jsvalue)
 			{
 				SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.White;
 			}
@@ -2238,7 +2220,7 @@ namespace SketchUp
 			{
 				if (SectDGView.Columns[e.ColumnIndex].Name == "Rate")
 				{
-					CRindex = SectDGView.CurrentRow.Index;
+					currentRowIndex = SectDGView.CurrentRow.Index;
 					OriginalUnitRate = Convert.ToDecimal(SectDGView.CurrentRow.Cells["Rate"].Value.ToString());
 				}
 

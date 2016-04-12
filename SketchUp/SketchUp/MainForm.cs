@@ -448,9 +448,9 @@ splash.UpdateProgress(85);
 				{
 					DataSource = SketchUp.Properties.Settings.Default.IPAddress,
 
-					User = "camra2",
-					Password = "camra2"
-				};
+					User = SketchUp.Properties.Settings.Default.UserName,
+                    Password = SketchUp.Properties.Settings.Default.Password
+                };
 			}
 			else
 			{
