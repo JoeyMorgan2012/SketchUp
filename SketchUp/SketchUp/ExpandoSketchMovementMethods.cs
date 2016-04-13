@@ -312,28 +312,8 @@ namespace SketchUp
 				txtX = (StartX + 15);
 				txtY = (StartY - txtLocf);
 
-				PrevX = StartX;
-				PrevY = StartY;
-
-				StartX = EndX;
-				StartY = EndY;
-
-				_mouseX = Convert.ToInt32(EndX);
-				_mouseY = Convert.ToInt32(EndY);
-
-				DistText.Text = String.Empty;
-
-				DistText.Focus();
-
-				ExpSketchPBox.Image = _mainimage;
-				click++;
-				_StartX.Remove(click);
-				_StartY.Remove(click);
-				_StartX.Add(click, PrevX);
-				_StartY.Add(click, PrevY);
-				savpic.Add(click, imageToByteArray(_mainimage));
-
-				decimal XadjD = 0;
+                AddMoveToImage();
+                decimal XadjD = 0;
 				decimal YadjD = 0;
 
 				if (draw)
@@ -608,137 +588,123 @@ namespace SketchUp
 			UtilityMethods.LogMethodCall(fullStack, true);
 #endif
 			if (_isKeyValid == true)
-			{
-				StrxD = 0;
-				StryD = 0;
-				EndxD = 0;
-				EndyD = 0;
-				midLine = 0;
-				midDirect = String.Empty;
-				midSection = String.Empty;
+            {
+                StrxD = 0;
+                StryD = 0;
+                EndxD = 0;
+                EndyD = 0;
+                midLine = 0;
+                midDirect = String.Empty;
+                midSection = String.Empty;
 
-				distanceD = 0;
-				distanceDXF = 0;
-				distanceDYF = 0;
+                distanceD = 0;
+                distanceDXF = 0;
+                distanceDYF = 0;
 
-				double D12 = Math.Pow(Convert.ToDouble(AngD1), 2);
-				double D22 = Math.Pow(Convert.ToDouble(AngD2), 2);
+                double D12 = Math.Pow(Convert.ToDouble(AngD1), 2);
+                double D22 = Math.Pow(Convert.ToDouble(AngD2), 2);
 
-				decimal D12d = Convert.ToDecimal(Math.Pow(Convert.ToDouble(AngD1), 2));
+                decimal D12d = Convert.ToDecimal(Math.Pow(Convert.ToDouble(AngD1), 2));
 
-				decimal D22d = Convert.ToDecimal(Math.Pow(Convert.ToDouble(AngD2), 2));
+                decimal D22d = Convert.ToDecimal(Math.Pow(Convert.ToDouble(AngD2), 2));
 
-				distanceD = Convert.ToInt32(Math.Sqrt(D12 + D22));
+                distanceD = Convert.ToInt32(Math.Sqrt(D12 + D22));
 
-				decimal distanceD1 = Math.Round(Convert.ToDecimal(Math.Sqrt(D12 + D22)), 2);
+                decimal distanceD1 = Math.Round(Convert.ToDecimal(Math.Sqrt(D12 + D22)), 2);
 
-				distance = Convert.ToDecimal(distanceD1);
+                distance = Convert.ToDecimal(distanceD1);
 
-				decimal distanceDX = Convert.ToDecimal(AngD1);
-				decimal distanceDY = Convert.ToDecimal(AngD2);
-				distanceDXF = (float)distanceDX;
-				distanceDYF = (float)distanceDY;
+                decimal distanceDX = Convert.ToDecimal(AngD1);
+                decimal distanceDY = Convert.ToDecimal(AngD2);
+                distanceDXF = (float)distanceDX;
+                distanceDYF = (float)distanceDY;
 
-				_lenString = String.Format("{0} ft.", distanceD1.ToString("N1"));
+                _lenString = String.Format("{0} ft.", distanceD1.ToString("N1"));
 
-				txtLocf = ((distanceD * _currentScale) / 2);
+                txtLocf = ((distanceD * _currentScale) / 2);
 
-				if (draw)
-				{
-					Graphics g = Graphics.FromImage(_mainimage);
-					SolidBrush brush = new SolidBrush(Color.Red);
-					Pen pen1 = new Pen(Color.Red, 2);
-					Font f = new Font("Arial", 8, FontStyle.Bold);
+                if (draw)
+                {
+                    Graphics g = Graphics.FromImage(_mainimage);
+                    SolidBrush brush = new SolidBrush(Color.Red);
+                    Pen pen1 = new Pen(Color.Red, 2);
+                    Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * _currentScale)), (StartY - (Convert.ToInt16(AngD2) * _currentScale)));
-					g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
-				}
+                    g.DrawLine(pen1, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * _currentScale)), (StartY - (Convert.ToInt16(AngD2) * _currentScale)));
+                    g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
+                }
 
-				if (!draw)
-				{
-					Graphics g = Graphics.FromImage(_mainimage);
-					SolidBrush brush = new SolidBrush(Color.Black);
-					Pen pen1 = new Pen(Color.Cyan, 5);
-					Font f = new Font("Arial", 8, FontStyle.Bold);
+                if (!draw)
+                {
+                    Graphics g = Graphics.FromImage(_mainimage);
+                    SolidBrush brush = new SolidBrush(Color.Black);
+                    Pen pen1 = new Pen(Color.Cyan, 5);
+                    Font f = new Font("Arial", 8, FontStyle.Bold);
 
-					g.DrawLine(pen1, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * _currentScale)), (StartY - (Convert.ToInt16(AngD2) * _currentScale)));
-					if (distance < 10)
-					{
-						g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 5)));
-					}
-					g.DrawLine(pen1, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * _currentScale)), (StartY - (Convert.ToInt16(AngD2) * _currentScale)));
-					if (distance >= 10)
-					{
-						g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
-					}
-				}
+                    g.DrawLine(pen1, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * _currentScale)), (StartY - (Convert.ToInt16(AngD2) * _currentScale)));
+                    if (distance < 10)
+                    {
+                        g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 5)));
+                    }
+                    g.DrawLine(pen1, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * _currentScale)), (StartY - (Convert.ToInt16(AngD2) * _currentScale)));
+                    if (distance >= 10)
+                    {
+                        g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
+                    }
+                }
 
-				EndX = StartX - (Convert.ToInt16(AngD1) * _currentScale);
-				EndY = StartY - (Convert.ToInt16(AngD2) * _currentScale);
-				txtX = (_mouseX + txtLocf);
-				txtY = (_mouseY - 15);
+                EndX = StartX - (Convert.ToInt16(AngD1) * _currentScale);
+                EndY = StartY - (Convert.ToInt16(AngD2) * _currentScale);
+                txtX = (_mouseX + txtLocf);
+                txtY = (_mouseY - 15);
 
-				PrevX = StartX;
-				PrevY = StartY;
+                AddMoveToImage();
 
-				StartX = EndX;
-				StartY = EndY;
+                Xadj = (((ScaleBaseX - PrevX) / _currentScale) * -1);
+                Yadj = (((ScaleBaseY - PrevY) / _currentScale) * -1);
 
-				_mouseX = Convert.ToInt32(EndX);
-				_mouseY = Convert.ToInt32(EndY);
+                decimal XadjD = (Math.Round(Convert.ToDecimal(Xadj), 1) + distance);
 
-				DistText.Text = String.Empty;
+                decimal YadjD = Math.Round(Convert.ToDecimal(Yadj), 1);
 
-				DistText.Focus();
+                if (JumpTable.Rows.Count > 0)
+                {
+                    for (int i = 0; i < JumpTable.Rows.Count; i++)
+                    {
+                        if (XadjD >= Convert.ToDecimal(JumpTable.Rows[i]["XPt1"].ToString()) && XadjD <= Convert.ToDecimal(JumpTable.Rows[i]["XPt2"].ToString())
+                            && YadjD == Convert.ToDecimal(JumpTable.Rows[i]["YPt1"].ToString()) && YadjD == Convert.ToDecimal(JumpTable.Rows[i]["YPt2"].ToString()))
+                        {
+                            StrxD = Convert.ToDecimal(JumpTable.Rows[i]["XPt1"].ToString());
+                            StryD = Convert.ToDecimal(JumpTable.Rows[i]["YPt1"].ToString());
+                            EndxD = Convert.ToDecimal(JumpTable.Rows[i]["XPt2"].ToString());
+                            EndyD = Convert.ToDecimal(JumpTable.Rows[i]["YPt2"].ToString());
 
-				ExpSketchPBox.Image = _mainimage;
-				click++;
-				_StartX.Remove(click);
-				_StartY.Remove(click);
-				_StartX.Add(click, PrevX);
-				_StartY.Add(click, PrevY);
-				savpic.Add(click, imageToByteArray(_mainimage));
+                            midSection = JumpTable.Rows[i]["Sect"].ToString();
+                            midLine = Convert.ToInt32(JumpTable.Rows[i]["LineNo"].ToString());
+                            midDirect = JumpTable.Rows[i]["Direct"].ToString();
+                            break;
+                        }
+                    }
+                }
 
-				Xadj = (((ScaleBaseX - PrevX) / _currentScale) * -1);
-				Yadj = (((ScaleBaseY - PrevY) / _currentScale) * -1);
+                string _direction = "NW";
+                lineCnt++;
+                BuildAddSQLAng(PrevX, PrevY, distanceDX, distanceDY, _direction, distanceD1, lineCnt, _isclosing, NextStartX, NextStartY);
+            }
 
-				decimal XadjD = (Math.Round(Convert.ToDecimal(Xadj), 1) + distance);
-
-				decimal YadjD = Math.Round(Convert.ToDecimal(Yadj), 1);
-
-				if (JumpTable.Rows.Count > 0)
-				{
-					for (int i = 0; i < JumpTable.Rows.Count; i++)
-					{
-						if (XadjD >= Convert.ToDecimal(JumpTable.Rows[i]["XPt1"].ToString()) && XadjD <= Convert.ToDecimal(JumpTable.Rows[i]["XPt2"].ToString())
-							&& YadjD == Convert.ToDecimal(JumpTable.Rows[i]["YPt1"].ToString()) && YadjD == Convert.ToDecimal(JumpTable.Rows[i]["YPt2"].ToString()))
-						{
-							StrxD = Convert.ToDecimal(JumpTable.Rows[i]["XPt1"].ToString());
-							StryD = Convert.ToDecimal(JumpTable.Rows[i]["YPt1"].ToString());
-							EndxD = Convert.ToDecimal(JumpTable.Rows[i]["XPt2"].ToString());
-							EndyD = Convert.ToDecimal(JumpTable.Rows[i]["YPt2"].ToString());
-
-							midSection = JumpTable.Rows[i]["Sect"].ToString();
-							midLine = Convert.ToInt32(JumpTable.Rows[i]["LineNo"].ToString());
-							midDirect = JumpTable.Rows[i]["Direct"].ToString();
-							break;
-						}
-					}
-				}
-
-				string _direction = "NW";
-				lineCnt++;
-				BuildAddSQLAng(PrevX, PrevY, distanceDX, distanceDY, _direction, distanceD1, lineCnt, _isclosing, NextStartX, NextStartY);
-			}
-
-			_isAngle = false;
+            _isAngle = false;
 			AngleForm.NorthEast = false;
 			AngleForm.NorthWest = false;
 			AngleForm.SouthEast = false;
 			AngleForm.SouthWest = false;
 		}
 
-		public void MoveSouth(float startx, float starty)
+        private void AddMoveToImage()
+        {
+            AddMoveToImage();
+        }
+
+        public void MoveSouth(float startx, float starty)
 		{
 #if DEBUG
 

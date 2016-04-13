@@ -951,7 +951,7 @@ namespace SketchUp
                 };
                 allStabTypes.Add(stab);
             }
-            NewMethod(allStabTypes);
+            ParseRatTableDataToLists(allStabTypes);
 
         }
 
@@ -1126,7 +1126,7 @@ namespace SketchUp
 
         }
 
-        private static void NewMethod(List<StabType> allStabTypes)
+        private static void ParseRatTableDataToLists(List<StabType> allStabTypes)
         {
             var BAS = (from t in allStabTypes where t.Type == "BAS" select t).ToList<StabType>();
             var CAR = (from t in allStabTypes where t.Type == "CAR" select t).ToList<StabType>();

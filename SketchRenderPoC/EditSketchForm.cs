@@ -31,9 +31,13 @@ namespace SketchRenderPoC
         public EditSketchForm()
 
         {
-            GetSelectedParcelData();
+            //TODO: Change this so the parcel data is loaded with the main form, index of 0, and each successive index is one greater, so each "version" is stored in the list.
 
-         MockGettingCamraData();
+            SelectedParcel = SketchUpGlobals.ParcelWorkingCopy;
+            SelectedParcel.SnapShotIndex += 1;
+            SketchUpGlobals.SketchSnapshots.Add(SelectedParcel);
+            CamraSupport.Init(SketchUpGlobals.CamraDbConn);
+            MockGettingCamraData();
 
             InitializeComponent();
           
@@ -46,14 +50,12 @@ namespace SketchRenderPoC
 
         private void MockGettingCamraData()
         {
+           
 
-
-
-
-            SketchUpGlobals.CurrentParcel = new ParcelData();
-            SketchUpGlobals.CurrentParcel.moccup = 10;
-
-
+                ParcelDataCollection pdc = new ParcelDataCollection(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
+                SketchUpGlobals.CurrentParcel = pdc.GetParcel(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
+            
+           
 
         }
 
@@ -72,8 +74,7 @@ namespace SketchRenderPoC
         #endregion Constructor
 
         #region control events
-
-        private void pctMain_MouseDoubleClick(object sender, MouseEventArgs e)
+     private void pctMain_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             PointF mouseLocation = new PointF(e.X, e.Y);
             ShowNearestCorners(mouseLocation);
@@ -84,10 +85,42 @@ namespace SketchRenderPoC
             MouseLocationLabel.Text = string.Format("({0},{1})", e.X, e.Y);
         }
 
+        #region toolStripMenuItems
+        private void deleteSketchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DeleteSketch();
+        }
+
+        private void drawSketchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowSketch();
+        }
+  private void addSectionTsMenu_Click(object sender, EventArgs e)
+        {
+
+            SectionAdditionDialog sad = new SectionAdditionDialog(SketchUpGlobals.CamraDbConn, SketchUpGlobals.CurrentParcel, true, 0, true);
+            sad.ShowDialog();
+        }
+    private void changeSectionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string message = string.Format("{0}", "change section");
+            MessageBox.Show(message);
+        }
+
+        private void deleteSectionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string message = string.Format("{0}", "deleteSection");
+            MessageBox.Show(message);
+        }
         private void tsbGetSketch_Click(object sender, EventArgs e)
         {
             ShowSketch();
         }
+        #endregion
+
+   
+
+      
 
         #endregion control events
 
@@ -207,54 +240,44 @@ namespace SketchRenderPoC
             }
         }
 
-        private SMParcel GetParcel(int record, int dwelling, SketchRepository sr)
-        {
-            SMParcel parcel = sr.SelectParcelData(record, dwelling);
-            parcel.Sections = sr.SelectParcelSections(parcel);
-            foreach (SMSection sms in parcel.Sections)
-            {
-                sms.Lines = sr.SelectSectionLines(sms);
-            }
-            parcel.IdentifyAttachedToSections();
-            return parcel;
-        }
+       
 
         #region Testing code
 
         //Todo: Eliminate before release
-        private void GetSelectedParcelData()
+      
+        private static void InitializeGlobals(string dataSource, string password, string userName, string locality, int record, int dwelling)
         {
-            string dataSource = SketchUp.Properties.Settings.Default.IPAddress;
-            string password = SketchUp.Properties.Settings.Default.UserName;
-            string userName = SketchUp.Properties.Settings.Default.Password;
-            string locality = "AUG";
-            int record = recordNumber;
-            int dwelling = 1;
-            SketchUpGlobals.CamraDbConn = new CAMRA_Connection(dataSource, userName, password);
-                SketchUpGlobals.Record = record;
+            SMConnection conn = new SMConnection(dataSource, userName, password, locality);
+            SketchUpGlobals.CamraDbConn = conn.DbConn;
+            SketchUpGlobals.CamraDbConn.OpenDbConnection();
+            SketchUpGlobals.IpAddress = dataSource;
+            //TODO: !! Figure out where this should be set and read
+            SketchUpGlobals.LocalLib = "NATIVE";
+            SketchUpGlobals.LocalityPreFix = locality;
+            SketchUpGlobals.FcLib = SketchUpGlobals.LocalLib;
+            SketchUpGlobals.FcLocalityPrefix = locality;
+            SketchUpGlobals.Record = record;
             SketchUpGlobals.Card = dwelling;
-            SketchRepository sr = new SketchRepository(dataSource, userName, password, locality);
-            SelectedParcel = GetParcel(record, dwelling, sr);
-            SelectedParcel.SnapShotIndex = 0;
-            ParcelWorkingCopy = SelectedParcel;
-            ParcelWorkingCopy.SnapShotIndex = 1;
+
         }
 
-        private void GetSelectedParcelData(int record)
-        {
-            string dataSource = SketchUp.Properties.Settings.Default.IPAddress;
-            string password = SketchUp.Properties.Settings.Default.UserName;
-            string userName = SketchUp.Properties.Settings.Default.Password;
-            string locality = "AUG";
-            int dwelling = 1;
+        //private void GetSelectedParcelData()
+        //{
+        //    string dataSource = SketchUp.Properties.Settings.Default.IPAddress;
+        //    string password = SketchUp.Properties.Settings.Default.UserName;
+        //    string userName = SketchUp.Properties.Settings.Default.Password;
+        //    string locality = "AUG";
+        //    int record = 11787;
+        //    int dwelling = 1;
 
-            SketchRepository sr = new SketchRepository(dataSource, userName, password, locality);
-            SelectedParcel = GetParcel(record, dwelling, sr);
-            SelectedParcel.SnapShotIndex = 0;
-            ParcelWorkingCopy = SelectedParcel;
-            ParcelWorkingCopy.SnapShotIndex = 1;
+        //    SketchRepository sr = new SketchRepository(dataSource, userName, password, locality);
+        //    SelectedParcel = GetParcel(record, dwelling, sr);
+        //    SelectedParcel.SnapShotIndex = 0;
+        //    ParcelWorkingCopy = SelectedParcel;
+        //    ParcelWorkingCopy.SnapShotIndex = 1;
             
-        }
+        //}
 
         #endregion Testing code
 
@@ -516,24 +539,7 @@ namespace SketchRenderPoC
         }
 
         #endregion Properties
-
-        private void addSectionTsMenu_Click(object sender, EventArgs e)
-        {
-            SectionAdditionDialog sad = new SectionAdditionDialog(SketchUpGlobals.CamraDbConn, SketchUpGlobals.CurrentParcel, true, 0, true);
-            
-        }
-
-        private void changeSectionToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            string message = string.Format("{0}", "change section");
-            MessageBox.Show(message);
-        }
-
-        private void deleteSectionToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            string message = string.Format("{0}", "deleteSection");
-            MessageBox.Show(message);
-        }
+    
 
         private void DeleteSketch()
         {
@@ -548,17 +554,6 @@ namespace SketchRenderPoC
         {
             MessageBox.Show("Deleting Sections");
         }
-
-        private void deleteSketchToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            DeleteSketch();
-        }
-
-        private void drawSketchToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ShowSketch();
-        }
-
         private void editSectionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string message = string.Format("{0}", "edit sections");

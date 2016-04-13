@@ -363,9 +363,6 @@
     <None Include="CamraSketch_1_TemporaryKey.pfx" />
     <None Include="CamraSketch_TemporaryKey.pfx" />
     <None Include="ClassDiagram1.cd" />
-    <None Include="ClassDiagram2.cd" />
-    <None Include="ClassDiagram3.cd" />
-    <None Include="ClassDiagram4.cd" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">

@@ -599,12 +599,7 @@ namespace SketchUp
 
 		public ParcelData()
 		{
-#if DEBUG
 
-			//Debugging Code -- remove for production release
-			//var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-			//UtilityMethods.LogMethodCall(fullStack, true);
-#endif
 		}
 
 		public int auxA

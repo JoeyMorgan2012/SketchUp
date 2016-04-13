@@ -22,7 +22,8 @@ namespace SketchUp
 			}
 		}
 
-		public static int Card
+        
+        public static int Card
 		{
 			get
 			{
@@ -52,7 +53,6 @@ namespace SketchUp
 			{
 				return currentParcel;
 			}
-
 			set
 			{
 				currentParcel = value;
@@ -71,7 +71,7 @@ namespace SketchUp
 			}
 		}
 
-		public static SMParcel CurrentSMParcel
+		public static SMParcel SMParcelFromData
 		{
 			get
 			{
@@ -82,6 +82,7 @@ namespace SketchUp
 				currentSMParcel = value;
 			}
 		}
+
 		public static DBAccessManager DbAccessMgr
 		{
 			get
@@ -214,18 +215,6 @@ namespace SketchUp
 			}
 		}
 
-		public static bool MainFormIsMinimized
-		{
-			get
-			{
-				return mainFormIsMinimized;
-			}
-			set
-			{
-				mainFormIsMinimized = value;
-			}
-		}
-
 		public static string LocalityDescription
 		{
 			get
@@ -262,6 +251,30 @@ namespace SketchUp
 			}
 		}
 
+		public static bool MainFormIsClosed
+		{
+			get
+			{
+				return mainFormIsClosed;
+			}
+			set
+			{
+				mainFormIsClosed = value;
+			}
+		}
+
+		public static bool MainFormIsMinimized
+		{
+			get
+			{
+				return mainFormIsMinimized;
+			}
+			set
+			{
+				mainFormIsMinimized = value;
+			}
+		}
+
 		public static int Month
 		{
 			get
@@ -277,7 +290,8 @@ namespace SketchUp
 		public static SMParcel ParcelWorkingCopy
 		{
 			get
-			{
+			{ int lastIndex = (from p in SketchSnapshots select p.SnapShotIndex).Max();
+                parcelWorkingCopy = (from p in SketchSnapshots where p.SnapShotIndex == lastIndex select p).FirstOrDefault<SMParcel>();
 				return parcelWorkingCopy;
 			}
 			set
@@ -346,6 +360,36 @@ namespace SketchUp
 			}
 		}
 
+       
+
+        public static List<SMParcel> SketchSnapshots
+        {
+            get
+            {
+                if (sketchSnapshots==null)
+                {
+                    sketchSnapshots = new List<SMParcel>();
+                }
+                return sketchSnapshots;
+            }
+            set
+            {
+                sketchSnapshots = value;
+            }
+        }
+
+		public static SectionDataCollection SubSections
+		{
+			get
+			{
+				return _subSections;
+			}
+			set
+			{
+				_subSections = value;
+			}
+		}
+
 		public static DateTime Today
 		{
 			get
@@ -355,6 +399,18 @@ namespace SketchUp
 			set
 			{
 				today = value;
+			}
+		}
+
+		public static int TodayDayNumber
+		{
+			get
+			{
+				return todayDayNumber;
+			}
+			set
+			{
+				todayDayNumber = value;
 			}
 		}
 
@@ -370,64 +426,6 @@ namespace SketchUp
 			}
 		}
 
-		public static bool MainFormIsClosed
-		{
-			get
-			{
-				return mainFormIsClosed;
-			}
-
-			set
-			{
-				mainFormIsClosed = value;
-			}
-		}
-
-		public static SectionDataCollection SubSections
-		{
-			get
-			{
-				return _subSections;
-			}
-
-			set
-			{
-				_subSections = value;
-			}
-		}
-
-		public static int TodayDayNumber
-		{
-			get
-			{
-				return todayDayNumber;
-			}
-
-			set
-			{
-				todayDayNumber = value;
-			}
-		}
-
-        public static List<SMParcel> ParcelSnapshots
-        {
-            get
-            {
-                return parcelSnapshots;
-            }
-
-            set
-            {
-                parcelSnapshots = value;
-            }
-        }
-
-        private static List<SMParcel> parcelSnapshots;
-		private static bool mainFormIsClosed = false;
-		private static string _selectedPath = String.Empty;
-		private static string _selectedPicPath = String.Empty;
-		private static string _selectedSktPath = String.Empty;
-		private static SectionDataCollection _subSections = null;
 		private static CAMRA_Connection camraDbConn = null;
 		private static int card = 0;
 		private static int checker = 0;
@@ -445,10 +443,12 @@ namespace SketchUp
 		private static int initalCard = 0;
 		private static int initalRecord = 0;
 		private static string ipAddress = String.Empty;
-		private static bool mainFormIsMinimized = false;
 		private static string localityDescription = string.Empty;
 		private static string localityPreFix = String.Empty;
 		private static string localLib = String.Empty;
+      
+		private static bool mainFormIsClosed = false;
+		private static bool mainFormIsMinimized = false;
 		private static int month;
 		private static SMParcel parcelWorkingCopy;
 		private static int record = 0;
@@ -456,9 +456,14 @@ namespace SketchUp
 		private static string sketchFolder;
 		private static Image sketchImage;
 		private static SketchRepository sketchMgrRepo;
+        static    List<SMParcel> sketchSnapshots;
 		
 		private static DateTime today;
-		private static int year;
 		private static int todayDayNumber;
+		private static int year;
+		private static string _selectedPath = String.Empty;
+		private static string _selectedPicPath = String.Empty;
+		private static string _selectedSktPath = String.Empty;
+		private static SectionDataCollection _subSections = null;
 	}
 }

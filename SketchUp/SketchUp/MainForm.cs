@@ -21,11 +21,17 @@ namespace SketchUp
 
             {
                 LoadDataFromCamraDb();
+                PrepareSketchManager();
             }
             else
             {
                 ShowUpdateMessage();
             }
+        }
+
+        private void PrepareSketchManager()
+        {
+            throw new NotImplementedException();
         }
 
         public MainForm(string[] newArgs)
@@ -67,8 +73,14 @@ namespace SketchUp
 
             splash.UpdateProgress(85);
             Application.DoEvents();
-
-            SketchUpGlobals.ParcelWorkingCopy = SketchUpGlobals.CurrentSMParcel;
+            SketchRepository sketchRepo = GetSketchRepository();
+            SMParcel baseParcel= GetParcelFromDatabase(SketchUpGlobals.Record,
+            SketchUpGlobals.Card,sketchRepo);
+            baseParcel.SnapShotIndex = 0;
+            SketchUpGlobals.SMParcelFromData = baseParcel;
+            SMParcel workingCopy = baseParcel;
+            workingCopy.SnapShotIndex = 1;
+            SketchUpGlobals.SketchSnapshots.Add(workingCopy);
             splash.UpdateProgress(100);
             Application.DoEvents();
         }
@@ -89,7 +101,7 @@ namespace SketchUp
             return parcel;
         }
 
-        private SketchRepository InitializeSketchRepository()
+        private SketchRepository GetSketchRepository()
         {
             try
             {
@@ -108,7 +120,31 @@ namespace SketchUp
         }
 
         //TODO: Consider how SOLID this is and maybe refactor.
+        private SMParcel GetSelectedParcelData()
+        {
+            string dataSource = SketchUp.Properties.Settings.Default.IPAddress;
+            string password = SketchUp.Properties.Settings.Default.UserName;
+            string userName = SketchUp.Properties.Settings.Default.Password;
+            string locality = SketchUpGlobals.LocalityPreFix;
+            int record = SketchUpGlobals.Record;
+            int dwelling = SketchUpGlobals.Card;
 
+           
+            SketchRepository sr = new SketchRepository(dataSource, userName, password, locality);
+            SMParcel parcel = GetOriginalParcelFromDb(record, dwelling, sr);
+            return parcel;
+        }
+        private SMParcel GetOriginalParcelFromDb(int record, int dwelling, SketchRepository sr)
+        {
+            SMParcel parcel = sr.SelectParcelData(record, dwelling);
+            parcel.Sections = sr.SelectParcelSections(parcel);
+            foreach (SMSection sms in parcel.Sections)
+            {
+                sms.Lines = sr.SelectSectionLines(sms);
+            }
+            parcel.IdentifyAttachedToSections();
+            return parcel;
+        }
         #endregion SMParcel Initializations
 
         private void UpdateProgressBar(object sender, ElapsedEventArgs e)
@@ -142,9 +178,9 @@ namespace SketchUp
         {
             try
             {
-                SketchUpGlobals.SketchMgrRepo = InitializeSketchRepository();
-                SketchUpGlobals.CurrentSMParcel = GetParcelFromDatabase(SketchUpGlobals.Record, SketchUpGlobals.Card, SketchUpGlobals.SketchMgrRepo);
-                SketchUpGlobals.ParcelWorkingCopy = SketchUpGlobals.CurrentSMParcel;
+                SketchUpGlobals.SketchMgrRepo = GetSketchRepository();
+                SketchUpGlobals.SMParcelFromData = GetParcelFromDatabase(SketchUpGlobals.Record, SketchUpGlobals.Card, SketchUpGlobals.SketchMgrRepo);
+                SketchUpGlobals.ParcelWorkingCopy = SketchUpGlobals.SMParcelFromData;
                 EditSketch(SketchUpGlobals.ParcelWorkingCopy);
 
                 //GetSelectedImages();
