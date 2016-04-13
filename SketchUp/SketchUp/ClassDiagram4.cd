@@ -1,0 +1,270 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SketchUp.DismWieghts" Collapsed="true">
+    <Position X="7.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAAgAAAYAAAIAAEEAAAAwAABAAIAAACAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.FloorAbreviation" Collapsed="true">
+    <Position X="9.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.HomeSiteType" Collapsed="true">
+    <Position X="11" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAACAABAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.HomeSiteTypeD" Collapsed="true">
+    <Position X="0.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAACAABBAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.InWallAbreviation" Collapsed="true">
+    <Position X="2.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.LandType" Collapsed="true">
+    <Position X="4" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.LandTypeD" Collapsed="true">
+    <Position X="5.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgABAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.LandUseType" Collapsed="true">
+    <Position X="7.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQgAAAAAAAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.LivingAreaSectionTypes" Collapsed="true">
+    <Position X="9.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAEAAQQAAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.MagDistrictCodes" Collapsed="true">
+    <Position X="11" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAACAAAAAAAABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.MapCoordinates" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAgBAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.OccupancyDescription" Collapsed="true">
+    <Position X="2.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAgAAAAAAIAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.OccupancyDescriptionD" Collapsed="true">
+    <Position X="4" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAgAAAAAAIAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.OtherImprovement" Collapsed="true">
+    <Position X="5.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEIAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.OtherImprovementD" Collapsed="true">
+    <Position X="7.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEIAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.PavementTypeDescription" Collapsed="true">
+    <Position X="9.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.PavementTypeDescriptionD" Collapsed="true">
+    <Position X="11" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.RentRates" Collapsed="true">
+    <Position X="0.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAIgAgAAQAgAIhAAQESAAABIBAAIgEAUAAAEAAI=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.ResidentialSections" Collapsed="true">
+    <Position X="2.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAAAAAAAAQAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.RightofWayTypeDescription" Collapsed="true">
+    <Position X="4" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAEAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.RightofWayTypeDescriptionD" Collapsed="true">
+    <Position X="5.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAEAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.SewerRates" Collapsed="true">
+    <Position X="7.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAABAAAgAAAAAAAAAAAABAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.SewerTypeDescription" Collapsed="true">
+    <Position X="9.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAIAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.SewerTypeDescriptionD" Collapsed="true">
+    <Position X="11" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAIAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.StabType" Collapsed="true">
+    <Position X="0.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAgAAAAAAAgAgAAAQAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.StabTypeD" Collapsed="true">
+    <Position X="2.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAgAAAAAAAgAgAAAQAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.StdDeviations" Collapsed="true">
+    <Position X="4" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQRAAAAAAAAAAKAAAAAIAAAAgAAAACABgAAAAIAQA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.SubDivisionCodes" Collapsed="true">
+    <Position X="5.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAACABAAAAAAAAAgAAAAAAAI=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.SubDivisionCodesD" Collapsed="true">
+    <Position X="7.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAAAAAAACABAAAAAAAAAgAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.TerrainTypeDescription" Collapsed="true">
+    <Position X="9.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACAAAAAAABAAQAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.TerrainTypeDescriptionD" Collapsed="true">
+    <Position X="11" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACAAAAAAABAAQAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.UserCodeType" Collapsed="true">
+    <Position X="0.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAEAAIAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.WaterRates" Collapsed="true">
+    <Position X="2.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAACAAAAAAAAABAAAAAAAAAAAABAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.WaterTypeDescription" Collapsed="true">
+    <Position X="4" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIQAAAQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.WaterTypeDescriptionD" Collapsed="true">
+    <Position X="5.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIQAAAQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.ZoningDescription" Collapsed="true">
+    <Position X="7.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAACAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.ZoningDescriptionD" Collapsed="true">
+    <Position X="9.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAACAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraSupportClasses.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.AllStructureSections">
+    <Position X="0.5" Y="7.25" Width="5.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAACAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\AllStructureSections.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
