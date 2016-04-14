@@ -1,6 +1,6 @@
 ﻿namespace SketchRenderPoC
 {
-    partial class EditSketchForm
+    partial class TestSketchForm
     {
         /// <summary>
         /// Required designer variable.
@@ -83,17 +83,18 @@
             this.toolStripSeparator3,
             this.tsMenuExitForm});
             this.drawingToolStripMenuItem.Name = "drawingToolStripMenuItem";
-            this.drawingToolStripMenuItem.Size = new System.Drawing.Size(104, 24);
-            this.drawingToolStripMenuItem.Text = "Sketch Tools";
+            this.drawingToolStripMenuItem.Size = new System.Drawing.Size(54, 24);
+            this.drawingToolStripMenuItem.Text = "Tests";
+            this.drawingToolStripMenuItem.Click += new System.EventHandler(this.drawingToolStripMenuItem_Click);
             // 
             // addSectionTsMenu
             // 
             this.addSectionTsMenu.AutoToolTip = true;
             this.addSectionTsMenu.Image = global::SketchUp.Properties.Resources.AddControl_16x_32;
             this.addSectionTsMenu.Name = "addSectionTsMenu";
-            this.addSectionTsMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.A)));
-            this.addSectionTsMenu.Size = new System.Drawing.Size(238, 26);
-            this.addSectionTsMenu.Text = "Add Section";
+            this.addSectionTsMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D1)));
+            this.addSectionTsMenu.Size = new System.Drawing.Size(279, 26);
+            this.addSectionTsMenu.Text = "Break Lines D3 and D4";
             this.addSectionTsMenu.ToolTipText = "Add a Building Section";
             this.addSectionTsMenu.Click += new System.EventHandler(this.addSectionTsMenu_Click);
             // 
@@ -102,9 +103,9 @@
             this.editSectionsToolStripMenuItem.AutoToolTip = true;
             this.editSectionsToolStripMenuItem.Image = global::SketchUp.Properties.Resources.Edit_grey_32xMD;
             this.editSectionsToolStripMenuItem.Name = "editSectionsToolStripMenuItem";
-            this.editSectionsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.E)));
-            this.editSectionsToolStripMenuItem.Size = new System.Drawing.Size(238, 26);
-            this.editSectionsToolStripMenuItem.Text = "Edit Sections";
+            this.editSectionsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D2)));
+            this.editSectionsToolStripMenuItem.Size = new System.Drawing.Size(279, 26);
+            this.editSectionsToolStripMenuItem.Text = "Test Combinability";
             this.editSectionsToolStripMenuItem.ToolTipText = "Delete or Change Section Type";
             this.editSectionsToolStripMenuItem.Click += new System.EventHandler(this.editSectionsToolStripMenuItem_Click);
             // 
@@ -251,7 +252,7 @@
             this.pctMain.TabStop = false;
             this.pctMain.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pctMain_MouseMove);
             // 
-            // EditSketchForm
+            // TestSketchForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -261,9 +262,8 @@
             this.Controls.Add(this.StatusMain);
             this.Controls.Add(this.MainMenu);
             this.MainMenuStrip = this.MainMenu;
-            this.Name = "EditSketchForm";
+            this.Name = "TestSketchForm";
             this.Text = "Render Initial Sketch";
-
             this.MainMenu.ResumeLayout(false);
             this.MainMenu.PerformLayout();
             this.cmenuDrawing.ResumeLayout(false);
