@@ -73,16 +73,21 @@ namespace SketchUp
 
             splash.UpdateProgress(85);
             Application.DoEvents();
+            InitializeParcelSnapshots();
+            splash.UpdateProgress(100);
+            Application.DoEvents();
+        }
+
+        private void InitializeParcelSnapshots()
+        {
             SketchRepository sketchRepo = GetSketchRepository();
-            SMParcel baseParcel= GetParcelFromDatabase(SketchUpGlobals.Record,
-            SketchUpGlobals.Card,sketchRepo);
+            SMParcel baseParcel = GetParcelFromDatabase(SketchUpGlobals.Record,
+            SketchUpGlobals.Card, sketchRepo);
             baseParcel.SnapShotIndex = 0;
             SketchUpGlobals.SMParcelFromData = baseParcel;
             SMParcel workingCopy = baseParcel;
             workingCopy.SnapShotIndex = 1;
             SketchUpGlobals.SketchSnapshots.Add(workingCopy);
-            splash.UpdateProgress(100);
-            Application.DoEvents();
         }
 
         #endregion Constructor
@@ -193,7 +198,7 @@ namespace SketchUp
 
         private void EditSketch(SMParcel workingCopyOfParcel)
         {
-            EditSketchForm editor = new EditSketchForm(workingCopyOfParcel);
+            EditSketchForm editor = new EditSketchForm(SketchUpGlobals.ParcelWorkingCopy);
             editor.ShowDialog(this);
         }
 
@@ -646,6 +651,7 @@ namespace SketchUp
             SketchUpGlobals.Card = args.Card;
             SketchUpGlobals.IpAddress = args.IPAddress;
             SketchUp.Properties.Settings.Default.IPAddress = SketchUpGlobals.IpAddress;
+
         }
 
         private void RecordTxt_Leave(object sender, EventArgs e)

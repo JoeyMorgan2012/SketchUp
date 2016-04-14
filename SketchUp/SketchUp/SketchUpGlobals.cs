@@ -290,9 +290,15 @@ namespace SketchUp
 		public static SMParcel ParcelWorkingCopy
 		{
 			get
-			{ int lastIndex = (from p in SketchSnapshots select p.SnapShotIndex).Max();
+            {
+                if (SketchSnapshots!=null&&SketchSnapshots.Count>0)
+                {
+   int lastIndex = (from p in SketchSnapshots select p.SnapShotIndex).Max();
                 parcelWorkingCopy = (from p in SketchSnapshots where p.SnapShotIndex == lastIndex select p).FirstOrDefault<SMParcel>();
-				return parcelWorkingCopy;
+				
+                }
+               
+             return parcelWorkingCopy;
 			}
 			set
 			{

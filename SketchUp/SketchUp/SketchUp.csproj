@@ -264,6 +264,12 @@
     <Compile Include="Rates.cs" />
     <Compile Include="SalesHistory.cs" />
     <Compile Include="SalesHistoryCollection.cs" />
+    <Compile Include="SectionAdditionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SectionAdditionDialog.Designer.cs">
+      <DependentUpon>SectionAdditionDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="SectionData.cs" />
     <Compile Include="SectionDataCollection.cs" />
     <Compile Include="SectionTypes.cs">
@@ -345,6 +351,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="SectionAdditionDialog.resx">
+      <DependentUpon>SectionAdditionDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SectionTypes.resx">
       <DependentUpon>SectionTypes.cs</DependentUpon>
     </EmbeddedResource>

@@ -56,6 +56,7 @@
     <Compile Include="SMConnection.cs" />
     <Compile Include="SMGlobal.cs" />
     <Compile Include="SMLine.cs" />
+    <Compile Include="SMLineManager.cs" />
     <Compile Include="SMParcel.cs" />
     <Compile Include="SketchRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -71,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
