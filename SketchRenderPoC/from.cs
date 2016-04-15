@@ -1,6 +1,6 @@
 ﻿namespace SketchRenderPoC
 {
-	internal class from
-	{
-	}
+    internal class from
+    {
+    }
 }

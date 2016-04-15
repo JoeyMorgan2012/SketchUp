@@ -1,17 +1,27 @@
-﻿using SketchUp;
-using SWallTech;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Windows.Forms;
+using SketchUp;
+using SWallTech;
 
 namespace SketchRenderPoC
 {
     public partial class TestSketchForm : Form
     {
+        private string sectionLetter = "D";
+        private int line1Number = 3;
+        private int line2Number = 5;
+        private string newSectionLetter = "G";
+        private PointF breakPoint1 = new PointF(-10, -2);
+        private PointF breakPoint2 = new PointF(0, -12);
+        private string pointLabel = string.Empty;
+
         #region Constructor
 
         private TestSetup ts = new TestSetup();
@@ -231,48 +241,26 @@ namespace SketchRenderPoC
 
         public void TestBreakLine1()
         {
-            string sectionLetter = "D";
-            int line1Number = 3;
-            int line2Number = 5;
-            string newSectionLetter = "G";
-            string pointLabel = string.Empty;
-            SMSection SectionD = BreakSectionDLine3(sectionLetter, line1Number, newSectionLetter);
+            SMSection SectionD = BreakSectionLine(sectionLetter, line1Number, breakPoint1, newSectionLetter);
 
             GreenBrush = Brushes.MidnightBlue;
 
             RenderSketch();
-            LabelLinesOffsetNeg12Neg12(SectionD, line1Number);
-            MessageBox.Show("Line 3 broken.");
-
-            //parcel = lm.BreakLine(parcel, sectionLetter, line2Number,
-            //    breakPoint2, SketchOrigin);
-            //sectionDwithBokenLine = (from s in parcel.Sections.Where(l =>
-            //    l.SectionLetter == sectionLetter)
-            //                         select s).FirstOrDefault<SMSection>().Lines;
-
-            //SectionD.Lines = sectionDwithBokenLine;
-            //ParcelWorkingCopy = parcel;
-            //BluePen = new Pen(Color.Plum, 2);
-
-            //GreenBrush = Brushes.Plum;
-            //RenderSketch();
-            //foreach (SMLine l in SectionD.Lines.Where(n => n.LineNumber >= line2Number))
-            //{
-            //    pointLabel = string.Format("Line {0} start {1},{2}", l.LineNumber, l.StartPoint.X, l.StartPoint.Y);
-            //    ShowPoint(pointLabel, l.ScaledStartPoint, new SizeF(-12, 12), new Pen(Color.Tomato, 1));
-            //    pointLabel = string.Format("Line {0} end {1},{2}", l.LineNumber, l.EndPoint.X, l.EndPoint.Y);
-            //    ShowPoint(pointLabel, l.ScaledEndPoint, new SizeF(-12, 12), new Pen(Color.Tomato, 1));
-            //}
-            //MessageBox.Show("Line 5 broken.");
+            statLblStepInfo.Text = "Breaking line D-3...";
+            LabelLinesOffsetNeg(SectionD, line1Number);
         }
+
         public void TestCombinabilityOfLines()
         {
             string sectionLetter = "D";
             int line1Number = 3;
+            statLblStepInfo.Text = "Combining Lines D3 & D4 again.";
             SMLineManager lm = new SMLineManager();
             string newSectionLetter = "G";
+            PointF breakPoint1 = new PointF(-10, -2);
+            PointF breakPoint2 = new PointF(0, -12);
             string pointLabel = string.Empty;
-            SMSection SectionD = BreakSectionDLine3(sectionLetter, line1Number, newSectionLetter);
+            SMSection SectionD = BreakSectionLine(sectionLetter, line1Number, breakPoint1, newSectionLetter);
             RenderSketch();
             int lastLineNumber = (from l in SectionD.Lines select l.LineNumber).Max();
             foreach (SMLine line in SectionD.Lines)
@@ -282,66 +270,66 @@ namespace SketchRenderPoC
                     SMLine nextLine = (from l in SectionD.Lines where l.LineNumber == line.LineNumber + 1 select l).FirstOrDefault();
                     Console.WriteLine(string.Format("Comparing lines {0} and {1}", line.LineNumber, nextLine.LineNumber));
                     bool canCombine = lm.LinesCanBeCombined(line, nextLine);
-                    Console.WriteLine(string.Format("Lines {0} and {1} {2} be combined.", line.LineNumber, nextLine.LineNumber,canCombine?"can":"cannot"));
+                    Console.WriteLine(string.Format("Lines {0} and {1} {2} be combined.", line.LineNumber, nextLine.LineNumber, canCombine ? "can" : "cannot"));
                 }
                 else
                 {
-                    SMLine nextLine = (from l in SectionD.Lines where l.LineNumber ==  1 select l).FirstOrDefault();
+                    SMLine nextLine = (from l in SectionD.Lines where l.LineNumber == 1 select l).FirstOrDefault();
                     Console.WriteLine(string.Format("Comparing lines {0} and {1}", line.LineNumber, nextLine.LineNumber));
                     bool canCombine = lm.LinesCanBeCombined(line, nextLine);
                     Console.WriteLine(string.Format("Lines {0} and {1} {2} be combined.", line.LineNumber, nextLine.LineNumber, canCombine ? "can" : "cannot"));
                 }
-               
             }
         }
-        private SMSection BreakSectionDLine3(string sectionLetter, int line1Number, string newSectionLetter)
+
+        private SMSection BreakSectionLine(string sectionLetter, int lineNumber, PointF breakPoint, string newSectionLetter = "")
         {
-            SMParcel parcel = ts.TestParcel(ts.DataSource, ts.UserName,
-                ts.Password, ts.Locality, ts.Record, ts.Dwelling);
+            ParcelWorkingCopy = ts.TestParcel();
+            ParcelWorkingCopy.SnapShotIndex = 0;
+            SketchUpGlobals.SketchSnapshots.Add(ParcelWorkingCopy);
             SMLineManager lm = new SMLineManager();
-            PointF breakPoint1 = new PointF(-10, -2);
-            PointF breakPoint2 = new PointF(0, -12);
+
             SMSection SectionD =
-                parcel.SelectSectionByLetter(sectionLetter);
+               ParcelWorkingCopy.SelectSectionByLetter(sectionLetter);
             List<SMLine> sectionlinesD = SectionD.Lines;
 
-            parcel = lm.BreakLine(parcel, sectionLetter, line1Number,
-                breakPoint1, SketchOrigin, newSectionLetter);
+            SMParcel parcel = lm.BreakLine(ParcelWorkingCopy, sectionLetter, lineNumber,
+                  breakPoint1, SketchOrigin, newSectionLetter);
             List<SMLine> sectionDwithBokenLine = (from s in
-                parcel.Sections.Where(l => l.SectionLetter == sectionLetter)
+               SketchUpGlobals.ParcelWorkingCopy.Sections.Where(l => l.SectionLetter == sectionLetter)
                                                   select s).FirstOrDefault<SMSection>().Lines;
             SectionD.Lines = sectionDwithBokenLine;
-            ParcelWorkingCopy = parcel;
+            int currentSnapShotNumber = (from p in SketchUpGlobals.SketchSnapshots select p.SnapShotIndex).Max();
+            parcel.SnapShotIndex = currentSnapShotNumber + 1;
+            SketchUpGlobals.SketchSnapshots.Add(parcel);
+            parcelWorkingCopy = parcel;
             return SectionD;
         }
 
-        private void LabelLinesOffsetNeg12Neg12(SMSection selectedSection, int startWithLine=1)
+        private void LabelLinesOffsetNeg(SMSection selectedSection, int startWithLine = 1)
         {
             string pointLabel;
             foreach (SMLine l in selectedSection.Lines.Where(n => n.LineNumber >= startWithLine))
             {
                 pointLabel = string.Format("Line {0} start {1},{2}", l.LineNumber, l.StartPoint.X, l.StartPoint.Y);
-                ShowPoint(pointLabel, l.ScaledStartPoint, new SizeF(-12, -12), new Pen(Color.MidnightBlue, 1));
+                ShowPoint(pointLabel, l.ScaledStartPoint, new SizeF(-30, -10), new Pen(Color.MidnightBlue, 1));
 
                 pointLabel = string.Format("Line {0} end {1},{2}", l.LineNumber, l.EndPoint.X, l.EndPoint.Y);
-                ShowPoint(pointLabel, l.ScaledEndPoint, new SizeF(-12, -12), new Pen(Color.MidnightBlue, 1));
+                ShowPoint(pointLabel, l.ScaledEndPoint, new SizeF(-30, -30), new Pen(Color.MidnightBlue, 1));
             }
-
-          
         }
-        private void LabelLinesOffsetPos12Pos12(SMSection selectedSection, int startWithLine = 1)
+
+        private void LabelLinesOffsetPos(SMSection selectedSection, int startWithLine = 1)
         {
             string pointLabel;
             foreach (SMLine l in selectedSection.Lines.Where(n => n.LineNumber >= startWithLine))
             {
                 pointLabel = string.Format("Line {0} start {1},{2}", l.LineNumber, l.StartPoint.X, l.StartPoint.Y);
-                ShowPoint(pointLabel, l.ScaledStartPoint, new SizeF(12, 12), new Pen(Color.MidnightBlue, 1));
+                ShowPoint(pointLabel, l.ScaledStartPoint, new SizeF(12, 10), new Pen(Color.MidnightBlue, 1));
 
                 pointLabel = string.Format("Line {0} end {1},{2}", l.LineNumber, l.EndPoint.X, l.EndPoint.Y);
-                ShowPoint(pointLabel, l.ScaledEndPoint, new SizeF(12, 12), new Pen(Color.MidnightBlue, 1));
+                ShowPoint(pointLabel, l.ScaledEndPoint, new SizeF(12, 30), new Pen(Color.MidnightBlue, 1));
             }
-
-
         }
 
         #endregion Tests
@@ -530,7 +518,7 @@ namespace SketchRenderPoC
             }
         }
 
-        private void ShowPoint(string pointLabel, PointF pointToLabel,SizeF labelOffset)
+        private void ShowPoint(string pointLabel, PointF pointToLabel, SizeF labelOffset)
         {
             PointF[] region = new PointF[] { new PointF(pointToLabel.X - 4, pointToLabel.Y - 4), new PointF(pointToLabel.X - 4, pointToLabel.Y + 4), new PointF(pointToLabel.X + 4, pointToLabel.Y + 4), new PointF(pointToLabel.X + 4, pointToLabel.Y - 4) };
             PolygonF pointPolygon = new PolygonF(region);
@@ -538,14 +526,16 @@ namespace SketchRenderPoC
             graphics.DrawPolygon(BluePen, region);
             graphics.DrawString(pointLabel, DefaultFont, GreenBrush, PointF.Add(new PointF(pointToLabel.X - 16, pointToLabel.Y - 16), labelOffset));
         }
-        private void ShowPoint(string pointLabel, PointF pointToLabel, SizeF labelOffset,Pen pen)
+
+        private void ShowPoint(string pointLabel, PointF pointToLabel, SizeF labelOffset, Pen pen)
         {
             PointF[] region = new PointF[] { new PointF(pointToLabel.X - 4, pointToLabel.Y - 4), new PointF(pointToLabel.X - 4, pointToLabel.Y + 4), new PointF(pointToLabel.X + 4, pointToLabel.Y + 4), new PointF(pointToLabel.X + 4, pointToLabel.Y - 4) };
             PolygonF pointPolygon = new PolygonF(region);
 
             graphics.DrawPolygon(pen, region);
-            graphics.DrawString(pointLabel, DefaultFont, GreenBrush, PointF.Add(new PointF(pointToLabel.X - 16, pointToLabel.Y - 16),labelOffset));
+            graphics.DrawString(pointLabel, DefaultFont, GreenBrush, PointF.Add(new PointF(pointToLabel.X - 16, pointToLabel.Y - 16), labelOffset));
         }
+
         private void ShowPoint(string pointLabel, PointF pointToLabel)
         {
             PointF[] region = new PointF[] { new PointF(pointToLabel.X - 4, pointToLabel.Y - 4), new PointF(pointToLabel.X - 4, pointToLabel.Y + 4), new PointF(pointToLabel.X + 4, pointToLabel.Y + 4), new PointF(pointToLabel.X + 4, pointToLabel.Y - 4) };
@@ -554,6 +544,7 @@ namespace SketchRenderPoC
             graphics.DrawPolygon(BluePen, region);
             graphics.DrawString(pointLabel, DefaultFont, GreenBrush, new PointF(pointToLabel.X - 16, pointToLabel.Y - 16));
         }
+
         public void ShowSketch()
         {
             DrawSections();
@@ -565,7 +556,7 @@ namespace SketchRenderPoC
 
         #region Properties
 
-        Pen orangePen;
+        private Pen orangePen;
 
         public Brush BlackBrush
         {
@@ -574,6 +565,7 @@ namespace SketchRenderPoC
                 blackBrush = Brushes.Black;
                 return blackBrush;
             }
+
             set
             {
                 blackBrush = value;
@@ -587,6 +579,7 @@ namespace SketchRenderPoC
                 blueBrush = Brushes.DarkBlue;
                 return blueBrush;
             }
+
             set
             {
                 blueBrush = value;
@@ -597,13 +590,14 @@ namespace SketchRenderPoC
         {
             get
             {
-                if (bluePen==null)
+                if (bluePen == null)
                 {
-     bluePen = new Pen(Color.DarkBlue, 1);
+                    bluePen = new Pen(Color.DarkBlue, 1);
                 }
-           
+
                 return bluePen;
             }
+
             set
             {
                 bluePen = value;
@@ -616,6 +610,7 @@ namespace SketchRenderPoC
             {
                 return firstTimeLoaded;
             }
+
             set
             {
                 firstTimeLoaded = value;
@@ -629,6 +624,7 @@ namespace SketchRenderPoC
                 greenBrush = Brushes.DarkGreen;
                 return greenBrush;
             }
+
             set
             {
                 greenBrush = value;
@@ -639,12 +635,13 @@ namespace SketchRenderPoC
         {
             get
             {
-                if (orangePen==null)
+                if (orangePen == null)
                 {
                     orangePen = new Pen(Color.DarkOrange, 1);
                 }
                 return orangePen;
             }
+
             set
             {
                 orangePen = value;
@@ -657,6 +654,7 @@ namespace SketchRenderPoC
             {
                 return parcelWorkingCopy;
             }
+
             set
             {
                 parcelWorkingCopy = value;
@@ -670,6 +668,7 @@ namespace SketchRenderPoC
                 redBrush = Brushes.DarkRed;
                 return redBrush;
             }
+
             set
             {
                 redBrush = value;
@@ -686,6 +685,7 @@ namespace SketchRenderPoC
                 }
                 return redPen;
             }
+
             set
             {
                 redPen = value;
@@ -698,6 +698,7 @@ namespace SketchRenderPoC
             {
                 return selectedParcel;
             }
+
             set
             {
                 selectedParcel = value;
@@ -710,6 +711,7 @@ namespace SketchRenderPoC
             {
                 return sketchOrigin;
             }
+
             set
             {
                 sketchOrigin = value;
@@ -766,5 +768,94 @@ namespace SketchRenderPoC
         }
 
         private bool firstTimeLoaded = false;
+
+        private void toolStripMenuCombinLinesInD_Click(object sender, EventArgs e)
+        {
+            BreakAndRejoinD3();
+        }
+
+        private void BreakAndRejoinD3()
+        {
+            //First break the lines
+            SMLineManager lm = new SMLineManager();
+            StringBuilder traceOut = new StringBuilder();
+            traceOut.AppendLine(string.Format("Version: {0}", ParcelWorkingCopy.SnapShotIndex));
+            foreach (SMLine line in ParcelWorkingCopy.AllSectionLines)
+            {
+                traceOut.AppendLine(string.Format("{0}:{1},{2} to {3},{4}", line.SectionLetter + "-" + line.LineNumber, line.StartX, line.StartY, line.EndX, line.EndY));
+            }
+            Debug.WriteLine(string.Format("Section {0}", traceOut.ToString()));
+
+            TestBreakLine1();
+            traceOut = new StringBuilder();
+            traceOut.AppendLine(string.Format("Version: {0}", ParcelWorkingCopy.SnapShotIndex));
+            foreach (SMLine line in ParcelWorkingCopy.AllSectionLines)
+            {
+                traceOut.AppendLine(string.Format("{0}:{1},{2} to {3},{4}", line.SectionLetter + "-" + line.LineNumber, line.StartX, line.StartY, line.EndX, line.EndY));
+            }
+            Debug.WriteLine(string.Format("Section {0}", traceOut.ToString()));
+            CleanUpBrokenLines(lm);
+            graphics.Clear(Color.White);
+            RenderSketch();
+        }
+
+        private void CleanUpBrokenLines(SMLineManager lm)
+        {
+            List<SMSection> sectionsList = new List<SMSection>();
+
+            //Go through the sections and combine any lines that can be combined.
+            foreach (SMSection section in ParcelWorkingCopy.Sections)
+            {
+                sectionsList.Add(ReorganizedSection(lm, section));
+#if DEBUG
+
+#endif
+            }
+            StringBuilder traceOut = new StringBuilder();
+            traceOut.AppendLine(string.Format("Version: {0}", ParcelWorkingCopy.SnapShotIndex));
+            foreach (SMLine line in ParcelWorkingCopy.AllSectionLines)
+            {
+                traceOut.AppendLine(string.Format("{0}:{1},{2} to {3},{4}", line.SectionLetter + "-" + line.LineNumber, line.StartX, line.StartY, line.EndX, line.EndY));
+            }
+            Debug.WriteLine(string.Format("Section {0}", traceOut.ToString()));
+            ParcelWorkingCopy.SnapShotIndex++;
+            ParcelWorkingCopy.Sections = sectionsList;
+            SketchUpGlobals.SketchSnapshots.Add(parcelWorkingCopy);
+        }
+
+        private SMSection ReorganizedSection(SMLineManager lm, SMSection section)
+        {
+            SMSection reorganizedSection = section;
+            List<SMLine> linesBefore = new List<SMLine>();
+            List<SMLine> linesAfter = new List<SMLine>();
+            List<SMLine> sectionLines = section.Lines;
+            int lastLineNumber = (from l in sectionLines select l.LineNumber).Max();
+            for (int i = 0; i < sectionLines.Count - 1; i++)
+            {
+                SMLine line = sectionLines[i];
+
+                SMLine nextLine = sectionLines[i + 1];
+                bool canCombine = lm.LinesCanBeCombined(line, nextLine);
+                if (canCombine)
+                {
+                    linesBefore.Clear();
+                    linesAfter.Clear();
+
+                    linesBefore = (from l in sectionLines where l.LineNumber < line.LineNumber select l).ToList();
+
+                    foreach (SMLine l in (from l in sectionLines where l.LineNumber > nextLine.LineNumber select l).ToList())
+                    {
+                        SMLine renumberedLine = l;
+                        renumberedLine.LineNumber -= 1;
+                        linesAfter.Add(renumberedLine);
+                    }
+                    reorganizedSection.Lines.Clear();
+                    reorganizedSection.Lines.AddRange(linesBefore);
+                    reorganizedSection.Lines.Add(lm.CombinedLines(line, nextLine));
+                    reorganizedSection.Lines.AddRange(linesAfter);
+                }
+            }
+            return reorganizedSection;
+        }
     }
 }

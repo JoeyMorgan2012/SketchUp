@@ -44,7 +44,9 @@ namespace SketchUp
                 CurOccTxt.Text = "Tax Exempt Occupancy";
             }
         }
+
         #region Constructor and Supporting
+
         #region refactored from legacy constructor
 
         private void EnableCorrectGroup(AdditionType selectedAdditionType)
@@ -223,8 +225,10 @@ namespace SketchUp
             rbNewSection.Focus();
         }
 
-        #endregion refactored from legacy constructor 
-        #endregion
+        #endregion refactored from legacy constructor
+
+        #endregion Constructor and Supporting
+
         private void AddSelectedSectionType(SMParcel parcelWorkingCopy)
         {
             throw new NotImplementedException();
@@ -377,8 +381,6 @@ namespace SketchUp
 
         #endregion Control Event Handlers
 
-    
-
         private void ValidateSectionStories()
         {
             decimal _sty = 0;
@@ -512,12 +514,14 @@ namespace SketchUp
         }
 
         #region enums
+
         private enum AdditionType
         {
             NewSection,
             SquareFootageOnly
-        } 
-        #endregion
+        }
+
+        #endregion enums
 
         public static int _nextLineCount
         {

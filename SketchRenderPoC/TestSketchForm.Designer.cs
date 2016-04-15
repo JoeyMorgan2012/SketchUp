@@ -28,6 +28,8 @@
             this.addSectionTsMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.editSectionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.flipSketchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.flipHorizontalEWToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.flipVerticalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,6 +49,7 @@
             this.StatusMain = new System.Windows.Forms.StatusStrip();
             this.MouseLocationLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.pctMain = new System.Windows.Forms.PictureBox();
+            this.statLblStepInfo = new System.Windows.Forms.ToolStripStatusLabel();
             this.MainMenu.SuspendLayout();
             this.cmenuDrawing.SuspendLayout();
             this.StatusMain.SuspendLayout();
@@ -77,6 +80,8 @@
             this.addSectionTsMenu,
             this.editSectionsToolStripMenuItem,
             this.toolStripSeparator1,
+            this.toolStripMenuItem2,
+            this.toolStripMenuItem1,
             this.flipSketchToolStripMenuItem,
             this.toolStripSeparator2,
             this.deleteSketchToolStripMenuItem,
@@ -112,7 +117,21 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(235, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(276, 6);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D3)));
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(279, 26);
+            this.toolStripMenuItem2.Text = "Combine Lines in D";
+            this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuCombinLinesInD_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(279, 26);
+            this.toolStripMenuItem1.Text = "toolStripMenuItem1";
             // 
             // flipSketchToolStripMenuItem
             // 
@@ -120,7 +139,7 @@
             this.flipHorizontalEWToolStripMenuItem,
             this.flipVerticalToolStripMenuItem});
             this.flipSketchToolStripMenuItem.Name = "flipSketchToolStripMenuItem";
-            this.flipSketchToolStripMenuItem.Size = new System.Drawing.Size(238, 26);
+            this.flipSketchToolStripMenuItem.Size = new System.Drawing.Size(279, 26);
             this.flipSketchToolStripMenuItem.Text = "Flip Sketch";
             // 
             // flipHorizontalEWToolStripMenuItem
@@ -142,27 +161,27 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(235, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(276, 6);
             // 
             // deleteSketchToolStripMenuItem
             // 
             this.deleteSketchToolStripMenuItem.Image = global::SketchUp.Properties.Resources.DeleteListItem_32x;
             this.deleteSketchToolStripMenuItem.Name = "deleteSketchToolStripMenuItem";
-            this.deleteSketchToolStripMenuItem.Size = new System.Drawing.Size(238, 26);
+            this.deleteSketchToolStripMenuItem.Size = new System.Drawing.Size(279, 26);
             this.deleteSketchToolStripMenuItem.Text = "Delete Sketch";
             this.deleteSketchToolStripMenuItem.Click += new System.EventHandler(this.deleteSketchToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(235, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(276, 6);
             // 
             // tsMenuExitForm
             // 
             this.tsMenuExitForm.AutoToolTip = true;
             this.tsMenuExitForm.Name = "tsMenuExitForm";
             this.tsMenuExitForm.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.X)));
-            this.tsMenuExitForm.Size = new System.Drawing.Size(238, 26);
+            this.tsMenuExitForm.Size = new System.Drawing.Size(279, 26);
             this.tsMenuExitForm.Text = "Exit Sketch View";
             this.tsMenuExitForm.ToolTipText = "Return to the Main Screen";
             this.tsMenuExitForm.Click += new System.EventHandler(this.tsMenuExitForm_Click);
@@ -227,17 +246,18 @@
             // 
             this.StatusMain.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.StatusMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MouseLocationLabel});
-            this.StatusMain.Location = new System.Drawing.Point(0, 718);
+            this.MouseLocationLabel,
+            this.statLblStepInfo});
+            this.StatusMain.Location = new System.Drawing.Point(0, 715);
             this.StatusMain.Name = "StatusMain";
-            this.StatusMain.Size = new System.Drawing.Size(1427, 22);
+            this.StatusMain.Size = new System.Drawing.Size(1427, 25);
             this.StatusMain.TabIndex = 2;
             this.StatusMain.Text = "Status";
             // 
             // MouseLocationLabel
             // 
             this.MouseLocationLabel.Name = "MouseLocationLabel";
-            this.MouseLocationLabel.Size = new System.Drawing.Size(0, 17);
+            this.MouseLocationLabel.Size = new System.Drawing.Size(0, 20);
             // 
             // pctMain
             // 
@@ -251,6 +271,12 @@
             this.pctMain.TabIndex = 4;
             this.pctMain.TabStop = false;
             this.pctMain.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pctMain_MouseMove);
+            // 
+            // statLblStepInfo
+            // 
+            this.statLblStepInfo.Name = "statLblStepInfo";
+            this.statLblStepInfo.Size = new System.Drawing.Size(46, 20);
+            this.statLblStepInfo.Text = "Step: ";
             // 
             // TestSketchForm
             // 
@@ -302,6 +328,9 @@
         private System.Windows.Forms.ToolStripMenuItem flipHorizontalEWToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem flipVerticalToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem drawSketchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripStatusLabel statLblStepInfo;
     }
 }
 

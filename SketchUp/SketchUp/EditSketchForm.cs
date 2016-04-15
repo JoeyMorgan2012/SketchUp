@@ -34,8 +34,6 @@ namespace SketchUp
             //TODO: Change this so the parcel data is loaded with the main form, index of 0, and each successive index is one greater, so each "version" is stored in the list.
             InitializeComponent();
 
-         
-
             CamraSupport.Init(SketchUpGlobals.CamraDbConn);
             MockGettingCamraData();
 

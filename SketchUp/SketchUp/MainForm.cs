@@ -134,11 +134,11 @@ namespace SketchUp
             int record = SketchUpGlobals.Record;
             int dwelling = SketchUpGlobals.Card;
 
-           
             SketchRepository sr = new SketchRepository(dataSource, userName, password, locality);
             SMParcel parcel = GetOriginalParcelFromDb(record, dwelling, sr);
             return parcel;
         }
+
         private SMParcel GetOriginalParcelFromDb(int record, int dwelling, SketchRepository sr)
         {
             SMParcel parcel = sr.SelectParcelData(record, dwelling);
@@ -150,6 +150,7 @@ namespace SketchUp
             parcel.IdentifyAttachedToSections();
             return parcel;
         }
+
         #endregion SMParcel Initializations
 
         private void UpdateProgressBar(object sender, ElapsedEventArgs e)
@@ -651,7 +652,6 @@ namespace SketchUp
             SketchUpGlobals.Card = args.Card;
             SketchUpGlobals.IpAddress = args.IPAddress;
             SketchUp.Properties.Settings.Default.IPAddress = SketchUpGlobals.IpAddress;
-
         }
 
         private void RecordTxt_Leave(object sender, EventArgs e)

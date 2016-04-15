@@ -952,7 +952,6 @@ namespace SketchUp
                 allStabTypes.Add(stab);
             }
             ParseRatTableDataToLists(allStabTypes);
-
         }
 
         private static void GetSubdivisionCodeDescriptions(DBAccessManager db)
@@ -1123,7 +1122,6 @@ namespace SketchUp
             WaterTypeCollection_srt = new List<StabTypeD>();
             ZoningDescriptionCollection = new List<ZoningDescription>();
             ZoningDescriptionCollection_srt = new List<ZoningDescriptionD>();
-
         }
 
         private static void ParseRatTableDataToLists(List<StabType> allStabTypes)
@@ -1167,6 +1165,7 @@ namespace SketchUp
             TerrainTypeCollection.AddRange(TER);
             WaterTypeCollection.AddRange(WAT);
         }
+
         public static string ListCommercialOccupancies
         {
             get
@@ -1454,5 +1453,4 @@ namespace SketchUp
         public static List<ZoningDescription> ZoningDescriptionCollection;
         public static List<ZoningDescriptionD> ZoningDescriptionCollection_srt;
     }
-
 }

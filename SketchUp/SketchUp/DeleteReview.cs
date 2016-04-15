@@ -8,68 +8,68 @@ using System.Windows.Forms;
 
 namespace SketchUp
 {
-	public partial class DeleteReview : Form
-	{
-		private Image _mainimage
-		{
-			get; set;
-		}
+    public partial class DeleteReview : Form
+    {
+        private Image _mainimage
+        {
+            get; set;
+        }
 
-		private byte[] ms = null;
-		private int click = 0;
-		private Dictionary<int, byte[]> savpic = null;
-		private List<int> curcnt = null;
-		private int listcnt = 0;
+        private byte[] ms = null;
+        private int click = 0;
+        private Dictionary<int, byte[]> savpic = null;
+        private List<int> curcnt = null;
+        private int listcnt = 0;
 
-		public DeleteReview(Dictionary<int, byte[]> curpic, List<int> thiscnt, int thisclick)
-		{
-			InitializeComponent();
+        public DeleteReview(Dictionary<int, byte[]> curpic, List<int> thiscnt, int thisclick)
+        {
+            InitializeComponent();
 
-			savpic = curpic;
-			curcnt = thiscnt;
+            savpic = curpic;
+            curcnt = thiscnt;
 
-			int x = curpic.Count;
+            int x = curpic.Count;
 
-			listcnt = curcnt.Count;
+            listcnt = curcnt.Count;
 
-			click = thisclick;
+            click = thisclick;
 
-			ms = savpic[click];
+            ms = savpic[click];
 
-			ImageNbrTxt.Text = click.ToString();
+            ImageNbrTxt.Text = click.ToString();
 
-			ListCountTxt.Text = listcnt.ToString();
+            ListCountTxt.Text = listcnt.ToString();
 
-			_mainimage = byteArrayToImage(ms);
-			DeleteImage.Image = _mainimage;
-		}
+            _mainimage = byteArrayToImage(ms);
+            DeleteImage.Image = _mainimage;
+        }
 
-		private Image byteArrayToImage(byte[] byteArrayIn)
-		{
-			MemoryStream ms = new MemoryStream(byteArrayIn);
-			Image returnImage = Image.FromStream(ms);
-			return returnImage;
-		}
+        private Image byteArrayToImage(byte[] byteArrayIn)
+        {
+            MemoryStream ms = new MemoryStream(byteArrayIn);
+            Image returnImage = Image.FromStream(ms);
+            return returnImage;
+        }
 
-		private void nextBtn_Click(object sender, EventArgs e)
-		{
-			click--;
-			ImageNbrTxt.Text = click.ToString();
+        private void nextBtn_Click(object sender, EventArgs e)
+        {
+            click--;
+            ImageNbrTxt.Text = click.ToString();
 
-			curcnt.Remove(listcnt);
-			listcnt = curcnt.Max();
+            curcnt.Remove(listcnt);
+            listcnt = curcnt.Max();
 
-			ListCountTxt.Text = listcnt.ToString();
+            ListCountTxt.Text = listcnt.ToString();
 
-			if (click >= 0)
-			{
-				ms = savpic[click];
+            if (click >= 0)
+            {
+                ms = savpic[click];
 
-				ImageNbrTxt.Text = click.ToString();
+                ImageNbrTxt.Text = click.ToString();
 
-				_mainimage = byteArrayToImage(ms);
-				DeleteImage.Image = _mainimage;
-			}
-		}
-	}
+                _mainimage = byteArrayToImage(ms);
+                DeleteImage.Image = _mainimage;
+            }
+        }
+    }
 }
