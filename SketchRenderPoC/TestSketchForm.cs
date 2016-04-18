@@ -32,7 +32,7 @@ namespace SketchRenderPoC
             //TODO: Change this so the parcel data is loaded with the main form, index of 0, and each successive index is one greater, so each "version" is stored in the list.
             InitializeComponent();
             this.ParcelWorkingCopy = ts.TestParcel();
-
+            SketchUpGlobals.SketchSnapshots.Add(ParcelWorkingCopy);
             graphics = pctMain.CreateGraphics();
             BluePen = new Pen(Color.DarkBlue, 3);
             RedPen = new Pen(Color.Red, 2);
@@ -242,7 +242,8 @@ namespace SketchRenderPoC
         public void TestBreakLine1()
         {
             SMSection SectionD = BreakSectionLine(sectionLetter, line1Number, breakPoint1, newSectionLetter);
-
+            ParcelWorkingCopy.SnapShotIndex += 1;
+            SketchUpGlobals.SketchSnapshots.Add(ParcelWorkingCopy);
             GreenBrush = Brushes.MidnightBlue;
 
             RenderSketch();
@@ -782,18 +783,20 @@ namespace SketchRenderPoC
             traceOut.AppendLine(string.Format("Version: {0}", ParcelWorkingCopy.SnapShotIndex));
             foreach (SMLine line in ParcelWorkingCopy.AllSectionLines)
             {
-                traceOut.AppendLine(string.Format("{0}:{1},{2} to {3},{4}", line.SectionLetter + "-" + line.LineNumber, line.StartX, line.StartY, line.EndX, line.EndY));
+                traceOut.AppendLine(string.Format("{0}:{1},{2} to {3},{4} Att: {5}", line.SectionLetter + "-" + line.LineNumber, line.StartX, line.StartY, line.EndX, line.EndY, line.AttachedSection));
             }
             Debug.WriteLine(string.Format("Section {0}", traceOut.ToString()));
 
             TestBreakLine1();
+            statLblStepInfo.Text = "D-3 is now D3 & D4, D4 is now D5.";
             traceOut = new StringBuilder();
             traceOut.AppendLine(string.Format("Version: {0}", ParcelWorkingCopy.SnapShotIndex));
             foreach (SMLine line in ParcelWorkingCopy.AllSectionLines)
             {
-                traceOut.AppendLine(string.Format("{0}:{1},{2} to {3},{4}", line.SectionLetter + "-" + line.LineNumber, line.StartX, line.StartY, line.EndX, line.EndY));
+                traceOut.AppendLine(string.Format("{0}:{1},{2} to {3},{4} Att: {5}", line.SectionLetter + "-" + line.LineNumber, line.StartX, line.StartY, line.EndX, line.EndY, line.AttachedSection));
             }
             Debug.WriteLine(string.Format("Section {0}", traceOut.ToString()));
+
             CleanUpBrokenLines(lm);
             graphics.Clear(Color.White);
             RenderSketch();
@@ -802,7 +805,7 @@ namespace SketchRenderPoC
         private void CleanUpBrokenLines(SMLineManager lm)
         {
             List<SMSection> sectionsList = new List<SMSection>();
-
+          
             //Go through the sections and combine any lines that can be combined.
             foreach (SMSection section in ParcelWorkingCopy.Sections)
             {
@@ -811,6 +814,9 @@ namespace SketchRenderPoC
 
 #endif
             }
+            ParcelWorkingCopy.SnapShotIndex += 1;
+            SketchUpGlobals.SketchSnapshots.Add(ParcelWorkingCopy);
+
             StringBuilder traceOut = new StringBuilder();
             traceOut.AppendLine(string.Format("Version: {0}", ParcelWorkingCopy.SnapShotIndex));
             foreach (SMLine line in ParcelWorkingCopy.AllSectionLines)
@@ -856,6 +862,30 @@ namespace SketchRenderPoC
                 }
             }
             return reorganizedSection;
+        }
+
+        private void tsmListParcelSnapshots_Click(object sender, EventArgs e)
+        {
+            ShowParcelLineByVersionInDataGrid();
+        }
+
+        private void ShowParcelLineByVersionInDataGrid()
+        {
+            foreach (SMParcel p in SketchUpGlobals.SketchSnapshots)
+            {
+                foreach (SMLine l in p.AllSectionLines)
+                {
+                    dataGridView1.Rows.Add(p.SnapShotIndex, l.SectionLetter, l.LineNumber, string.Format("{0:N2},{1:N2}", l.StartX, l.StartY), string.Format("{0:N2},{1:N2}", l.EndX, l.EndY), l.AttachedSection);
+
+                }
+            }
+        }
+
+        private void tsmAllTests_Click(object sender, EventArgs e)
+        {
+            TestBreakLine1();
+            BreakAndRejoinD3();
+            ShowParcelLineByVersionInDataGrid();
         }
     }
 }

@@ -29,8 +29,8 @@
             this.editSectionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.flipSketchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmListParcelSnapshots = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmAllTests = new System.Windows.Forms.ToolStripMenuItem();
             this.flipHorizontalEWToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.flipVerticalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -48,12 +48,22 @@
             this.cmenuJump = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusMain = new System.Windows.Forms.StatusStrip();
             this.MouseLocationLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.pctMain = new System.Windows.Forms.PictureBox();
             this.statLblStepInfo = new System.Windows.Forms.ToolStripStatusLabel();
+            this.pctMain = new System.Windows.Forms.PictureBox();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.Version = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Section = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Line = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Start = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.End = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Attached = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.sketchUpGlobalsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.MainMenu.SuspendLayout();
             this.cmenuDrawing.SuspendLayout();
             this.StatusMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pctMain)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sketchUpGlobalsBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // MainMenu
@@ -81,8 +91,8 @@
             this.editSectionsToolStripMenuItem,
             this.toolStripSeparator1,
             this.toolStripMenuItem2,
-            this.toolStripMenuItem1,
-            this.flipSketchToolStripMenuItem,
+            this.tsmListParcelSnapshots,
+            this.tsmAllTests,
             this.toolStripSeparator2,
             this.deleteSketchToolStripMenuItem,
             this.toolStripSeparator3,
@@ -127,20 +137,22 @@
             this.toolStripMenuItem2.Text = "Combine Lines in D";
             this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuCombinLinesInD_Click);
             // 
-            // toolStripMenuItem1
+            // tsmListParcelSnapshots
             // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(279, 26);
-            this.toolStripMenuItem1.Text = "toolStripMenuItem1";
+            this.tsmListParcelSnapshots.Name = "tsmListParcelSnapshots";
+            this.tsmListParcelSnapshots.Size = new System.Drawing.Size(279, 26);
+            this.tsmListParcelSnapshots.Text = "List Parcel Snapshots";
+            this.tsmListParcelSnapshots.Click += new System.EventHandler(this.tsmListParcelSnapshots_Click);
             // 
-            // flipSketchToolStripMenuItem
+            // tsmAllTests
             // 
-            this.flipSketchToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmAllTests.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.flipHorizontalEWToolStripMenuItem,
             this.flipVerticalToolStripMenuItem});
-            this.flipSketchToolStripMenuItem.Name = "flipSketchToolStripMenuItem";
-            this.flipSketchToolStripMenuItem.Size = new System.Drawing.Size(279, 26);
-            this.flipSketchToolStripMenuItem.Text = "Flip Sketch";
+            this.tsmAllTests.Name = "tsmAllTests";
+            this.tsmAllTests.Size = new System.Drawing.Size(279, 26);
+            this.tsmAllTests.Text = "All Tests";
+            this.tsmAllTests.Click += new System.EventHandler(this.tsmAllTests_Click);
             // 
             // flipHorizontalEWToolStripMenuItem
             // 
@@ -259,12 +271,18 @@
             this.MouseLocationLabel.Name = "MouseLocationLabel";
             this.MouseLocationLabel.Size = new System.Drawing.Size(0, 20);
             // 
+            // statLblStepInfo
+            // 
+            this.statLblStepInfo.Name = "statLblStepInfo";
+            this.statLblStepInfo.Size = new System.Drawing.Size(46, 20);
+            this.statLblStepInfo.Text = "Step: ";
+            // 
             // pctMain
             // 
             this.pctMain.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.pctMain.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pctMain.ContextMenuStrip = this.cmenuDrawing;
-            this.pctMain.Location = new System.Drawing.Point(400, 100);
+            this.pctMain.Location = new System.Drawing.Point(49, 31);
             this.pctMain.Name = "pctMain";
             this.pctMain.Size = new System.Drawing.Size(954, 514);
             this.pctMain.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -272,11 +290,79 @@
             this.pctMain.TabStop = false;
             this.pctMain.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pctMain_MouseMove);
             // 
-            // statLblStepInfo
+            // dataGridView1
             // 
-            this.statLblStepInfo.Name = "statLblStepInfo";
-            this.statLblStepInfo.Size = new System.Drawing.Size(46, 20);
-            this.statLblStepInfo.Text = "Step: ";
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.AllowUserToOrderColumns = true;
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Version,
+            this.Section,
+            this.Line,
+            this.Start,
+            this.End,
+            this.Attached});
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.dataGridView1.Location = new System.Drawing.Point(0, 565);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.RowTemplate.Height = 24;
+            this.dataGridView1.Size = new System.Drawing.Size(1427, 150);
+            this.dataGridView1.TabIndex = 5;
+            // 
+            // Version
+            // 
+            this.Version.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
+            this.Version.HeaderText = "Version";
+            this.Version.Name = "Version";
+            this.Version.ReadOnly = true;
+            this.Version.Width = 5;
+            // 
+            // Section
+            // 
+            this.Section.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
+            this.Section.HeaderText = "Section";
+            this.Section.Name = "Section";
+            this.Section.ReadOnly = true;
+            this.Section.Width = 5;
+            // 
+            // Line
+            // 
+            this.Line.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
+            this.Line.HeaderText = "Line";
+            this.Line.Name = "Line";
+            this.Line.ReadOnly = true;
+            this.Line.Width = 5;
+            // 
+            // Start
+            // 
+            this.Start.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
+            this.Start.HeaderText = "Start";
+            this.Start.Name = "Start";
+            this.Start.ReadOnly = true;
+            this.Start.Width = 5;
+            // 
+            // End
+            // 
+            this.End.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
+            this.End.HeaderText = "End";
+            this.End.Name = "End";
+            this.End.ReadOnly = true;
+            this.End.Width = 5;
+            // 
+            // Attached
+            // 
+            this.Attached.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
+            this.Attached.HeaderText = "Attached";
+            this.Attached.Name = "Attached";
+            this.Attached.ReadOnly = true;
+            this.Attached.Width = 5;
+            // 
+            // sketchUpGlobalsBindingSource
+            // 
+            this.sketchUpGlobalsBindingSource.DataSource = typeof(SketchUp.SketchUpGlobals);
             // 
             // TestSketchForm
             // 
@@ -284,6 +370,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.ClientSize = new System.Drawing.Size(1427, 740);
+            this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.pctMain);
             this.Controls.Add(this.StatusMain);
             this.Controls.Add(this.MainMenu);
@@ -296,6 +383,8 @@
             this.StatusMain.ResumeLayout(false);
             this.StatusMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pctMain)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sketchUpGlobalsBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -319,7 +408,7 @@
         private System.Windows.Forms.ToolStripMenuItem drawingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addSectionTsMenu;
         private System.Windows.Forms.ToolStripMenuItem editSectionsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem flipSketchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tsmAllTests;
         private System.Windows.Forms.ToolStripMenuItem deleteSketchToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem tsMenuExitForm;
@@ -329,8 +418,16 @@
         private System.Windows.Forms.ToolStripMenuItem flipVerticalToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem drawSketchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem tsmListParcelSnapshots;
         private System.Windows.Forms.ToolStripStatusLabel statLblStepInfo;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.BindingSource sketchUpGlobalsBindingSource;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Attached;
+        private System.Windows.Forms.DataGridViewTextBoxColumn End;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Start;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Line;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Section;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Version;
     }
 }
 
