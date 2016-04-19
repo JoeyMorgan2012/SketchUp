@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SWallTech;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -6,7 +7,6 @@ using System.Reflection;
 using System.Text;
 using System.Timers;
 using System.Windows.Forms;
-using SWallTech;
 
 namespace SketchUp
 {
@@ -29,11 +29,6 @@ namespace SketchUp
             }
         }
 
-        private void PrepareSketchManager()
-        {
-            throw new NotImplementedException();
-        }
-
         public MainForm(string[] newArgs)
         {
             if (Program.commandLineArgs != null && Program.commandLineArgs.Library != null && !string.IsNullOrEmpty(Program.commandLineArgs.Library))
@@ -45,6 +40,19 @@ namespace SketchUp
             {
                 ShowUpdateMessage();
             }
+        }
+
+        private void InitializeParcelSnapshots()
+        {
+            sketchRepo = GetSketchRepository();
+            SMParcel baseParcel = StoredSMParcel(SketchUpGlobals.Record,
+            SketchUpGlobals.Card, sketchRepo);
+            baseParcel.SnapShotIndex = 0;
+            SketchUpGlobals.SMParcelFromData = baseParcel;
+            SketchUpGlobals.SketchSnapshots.Add(baseParcel);
+            mainFormParcel = baseParcel;
+            mainFormParcel.SnapShotIndex = baseParcel.SnapShotIndex + 1;
+            SketchUpGlobals.SketchSnapshots.Add(mainFormParcel);
         }
 
         public void LoadDataFromCamraDb()
@@ -78,90 +86,12 @@ namespace SketchUp
             Application.DoEvents();
         }
 
-        private void InitializeParcelSnapshots()
+        private void PrepareSketchManager()
         {
-            SketchRepository sketchRepo = GetSketchRepository();
-            SMParcel baseParcel = GetParcelFromDatabase(SketchUpGlobals.Record,
-            SketchUpGlobals.Card, sketchRepo);
-            baseParcel.SnapShotIndex = 0;
-            SketchUpGlobals.SMParcelFromData = baseParcel;
-            SMParcel workingCopy = baseParcel;
-            workingCopy.SnapShotIndex = 1;
-            SketchUpGlobals.SketchSnapshots.Add(workingCopy);
+           
         }
 
         #endregion Constructor
-
-        #region SMParcel Initializations
-
-        private SMParcel GetParcelFromDatabase(int record, int dwelling, SketchRepository sr)
-        {
-            SMParcel parcel = sr.SelectParcelData(record, dwelling);
-            parcel.Sections = sr.SelectParcelSections(parcel);
-            foreach (SMSection sms in parcel.Sections)
-            {
-                sms.Lines = sr.SelectSectionLines(sms);
-            }
-            parcel.IdentifyAttachedToSections();
-            return parcel;
-        }
-
-        private SketchRepository GetSketchRepository()
-        {
-            try
-            {
-                SketchRepository sr = new SketchRepository(SketchUpGlobals.CamraDbConn.DataSource, SketchUpGlobals.CamraDbConn.User, SketchUpGlobals.CamraDbConn.Password, SketchUpGlobals.LocalityPreFix);
-                return sr;
-            }
-            catch (Exception ex)
-            {
-                string message = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
-                Console.WriteLine(message);
-#if DEBUG
-                MessageBox.Show(message);
-#endif
-                throw;
-            }
-        }
-
-        //TODO: Consider how SOLID this is and maybe refactor.
-        private SMParcel GetSelectedParcelData()
-        {
-            string dataSource = SketchUp.Properties.Settings.Default.IPAddress;
-            string password = SketchUp.Properties.Settings.Default.UserName;
-            string userName = SketchUp.Properties.Settings.Default.Password;
-            string locality = SketchUpGlobals.LocalityPreFix;
-            int record = SketchUpGlobals.Record;
-            int dwelling = SketchUpGlobals.Card;
-
-            SketchRepository sr = new SketchRepository(dataSource, userName, password, locality);
-            SMParcel parcel = GetOriginalParcelFromDb(record, dwelling, sr);
-            return parcel;
-        }
-
-        private SMParcel GetOriginalParcelFromDb(int record, int dwelling, SketchRepository sr)
-        {
-            SMParcel parcel = sr.SelectParcelData(record, dwelling);
-            parcel.Sections = sr.SelectParcelSections(parcel);
-            foreach (SMSection sms in parcel.Sections)
-            {
-                sms.Lines = sr.SelectSectionLines(sms);
-            }
-            parcel.IdentifyAttachedToSections();
-            return parcel;
-        }
-
-        #endregion SMParcel Initializations
-
-        private void UpdateProgressBar(object sender, ElapsedEventArgs e)
-        {
-            var reportProgress = new Action(() =>
-            {
-                // inside this anonymous delegate, we can do all the UI updates
-                splash.UpdateProgress();
-            });
-            Invoke(reportProgress);
-        }
 
         #region fields
 
@@ -169,27 +99,16 @@ namespace SketchUp
 
         #endregion fields
 
-        #region Properties
-
-        public Image sketchImage
-        {
-            get; set;
-        }
-
-        #endregion Properties
-
         #region Form Control Methods
 
         private void EditImage_Click(object sender, EventArgs e)
         {
             try
             {
-                SketchUpGlobals.SketchMgrRepo = GetSketchRepository();
-                SketchUpGlobals.SMParcelFromData = GetParcelFromDatabase(SketchUpGlobals.Record, SketchUpGlobals.Card, SketchUpGlobals.SketchMgrRepo);
-                SketchUpGlobals.ParcelWorkingCopy = SketchUpGlobals.SMParcelFromData;
-                EditSketch(SketchUpGlobals.ParcelWorkingCopy);
+                //TODO: Remove debugging code
+                // EditSketch(SketchUpGlobals.ParcelWorkingCopy);
 
-                //GetSelectedImages();
+                GetSelectedImages();
             }
             catch (Exception ex)
             {
@@ -197,6 +116,7 @@ namespace SketchUp
             }
         }
 
+        //TODO: Remove debugging code
         private void EditSketch(SMParcel workingCopyOfParcel)
         {
             EditSketchForm editor = new EditSketchForm(SketchUpGlobals.ParcelWorkingCopy);
@@ -750,9 +670,9 @@ namespace SketchUp
 
             if (File.Exists(sketchpath) && SketchUpGlobals.HasSketch == true)
             {
-                sketchImage = sketchpath.GetImage();
+                SketchImage = sketchpath.GetImage();
 
-                sketchBox.Image = sketchImage;
+                sketchBox.Image = SketchImage;
             }
             else
             {
@@ -805,6 +725,116 @@ namespace SketchUp
 
         #endregion Private Methods
 
+        #region Properties
+        private SMParcel mainFormParcel;
+
+        private Image sketchImage;
+
+        public Image SketchImage
+        {
+            get
+            {
+                return sketchImage;
+            }
+
+            set
+            {
+                sketchImage = value;
+            }
+        }
+
+        public SMParcel MainFormParcel
+        {
+            get
+            {
+                if (mainFormParcel==null)
+                {
+                    InitializeParcelSnapshots();
+                }
+                return mainFormParcel;
+            }
+
+            set
+            {
+                mainFormParcel = value;
+            }
+        }
+
+        public SketchRepository SketchRepo
+        {
+            get
+            {
+                try
+                {
+                    if (sketchRepo == null)
+                    {
+                        sketchRepo = GetSketchRepository();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+                    
+                }
+                return sketchRepo;
+            }
+
+            set
+            {
+                sketchRepo = value;
+            }
+        }
+
+        private SketchRepository sketchRepo;
+        #endregion Properties
+
+        #region SMParcel Initializations
+
+        private SMParcel StoredSMParcel(int record, int dwelling, SketchRepository sr)
+        {
+            SMParcel parcel = sr.SelectParcelData(record, dwelling);
+            parcel.Sections = sr.SelectParcelSections(parcel);
+            foreach (SMSection sms in parcel.Sections)
+            {
+                sms.Lines = sr.SelectSectionLines(sms);
+            }
+            parcel.IdentifyAttachedToSections();
+            return parcel;
+        }
+
+        private SMParcel GetParcelFromDatabase(int record, int dwelling, SketchRepository sr)
+        {
+            SMParcel parcel = sr.SelectParcelData(record, dwelling);
+            parcel.Sections = sr.SelectParcelSections(parcel);
+            foreach (SMSection sms in parcel.Sections)
+            {
+                sms.Lines = sr.SelectSectionLines(sms);
+            }
+            parcel.IdentifyAttachedToSections();
+            return parcel;
+        }
+
+       
+        private SketchRepository GetSketchRepository()
+        {
+            try
+            {
+                SketchRepository sr = new SketchRepository(SketchUpGlobals.CamraDbConn.DataSource, SketchUpGlobals.CamraDbConn.User, SketchUpGlobals.CamraDbConn.Password, SketchUpGlobals.LocalityPreFix);
+                return sr;
+            }
+            catch (Exception ex)
+            {
+                string message = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+                Console.WriteLine(message);
+#if DEBUG
+                MessageBox.Show(message);
+#endif
+                throw;
+            }
+        }
+
+        #endregion SMParcel Initializations
+
         private void MainForm_Shown(object sender, EventArgs e)
         {
             //splash.loadingProgBar.Value = 100;
@@ -815,6 +845,16 @@ namespace SketchUp
         private void timer_Tick(object sender, EventArgs e)
         {
             splash.UpdateProgress();
+        }
+
+        private void UpdateProgressBar(object sender, ElapsedEventArgs e)
+        {
+            var reportProgress = new Action(() =>
+            {
+                // inside this anonymous delegate, we can do all the UI updates
+                splash.UpdateProgress();
+            });
+            Invoke(reportProgress);
         }
     }
 }

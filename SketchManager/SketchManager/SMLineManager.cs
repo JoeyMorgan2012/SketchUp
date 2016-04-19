@@ -57,6 +57,11 @@ namespace SWallTech
             return parcelCopy;
         }
 
+        public SMParcel BreakLine(SMParcel parcel, string sectionLetter, object line2Number, PointF breakPoint2, PointF origin)
+        {
+            throw new NotImplementedException();
+        }
+
         public SMParcel BreakLine(SMParcel parcelCopy, string sectionLetter,
       int lineNumber, PointF breakPoint, PointF sketchOrigin, string newSectionLetter)
         {
@@ -141,7 +146,7 @@ namespace SWallTech
             };
         }
 
-        private static SMLine FirstHalfOfLine(PointF breakPoint, SMLine originalLine)
+        private  SMLine FirstHalfOfLine(PointF breakPoint, SMLine originalLine)
         {
             return new SMLine
             {

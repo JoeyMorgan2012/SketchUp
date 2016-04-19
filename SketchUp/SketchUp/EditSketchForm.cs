@@ -521,6 +521,10 @@ namespace SketchUp
         {
             get
             {
+                if (parcelWorkingCopy==null)
+                {
+                    parcelWorkingCopy = SketchUpGlobals.ParcelWorkingCopy;
+                }
                 return parcelWorkingCopy;
             }
 
