@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
 
 namespace SketchRenderPoC
 {
@@ -30,6 +31,8 @@ namespace SketchRenderPoC
             RedPen = new Pen(Color.Red, 2);
             firstTimeLoaded = true;
             RenderSketch();
+            graphics.Save();
+            
         }
 
         private SMParcel GetOriginalParcelFromDb(int record, int dwelling, SketchRepository sr)
@@ -96,12 +99,14 @@ namespace SketchRenderPoC
 
         private void RenderSketch()
         {
+
             SetSketchScale();
             SetSketchOrigin();
             SetScaledStartPoints();
             SetSectionCenterPoints();
-            graphics.Clear(Color.White);
-            DrawSections(true);
+           
+
+            ShowSketchFromBitMap();
         }
 
         #endregion Constructor
@@ -134,7 +139,43 @@ namespace SketchRenderPoC
 
         private void drawSketchToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ShowSketch();
+            ShowSketchFromBitMap();
+            SaveImageForVersion();
+        }
+
+        private void SaveImageForVersion()
+        {
+            string callingFile= Assembly.GetExecutingAssembly().FullName;
+ FileInfo fi = new FileInfo(callingFile);
+            string path = fi.FullName.Replace(string.Format(@"\{0}", fi.Name), string.Empty);
+            string imageName = string.Format(@"{0}\Snapshot{1}.png", path, SketchUpGlobals.ParcelWorkingCopy.SnapShotIndex);
+            fi = new FileInfo(imageName);
+            if (fi.Exists)
+            {
+                fi.Delete();
+            }
+            sketchImage.Save(imageName);
+        }
+
+        Bitmap sketchImage;
+        private void ShowSketchFromBitMap()
+        {
+             SketchImage = new Bitmap(pctMain.Width, pctMain.Height);
+
+            graphics = Graphics.FromImage(SketchImage);
+            
+                graphics.Clear(Color.White);
+                DrawSections();
+               // DrawSectionsOntoBitMap(graphics, true);
+                //graphics.Flush();
+                pctMain.Image = SketchImage;
+            SaveImageForVersion();
+            
+        }
+
+        private void DrawSectionsOntoBitMap(Graphics graphics, bool v)
+        {
+            ShowSketchFromBitMap();
         }
 
         private void tsbGetSketch_Click(object sender, EventArgs e)
@@ -419,7 +460,7 @@ namespace SketchRenderPoC
         {
             if (parcelWorkingCopy == null)
             {
-                RenderSketch();
+               // RenderSketch();
             }
             if (ParcelWorkingCopy.Sections != null)
             {
@@ -617,8 +658,8 @@ namespace SketchRenderPoC
         {
             graphics.Clear(Color.White);
             DrawSections(true);
-            graphics.Flush();
-            pctMain.BringToFront();
+          //  graphics.Flush();
+           // pctMain.BringToFront();
         }
 
         #endregion Private Methods
@@ -773,6 +814,19 @@ namespace SketchRenderPoC
             set
             {
                 sketchOrigin = value;
+            }
+        }
+
+        public Bitmap SketchImage
+        {
+            get
+            {
+                return sketchImage;
+            }
+
+            set
+            {
+                sketchImage = value;
             }
         }
 
@@ -960,5 +1014,10 @@ namespace SketchRenderPoC
         private string newSectionLetter = "G";
         private string pointLabel = string.Empty;
         private string sectionLetter = "D";
+
+        private void TestSketchForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            graphics.Dispose();
+        }
     }
 }

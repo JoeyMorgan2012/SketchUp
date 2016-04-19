@@ -22,6 +22,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TestSketchForm));
             this.MainMenu = new System.Windows.Forms.MenuStrip();
             this.beginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.drawingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -332,9 +333,11 @@
             this.Controls.Add(this.pctMain);
             this.Controls.Add(this.StatusMain);
             this.Controls.Add(this.MainMenu);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.MainMenu;
             this.Name = "TestSketchForm";
             this.Text = "Render Initial Sketch";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TestSketchForm_FormClosing);
             this.MainMenu.ResumeLayout(false);
             this.MainMenu.PerformLayout();
             this.cmenuDrawing.ResumeLayout(false);
