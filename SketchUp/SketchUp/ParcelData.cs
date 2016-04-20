@@ -2321,12 +2321,6 @@ namespace SketchUp
 
 		public Bitmap GetSketchImage(int bitmapWidth, int bitmapHeight, int sketchSizeXinPixels, int sketchSizeYinPixels, int sketchSizeInPixels, out float scale)
 		{
-#if DEBUG
-
-			//Debugging Code -- remove for production release
-			//var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-			//UtilityMethods.LogMethodCall(fullStack, true);
-#endif
 
 			BuildingSketcher sketcher = new BuildingSketcher(Sketch.BuildingSections);
 			return sketcher.DrawSketch(bitmapWidth, bitmapHeight, sketchSizeXinPixels, sketchSizeYinPixels, sketchSizeInPixels, out scale);

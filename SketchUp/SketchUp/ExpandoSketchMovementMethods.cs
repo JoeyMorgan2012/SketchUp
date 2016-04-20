@@ -230,12 +230,6 @@ namespace SketchUp
 
         public void MoveNorth(float startx, float starty)
         {
-#if DEBUG
-
-            //Debugging Code -- remove for production release
-            var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-            UtilityMethods.LogMethodCall(fullStack, true);
-#endif
             if (_isKeyValid == true)
             {
                 StrxD = 0;
@@ -312,7 +306,27 @@ namespace SketchUp
                 txtX = (StartX + 15);
                 txtY = (StartY - txtLocf);
 
-                AddMoveToImage();
+                PrevX = StartX;
+                PrevY = StartY;
+
+                StartX = EndX;
+                StartY = EndY;
+
+                _mouseX = Convert.ToInt32(EndX);
+                _mouseY = Convert.ToInt32(EndY);
+
+                DistText.Text = String.Empty;
+
+                DistText.Focus();
+
+                ExpSketchPBox.Image = _mainimage;
+                click++;
+                _StartX.Remove(click);
+                _StartY.Remove(click);
+                _StartX.Add(click, PrevX);
+                _StartY.Add(click, PrevY);
+                savpic.Add(click, imageToByteArray(_mainimage));
+
                 decimal XadjD = 0;
                 decimal YadjD = 0;
 
@@ -437,6 +451,7 @@ namespace SketchUp
                 BuildAddSQL(PrevX, PrevY, distanceD, _direction, lineCnt, _isclosing, NextStartX, NextStartY, PrevStartX, PrevStartY);
             }
         }
+
 
         public void MoveNorthEast(float startx, float starty)
         {
@@ -581,12 +596,6 @@ namespace SketchUp
 
         public void MoveNorthWest(float startx, float starty)
         {
-#if DEBUG
-
-            //Debugging Code -- remove for production release
-            var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-            UtilityMethods.LogMethodCall(fullStack, true);
-#endif
             if (_isKeyValid == true)
             {
                 StrxD = 0;
@@ -658,7 +667,26 @@ namespace SketchUp
                 txtX = (_mouseX + txtLocf);
                 txtY = (_mouseY - 15);
 
-                AddMoveToImage();
+                PrevX = StartX;
+                PrevY = StartY;
+
+                StartX = EndX;
+                StartY = EndY;
+
+                _mouseX = Convert.ToInt32(EndX);
+                _mouseY = Convert.ToInt32(EndY);
+
+                DistText.Text = String.Empty;
+
+                DistText.Focus();
+
+                ExpSketchPBox.Image = _mainimage;
+                click++;
+                _StartX.Remove(click);
+                _StartY.Remove(click);
+                _StartX.Add(click, PrevX);
+                _StartY.Add(click, PrevY);
+                savpic.Add(click, imageToByteArray(_mainimage));
 
                 Xadj = (((ScaleBaseX - PrevX) / _currentScale) * -1);
                 Yadj = (((ScaleBaseY - PrevY) / _currentScale) * -1);
@@ -699,19 +727,23 @@ namespace SketchUp
             AngleForm.SouthWest = false;
         }
 
+
         private void AddMoveToImage()
         {
-            AddMoveToImage();
+            try
+            {
+                AddMoveToImage();
+            }
+            catch (Exception)
+            {
+             
+                throw;
+            }
         }
 
         public void MoveSouth(float startx, float starty)
         {
-#if DEBUG
 
-            //Debugging Code -- remove for production release
-            var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-            UtilityMethods.LogMethodCall(fullStack, true);
-#endif
             if (_isKeyValid == true)
             {
                 StrxD = 0;

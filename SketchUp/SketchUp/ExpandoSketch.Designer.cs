@@ -28,9 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExpandoSketch));
             this.ExpandoSketchTools = new System.Windows.Forms.ToolStrip();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip();
+            this.AddSectionContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.jumpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.beginPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.endSectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -43,21 +44,17 @@
             this.UnDoBtn = new System.Windows.Forms.ToolStripButton();
             this.AddSectionBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
-            this.autoCloseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.angleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewSectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addSectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteSectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.chanageSectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteExinstingSketchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportSketchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rotateSketchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AutoCloseBtn = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.deleteExinstingSketchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.DrawingDoneBtn = new System.Windows.Forms.ToolStripButton();
+            this.tsbExitSketch = new System.Windows.Forms.ToolStripButton();
             this.dgSections = new System.Windows.Forms.DataGridView();
             this.fontDialog1 = new System.Windows.Forms.FontDialog();
             this.ExpSketchPBox = new System.Windows.Forms.PictureBox();
             this.ExpandoSketchTools.SuspendLayout();
-            this.contextMenuStrip1.SuspendLayout();
+            this.AddSectionContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgSections)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ExpSketchPBox)).BeginInit();
             this.SuspendLayout();
@@ -65,7 +62,7 @@
             // ExpandoSketchTools
             // 
             this.ExpandoSketchTools.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.ExpandoSketchTools.ContextMenuStrip = this.contextMenuStrip1;
+            this.ExpandoSketchTools.ContextMenuStrip = this.AddSectionContextMenu;
             this.ExpandoSketchTools.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.ExpandoSketchTools.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.BeginSectionBtn,
@@ -77,45 +74,52 @@
             this.UnDoBtn,
             this.AddSectionBtn,
             this.toolStripDropDownButton1,
-            this.AutoCloseBtn});
+            this.DrawingDoneBtn,
+            this.tsbExitSketch});
+            this.ExpandoSketchTools.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
             this.ExpandoSketchTools.Location = new System.Drawing.Point(0, 0);
             this.ExpandoSketchTools.Name = "ExpandoSketchTools";
-            this.ExpandoSketchTools.Size = new System.Drawing.Size(1014, 27);
+            this.ExpandoSketchTools.Size = new System.Drawing.Size(1014, 54);
             this.ExpandoSketchTools.TabIndex = 0;
             this.ExpandoSketchTools.Text = "toolStrip1";
             // 
-            // contextMenuStrip1
+            // AddSectionContextMenu
             // 
-            this.contextMenuStrip1.BackColor = System.Drawing.SystemColors.Control;
-            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.AddSectionContextMenu.BackColor = System.Drawing.SystemColors.Control;
+            this.AddSectionContextMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.AddSectionContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.jumpToolStripMenuItem,
             this.beginPointToolStripMenuItem,
             this.endSectionToolStripMenuItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(193, 82);
-            this.contextMenuStrip1.Click += new System.EventHandler(this.beginPointToolStripMenuItem_Click);
+            this.AddSectionContextMenu.Name = "contextMenuStrip1";
+            this.AddSectionContextMenu.Size = new System.Drawing.Size(241, 82);
+            this.AddSectionContextMenu.Click += new System.EventHandler(this.beginPointToolStripMenuItem_Click);
             // 
             // jumpToolStripMenuItem
             // 
+            this.jumpToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("jumpToolStripMenuItem.Image")));
             this.jumpToolStripMenuItem.Name = "jumpToolStripMenuItem";
-            this.jumpToolStripMenuItem.Size = new System.Drawing.Size(192, 26);
-            this.jumpToolStripMenuItem.Text = "Jump";
+            this.jumpToolStripMenuItem.Size = new System.Drawing.Size(240, 26);
+            this.jumpToolStripMenuItem.Text = "Jump to Nearest Corner";
             this.jumpToolStripMenuItem.Click += new System.EventHandler(this.jumpToolStripMenuItem_Click);
             // 
             // beginPointToolStripMenuItem
             // 
+            this.beginPointToolStripMenuItem.Image = global::SketchUp.Properties.Resources.Edit_32xMD;
             this.beginPointToolStripMenuItem.Name = "beginPointToolStripMenuItem";
-            this.beginPointToolStripMenuItem.Size = new System.Drawing.Size(192, 26);
-            this.beginPointToolStripMenuItem.Text = "Begin Point";
+            this.beginPointToolStripMenuItem.Size = new System.Drawing.Size(240, 26);
+            this.beginPointToolStripMenuItem.Text = "Begin Drawing Section";
+            this.beginPointToolStripMenuItem.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             this.beginPointToolStripMenuItem.Visible = false;
-            this.beginPointToolStripMenuItem.Click += new System.EventHandler(this.beginPointToolStripMenuItem_Click_1);
+            this.beginPointToolStripMenuItem.Click += new System.EventHandler(this.beginPointToolStripMenuItem_Click);
             // 
             // endSectionToolStripMenuItem
             // 
+            this.endSectionToolStripMenuItem.Image = global::SketchUp.Properties.Resources.GreenCheck;
             this.endSectionToolStripMenuItem.Name = "endSectionToolStripMenuItem";
-            this.endSectionToolStripMenuItem.Size = new System.Drawing.Size(192, 26);
+            this.endSectionToolStripMenuItem.Size = new System.Drawing.Size(240, 26);
             this.endSectionToolStripMenuItem.Text = "End Section Edit";
+            this.endSectionToolStripMenuItem.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             this.endSectionToolStripMenuItem.Click += new System.EventHandler(this.endSectionToolStripMenuItem_Click);
             // 
             // BeginSectionBtn
@@ -135,7 +139,7 @@
             // DistLbl
             // 
             this.DistLbl.Name = "DistLbl";
-            this.DistLbl.Size = new System.Drawing.Size(66, 24);
+            this.DistLbl.Size = new System.Drawing.Size(66, 20);
             this.DistLbl.Text = "Distance";
             // 
             // DistText
@@ -162,12 +166,12 @@
             this.TextBtn.Size = new System.Drawing.Size(50, 23);
             this.TextBtn.Text = "Text";
             this.TextBtn.Visible = false;
-            this.TextBtn.Click += new System.EventHandler(this.TextBtn_Click_1);
+            this.TextBtn.Click += new System.EventHandler(this.TextBtn_Click);
             // 
             // TextLbl
             // 
             this.TextLbl.Name = "TextLbl";
-            this.TextLbl.Size = new System.Drawing.Size(88, 24);
+            this.TextLbl.Size = new System.Drawing.Size(88, 20);
             this.TextLbl.Text = "Description:";
             // 
             // FieldText
@@ -211,39 +215,16 @@
             this.toolStripDropDownButton1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.autoCloseToolStripMenuItem,
-            this.angleToolStripMenuItem,
             this.viewSectionToolStripMenuItem,
-            this.addSectionToolStripMenuItem,
-            this.deleteSectionToolStripMenuItem,
-            this.chanageSectionToolStripMenuItem,
-            this.deleteExinstingSketchToolStripMenuItem,
-            this.exportSketchToolStripMenuItem,
-            this.rotateSketchToolStripMenuItem});
+            this.rotateSketchToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.deleteExinstingSketchToolStripMenuItem});
             this.toolStripDropDownButton1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
             this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton1.Margin = new System.Windows.Forms.Padding(0, 1, 10, 2);
             this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
             this.toolStripDropDownButton1.Size = new System.Drawing.Size(125, 23);
             this.toolStripDropDownButton1.Text = "Tools";
-            // 
-            // autoCloseToolStripMenuItem
-            // 
-            this.autoCloseToolStripMenuItem.AutoSize = false;
-            this.autoCloseToolStripMenuItem.Name = "autoCloseToolStripMenuItem";
-            this.autoCloseToolStripMenuItem.Size = new System.Drawing.Size(152, 30);
-            this.autoCloseToolStripMenuItem.Text = "AutoClose";
-            this.autoCloseToolStripMenuItem.Visible = false;
-            this.autoCloseToolStripMenuItem.Click += new System.EventHandler(this.autoCloseToolStripMenuItem_Click);
-            // 
-            // angleToolStripMenuItem
-            // 
-            this.angleToolStripMenuItem.AutoSize = false;
-            this.angleToolStripMenuItem.Name = "angleToolStripMenuItem";
-            this.angleToolStripMenuItem.Size = new System.Drawing.Size(150, 30);
-            this.angleToolStripMenuItem.Text = "Angle";
-            this.angleToolStripMenuItem.Visible = false;
             // 
             // viewSectionToolStripMenuItem
             // 
@@ -253,32 +234,17 @@
             this.viewSectionToolStripMenuItem.Text = "Edit Sections";
             this.viewSectionToolStripMenuItem.Click += new System.EventHandler(this.viewSectionsToolStripMenuItem_Click);
             // 
-            // addSectionToolStripMenuItem
+            // rotateSketchToolStripMenuItem
             // 
-            this.addSectionToolStripMenuItem.AutoSize = false;
-            this.addSectionToolStripMenuItem.Name = "addSectionToolStripMenuItem";
-            this.addSectionToolStripMenuItem.Size = new System.Drawing.Size(138, 30);
-            this.addSectionToolStripMenuItem.Text = "AddSection";
-            this.addSectionToolStripMenuItem.Visible = false;
-            this.addSectionToolStripMenuItem.Click += new System.EventHandler(this.addSectionToolStripMenuItem_Click);
+            this.rotateSketchToolStripMenuItem.Name = "rotateSketchToolStripMenuItem";
+            this.rotateSketchToolStripMenuItem.Size = new System.Drawing.Size(238, 26);
+            this.rotateSketchToolStripMenuItem.Text = "Flip Sketch";
+            this.rotateSketchToolStripMenuItem.Click += new System.EventHandler(this.rotateSketchToolStripMenuItem_Click);
             // 
-            // deleteSectionToolStripMenuItem
+            // toolStripSeparator1
             // 
-            this.deleteSectionToolStripMenuItem.AutoSize = false;
-            this.deleteSectionToolStripMenuItem.Name = "deleteSectionToolStripMenuItem";
-            this.deleteSectionToolStripMenuItem.Size = new System.Drawing.Size(188, 30);
-            this.deleteSectionToolStripMenuItem.Text = "Delete Section";
-            this.deleteSectionToolStripMenuItem.Visible = false;
-            this.deleteSectionToolStripMenuItem.Click += new System.EventHandler(this.deleteSectionToolStripMenuItem_Click);
-            // 
-            // chanageSectionToolStripMenuItem
-            // 
-            this.chanageSectionToolStripMenuItem.AutoSize = false;
-            this.chanageSectionToolStripMenuItem.Name = "chanageSectionToolStripMenuItem";
-            this.chanageSectionToolStripMenuItem.Size = new System.Drawing.Size(188, 30);
-            this.chanageSectionToolStripMenuItem.Text = "Change Section";
-            this.chanageSectionToolStripMenuItem.Visible = false;
-            this.chanageSectionToolStripMenuItem.Click += new System.EventHandler(this.changeSectionToolStripMenuItem_Click);
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(235, 6);
             // 
             // deleteExinstingSketchToolStripMenuItem
             // 
@@ -288,35 +254,29 @@
             this.deleteExinstingSketchToolStripMenuItem.Text = "Delete Existing Sketch";
             this.deleteExinstingSketchToolStripMenuItem.Click += new System.EventHandler(this.deleteExistingSketchToolStripMenuItem_Click);
             // 
-            // exportSketchToolStripMenuItem
+            // DrawingDoneBtn
             // 
-            this.exportSketchToolStripMenuItem.AutoSize = false;
-            this.exportSketchToolStripMenuItem.Name = "exportSketchToolStripMenuItem";
-            this.exportSketchToolStripMenuItem.Size = new System.Drawing.Size(188, 30);
-            this.exportSketchToolStripMenuItem.Text = "Export Sketch";
-            this.exportSketchToolStripMenuItem.Visible = false;
-            this.exportSketchToolStripMenuItem.Click += new System.EventHandler(this.exportSketchToolStripMenuItem_Click);
+            this.DrawingDoneBtn.BackColor = System.Drawing.Color.Cyan;
+            this.DrawingDoneBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.DrawingDoneBtn.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.DrawingDoneBtn.Image = ((System.Drawing.Image)(resources.GetObject("DrawingDoneBtn.Image")));
+            this.DrawingDoneBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.DrawingDoneBtn.Margin = new System.Windows.Forms.Padding(0, 1, 15, 2);
+            this.DrawingDoneBtn.Name = "DrawingDoneBtn";
+            this.DrawingDoneBtn.Size = new System.Drawing.Size(135, 24);
+            this.DrawingDoneBtn.Text = "<Done Drawing>";
+            this.DrawingDoneBtn.ToolTipText = "Click when you have added all lines in the section.";
+            this.DrawingDoneBtn.Click += new System.EventHandler(this.DoneDrawingBtn_Click);
             // 
-            // rotateSketchToolStripMenuItem
+            // tsbExitSketch
             // 
-            this.rotateSketchToolStripMenuItem.Name = "rotateSketchToolStripMenuItem";
-            this.rotateSketchToolStripMenuItem.Size = new System.Drawing.Size(238, 26);
-            this.rotateSketchToolStripMenuItem.Text = "Flip Sketch";
-            this.rotateSketchToolStripMenuItem.Click += new System.EventHandler(this.rotateSketchToolStripMenuItem_Click);
-            // 
-            // AutoCloseBtn
-            // 
-            this.AutoCloseBtn.BackColor = System.Drawing.Color.Cyan;
-            this.AutoCloseBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.AutoCloseBtn.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.AutoCloseBtn.Image = ((System.Drawing.Image)(resources.GetObject("AutoCloseBtn.Image")));
-            this.AutoCloseBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.AutoCloseBtn.Margin = new System.Windows.Forms.Padding(0, 1, 15, 2);
-            this.AutoCloseBtn.Name = "AutoCloseBtn";
-            this.AutoCloseBtn.Size = new System.Drawing.Size(135, 24);
-            this.AutoCloseBtn.Text = "< Close Section >";
-            this.AutoCloseBtn.ToolTipText = "Close section";
-            this.AutoCloseBtn.Click += new System.EventHandler(this.AutoCloseBtn_Click);
+            this.tsbExitSketch.Image = global::SketchUp.Properties.Resources.icon_home;
+            this.tsbExitSketch.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbExitSketch.Name = "tsbExitSketch";
+            this.tsbExitSketch.Size = new System.Drawing.Size(163, 24);
+            this.tsbExitSketch.Text = "Exit Sketch Window";
+            this.tsbExitSketch.ToolTipText = "Return to Main Window";
+            this.tsbExitSketch.Click += new System.EventHandler(this.tsbExitSketch_Click);
             // 
             // dgSections
             // 
@@ -331,15 +291,14 @@
             // ExpSketchPBox
             // 
             this.ExpSketchPBox.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.ExpSketchPBox.ContextMenuStrip = this.contextMenuStrip1;
+            this.ExpSketchPBox.ContextMenuStrip = this.AddSectionContextMenu;
             this.ExpSketchPBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ExpSketchPBox.Location = new System.Drawing.Point(0, 27);
+            this.ExpSketchPBox.Location = new System.Drawing.Point(0, 54);
             this.ExpSketchPBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.ExpSketchPBox.Name = "ExpSketchPBox";
-            this.ExpSketchPBox.Size = new System.Drawing.Size(1014, 572);
+            this.ExpSketchPBox.Size = new System.Drawing.Size(1014, 545);
             this.ExpSketchPBox.TabIndex = 2;
             this.ExpSketchPBox.TabStop = false;
-            this.ExpSketchPBox.Click += new System.EventHandler(this.ExpSketchPBox_Click);
             this.ExpSketchPBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ExpSketchPbox_MouseClick);
             this.ExpSketchPBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ExpSketchPbox_MouseDown);
             this.ExpSketchPBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ExpSketchPbox_MouseMove);
@@ -362,7 +321,7 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ExpandoSketch_FormClosing);
             this.ExpandoSketchTools.ResumeLayout(false);
             this.ExpandoSketchTools.PerformLayout();
-            this.contextMenuStrip1.ResumeLayout(false);
+            this.AddSectionContextMenu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgSections)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ExpSketchPBox)).EndInit();
             this.ResumeLayout(false);
@@ -373,7 +332,7 @@
         #endregion
 
         private System.Windows.Forms.ToolStrip ExpandoSketchTools;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ContextMenuStrip AddSectionContextMenu;
         private System.Windows.Forms.ToolStripMenuItem jumpToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton BeginSectionBtn;
         private System.Windows.Forms.ToolStripLabel DistLbl;
@@ -383,21 +342,17 @@
         private System.Windows.Forms.ToolStripTextBox FieldText;
         private System.Windows.Forms.ToolStripButton UnDoBtn;
         private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;
-        private System.Windows.Forms.ToolStripMenuItem autoCloseToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem angleToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewSectionToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addSectionToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem deleteSectionToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem chanageSectionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteExinstingSketchToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem exportSketchToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton AddSectionBtn;
-        private System.Windows.Forms.ToolStripButton AutoCloseBtn;
+        private System.Windows.Forms.ToolStripButton DrawingDoneBtn;
         private System.Windows.Forms.PictureBox ExpSketchPBox;
         private System.Windows.Forms.DataGridView dgSections;
         private System.Windows.Forms.ToolStripMenuItem beginPointToolStripMenuItem;
         private System.Windows.Forms.FontDialog fontDialog1;
         private System.Windows.Forms.ToolStripMenuItem endSectionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rotateSketchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripButton tsbExitSketch;
     }
 }

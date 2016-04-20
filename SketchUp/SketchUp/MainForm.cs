@@ -1,5 +1,4 @@
-﻿using SWallTech;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -7,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Timers;
 using System.Windows.Forms;
+using SWallTech;
 
 namespace SketchUp
 {
@@ -44,15 +44,13 @@ namespace SketchUp
 
         private void InitializeParcelSnapshots()
         {
+            SketchUpGlobals.SketchSnapshots.Clear();
             sketchRepo = GetSketchRepository();
-            SMParcel baseParcel = StoredSMParcel(SketchUpGlobals.Record,
+            SketchUpGlobals.SMParcelFromData = StoredSMParcel(SketchUpGlobals.Record,
             SketchUpGlobals.Card, sketchRepo);
-            baseParcel.SnapShotIndex = 0;
-            SketchUpGlobals.SMParcelFromData = baseParcel;
-            SketchUpGlobals.SketchSnapshots.Add(baseParcel);
-            mainFormParcel = baseParcel;
-            mainFormParcel.SnapShotIndex = baseParcel.SnapShotIndex + 1;
-            SketchUpGlobals.SketchSnapshots.Add(mainFormParcel);
+            SketchUpGlobals.SMParcelFromData.SnapShotIndex = 0;
+            SketchUpGlobals.SketchSnapshots.Add(SketchUpGlobals.SMParcelFromData);
+            mainFormParcel = SketchUpGlobals.SMParcelFromData;
         }
 
         public void LoadDataFromCamraDb()
@@ -88,7 +86,6 @@ namespace SketchUp
 
         private void PrepareSketchManager()
         {
-           
         }
 
         #endregion Constructor
@@ -117,11 +114,11 @@ namespace SketchUp
         }
 
         //TODO: Remove debugging code
-        private void EditSketch(SMParcel workingCopyOfParcel)
-        {
-            EditSketchForm editor = new EditSketchForm(SketchUpGlobals.ParcelWorkingCopy);
-            editor.ShowDialog(this);
-        }
+        //private void EditSketch(SMParcel workingCopyOfParcel)
+        //{
+        //    EditSketchForm editor = new EditSketchForm(SketchUpGlobals.ParcelWorkingCopy);
+        //    editor.ShowDialog(this);
+        //}
 
         private void GetSelectedImages()
         {
@@ -726,6 +723,7 @@ namespace SketchUp
         #endregion Private Methods
 
         #region Properties
+
         private SMParcel mainFormParcel;
 
         private Image sketchImage;
@@ -747,9 +745,16 @@ namespace SketchUp
         {
             get
             {
-                if (mainFormParcel==null)
+                if (mainFormParcel == null)
                 {
-                    InitializeParcelSnapshots();
+                    if (SketchUpGlobals.ParcelWorkingCopy == null)
+                    {
+                        InitializeParcelSnapshots();
+                    }
+                    else
+                    {
+                        mainFormParcel = SketchUpGlobals.ParcelWorkingCopy;
+                    }
                 }
                 return mainFormParcel;
             }
@@ -774,7 +779,6 @@ namespace SketchUp
                 catch (Exception ex)
                 {
                     Console.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
-                    
                 }
                 return sketchRepo;
             }
@@ -786,6 +790,7 @@ namespace SketchUp
         }
 
         private SketchRepository sketchRepo;
+
         #endregion Properties
 
         #region SMParcel Initializations
@@ -814,7 +819,6 @@ namespace SketchUp
             return parcel;
         }
 
-       
         private SketchRepository GetSketchRepository()
         {
             try

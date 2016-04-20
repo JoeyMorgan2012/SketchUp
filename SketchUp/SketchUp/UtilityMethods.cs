@@ -277,7 +277,70 @@ namespace SketchUp
             }
             return nextLetter;
         }
+        public static string NextLetter(SMParcel parcel)
+        {
+            var lastLetter = (from s in parcel.Sections orderby s.SectionLetter descending  select s.SectionLetter).FirstOrDefault();
+            string nextLetter = string.Empty;
+          
+            if (lastLetter != null)
+            {
+                switch (lastLetter)
+                {
+                    case "A":
+                        nextLetter = "B";
+                        break;
 
+                    case "B":
+                        nextLetter = "C";
+                        break;
+
+                    case "C":
+                        nextLetter = "D";
+                        break;
+
+                    case "D":
+                        nextLetter = "F";
+                        break;
+
+                    case "F":
+                        nextLetter = "G";
+                        break;
+
+                    case "G":
+                        nextLetter = "H";
+                        break;
+
+                    case "H":
+                        nextLetter = "I";
+                        break;
+
+                    case "I":
+                        nextLetter = "J";
+                        break;
+
+                    case "J":
+                        nextLetter = "K";
+                        break;
+
+                    case "K":
+                        nextLetter = "L";
+                        break;
+
+                    case "L":
+                        nextLetter = "M";
+                        break;
+
+                    default:
+                        nextLetter = string.Empty;
+                        break;
+                }
+            }
+            else
+            {
+                nextLetter = "A";
+            }
+            return nextLetter;
+        }
         #endregion String Utilities
     }
 }

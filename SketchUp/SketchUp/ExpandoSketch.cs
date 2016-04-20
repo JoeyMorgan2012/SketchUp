@@ -17,6 +17,15 @@ namespace SketchUp
     {
         #region DataTable Construction Refactored
 
+        private DataTable ConstructStartPointsTable()
+        {
+            DataTable startPts = new DataTable();
+            startPts.Columns.Add("Sect", typeof(string));
+            startPts.Columns.Add("Sx1", typeof(decimal));
+            startPts.Columns.Add("Sy1", typeof(decimal));
+            return startPts;
+        }
+
         private DataTable ConstructAreaTable()
         {
             DataTable at = new DataTable();
@@ -454,34 +463,16 @@ namespace SketchUp
 
         private void LoadAttachmentPointsDataTable()
         {
-            DataSet attachPointsDataSet = null;
-
-            string attachSQL = String.Format("select jlsect,jlpt1x,jlpt1y,jlpt2x,jlpt2y from {0}.{1}line where jlline# = 1 and jlrecord = {2} and jldwell = {3} and jlsect <> 'A' ",
-                                  SketchUpGlobals.LocalLib,
-                                  SketchUpGlobals.LocalityPreFix,
-                                   _currentParcel.Record,
-                                   _currentParcel.Card);
-
-            attachPointsDataSet = dbConn.DBConnection.RunSelectStatement(attachSQL);
-
-            if (attachPointsDataSet.Tables[0].Rows.Count > 0)
-            {
-                LoadAttPtsDT(attachPointsDataSet);
-            }
-        }
-
-        private void LoadAttPtsDT(DataSet attachPointsDataSet)
-        {
             AttachmentPointsDataTable.Clear();
-
-            for (int i = 0; i < attachPointsDataSet.Tables[0].Rows.Count; i++)
+            List<SMLine> linesList = (from l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines where l.SectionLetter != "A" orderby l.SectionLetter, l.LineNumber select l).ToList();
+            foreach (SMLine l in linesList)
             {
                 DataRow row = AttachmentPointsDataTable.NewRow();
-                row["Sect"] = attachPointsDataSet.Tables[0].Rows[i]["jlsect"].ToString();
-                row["X1"] = Convert.ToDecimal(attachPointsDataSet.Tables[0].Rows[i]["jlpt1x"].ToString());
-                row["Y1"] = Convert.ToDecimal(attachPointsDataSet.Tables[0].Rows[i]["jlpt1y"].ToString());
-                row["X2"] = Convert.ToDecimal(attachPointsDataSet.Tables[0].Rows[i]["jlpt2x"].ToString());
-                row["Y2"] = Convert.ToDecimal(attachPointsDataSet.Tables[0].Rows[i]["jlpt2y"].ToString());
+                row["Sect"] = l.SectionLetter;
+                row["X1"] = l.StartX;
+                row["Y1"] = l.StartY;
+                row["X2"] = l.EndX;
+                row["Y2"] = l.EndY;
 
                 AttachmentPointsDataTable.Rows.Add(row);
             }
@@ -489,36 +480,28 @@ namespace SketchUp
 
         private void LoadStartPointsDataTable()
         {
-            string startSQL = String.Format("select jlsect,jlpt1x,jlpt1y from {0}.{1}line where jlrecord = {2} and jlline# = 1 order by jlsect",
-                                      SketchUpGlobals.LocalLib,
-                                      SketchUpGlobals.LocalityPreFix,
+            List<SMLine> startLines = (from l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines where l.LineNumber == 1 select l).OrderBy(s => s.SectionLetter).ToList();
 
-                                       //SketchUpGlobals.FcLib,
-                                       //SketchUpGlobals.FcLocalityPrefix,
-                                       _currentParcel.Record);
+            StrtPts.Clear();
 
-            DataSet startPoints = null;
-            startPoints = dbConn.DBConnection.RunSelectStatement(startSQL);
-
-            if (startPoints.Tables[0].Rows.Count > 0)
+            foreach (SMLine l in startLines)
             {
-                StrtPts.Clear();
+                DataRow row = StrtPts.NewRow();
+                row["Sect"] = l.SectionLetter;
+                row["Sx1"] = l.StartX;
+                row["Sy1"] = l.StartY;
 
-                for (int i = 0; i < startPoints.Tables[0].Rows.Count; i++)
-                {
-                    DataRow row = StrtPts.NewRow();
-                    row["Sect"] = startPoints.Tables[0].Rows[i]["jlsect"].ToString();
-                    row["Sx1"] = Convert.ToDecimal(startPoints.Tables[0].Rows[i]["jlpt1x"].ToString());
-                    row["Sy1"] = Convert.ToDecimal(startPoints.Tables[0].Rows[i]["jlpt1y"].ToString());
-
-                    StrtPts.Rows.Add(row);
-                }
+                StrtPts.Rows.Add(row);
             }
         }
 
+        #region Methods refactored to use SketchManager
+
+        #endregion Methods refactored to use SketchManager
+
         private void SetNewSectionAttachmentPoint()
         {
-            //TODO: Look at this stepping through
+            //TODO: Intercept update here. Find where new lines are inserted
             string updateSQL = String.Format("update {0}.{1}line set JLATTACH = '{2}' where JLRECORD = {3} and JLDWELL = {4} and JLSECT = '{5}' and JLLINE# = {6}",
                 SketchUpGlobals.LocalLib,
                 SketchUpGlobals.LocalityPreFix,
@@ -555,6 +538,10 @@ namespace SketchUp
 
             return ds_master;
         }
+
+        #region Methods Checked and left as original with SM refactor
+
+        #endregion Methods Checked and left as original with SM refactor
 
         #endregion Refactored out from constructor
 
@@ -766,12 +753,7 @@ namespace SketchUp
         {
         }
 
-        private void AutoCloseBtn_Click(object sender, EventArgs e)
-        {
-            AutoClose(savpic, click, NextStartX, NextStartY);
-
-            Reorder();
-        }
+      
 
         private void beginPointToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -782,9 +764,7 @@ namespace SketchUp
 
         private void BeginSectionBtn_Click(object sender, EventArgs e)
         {
-            BeginSectionBtn.BackColor = Color.Cyan;
-            BeginSectionBtn.Text = "Active";
-            checkDirection = false;
+            SetActiveButtonAppearance();
             float xxx = NextStartX;
             float yyy = NextStartY;
 
@@ -887,6 +867,8 @@ namespace SketchUp
                 DMouseClick();
             }
         }
+
+       
 
         private void changeSectionToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1094,24 +1076,11 @@ namespace SketchUp
             DistText.Focus();
         }
 
-        private void endSectionToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
+  
         private void ExpandoSketch_FormClosing(object sender, FormClosingEventArgs e)
         {
             ClrX();
             AddMaster();
-        }
-
-        private void exportSketchToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            WriteToTextFile(",", "Secfile.txt");
-        }
-
-        private void ExpSketchPBox_Click(object sender, EventArgs e)
-        {
         }
 
         private void ExpSketchPbox_MouseClick(object sender, MouseEventArgs e)
@@ -1261,25 +1230,25 @@ namespace SketchUp
             }
         }
 
-        private void TextBtn_Click_1(object sender, EventArgs e)
-        {
-            if (FieldText.Text.Trim() != String.Empty)
-            {
-                Graphics g = Graphics.FromImage(_mainimage);
-                SolidBrush brush = new SolidBrush(Color.Blue);
-                Pen pen1 = new Pen(Color.Red, 2);
-                Font f = new Font("Arial", 8, FontStyle.Bold);
+        //private void TextBtn_Click_1(object sender, EventArgs e)
+        //{
+        //    if (FieldText.Text.Trim() != String.Empty)
+        //    {
+        //        Graphics g = Graphics.FromImage(_mainimage);
+        //        SolidBrush brush = new SolidBrush(Color.Blue);
+        //        Pen pen1 = new Pen(Color.Red, 2);
+        //        Font f = new Font("Arial", 8, FontStyle.Bold);
 
-                g.DrawString(FieldText.Text.Trim(), f, brush, new PointF(_mouseX + 5, _mouseY));
+        //        g.DrawString(FieldText.Text.Trim(), f, brush, new PointF(_mouseX + 5, _mouseY));
 
-                FieldText.Text = String.Empty;
-                FieldText.Focus();
+        //        FieldText.Text = String.Empty;
+        //        FieldText.Focus();
 
-                ExpSketchPBox.Image = _mainimage;
-                click++;
-                savpic.Add(click, imageToByteArray(_mainimage));
-            }
-        }
+        //        ExpSketchPBox.Image = _mainimage;
+        //        click++;
+        //        savpic.Add(click, imageToByteArray(_mainimage));
+        //    }
+        //}
 
         private void UnDoBtn_Click(object sender, EventArgs e)
         {
@@ -1310,9 +1279,11 @@ namespace SketchUp
 
         #endregion User Actions Response Methods
 
+        #region Constructor
+
         public ExpandoSketch(ParcelData currentParcel, string sketchFolder,
-            string sketchRecord, string sketchCard, string _locality, SWallTech.CAMRA_Connection _fox,
-            SectionDataCollection currentSection, bool hasSketch, Image sketchImage, bool hasNewSketch)
+      string sketchRecord, string sketchCard, string _locality, SWallTech.CAMRA_Connection _fox,
+      SectionDataCollection currentSection, bool hasSketch, Image sketchImage, bool hasNewSketch)
         {
             InitializeComponent();
             checkDirection = true;
@@ -1471,14 +1442,9 @@ namespace SketchUp
             savpic.Add(click, imageToByteArray(_mainimage));
         }
 
-        private DataTable ConstructStartPointsTable()
-        {
-            DataTable startPts = new DataTable();
-            startPts.Columns.Add("Sect", typeof(string));
-            startPts.Columns.Add("Sx1", typeof(decimal));
-            startPts.Columns.Add("Sy1", typeof(decimal));
-            return startPts;
-        }
+        #endregion Constructor
+
+        #region General Class Methods
 
         private void AddXLine(string thisSection)
         {
@@ -1509,337 +1475,7 @@ namespace SketchUp
             dbConn.DBConnection.ExecuteNonSelectStatement(adjLine.ToString());
         }
 
-        private void AutoClose(Dictionary<int, byte[]> curpic, int curclick, float startx, float starty)
-        {
-#if DEBUG
-
-            //Debugging Code -- remove for production release
-            //var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-            ////UtilityMethods.LogMethodCall(fullStack, true);
-#endif
-            Cursor = Cursors.WaitCursor;
-
-            savcnt = new List<int>();
-            savpic = curpic;
-
-            _isClosed = true;
-
-            string stx = _nextSectLtr;
-
-            click = curclick;
-
-            float tx1 = NextStartX;
-
-            float ty1 = NextStartY;
-
-            ExpSketchPBox.Image = _mainimage;
-            click++;
-            savpic.Add(click, imageToByteArray(_mainimage));
-
-            foreach (KeyValuePair<int, byte[]> pair in savpic)
-            {
-                savcnt.Add(pair.Key);
-            }
-
-            finalClick = click;
-
-            _isclosing = true;
-
-            string delXline = string.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jldirect = 'X' ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix, _currentParcel.Record, _currentParcel.Card);
-
-            dbConn.DBConnection.ExecuteNonSelectStatement(delXline);
-
-            Graphics g = Graphics.FromImage(_mainimage);
-            SolidBrush brush = new SolidBrush(Color.Red);
-            Pen pen1 = new Pen(Color.Red, 2);
-            Pen pen2 = new Pen(Color.Green, 3);
-            Font f = new Font("Arial", 8, FontStyle.Bold);
-
-            string finalDirect = String.Empty;
-
-            decimal finalDistance = 0;
-            float finalDistanceF = 0;
-
-            float calcDistXf = 0;
-            float calcDistYf = 0;
-
-            decimal calcDistX = 0;
-            decimal calcDistY = 0;
-
-            if (_addSection == true)
-            {
-#if DEBUG
-                StringBuilder traceOut = new StringBuilder();
-                int traceCounter = 1;
-                traceOut.AppendLine(string.Format("*** {0}", "New Section Points"));
-                foreach (PointF p in NewSectionPoints)
-                {
-                    traceOut.AppendLine(string.Format("{0} - {1},{2}", traceCounter.ToString(), p.X, p.Y));
-                }
-                Trace.WriteLine(string.Format("{0}", traceOut.ToString()));
-#endif
-                var sectionPolygon = new PolygonF(NewSectionPoints.ToArray());
-                var sectionArea = sectionPolygon.Area;
-
-                if (_nextStoryHeight < 1.0m)
-                {
-                    _nextStoryHeight = 1;
-                }
-                if (_nextStoryHeight >= 1.0m)
-                {
-                    _nextSectArea = (Math.Round(Convert.ToDecimal(sectionPolygon.Area), 1) * _nextStoryHeight);
-                }
-            }
-
-            StringBuilder garcp = new StringBuilder();
-            garcp.Append(String.Format("select rsecto from {0}.{1}rat1 where rid = 'P' and rdesc like '%GAR%' and rrpsf <> 0 ",
-                               SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix
-
-                                //SketchUpGlobals.FcLib,
-                                //SketchUpGlobals.FcLocalityPrefix
-                                ));
-
-            DataSet ds = dbConn.DBConnection.RunSelectStatement(garcp.ToString());
-
-            if (ds.Tables[0].Rows.Count > 0)
-            {
-                GarTypes = new List<string>();
-                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
-                {
-                    string sect = ds.Tables[0].Rows[i]["rsecto"].ToString().Trim();
-
-                    GarTypes.Add(sect);
-                }
-            }
-
-            StringBuilder cptype = new StringBuilder();
-            cptype.Append(String.Format("select rsecto from {0}.{1}rat1 where rid = 'P' and rdesc like '%CAR%' and rrpsf <> 0 ",
-                      SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix
-
-                        //SketchUpGlobals.FcLib,
-                        //SketchUpGlobals.FcLocalityPrefix
-                        ));
-
-            DataSet ds1 = dbConn.DBConnection.RunSelectStatement(cptype.ToString());
-
-            if (ds1.Tables[0].Rows.Count > 0)
-            {
-                cpTypes = new List<string>();
-                for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
-                {
-                    string sect = ds1.Tables[0].Rows[i]["rsecto"].ToString().Trim();
-
-                    cpTypes.Add(sect);
-                }
-            }
-
-            StringBuilder garcode = new StringBuilder();
-            garcode.Append(String.Format("select ttelem from {0}.{1}stab where ttid = 'GAR' and tdesc not like '%NONE%' and tdesc not like '%DETACHED%' ",
-                               SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix
-
-                                //SketchUpGlobals.FcLib,
-                                //SketchUpGlobals.FcLocalityPrefix
-                                ));
-
-            DataSet gc = dbConn.DBConnection.RunSelectStatement(garcode.ToString());
-
-            if (gc.Tables[0].Rows.Count > 0)
-            {
-                GarCodes = new List<int>();
-                for (int i = 0; i < gc.Tables[0].Rows.Count; i++)
-                {
-                    int gcode = Convert.ToInt32(gc.Tables[0].Rows[i]["ttelem"].ToString());
-
-                    GarCodes.Add(gcode);
-                }
-            }
-
-            StringBuilder cpcode = new StringBuilder();
-            cpcode.Append(String.Format("select ttelem from {0}.{1}stab where ttid = 'CAR' and tdesc not like '%NONE%' and tdesc not like '%DETACHED%' ",
-                              SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix
-
-                                //SketchUpGlobals.FcLib,
-                                //SketchUpGlobals.FcLocalityPrefix
-                                ));
-
-            DataSet cp = dbConn.DBConnection.RunSelectStatement(cpcode.ToString());
-
-            if (cp.Tables[0].Rows.Count > 0)
-            {
-                CpCodes = new List<int>();
-                for (int i = 0; i < cp.Tables[0].Rows.Count; i++)
-                {
-                    int cpcodeX = Convert.ToInt32(cp.Tables[0].Rows[i]["ttelem"].ToString());
-
-                    CpCodes.Add(cpcodeX);
-                }
-            }
-
-            string newSect = _nextSectType.Trim();
-
-            if (GarTypes.Contains(_nextSectType.Trim()) && !GarCodes.Contains(_currentParcel.mgart))
-            {
-                MessageBox.Show("Current Record does not include Garages ");
-
-                MissingGarageData missGar = new MissingGarageData(dbConn, _currentParcel, _nextSectArea, "GAR");
-                missGar.ShowDialog();
-
-                if (_currentParcel.mgart != _currentParcel.orig_mgart)
-                {
-                    StringBuilder fixCp = new StringBuilder();
-                    fixCp.Append(String.Format("update {0}.{1}mast set mgart = {2},mgar#c = {3} ",
-                      SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix,
-
-                        //SketchUpGlobals.FcLib,
-                        //SketchUpGlobals.FcLocalityPrefix,
-                        _currentParcel.mgart,
-                        _currentParcel.mgarNc));
-                    fixCp.Append(String.Format("where mrecno = {0} and mdwell = {1} ", _currentParcel.mrecno, _currentParcel.mdwell));
-
-                    dbConn.DBConnection.ExecuteNonSelectStatement(fixCp.ToString());
-
-                    ParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
-                }
-            }
-
-            if (cpTypes.Contains(_nextSectType.Trim()) && !CpCodes.Contains(_currentParcel.mcarpt))
-            {
-                MessageBox.Show("Current Record does not include CarPorts ");
-
-                MissingGarageData missCP = new MissingGarageData(dbConn, _currentParcel, _nextSectArea, "CP");
-                missCP.ShowDialog();
-
-                if (_currentParcel.mcarpt != _currentParcel.orig_mcarpt)
-                {
-                    StringBuilder fixCp = new StringBuilder();
-                    fixCp.Append(String.Format("update {0}.{1}mast set mcarpt = {2},mcar#c = {3} ",
-                       SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix,
-
-                        //SketchUpGlobals.FcLib,
-                        //SketchUpGlobals.FcLocalityPrefix,
-                        _currentParcel.mcarpt,
-                        _currentParcel.mcarNc));
-                    fixCp.Append(String.Format("where mrecno = {0} and mdwell = {1} ", _currentParcel.mrecno, _currentParcel.mdwell));
-
-                    dbConn.DBConnection.ExecuteNonSelectStatement(fixCp.ToString());
-
-                    if (_currentParcel.mcarpt == 66)
-                    {
-                        _nextSectType = "WCP";
-                    }
-
-                    ParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
-                }
-            }
-
-            calcDistXf = ((BaseX - StartX) / _currentScale);
-
-            calcDistYf = ((BaseY - StartY) / _currentScale);
-
-            calcDistX = Convert.ToDecimal((((BaseX - StartX) / _currentScale)));
-
-            calcDistY = Convert.ToDecimal((((BaseY - StartY) / _currentScale)));
-
-            float tstclacDistfx = SecBeginX - startx;
-
-            float tstcalcDistfy = SecBeginY - starty;
-
-            if (startx > SecBeginX)
-            {
-                finalDirect = "W";
-                finalDistance = Math.Abs(Convert.ToDecimal(SecBeginX - startx));
-                finalDistanceF = (float)finalDistance;
-                Xadj = NextStartX - finalDistanceF;
-                Yadj = NextStartY;
-            }
-            if (startx < SecBeginX)
-            {
-                finalDirect = "E";
-                finalDistance = Math.Abs(Convert.ToDecimal(SecBeginX - startx));
-                finalDistanceF = (float)finalDistance;
-                Xadj = NextStartX + finalDistanceF;
-                Yadj = NextStartY;
-            }
-            if (starty < SecBeginY)
-            {
-                finalDirect = "S";
-                finalDistance = Math.Abs(Convert.ToDecimal(SecBeginY - starty));
-                finalDistanceF = (float)finalDistance;
-                Yadj = NextStartY + finalDistanceF;
-                Xadj = NextStartX;
-            }
-            if (starty > SecBeginY)
-            {
-                finalDirect = "N";
-                finalDistance = Math.Abs(Convert.ToDecimal(SecBeginY - starty));
-                finalDistanceF = (float)finalDistance;
-                Yadj = NextStartY - finalDistanceF;
-                Xadj = NextStartX;
-            }
-
-            _lenString = String.Format("{0} ft.", finalDistance.ToString("N1"));
-
-            txtLoc = ((finalDistance * Convert.ToDecimal(_currentScale)) / 2);
-            txtLocf = ((((finalDistanceF) * _currentScale) / 2));
-
-            g.DrawLine(pen1, StartX, StartY, BaseX, BaseY);
-
-            if (finalDirect == "N")
-            {
-                g.DrawString(_lenString, f, brush, new PointF((StartX + 15), (StartY - txtLocf)));
-            }
-            if (finalDirect == "S")
-            {
-                g.DrawString(_lenString, f, brush, new PointF((StartX + 15), (StartY + txtLocf)));
-            }
-            if (finalDirect == "E")
-            {
-                g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
-            }
-            if (finalDirect == "W")
-            {
-                g.DrawString(_lenString, f, brush, new PointF((StartX - txtLocf), (StartY - 15)));
-            }
-
-            float px = startx;
-
-            float py = starty;
-
-            float px1 = PrevStartX;
-
-            float py1 = PrevStartY;
-
-            lineCnt++;
-            BuildAddSQL(StartX, StartY, finalDistanceF, finalDirect, lineCnt, _isclosing, Xadj, Yadj, NextStartX, NextStartY);
-
-            _addSection = false;
-
-            computeArea();
-
-            AddSectionSQL(finalDirect, finalDistanceF);
-
-            string finalDesc = String.Format("{0}, {1} sf",
-                FieldText.Text.Trim(),
-                _nextSectArea.ToString("N1"));
-
-            FieldText.Text = finalDesc.Trim();
-
-            ExpSketchPBox.Image = _mainimage;
-
-            sortSection();
-
-            setAttPnts();
-
-            Cursor = Cursors.Default;
-
-            this.Close();
-        }
+     
 
         private string BeginLineDirection(float nextStartX, float nextStartY)
         {
@@ -2872,21 +2508,21 @@ namespace SketchUp
 
             /* Joey's attempt to simplify the determination of the closest points and populate the multi-attach section if there are more than one.
 
-			List<PointWithComparisons> possibleAttachmentPoints = ClosestPoints(JumpTable, new PointF(JumpX, JumpY));
-			if (possibleAttachmentPoints.Count > 1)
-			{
-				AttSecLtrList.Clear();
-				foreach (PointWithComparisons p in possibleAttachmentPoints)
-				{
-					AttSecLtrList.Add(p.PointLabel);
-				}
-			}
-			else
-			{
-				secltr = possibleAttachmentPoints.FirstOrDefault<PointWithComparisons>().PointLabel;
-			}
+            List<PointWithComparisons> possibleAttachmentPoints = ClosestPoints(JumpTable, new PointF(JumpX, JumpY));
+            if (possibleAttachmentPoints.Count > 1)
+            {
+                AttSecLtrList.Clear();
+                foreach (PointWithComparisons p in possibleAttachmentPoints)
+                {
+                    AttSecLtrList.Add(p.PointLabel);
+                }
+            }
+            else
+            {
+                secltr = possibleAttachmentPoints.FirstOrDefault<PointWithComparisons>().PointLabel;
+            }
 
-End Joey's alternative Code */
+    End Joey's alternative Code */
 
             string multisectatch = MultiPointsAvailable(AttSecLtrList);
 
@@ -2923,10 +2559,10 @@ End Joey's alternative Code */
             startSplitY = Convert.ToDecimal(SortedJumpTableDataView[0]["YPt1"].ToString());
             Trace.WriteLine(string.Format("Start split point: {0},{1}", startSplitX, startSplitY));
             /* More Rube Goldberg code. These values are set, but then they are not used anywhere.
-			 -JMM
-						decimal tsplit2 = Convert.ToDecimal(SortedJumpTableDataView[0]["XPt2"].ToString());
-						decimal tsplit3 = Convert.ToDecimal(SortedJumpTableDataView[0]["YPt2"].ToString());
-			*/
+             -JMM
+                        decimal tsplit2 = Convert.ToDecimal(SortedJumpTableDataView[0]["XPt2"].ToString());
+                        decimal tsplit3 = Convert.ToDecimal(SortedJumpTableDataView[0]["YPt2"].ToString());
+            */
             _priorDirection = SortedJumpTableDataView[0]["Direct"].ToString();
             _savedAttSection = SortedJumpTableDataView[0]["Sect"].ToString();
             currentAttachmentLine = Convert.ToInt32(SortedJumpTableDataView[0]["LineNo"].ToString());
@@ -6115,16 +5751,11 @@ End Joey's alternative Code */
             }
         }
 
-        private void beginPointToolStripMenuItem_Click_1(object sender, EventArgs e)
-        {
-        }
 
-        private void SaveSketchBtn_Click(object sender, EventArgs e)
-        {
-        }
 
-        private void autoCloseToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
+
+        #endregion General Class Methods
+
+      
     }
 }

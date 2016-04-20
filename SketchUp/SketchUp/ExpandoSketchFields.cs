@@ -43,7 +43,7 @@ namespace SketchUp
         private decimal NewSectionBeginPointX = 0;
         private decimal NewSectionBeginPointY = 0;
         private int LineNumberToBreak = 0;
-
+        private Bitmap sketchImageBMP;
         //private decimal Xadj1 = 0;
         //private decimal Yadj1 = 0;
         //public static bool _undoModeA = false;
@@ -296,6 +296,19 @@ namespace SketchUp
             set
             {
                 cpCodes = value;
+            }
+        }
+
+        public Bitmap SketchImageBMP
+        {
+            get
+            {
+                return sketchImageBMP;
+            }
+
+            set
+            {
+                sketchImageBMP = value;
             }
         }
 
