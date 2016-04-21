@@ -102,12 +102,12 @@ namespace SketchUp
                 DistText.Focus();
 
                 ExpSketchPBox.Image = _mainimage;
-                click++;
+                //click++;
                 _StartX.Remove(click);
                 _StartY.Remove(click);
                 _StartX.Add(click, PrevX);
                 _StartY.Add(click, PrevY);
-                savpic.Add(click, imageToByteArray(_mainimage));
+                //savpic.Add(click, imageToByteArray(_mainimage));
 
                 decimal XadjD = 0;
                 decimal YadjD = 0;
@@ -320,12 +320,12 @@ namespace SketchUp
                 DistText.Focus();
 
                 ExpSketchPBox.Image = _mainimage;
-                click++;
+                //click++;
                 _StartX.Remove(click);
                 _StartY.Remove(click);
                 _StartX.Add(click, PrevX);
                 _StartY.Add(click, PrevY);
-                savpic.Add(click, imageToByteArray(_mainimage));
+                //savpic.Add(click, imageToByteArray(_mainimage));
 
                 decimal XadjD = 0;
                 decimal YadjD = 0;
@@ -548,12 +548,12 @@ namespace SketchUp
                 DistText.Focus();
 
                 ExpSketchPBox.Image = _mainimage;
-                click++;
+                //click++;
                 _StartX.Remove(click);
                 _StartY.Remove(click);
                 _StartX.Add(click, PrevX);
                 _StartY.Add(click, PrevY);
-                savpic.Add(click, imageToByteArray(_mainimage));
+                //savpic.Add(click, imageToByteArray(_mainimage));
 
                 Xadj = (((ScaleBaseX - PrevX) / _currentScale) * -1);
                 Yadj = (((ScaleBaseY - PrevY) / _currentScale) * -1);
@@ -681,12 +681,12 @@ namespace SketchUp
                 DistText.Focus();
 
                 ExpSketchPBox.Image = _mainimage;
-                click++;
+                //click++;
                 _StartX.Remove(click);
                 _StartY.Remove(click);
                 _StartX.Add(click, PrevX);
                 _StartY.Add(click, PrevY);
-                savpic.Add(click, imageToByteArray(_mainimage));
+                //savpic.Add(click, imageToByteArray(_mainimage));
 
                 Xadj = (((ScaleBaseX - PrevX) / _currentScale) * -1);
                 Yadj = (((ScaleBaseY - PrevY) / _currentScale) * -1);
@@ -829,12 +829,12 @@ namespace SketchUp
 
                 ExpSketchPBox.Image = _mainimage;
 
-                click++;
+                //click++;
                 _StartX.Remove(click);
                 _StartY.Remove(click);
                 _StartX.Add(click, PrevX);
                 _StartY.Add(click, PrevY);
-                savpic.Add(click, imageToByteArray(_mainimage));
+                //savpic.Add(click, imageToByteArray(_mainimage));
 
                 decimal XadjD = 0;
                 decimal YadjD = 0;
@@ -1047,12 +1047,12 @@ namespace SketchUp
                 DistText.Focus();
 
                 ExpSketchPBox.Image = _mainimage;
-                click++;
+                //click++;
                 _StartX.Remove(click);
                 _StartY.Remove(click);
                 _StartX.Add(click, PrevX);
                 _StartY.Add(click, PrevY);
-                savpic.Add(click, imageToByteArray(_mainimage));
+                //savpic.Add(click, imageToByteArray(_mainimage));
 
                 Xadj = (((ScaleBaseX - PrevX) / _currentScale) * -1);
                 Yadj = (((ScaleBaseY - PrevY) / _currentScale) * -1);
@@ -1189,12 +1189,12 @@ namespace SketchUp
                 DistText.Focus();
 
                 ExpSketchPBox.Image = _mainimage;
-                click++;
+                //click++;
                 _StartX.Remove(click);
                 _StartY.Remove(click);
                 _StartX.Add(click, PrevX);
                 _StartY.Add(click, PrevY);
-                savpic.Add(click, imageToByteArray(_mainimage));
+                //savpic.Add(click, imageToByteArray(_mainimage));
 
                 Xadj = (((ScaleBaseX - PrevX) / _currentScale) * -1);
                 Yadj = (((ScaleBaseY - PrevY) / _currentScale) * -1);
@@ -1326,13 +1326,13 @@ namespace SketchUp
                 DistText.Focus();
 
                 ExpSketchPBox.Image = _mainimage;
-                click++;
+                //click++;
                 _StartX.Remove(click);
                 _StartY.Remove(click);
                 _StartX.Add(click, PrevX);
                 _StartY.Add(click, PrevY);
 
-                savpic.Add(click, imageToByteArray(_mainimage));
+                //savpic.Add(click, imageToByteArray(_mainimage));
 
                 decimal XadjD = 0;
                 decimal YadjD = 0;

@@ -11,36 +11,12 @@ namespace SketchUp
     {
         #region Constructors
 
-        public MultiSectionSelection(List<string> sections, int record, int dwell, CAMRA_Connection fox)
+      
+
+        public MultiSectionSelection(List<string> sectionLetters)
         {
             InitializeComponent();
-
-            DataSet atpts = MultiSelectAttachmentPoints(record, dwell, fox);
-
-            if (atpts.Tables[0].Rows.Count > 0)
-            {
-                mulattpts.Clear();
-
-                for (int i = 0; i < atpts.Tables[0].Rows.Count; i++)
-                {
-                    DataRow row = mulattpts.NewRow();
-                    row["Sect"] = atpts.Tables[0].Rows[i]["jlsect"].ToString();
-                    row["Line"] = Convert.ToInt32(atpts.Tables[0].Rows[i]["jlline#"].ToString());
-                    row["X1"] = Convert.ToDecimal(atpts.Tables[0].Rows[i]["jlpt1x"].ToString());
-                    row["Y1"] = Convert.ToDecimal(atpts.Tables[0].Rows[i]["jlpt1y"].ToString());
-                    row["X2"] = Convert.ToDecimal(atpts.Tables[0].Rows[i]["jlpt2x"].ToString());
-                    row["Y2"] = Convert.ToDecimal(atpts.Tables[0].Rows[i]["jlpt2y"].ToString());
-
-                    mulattpts.Rows.Add(row);
-                }
-            }
-
-            SecLetterCbox.DataSource = sections;
-
-            //attsec = sections;
-
-            //SecLetterCbox.DataSource = attsec;
-
+            SecLetterCbox.Items.AddRange(sectionLetters.ToArray());
             SecLetterCbox.SelectedIndex = 0;
             adjsec = SecLetterCbox.SelectedItem.ToString();
         }
@@ -49,9 +25,11 @@ namespace SketchUp
 
         #region Refactored and Class Methods
 
-        private DataSet MultiSelectAttachmentPoints(int record, int dwell, CAMRA_Connection fox)
+        
+
+        private DataSet MultiSelectAttachmentPoints(List<SMLine>connectionLines)
         {
-            _fox = fox;
+    
 
             mulattpts = new DataTable();
             mulattpts.Columns.Add("Sect", typeof(string));
@@ -63,16 +41,14 @@ namespace SketchUp
 
             DataSet atpts = null;
 
-            StringBuilder getpts = new StringBuilder();
-            getpts.Append(String.Format("select distinct jlsect,jlline#,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach from {0}.{1}line ",
-                        SketchUpGlobals.LocalLib,
-                        SketchUpGlobals.LocalityPreFix));
-            getpts.Append(String.Format("where jlrecord = {0} and jldwell = {1} and jlattach <> ' ' ",
-                            record, dwell));
-
-            atpts = fox.DBConnection.RunSelectStatement(getpts.ToString());
+            foreach (SMLine line in connectionLines)
+            {
+                
+            }
             return atpts;
         }
+
+      
 
         #endregion Refactored and Class Methods
 
@@ -99,7 +75,7 @@ namespace SketchUp
         public static List<string> attsec = new List<string>();
         public static DataTable mulattpts = null;
 
-        private CAMRA_Connection _fox = null;
+       // private CAMRA_Connection _fox = null;
 
         #endregion Fields
     }

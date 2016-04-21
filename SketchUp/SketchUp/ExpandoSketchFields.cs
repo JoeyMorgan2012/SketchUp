@@ -6,6 +6,21 @@ using System.Windows.Forms;
 
 namespace SketchUp
 {
+    /// <summary>
+    /// <para>The ExpandoSketch Form contains all of the sketch-rendering code.
+    /// </para><para>The original file was over 8,000 lines long, so the class is broken into several physical files defining the logical class. The breakdown is:</para>
+    /// <para>ExpandoSketchFields.cs</para>
+    /// <para>This file contains fields, properties and enums for the ExpandoSketch Form class.</para>
+    /// <para></para>ExpandoSketchMovementMethods.cs</para>
+    /// <para>All of the methods involving moving along a cardinal direction or quarter.</para>
+    /// <para></para>
+    /// <para></para>
+    /// <para></para>
+    /// <para></para>
+    /// <para></para>
+    /// <para></para>
+    /// 
+    /// </summary>
     public partial class ExpandoSketch : Form
     {
         #region Enums
@@ -28,6 +43,36 @@ namespace SketchUp
 
         #region private fields
 
+        private static bool checkDirection = false;
+        private SWallTech.CAMRA_Connection _conn = null;
+        private int _curLineCnt = 0;
+        private ParcelData _currentParcel = null;
+        private float _currentScale = 0;
+        private SectionDataCollection _currentSection = null;
+        private bool _isAngle = false;
+        private bool _isclosing = false;
+        private bool _isJumpMode = false;
+        private bool _isKeyValid = false;
+        private string _lenString = String.Empty;
+        private int _newIndex = 0;
+        private List<PointF> _newSectionPoints;
+        private int _nextLineCount = 0;
+        private string _nextSectType = String.Empty;
+        private decimal _nextStoryHeight = 0;
+        private bool _openForm = false;
+        private string _priorDirection = "";
+        private bool _reOpenSec = false;
+        private int _savedAttLine;
+        private string _savedAttSection = "";
+        private float _scale = 1.0f;
+        private Dictionary<int, float> _StartX = null;
+        private Dictionary<int, float> _StartY = null;
+        private decimal adjNewSecX = 0;
+        private decimal adjNewSecY = 0;
+        private decimal adjOldSecX = 0;
+        private decimal adjOldSecY = 0;
+        private decimal AngD1 = 0;
+        private decimal AngD2 = 0;
         /*
 		Refactored by renaming and providing for null values. Going to ensure that the
 		naming conventions are consistent for all properties. Any field that backs a property
@@ -36,28 +81,25 @@ namespace SketchUp
 
 		*/
         private DataTable AreaTable = null;
-        private DataTable AttachPoints = null;
         private DataTable AttachmentPointsDataTable = null;
+        private SMSection attachmentSection;
+        private DataTable AttachPoints = null;
+        private int AttLineNo = 0;
+        private string AttSectLtr = String.Empty;
+        private string AttSpLineDir = String.Empty;
+        private int AttSpLineNo = 0;
         private float BaseX = 0;
         private float BaseY = 0;
-        private decimal NewSectionBeginPointX = 0;
-        private decimal NewSectionBeginPointY = 0;
-        private int LineNumberToBreak = 0;
-        private Bitmap sketchImageBMP;
-        //private decimal Xadj1 = 0;
-        //private decimal Yadj1 = 0;
-        //public static bool _undoModeA = false;
-        private bool NeedToRedraw = false;
-
         // TODO: Remove if not needed:
         private int click = 0;
 
         //Undo uses this but we are re-doing undo. JMM 3-15-2016
         private Color color = Color.Red;
-
         private List<int> cpCodes = null;
         private List<String> cpTypes = null;
         private int currentAttachmentLine = 0;
+        private string CurrentAttDir = String.Empty;
+        private string CurrentSecLtr = String.Empty;
         private DataTable displayDataTable = null;
         private DataTable DupAttPoints = null;
         private float endOldSecX = 0;
@@ -71,16 +113,30 @@ namespace SketchUp
         private List<String> GarTypes = null;
         private bool isInAddNewPointMode = false;
         private bool isLastLine;
+        private SMLine jumpPointLine;
         private DataTable JumpTable = null;
         private float JumpX = 0;
         private float JumpY = 0;
+        private string legalMoveDirection;
         private int lineCnt = 0;
+        private int LineNumberToBreak = 0;
+        private string Locality = String.Empty;
+        private string midDirect = String.Empty;
         private int midLine = 0;
+        private string midSection = String.Empty;
         private byte[] ms = null;
         private DataTable MulPts = null;
         private int mylineNo = 0;
+
+        //private decimal Xadj1 = 0;
+        //private decimal Yadj1 = 0;
+        //public static bool _undoModeA = false;
+        private bool NeedToRedraw = false;
         private int NewPointIndex;
+        private decimal NewSectionBeginPointX = 0;
+        private decimal NewSectionBeginPointY = 0;
         private decimal NewSplitLIneDist = 0;
+        private string OffSetAttSpLineDir = String.Empty;
         private decimal prevPt2X = 0;
         private decimal prevPt2Y = 0;
         private decimal prevTst1 = 0;
@@ -92,8 +148,8 @@ namespace SketchUp
         private Point[] pts;
         private DataTable REJumpTable = null;
         private DataTable RESpJumpTable = null;
-        private int StandardDrawWidthAndHeight = 3;
-        private Dictionary<int, byte[]> savpic = null;
+
+     //   private Dictionary<int, byte[]> savpic = null;
         private float ScaleBaseX = 0;
         private float ScaleBaseY = 0;
         private float SecBeginX = 0;
@@ -102,8 +158,13 @@ namespace SketchUp
         private BuildingSection section;
         private DataTable SectionLtrs = null;
         private DataTable SectionTable = null;
+        private string SketchCard = String.Empty;
+        private string SketchFolder = String.Empty;
+        private Bitmap sketchImageBMP;
+        private string SketchRecord = String.Empty;
         private DataTable sortDist = null;
         private decimal splitLineDist = 0;
+        private int StandardDrawWidthAndHeight = 3;
         private float StartX = 0;
         private float StartY = 0;
         private DataTable StrtPts = null;
@@ -117,68 +178,42 @@ namespace SketchUp
         private Point[] unadj_pts;
         private decimal XadjR = 0;
         private decimal YadjR = 0;
-        private int _curLineCnt = 0;
-        private ParcelData _currentParcel = null;
-        private float _currentScale = 0;
-        private bool _isAngle = false;
-        private bool _isclosing = false;
-        private bool _isJumpMode = false;
-        private bool _isKeyValid = false;
-        private int _newIndex = 0;
-        private List<PointF> _newSectionPoints;
-        private int _nextLineCount = 0;
-        private decimal _nextStoryHeight = 0;
-        private bool _openForm = false;
-        private bool _reOpenSec = false;
-        private int _savedAttLine;
-        private float _scale = 1.0f;
-        private Dictionary<int, float> _StartX = null;
-        private Dictionary<int, float> _StartY = null;
-
-        private int AttLineNo = 0;
-        private int AttSpLineNo = 0;
-
-        private string AttSpLineDir = String.Empty;
-        private string OffSetAttSpLineDir = String.Empty;
-
-        private string AttSectLtr = String.Empty;
-        private static bool checkDirection = false;
-        private string CurrentAttDir = String.Empty;
-        private string CurrentSecLtr = String.Empty;
-        private string legalMoveDirection;
-        private string Locality = String.Empty;
-        private string midDirect = String.Empty;
-        private string midSection = String.Empty;
-
-        private string SketchCard = String.Empty;
-        private string SketchFolder = String.Empty;
-        private string SketchRecord = String.Empty;
-        private SWallTech.CAMRA_Connection _conn = null;
-        private SectionDataCollection _currentSection = null;
-        private string _lenString = String.Empty;
-        private string _nextSectType = String.Empty;
-        private string _priorDirection = "";
-        private string _savedAttSection = "";
-        private decimal adjNewSecX = 0;
-        private decimal adjNewSecY = 0;
-        private decimal AngD1 = 0;
-        private decimal AngD2 = 0;
-        private decimal adjOldSecX = 0;
-        private decimal adjOldSecY = 0;
-
         #endregion private fields
 
         #region Public Fields
 
-        public string ConnectSec = String.Empty;
+        public static bool _cantSketch = false;
+        public static bool _deleteMaster = false;
+        public static bool _deleteThisSketch = false;
+        public static bool _insertLine = false;
+        public static bool _isClosed = false;
+        public static string _nextSectLtr = String.Empty;
+        public static bool _undoMode = false;
+        public static int finalClick;
+        public static List<string> Letters = new List<string>() { "A", "B", "C", "D", "F", "G", "H", "I", "J", "K", "L", "M" };
+        public static bool RefreshEditImageBtn = false;
+        public bool _addSection = false;
+        public decimal _calcNextSectArea = 0;
+        public bool _closeSketch = false;
+        public bool _hasMultiSection = false;
+        public bool _hasNewSketch;
+        public bool _hasSketch = false;
+        public bool _isNewSketch = false;
+        public string _lastAngDir = String.Empty;
+        public string _lastDir = String.Empty;
+        public decimal _nextSectArea = 0;
+        public bool _undoJump = false;
+        public bool _undoLine = false;
+        public bool _vacantParcelSketch = false;
         public float BeginSplitX = 0;
         public float BeginSplitY = 0;
         public decimal begSplitX = 0;
         public decimal begSplitY = 0;
-
+        public string ConnectSec = String.Empty;
         public int CPcnt = 0;
         public decimal CPSize = 0;
         public int CurSecLineCnt = 0;
+        public SWallTech.CAMRA_Connection dbConn = null;
         public float delStartX = 0;
         public float delStartY = 0;
         public decimal distance = 0;
@@ -190,11 +225,8 @@ namespace SketchUp
         public float EndSplitXF = 0;
         public decimal EndSplitY = 0;
         public float EndSplitYF = 0;
-        public static int finalClick;
-        public SWallTech.CAMRA_Connection dbConn = null;
         public int Garcnt = 0;
         public decimal GarSize = 0;
-        public static List<string> Letters = new List<string>() { "A", "B", "C", "D", "F", "G", "H", "I", "J", "K", "L", "M" };
         public float NextStartX = 0;
         public float NextStartY = 0;
         public string offsetDir = String.Empty;
@@ -203,7 +235,6 @@ namespace SketchUp
         public decimal OrigStartY = 0;
         public float PrevStartX = 0;
         public float PrevStartY = 0;
-        public static bool RefreshEditImageBtn = false;
         public decimal RemainderLineLength = 0;
         public int SecItemCnt = 0;
         public int SecLineCnt = 0;
@@ -218,67 +249,82 @@ namespace SketchUp
         public float XadjP = 0;
         public float Yadj = 0;
         public float YadjP = 0;
-        public bool _addSection = false;
-        public decimal _calcNextSectArea = 0;
-        public static bool _cantSketch = false;
-        public bool _closeSketch = false;
-        public static bool _deleteMaster = false;
-        public static bool _deleteThisSketch = false;
-        public bool _hasMultiSection = false;
-        public bool _hasNewSketch;
-        public bool _hasSketch = false;
-        public static bool _insertLine = false;
-        public static bool _isClosed = false;
-        public bool _isNewSketch = false;
-        public string _lastAngDir = String.Empty;
-        public string _lastDir = String.Empty;
-        public decimal _nextSectArea = 0;
-        public static string _nextSectLtr = String.Empty;
-        public bool _undoJump = false;
-        public bool _undoLine = false;
-        public static bool _undoMode = false;
-        public bool _vacantParcelSketch = false;
-
         #endregion Public Fields
-
-        #endregion Fields
-
-        #region Properties
-
         private static List<int> savcnt;
         private Image _baseImage;
         private Image _mainimage;
         private int _mouseX;
         private int _mouseY;
+        private Brush blackBrush;
+        private Brush blueBrush;
+        private Pen bluePen;
+        private Graphics graphics;
+        private Brush greenBrush;
+        private Pen orangePen;
+        private SMParcel parcelWorkingCopy;
+        private Brush redBrush;
+        private Pen redPen;
+        private SMParcel selectedParcel;
+        private PointF sketchOrigin;
+        #endregion Fields
 
-        private List<PointF> NewSectionPoints
+      
+        #region Properties
+
+        public SMSection AttachmentSection
         {
             get
             {
-                if (_newSectionPoints == null)
-                    _newSectionPoints = new List<PointF>();
-
-                return _newSectionPoints;
+                return attachmentSection;
             }
-
             set
             {
-                _newSectionPoints = value;
+                attachmentSection = value;
             }
         }
 
-        public BuildingSection SketchSection
+     
+
+        public Brush BlackBrush
         {
             get
             {
-                return this.section;
+                blackBrush = Brushes.Black;
+                return blackBrush;
             }
-
             set
             {
-                this.section = value;
-                this.unadj_pts = this.section.SectionPoints;
-                this.LoadSection();
+                blackBrush = value;
+            }
+        }
+
+        public Brush BlueBrush
+        {
+            get
+            {
+                blueBrush = Brushes.DarkBlue;
+                return blueBrush;
+            }
+            set
+            {
+                blueBrush = value;
+            }
+        }
+
+        public Pen BluePen
+        {
+            get
+            {
+                if (bluePen == null)
+                {
+                    bluePen = new Pen(Color.DarkBlue, 1);
+                }
+
+                return bluePen;
+            }
+            set
+            {
+                bluePen = value;
             }
         }
 
@@ -292,10 +338,126 @@ namespace SketchUp
                 }
                 return cpCodes;
             }
-
             set
             {
                 cpCodes = value;
+            }
+        }
+        public bool FirstTimeLoaded
+        {
+            get
+            {
+                return firstTimeLoaded;
+            }
+            set
+            {
+                firstTimeLoaded = value;
+            }
+        }
+
+        public Brush GreenBrush
+        {
+            get
+            {
+                greenBrush = Brushes.DarkGreen;
+                return greenBrush;
+            }
+            set
+            {
+                greenBrush = value;
+            }
+        }
+
+        public SMLine JumpPointLine
+        {
+            get
+            {
+                return jumpPointLine;
+            }
+            set
+            {
+                jumpPointLine = value;
+            }
+        }
+
+        public Pen OrangePen
+        {
+            get
+            {
+                if (orangePen == null)
+                {
+                    orangePen = new Pen(Color.DarkOrange, 1);
+                }
+                return orangePen;
+            }
+            set
+            {
+                orangePen = value;
+            }
+        }
+
+        public SMParcel ParcelWorkingCopy
+        {
+            get
+            {
+                return parcelWorkingCopy;
+            }
+            set
+            {
+                parcelWorkingCopy = value;
+            }
+        }
+
+        public Brush RedBrush
+        {
+            get
+            {
+                redBrush = Brushes.DarkRed;
+                return redBrush;
+            }
+            set
+            {
+                redBrush = value;
+            }
+        }
+
+        public Pen RedPen
+        {
+            get
+            {
+                if (redPen == null)
+                {
+                    redPen = new Pen(Color.Red, 1);
+                }
+                return redPen;
+            }
+            set
+            {
+                redPen = value;
+            }
+        }
+
+        public SMParcel SelectedParcel
+        {
+            get
+            {
+                return selectedParcel;
+            }
+            set
+            {
+                selectedParcel = value;
+            }
+        }
+
+        public Bitmap SketchImage
+        {
+            get
+            {
+                return sketchImage;
+            }
+            set
+            {
+                sketchImage = value;
             }
         }
 
@@ -305,13 +467,55 @@ namespace SketchUp
             {
                 return sketchImageBMP;
             }
-
             set
             {
                 sketchImageBMP = value;
             }
         }
 
+        public PointF SketchOrigin
+        {
+            get
+            {
+                return sketchOrigin;
+            }
+            set
+            {
+                sketchOrigin = value;
+            }
+        }
+
+        public BuildingSection SketchSection
+        {
+            get
+            {
+                return this.section;
+            }
+            set
+            {
+                this.section = value;
+                this.unadj_pts = this.section.SectionPoints;
+                this.LoadSection();
+            }
+        }
+
+        private List<PointF> NewSectionPoints
+        {
+            get
+            {
+                if (_newSectionPoints == null)
+                    _newSectionPoints = new List<PointF>();
+
+                return _newSectionPoints;
+            }
+            set
+            {
+                _newSectionPoints = value;
+            }
+        }
+
+        bool firstTimeLoaded;
+        Bitmap sketchImage;
         #endregion Properties
     }
 }

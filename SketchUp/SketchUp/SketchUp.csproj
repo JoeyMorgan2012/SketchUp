@@ -316,6 +316,7 @@
     <Compile Include="UtilityMethods.cs" />
     <Compile Include="ValuesTracking.cs" />
     <Compile Include="ValuesTrackingCollection.cs" />
+    <Compile Include="ZZ_JMM_SkipMZToolsDeadCodeReview.cs" />
     <EmbeddedResource Include="AngleForm.resx">
       <DependentUpon>AngleForm.cs</DependentUpon>
     </EmbeddedResource>

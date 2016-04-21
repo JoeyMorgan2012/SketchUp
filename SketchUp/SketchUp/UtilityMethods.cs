@@ -9,6 +9,7 @@ using SWallTech;
 
 namespace SketchUp
 {
+    [SkipMZToolsDeadCodeReview]
     public static class UtilityMethods
     {
         #region Logging Utilities
@@ -277,11 +278,12 @@ namespace SketchUp
             }
             return nextLetter;
         }
+
         public static string NextLetter(SMParcel parcel)
         {
-            var lastLetter = (from s in parcel.Sections orderby s.SectionLetter descending  select s.SectionLetter).FirstOrDefault();
+            var lastLetter = (from s in parcel.Sections orderby s.SectionLetter descending select s.SectionLetter).FirstOrDefault();
             string nextLetter = string.Empty;
-          
+
             if (lastLetter != null)
             {
                 switch (lastLetter)
@@ -341,6 +343,7 @@ namespace SketchUp
             }
             return nextLetter;
         }
+
         #endregion String Utilities
     }
 }
