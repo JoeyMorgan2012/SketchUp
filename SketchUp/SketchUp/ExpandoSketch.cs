@@ -71,41 +71,7 @@ namespace SketchUp
 
             StrtPts = ConstructStartPointsTable();
 
-            displayDataTable = new DataTable();
-
-            DataColumn col_sect = new DataColumn("Dir", Type.GetType("System.String"));
-            displayDataTable.Columns.Add(col_sect);
-            DataColumn col_desc = new DataColumn("North", Type.GetType("System.Decimal"));
-            displayDataTable.Columns.Add(col_desc);
-            DataColumn col_sqft = new DataColumn("East", Type.GetType("System.Decimal"));
-            displayDataTable.Columns.Add(col_sqft);
-            DataColumn col_att = new DataColumn("Att", Type.GetType("System.String"));
-            displayDataTable.Columns.Add(col_att);
-
-            DataGridTableStyle style = new DataGridTableStyle();
-            DataGridTextBoxColumn SectColumn = new DataGridTextBoxColumn();
-            SectColumn.MappingName = "Dir";
-            SectColumn.HeaderText = "Dir";
-            SectColumn.Width = 30;
-            style.GridColumnStyles.Add(SectColumn);
-
-            DataGridTextBoxColumn DescColumn = new DataGridTextBoxColumn();
-            DescColumn.MappingName = "North";
-            DescColumn.HeaderText = "North";
-            DescColumn.Width = 50;
-            style.GridColumnStyles.Add(DescColumn);
-
-            DataGridTextBoxColumn SqftColumn = new DataGridTextBoxColumn();
-            SqftColumn.MappingName = "East";
-            SqftColumn.HeaderText = "East";
-            SqftColumn.Width = 50;
-            style.GridColumnStyles.Add(SqftColumn);
-
-            DataGridTextBoxColumn AttColumn = new DataGridTextBoxColumn();
-            AttColumn.MappingName = "Att";
-            AttColumn.HeaderText = "Att";
-            AttColumn.Width = 30;
-            style.GridColumnStyles.Add(AttColumn);
+            displayDataTable=ConstructDisplayDataTable();
 
             this.dgSections.DataSource = displayDataTable;
 
@@ -177,6 +143,46 @@ namespace SketchUp
 
             //click++;
             ////savpic.Add(click, imageToByteArray(_mainimage));
+        }
+
+        private DataTable ConstructDisplayDataTable()
+        {
+            DataTable displayDT = new DataTable();
+
+            DataColumn col_sect = new DataColumn("Dir", Type.GetType("System.String"));
+            displayDT.Columns.Add(col_sect);
+            DataColumn col_desc = new DataColumn("North", Type.GetType("System.Decimal"));
+            displayDT.Columns.Add(col_desc);
+            DataColumn col_sqft = new DataColumn("East", Type.GetType("System.Decimal"));
+            displayDT.Columns.Add(col_sqft);
+            DataColumn col_att = new DataColumn("Att", Type.GetType("System.String"));
+            displayDT.Columns.Add(col_att);
+
+            DataGridTableStyle style = new DataGridTableStyle();
+            DataGridTextBoxColumn SectColumn = new DataGridTextBoxColumn();
+            SectColumn.MappingName = "Dir";
+            SectColumn.HeaderText = "Dir";
+            SectColumn.Width = 30;
+            style.GridColumnStyles.Add(SectColumn);
+
+            DataGridTextBoxColumn DescColumn = new DataGridTextBoxColumn();
+            DescColumn.MappingName = "North";
+            DescColumn.HeaderText = "North";
+            DescColumn.Width = 50;
+            style.GridColumnStyles.Add(DescColumn);
+
+            DataGridTextBoxColumn SqftColumn = new DataGridTextBoxColumn();
+            SqftColumn.MappingName = "East";
+            SqftColumn.HeaderText = "East";
+            SqftColumn.Width = 50;
+            style.GridColumnStyles.Add(SqftColumn);
+
+            DataGridTextBoxColumn AttColumn = new DataGridTextBoxColumn();
+            AttColumn.MappingName = "Att";
+            AttColumn.HeaderText = "Att";
+            AttColumn.Width = 30;
+            style.GridColumnStyles.Add(AttColumn);
+            return displayDT;
         }
 
         #endregion Constructor
@@ -447,7 +453,6 @@ namespace SketchUp
             return lineDirection;
         }
 
-
         private Image byteArrayToImage(byte[] byteArrayIn)
         {
             MemoryStream ms = new MemoryStream(byteArrayIn);
@@ -505,7 +510,6 @@ namespace SketchUp
 
         private void calculateNewArea(int record, int card, string nextsec)
         {
-
             StringBuilder getLine = new StringBuilder();
             getLine.Append("select jlpt1x,jlpt1y,jlpt2x,jlpt2Y ");
             getLine.Append(String.Format("from {0}.{1}line where jlrecord = {2} and jldwell = {3} ",
@@ -2558,224 +2562,70 @@ namespace SketchUp
 
         public void setAttPnts()
         {
-            StringBuilder attPnts = new StringBuilder();
-            attPnts.Append(String.Format("select jlrecord,jldwell,jlsect,jldirect,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach from {0}.{1}line ",
-                          SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix
-
-                            //SketchUpGlobals.FcLib,
-                            //SketchUpGlobals.FcLocalityPrefix
-                            ));
-            attPnts.Append(String.Format(" where jlrecord = {0} and jldwell = {1} and jlline# = 1 and jlsect <> 'A' ", _currentParcel.Record, _currentParcel.Card));
-
-            DataSet ap = dbConn.DBConnection.RunSelectStatement(attPnts.ToString());
-
-            if (ap.Tables[0].Rows.Count > 0)
+            SMParcel newCopy = SketchUpGlobals.ParcelWorkingCopy;
+            newCopy.SnapShotIndex++;
+            SketchUpGlobals.SketchSnapshots.Add(newCopy);
+            foreach (SMLine l in 
+                SketchUpGlobals.ParcelWorkingCopy.AllSectionLines.Where(s => 
+                s.SectionLetter != "A" && s.LineNumber == 1).ToList())
             {
-                AttachPoints.Clear();
+                DataRow row = AttachPoints.NewRow();
+                row["RecNo"] = l.Record;
+                row["CardNo"] = l.Dwelling;
+                row["Sect"] = l.SectionLetter;
+                row["Direct"] = l.Direction;
+                row["Xpt1"] = l.StartX.ToString();
+                row["Ypt1"] = l.StartY.ToString();
+                row["Xpt2"] = l.EndX.ToString();
+                row["Ypt2"] = l.StartY.ToString();
+                row["Attch"] = l.AttachedSection;
 
-                for (int i = 0; i < ap.Tables[0].Rows.Count; i++)
-                {
-                    DataRow row = AttachPoints.NewRow();
-                    row["RecNo"] = _currentParcel.Record;
-                    row["CardNo"] = _currentParcel.Card;
-                    row["Sect"] = ap.Tables[0].Rows[i]["jlsect"].ToString().Trim();
-                    row["Direct"] = ap.Tables[0].Rows[i]["jldirect"].ToString().Trim();
-                    row["Xpt1"] = Convert.ToDecimal(ap.Tables[0].Rows[i]["jlpt1x"].ToString());
-                    row["Ypt1"] = Convert.ToDecimal(ap.Tables[0].Rows[i]["jlpt1y"].ToString());
-                    row["Xpt2"] = Convert.ToDecimal(ap.Tables[0].Rows[i]["jlpt2x"].ToString());
-                    row["Ypt2"] = Convert.ToDecimal(ap.Tables[0].Rows[i]["jlpt2y"].ToString());
-                    row["Attch"] = ap.Tables[0].Rows[i]["jlattach"].ToString().Trim();
-
-                    AttachPoints.Rows.Add(row);
-                }
+                AttachPoints.Rows.Add(row);
             }
-
             if (AttachPoints.Rows.Count > 0)
             {
-                //MessageBox.Show(String.Format("Updating Line Record - {0}, Card - {1} at 4356", _currentParcel.Record, _currentParcel.Card));
-
-                string jkw = _nextSectLtr;
-
-                StringBuilder delapts = new StringBuilder();
-                delapts.Append(String.Format("update {0}.{1}line set jlattach = ' ' where jlrecord = {2} and jldwell = {3} and jlattach = '{4}' ",
-                               SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix,
-
-                                //SketchUpGlobals.FcLib,
-                                //SketchUpGlobals.FcLocalityPrefix,
-                                _currentParcel.mrecno,
-                                _currentParcel.mdwell,
-                                _nextSectLtr));
-
-                dbConn.DBConnection.ExecuteNonSelectStatement(delapts.ToString());
-
-                if (MultiSectionSelection.adjsec == String.Empty)
-                {
-                    ConnectSec = "A";
-                }
-                if (MultiSectionSelection.adjsec != String.Empty)
-                {
-                    ConnectSec = MultiSectionSelection.adjsec;
-                }
-
-                for (int i = 0; i < AttachPoints.Rows.Count; i++)
-                {
-                    int record = Convert.ToInt32(AttachPoints.Rows[i]["RecNo"].ToString());
-                    int card = Convert.ToInt32(AttachPoints.Rows[i]["CardNo"].ToString());
-                    string curSect = AttachPoints.Rows[i]["Sect"].ToString().Trim();
-                    decimal X1 = Convert.ToDecimal(AttachPoints.Rows[i]["Xpt1"].ToString());
-                    decimal Y1 = Convert.ToDecimal(AttachPoints.Rows[i]["Ypt1"].ToString());
-                    decimal X2 = Convert.ToDecimal(AttachPoints.Rows[i]["Xpt2"].ToString());
-                    decimal Y2 = Convert.ToDecimal(AttachPoints.Rows[i]["Ypt2"].ToString());
-
-                    //MessageBox.Show(String.Format("Update Line Record - {0}, Card - {1} at 4373", _currentParcel.Record, _currentParcel.Card));
-
-                    if (curSect == _nextSectLtr)
-                    {
-                        ConnectSec = CurrentSecLtr;
-                    }
-
-                    StringBuilder addAttPnt = new StringBuilder();
-                    addAttPnt.Append(String.Format("update {0}.{1}line set jlattach = '{2}' ",
-                                   SketchUpGlobals.LocalLib,
-                                   SketchUpGlobals.LocalityPreFix,
-
-                                    //SketchUpGlobals.FcLib,
-                                    //SketchUpGlobals.FcLocalityPrefix,
-                                    curSect));
-                    addAttPnt.Append(String.Format(" where jlrecord = {0} and jldwell = {1} and jlpt2x = {2} and jlpt2y = {3} ", record, card, X1, Y1));
-                    addAttPnt.Append(String.Format(" and jlsect <> '{0}' ", curSect));
-                    addAttPnt.Append(String.Format(" and jlsect = '{0}' ", ConnectSec));
-                    addAttPnt.Append(" and jlattach = ' ' ");
-
-                    dbConn.DBConnection.ExecuteNonSelectStatement(addAttPnt.ToString());
-                }
+                newCopy.Sections.Where(s => s.SectionLetter == 
+                    _nextSectLtr.Trim()).FirstOrDefault().Lines.Where(a => 
+                    a.AttachedSection == 
+                    _nextSectLtr).FirstOrDefault().AttachedSection = " ";
             }
 
-            /// start nogo here
+            if (MultiSectionSelection.adjsec == String.Empty)
+            {
+                ConnectSec = "A";
+            }
 
-            //StringBuilder DupattPnts = new StringBuilder();
-            //DupattPnts.Append(String.Format("select jlrecord,jldwell,jlsect,jldirect,jlline#,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach from {0}.{1}line ",
-            //                SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
-            //DupattPnts.Append(String.Format(" where jlrecord = {0} and jldwell = {1}  and jlattach <> ' ' ", _currentParcel.Record, _currentParcel.Card));
-            //DupattPnts.Append("order by jlattach,jlsect  ");
+            if (MultiSectionSelection.adjsec != String.Empty)
+            {
+                ConnectSec = MultiSectionSelection.adjsec;
+            }
 
-            //DataSet Dupap = fox.DBConnection.RunSelectStatement(DupattPnts.ToString());
+            foreach (SMLine l in 
+                SketchUpGlobals.ParcelWorkingCopy.AllSectionLines.Where(s => 
+                s.SectionLetter != "A").ToList())
+            {
+                int record = l.Record;
+                int card = l.Dwelling;
+                string curSect = l.SectionLetter;
+                decimal X1 = l.StartX;
+                decimal Y1 = l.StartY;
+                decimal X2 = l.EndX;
+                decimal Y2 = l.EndY;
 
-            //if (Dupap.Tables[0].Rows.Count > 0)
-            //{
-            //    DupAttPoints.Clear();
-
-            //    for (int j = 0; j < Dupap.Tables[0].Rows.Count; j++)
-            //    {
-            //        DataRow row = DupAttPoints.NewRow();
-            //        row["RecNo"] = _currentParcel.Record;
-            //        row["CardNo"] = _currentParcel.Card;
-            //        row["Sect"] = Dupap.Tables[0].Rows[j]["jlsect"].ToString().Trim();
-            //        row["LineNo"] = Convert.ToInt32(Dupap.Tables[0].Rows[j]["jlline#"].ToString());
-            //        row["Direct"] = Dupap.Tables[0].Rows[j]["jldirect"].ToString().Trim();
-            //        row["Xpt1"] = Convert.ToDecimal(Dupap.Tables[0].Rows[j]["jlpt1x"].ToString());
-            //        row["Ypt1"] = Convert.ToDecimal(Dupap.Tables[0].Rows[j]["jlpt1y"].ToString());
-            //        row["Xpt2"] = Convert.ToDecimal(Dupap.Tables[0].Rows[j]["jlpt2x"].ToString());
-            //        row["Ypt2"] = Convert.ToDecimal(Dupap.Tables[0].Rows[j]["jlpt2y"].ToString());
-            //        row["Attch"] = Dupap.Tables[0].Rows[j]["jlattach"].ToString().Trim();
-            //        row["Index"] = 1;
-
-            //        DupAttPoints.Rows.Add(row);
-
-            //    }
-
-            //}
-
-            //attList = new List<string>();
-            //attList.Clear();
-
-            //StringBuilder sortAtt = new StringBuilder();
-            //sortAtt.Append(String.Format("select jlattach from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlattach <> ' ' ",
-            //               SketchUpGlobals.FcLib,
-            //               SketchUpGlobals.FcLocalityPrefix,
-            //               _currentParcel.Record,
-            //               _currentParcel.Card));
-
-            //DataSet sa = fox.DBConnection.RunSelectStatement(sortAtt.ToString());
-
-            //if (sa.Tables[0].Rows.Count > 0)
-            //{
-            //    for (int i = 0; i < sa.Tables[0].Rows.Count; i++)
-            //    {
-            //        attList.Add(sa.Tables[0].Rows[i]["jlattach"].ToString().Trim());
-            //    }
-
-            //}
-
-            ////MessageBox.Show(String.Format("Updating Line Record - {0}, Card - {1} at 4467", _currentParcel.Record, _currentParcel.Card));
-
-            //StringBuilder delAtt = new StringBuilder();
-            //delAtt.Append(String.Format("update {0}.{1}line set jlattach = ' ' where jlrecord = {2} and jldwell = {3} ",
-            //               SketchUpGlobals.FcLib,
-            //               SketchUpGlobals.FcLocalityPrefix,
-            //               _currentParcel.Record,
-            //               _currentParcel.Card));
-
-            ////fox.DBConnection.ExecuteNonSelectStatement(delAtt.ToString());
-
-            //if (AttPts.Rows.Count > 0)
-            //{
-            //    for (int i = 0; i < AttPts.Rows.Count; i++)
-            //    {
-            //        int record = _currentParcel.Record;
-            //        int card = _currentParcel.Card;
-            //        string curSection = AttPts.Rows[i]["Sect"].ToString().Trim();
-            //        decimal X1 = Convert.ToDecimal(AttPts.Rows[i]["X1"].ToString());
-            //        decimal Y1 = Convert.ToDecimal(AttPts.Rows[i]["Y1"].ToString());
-            //        decimal X2 = Convert.ToDecimal(AttPts.Rows[i]["X2"].ToString());
-            //        decimal Y2 = Convert.ToDecimal(AttPts.Rows[i]["Y2"].ToString());
-
-            //        // MessageBox.Show(String.Format("Updating Line Record - {0}, Card - {1} atg 4492", _currentParcel.Record, _currentParcel.Card));
-
-            //        StringBuilder addAttPnt1 = new StringBuilder();
-            //        addAttPnt1.Append(String.Format("update {0}.{1}line set jlattach = '{2}' ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, curSection));
-            //        addAttPnt1.Append(String.Format(" where jlrecord = {0} and jldwell = {1} and jlpt1x = {2} and jlpt1y = {3} ", record, card, X1, Y1));
-            //        addAttPnt1.Append(String.Format(" and jlpt2x = {0} and jlpt2y = {1} ", X2, Y2));
-            //        addAttPnt1.Append(String.Format(" and jlsect <> '{0}' ", curSection));
-            //        addAttPnt1.Append("and jlattach = ' ' ");
-
-            //        //fox.DBConnection.ExecuteNonSelectStatement(addAttPnt1.ToString());
-
-            //    }
-
-            //}
-
-            //if (DupAttPoints.Rows.Count > 0)
-            //{
-            //    for (int i = 0; i < DupAttPoints.Rows.Count; i++)
-            //    {
-            //        int record = _currentParcel.Record;
-            //        int card = _currentParcel.Card;
-            //        string curSect = DupAttPoints.Rows[i]["Attch"].ToString().Trim();
-            //        string curSection = DupAttPoints.Rows[i]["Sect"].ToString().Trim();
-            //        decimal X1 = Convert.ToDecimal(DupAttPoints.Rows[i]["Xpt1"].ToString());
-            //        decimal Y1 = Convert.ToDecimal(DupAttPoints.Rows[i]["Ypt1"].ToString());
-            //        decimal X2 = Convert.ToDecimal(DupAttPoints.Rows[i]["Xpt2"].ToString());
-            //        decimal Y2 = Convert.ToDecimal(DupAttPoints.Rows[i]["Ypt2"].ToString());
-
-            //        if (Convert.ToInt32(DupAttPoints.Rows[i]["Index"].ToString()) == 1)
-            //        {
-            //            //MessageBox.Show(String.Format("Updating Line Record - {0}, Card - {1} at 4527", _currentParcel.Record, _currentParcel.Card));
-
-            //            StringBuilder addAttPnt = new StringBuilder();
-            //            addAttPnt.Append(String.Format("update {0}.{1}line set jlattach = '{2}' ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, curSect));
-            //            addAttPnt.Append(String.Format(" where jlrecord = {0} and jldwell = {1} and jlpt1x = {2} and jlpt1y = {3} ", record, card, X1, Y1));
-            //            addAttPnt.Append(String.Format(" and jlpt2x = {0} and jlpt2y = {1} ", X2, Y2));
-            //            addAttPnt.Append(String.Format(" and jlsect = '{0}' ", curSection));
-            //            addAttPnt.Append("and jlattach = ' ' ");
-
-            //            fox.DBConnection.ExecuteNonSelectStatement(addAttPnt.ToString());
-
-            //        }
-            //    }
-            //}
+                if (curSect == _nextSectLtr)
+                {
+                    ConnectSec = CurrentSecLtr;
+                }
+                l.AttachedSection = curSect;
+                if (l.EndX == X1 && l.EndY == Y1 && l.SectionLetter != 
+                    curSect && l.SectionLetter == ConnectSec && 
+                    l.AttachedSection.Trim() == string.Empty)
+                {
+                    l.AttachedSection = curSect;
+                }
+            }
+            newCopy.SnapShotIndex++;
+            SketchUpGlobals.SketchSnapshots.Add(newCopy);
         }
 
         public void ShowDistanceForm(string _closeY, decimal _ewDist, string _closeX, decimal _nsDist, bool openForm)
@@ -4341,26 +4191,6 @@ namespace SketchUp
                 //savpic.Add(click, imageToByteArray(_mainimage));
             }
         }
-
-        //private void TextBtn_Click_1(object sender, EventArgs e)
-        //{
-        //    if (FieldText.Text.Trim() != String.Empty)
-        //    {
-        //        Graphics g = Graphics.FromImage(_mainimage);
-        //        SolidBrush brush = new SolidBrush(Color.Blue);
-        //        Pen pen1 = new Pen(Color.Red, 2);
-        //        Font f = new Font("Arial", 8, FontStyle.Bold);
-
-        //        g.DrawString(FieldText.Text.Trim(), f, brush, new PointF(_mouseX + 5, _mouseY));
-
-        //        FieldText.Text = String.Empty;
-        //        FieldText.Focus();
-
-        //        ExpSketchPBox.Image = _mainimage;
-        //        //click++;
-        //        //savpic.Add(click, imageToByteArray(_mainimage));
-        //    }
-        //}
 
         private void UnDoBtn_Click(object sender, EventArgs e)
         {
