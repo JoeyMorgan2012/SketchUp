@@ -83,7 +83,7 @@ namespace SketchUp
         private DataTable AreaTable = null;
         private DataTable AttachmentPointsDataTable = null;
         private SMSection attachmentSection;
-        private DataTable AttachPoints = null;
+     //   private DataTable AttachPoints = null;
         private int AttLineNo = 0;
         private string AttSectLtr = String.Empty;
         private string AttSpLineDir = String.Empty;

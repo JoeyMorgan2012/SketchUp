@@ -65,7 +65,7 @@ namespace SketchUp
 
             AttachmentPointsDataTable = ConstructAttachmentPointsDataTable();
 
-            AttachPoints = ConstructAttachPointsDataTable();
+            //AttachPoints = ConstructAttachPointsDataTable();
 
             DupAttPoints = ConstructDupAttPointsTable();
 
@@ -145,7 +145,12 @@ namespace SketchUp
             ////savpic.Add(click, imageToByteArray(_mainimage));
         }
 
-        private DataTable ConstructDisplayDataTable()
+   
+
+        #endregion Constructor
+
+        #region DataTable Construction Refactored
+     private DataTable ConstructDisplayDataTable()
         {
             DataTable displayDT = new DataTable();
 
@@ -184,11 +189,6 @@ namespace SketchUp
             style.GridColumnStyles.Add(AttColumn);
             return displayDT;
         }
-
-        #endregion Constructor
-
-        #region DataTable Construction Refactored
-
         private DataTable ConstructAreaTable()
         {
             DataTable at = new DataTable();
@@ -1630,9 +1630,77 @@ namespace SketchUp
             bool goodDir = (moveDirection == legalMoveDirection || BeginSectionBtn.Text == "Active" || !checkDirection);
             return goodDir;
         }
+        private void JumptoCornerOriginal()
+        {
+            float txtx = NextStartX;
+            float txty = NextStartY;
+            float jx = _mouseX;
+            float jy = _mouseY;
+            float _scaleBaseX = ScaleBaseX;
+            float _scaleBaseY = ScaleBaseY;
+            float CurrentScale = _currentScale;
+            int crrec = _currentParcel.Record;
+            int crcard = _currentParcel.Card;
+
+            CurrentSecLtr = String.Empty;
+            _newIndex = 0;
+            currentAttachmentLine = 0;
+
+            DataSet lines = null;
+            if (_isNewSketch == false)
+            {
+                lines = GetLinesData(crrec, crcard);
+            }
+
+            bool sketchHasLineData = lines.Tables[0].Rows.Count > 0;
+            if (sketchHasLineData)
+            {
+                SecItemCnt = CountSections();
+               // PopulateSectionList();
+                for (int i = 0; i < SecItemCnt; i++)
+                {
+                    string thisSection = SecLetters[i].ToString();
+                    if (SecItemCnt >= 1)
+                    {
+                        CountLines(thisSection);
+
+                        AddXLine(thisSection);
+
+                        lines = GetSectionLines(crrec, crcard);
+                    }
+                }
+                JumpTable = ConstructJumpTable();
+                JumpTable.Clear();
+
+                AddListItemsToJumpTableList(jx, jy, CurrentScale, lines);
+
+                string secltr = String.Empty;
+                string curltr = String.Empty;
+
+                List<string> AttSecLtrList = new List<string>();
+
+                if (JumpTable.Rows.Count > 0)
+                {
+                    secltr = FindClosestCorner(CurrentScale, ref curltr, AttSecLtrList);
+                }
+            }
+        }
 
         private void JumptoCorner()
         {
+            float txtx = NextStartX;
+            float txty = NextStartY;
+            float jx = _mouseX;
+            float jy = _mouseY;
+            float _scaleBaseX = ScaleBaseX;
+            float _scaleBaseY = ScaleBaseY;
+            float CurrentScale = _currentScale;
+            int crrec = _currentParcel.Record;
+            int crcard = _currentParcel.Card;
+
+            CurrentSecLtr = String.Empty;
+            _newIndex = 0;
+            currentAttachmentLine = 0;
             if (_isNewSketch == false)
             {
                 PointF mouseLocation = MousePosition;
@@ -1657,7 +1725,7 @@ namespace SketchUp
                 }
                 else
                 {
-                    SecLetters = (from p in SketchUpGlobals.ParcelWorkingCopy.Sections orderby p.SectionLetter select p.SectionLetter).ToList();
+                    SecLetters = (from l in connectionLines select l.SectionLetter).ToList();
                     if (SecLetters.Count > 1)
                     {
                         AttSectLtr = MultiPointsAvailable(SecLetters);
@@ -1669,9 +1737,12 @@ namespace SketchUp
                         AttSectLtr = SecLetters[0];
                         AttachmentSection = (from s in SketchUpGlobals.ParcelWorkingCopy.Sections where s.SectionLetter == AttSectLtr select s).FirstOrDefault();
                         JumpPointLine = connectionLines[0];
+                        
                     }
                 }
             }
+            PointF scaledJumpPoint = JumpPointLine.ScaledEndPoint;
+            MoveCursor(scaledJumpPoint);
         }
 
         private void LoadSection()
@@ -2565,24 +2636,25 @@ namespace SketchUp
             SMParcel newCopy = SketchUpGlobals.ParcelWorkingCopy;
             newCopy.SnapShotIndex++;
             SketchUpGlobals.SketchSnapshots.Add(newCopy);
-            foreach (SMLine l in 
-                SketchUpGlobals.ParcelWorkingCopy.AllSectionLines.Where(s => 
-                s.SectionLetter != "A" && s.LineNumber == 1).ToList())
-            {
-                DataRow row = AttachPoints.NewRow();
-                row["RecNo"] = l.Record;
-                row["CardNo"] = l.Dwelling;
-                row["Sect"] = l.SectionLetter;
-                row["Direct"] = l.Direction;
-                row["Xpt1"] = l.StartX.ToString();
-                row["Ypt1"] = l.StartY.ToString();
-                row["Xpt2"] = l.EndX.ToString();
-                row["Ypt2"] = l.StartY.ToString();
-                row["Attch"] = l.AttachedSection;
+            var AttachPoints = (from l in
+                  SketchUpGlobals.ParcelWorkingCopy.AllSectionLines.Where(s =>
+                  s.SectionLetter != "A" && s.LineNumber == 1).ToList()
+                                    select l);
+            //{
+            //    DataRow row = AttachPoints.NewRow();
+            //    row["RecNo"] = l.Record;
+            //    row["CardNo"] = l.Dwelling;
+            //    row["Sect"] = l.SectionLetter;
+            //    row["Direct"] = l.Direction;
+            //    row["Xpt1"] = l.StartX.ToString();
+            //    row["Ypt1"] = l.StartY.ToString();
+            //    row["Xpt2"] = l.EndX.ToString();
+            //    row["Ypt2"] = l.StartY.ToString();
+            //    row["Attch"] = l.AttachedSection;
 
-                AttachPoints.Rows.Add(row);
-            }
-            if (AttachPoints.Rows.Count > 0)
+            //    AttachPoints.Rows.Add(row);
+            //}
+            if (AttachPoints.ToList().Count > 0)
             {
                 newCopy.Sections.Where(s => s.SectionLetter == 
                     _nextSectLtr.Trim()).FirstOrDefault().Lines.Where(a => 

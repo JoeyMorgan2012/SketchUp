@@ -96,6 +96,7 @@ namespace SketchUp
             return multisectatch;
         }
 
+        [CodeRefactoringState(ExtractedFrom ="JumpToCorner",ExtractedMethod =true,ChangeDescription ="Adds X-Line to SMLines Collection, not database.",IsToDo= false)]
         private void AddXLine(string sectionLetter)
         {
             SMSection thisSection = (from s in SketchUpGlobals.ParcelWorkingCopy.Sections where s.SectionLetter == sectionLetter select s).FirstOrDefault<SMSection>();
@@ -969,5 +970,26 @@ namespace SketchUp
         }
 
         #endregion refactored SQL inserts and updates
+        #region Misc. Refactored Methods
+
+        private void MoveCursor(PointF jumpPointScaled)
+        {
+            Color penColor;
+            this.Cursor = new Cursor(Cursor.Current.Handle);
+            Cursor.Position = new Point(Convert.ToInt32(JumpX) - 50, Convert.ToInt32(JumpY) - 50);
+
+            penColor = (_undoMode || draw) ? Color.Red : Color.Black;
+            int jumpXScaled = Convert.ToInt32(jumpPointScaled.X);
+            int jumpYScaled = Convert.ToInt32(jumpPointScaled.Y);
+            Graphics g = Graphics.FromImage(_mainimage);
+            Pen pen1 = new Pen(Color.Red, 4);
+            g.DrawRectangle(pen1, jumpXScaled, jumpYScaled, 1, 1);
+            g.Save();
+
+            ExpSketchPBox.Image = _mainimage;
+
+            DMouseClick();
+        }
+        #endregion
     }
 }
