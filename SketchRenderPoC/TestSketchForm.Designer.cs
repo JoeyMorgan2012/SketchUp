@@ -200,6 +200,7 @@
             this.cmenuJump.Size = new System.Drawing.Size(162, 26);
             this.cmenuJump.Text = "Jump";
             this.cmenuJump.ToolTipText = "Jump to the nearest corner";
+            this.cmenuJump.Click += new System.EventHandler(this.cmenuJump_Click);
             // 
             // StatusMain
             // 

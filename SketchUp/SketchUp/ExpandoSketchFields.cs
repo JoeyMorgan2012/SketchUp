@@ -43,30 +43,6 @@ namespace SketchUp
 
         #region private fields
 
-        private static bool checkDirection = false;
-        private SWallTech.CAMRA_Connection _conn = null;
-        private int _curLineCnt = 0;
-        private ParcelData _currentParcel = null;
-        private float _currentScale = 0;
-        private SectionDataCollection _currentSection = null;
-        private bool _isAngle = false;
-        private bool _isclosing = false;
-        private bool _isJumpMode = false;
-        private bool _isKeyValid = false;
-        private string _lenString = String.Empty;
-        private int _newIndex = 0;
-        private List<PointF> _newSectionPoints;
-        private int _nextLineCount = 0;
-        private string _nextSectType = String.Empty;
-        private decimal _nextStoryHeight = 0;
-        private bool _openForm = false;
-        private string _priorDirection = "";
-        private bool _reOpenSec = false;
-        private int _savedAttLine;
-        private string _savedAttSection = "";
-        private float _scale = 1.0f;
-        private Dictionary<int, float> _StartX = null;
-        private Dictionary<int, float> _StartY = null;
         private decimal adjNewSecX = 0;
         private decimal adjNewSecY = 0;
         private decimal adjOldSecX = 0;
@@ -83,6 +59,7 @@ namespace SketchUp
         private DataTable AreaTable = null;
         private DataTable AttachmentPointsDataTable = null;
         private SMSection attachmentSection;
+
      //   private DataTable AttachPoints = null;
         private int AttLineNo = 0;
         private string AttSectLtr = String.Empty;
@@ -90,6 +67,11 @@ namespace SketchUp
         private int AttSpLineNo = 0;
         private float BaseX = 0;
         private float BaseY = 0;
+        private Brush blackBrush;
+        private Brush blueBrush;
+        private Pen bluePen;
+        private static bool checkDirection = false;
+
         // TODO: Remove if not needed:
         private int click = 0;
 
@@ -111,6 +93,8 @@ namespace SketchUp
         private List<string> FixSect = null;
         private List<int> GarCodes = null;
         private List<String> GarTypes = null;
+        private Graphics g;
+        private Brush greenBrush;
         private bool isInAddNewPointMode = false;
         private bool isLastLine;
         private SMLine jumpPointLine;
@@ -137,6 +121,8 @@ namespace SketchUp
         private decimal NewSectionBeginPointY = 0;
         private decimal NewSplitLIneDist = 0;
         private string OffSetAttSpLineDir = String.Empty;
+        private Pen orangePen;
+        private SMParcel parcelWorkingCopy;
         private decimal prevPt2X = 0;
         private decimal prevPt2Y = 0;
         private decimal prevTst1 = 0;
@@ -146,21 +132,30 @@ namespace SketchUp
         private float pt2X = 0;
         private float pt2Y = 0;
         private Point[] pts;
+        private Brush redBrush;
+        private Pen redPen;
         private DataTable REJumpTable = null;
         private DataTable RESpJumpTable = null;
 
      //   private Dictionary<int, byte[]> savpic = null;
         private float ScaleBaseX = 0;
         private float ScaleBaseY = 0;
+        private PointF scaledBeginPoint;
+        private PointF scaledJumpPoint;
         private float SecBeginX = 0;
         private float SecBeginY = 0;
         private List<String> SecLetters = null;
         private BuildingSection section;
+        private PointF sectionAttachPoint;
         private DataTable SectionLtrs = null;
         private DataTable SectionTable = null;
+
+        //  private static List<int> savcnt;
+        private SMParcel selectedParcel;
         private string SketchCard = String.Empty;
         private string SketchFolder = String.Empty;
         private Bitmap sketchImageBMP;
+        private PointF sketchOrigin;
         private string SketchRecord = String.Empty;
         private DataTable sortDist = null;
         private decimal splitLineDist = 0;
@@ -178,33 +173,38 @@ namespace SketchUp
         private Point[] unadj_pts;
         private decimal XadjR = 0;
         private decimal YadjR = 0;
+        private Image _baseImage;
+        private SWallTech.CAMRA_Connection _conn = null;
+        private int _curLineCnt = 0;
+        private ParcelData _currentParcel = null;
+        private float _currentScale = 0;
+        private SectionDataCollection _currentSection = null;
+        private bool _isAngle = false;
+        private bool _isclosing = false;
+        private bool _isJumpMode = false;
+        private bool _isKeyValid = false;
+        private string _lenString = String.Empty;
+        private Image _mainImage;
+        private int _mouseX;
+        private int _mouseY;
+        private int _newIndex = 0;
+        private List<PointF> _newSectionPoints;
+        private int _nextLineCount = 0;
+        private string _nextSectType = String.Empty;
+        private decimal _nextStoryHeight = 0;
+        private bool _openForm = false;
+        private string _priorDirection = "";
+        private bool _reOpenSec = false;
+        private int _savedAttLine;
+        private string _savedAttSection = "";
+        private float _scale = 1.0f;
+        private Dictionary<int, float> _StartX = null;
+        private Dictionary<int, float> _StartY = null;
+
         #endregion private fields
 
         #region Public Fields
 
-        public static bool _cantSketch = false;
-        public static bool _deleteMaster = false;
-        public static bool _deleteThisSketch = false;
-        public static bool _insertLine = false;
-        public static bool _isClosed = false;
-        public static string _nextSectLtr = String.Empty;
-        public static bool _undoMode = false;
-        public static int finalClick;
-        public static List<string> Letters = new List<string>() { "A", "B", "C", "D", "F", "G", "H", "I", "J", "K", "L", "M" };
-        public static bool RefreshEditImageBtn = false;
-        public bool _addSection = false;
-        public decimal _calcNextSectArea = 0;
-        public bool _closeSketch = false;
-        public bool _hasMultiSection = false;
-        public bool _hasNewSketch;
-        public bool _hasSketch = false;
-        public bool _isNewSketch = false;
-        public string _lastAngDir = String.Empty;
-        public string _lastDir = String.Empty;
-        public decimal _nextSectArea = 0;
-        public bool _undoJump = false;
-        public bool _undoLine = false;
-        public bool _vacantParcelSketch = false;
         public float BeginSplitX = 0;
         public float BeginSplitY = 0;
         public decimal begSplitX = 0;
@@ -225,8 +225,15 @@ namespace SketchUp
         public float EndSplitXF = 0;
         public decimal EndSplitY = 0;
         public float EndSplitYF = 0;
+        public static int finalClick;
         public int Garcnt = 0;
         public decimal GarSize = 0;
+        private bool isNewSketch = false;
+        private string lastAngDir = string.Empty;
+        private string lastDir = string.Empty;
+        public static List<string> Letters = new List<string>() { "A", "B", "C", "D", "F", "G", "H", "I", "J", "K", "L", "M" };
+        private decimal nextSectArea = 0;
+        private static string nextSectLtr = String.Empty;
         public float NextStartX = 0;
         public float NextStartY = 0;
         public string offsetDir = String.Empty;
@@ -235,11 +242,13 @@ namespace SketchUp
         public decimal OrigStartY = 0;
         public float PrevStartX = 0;
         public float PrevStartY = 0;
+        public static bool RefreshEditImageBtn = false;
         public decimal RemainderLineLength = 0;
         public int SecItemCnt = 0;
         public int SecLineCnt = 0;
         public decimal startSplitX = 0;
         public decimal startSplitY = 0;
+        private bool undoJump = false;
         public DataTable undoPoints = null;
         public float UNextStartX = 0;
         public float UNextStartY = 0;
@@ -249,27 +258,31 @@ namespace SketchUp
         public float XadjP = 0;
         public float Yadj = 0;
         public float YadjP = 0;
+        public bool _addSection = false;
+        public decimal _calcNextSectArea = 0;
+        public static bool _cantSketch = false;
+        public bool _closeSketch = false;
+        public static bool _deleteMaster = false;
+        public static bool _deleteThisSketch = false;
+        public bool _hasMultiSection = false;
+        public bool _hasNewSketch;
+        public bool _hasSketch = false;
+        public static bool _insertLine = false;
+        public static bool _isClosed = false;
+        public bool _undoLine = false;
+        public static bool _undoMode = false;
+        public bool _vacantParcelSketch = false;
+
         #endregion Public Fields
-        private static List<int> savcnt;
-        private Image _baseImage;
-        private Image _mainimage;
-        private int _mouseX;
-        private int _mouseY;
-        private Brush blackBrush;
-        private Brush blueBrush;
-        private Pen bluePen;
-        private Graphics graphics;
-        private Brush greenBrush;
-        private Pen orangePen;
-        private SMParcel parcelWorkingCopy;
-        private Brush redBrush;
-        private Pen redPen;
-        private SMParcel selectedParcel;
-        private PointF sketchOrigin;
+
+     
         #endregion Fields
 
       
         #region Properties
+
+        bool firstTimeLoaded;
+        Bitmap sketchImage;
 
         public SMSection AttachmentSection
         {
@@ -343,6 +356,7 @@ namespace SketchUp
                 cpCodes = value;
             }
         }
+
         public bool FirstTimeLoaded
         {
             get
@@ -368,6 +382,18 @@ namespace SketchUp
             }
         }
 
+        public bool IsNewSketch
+        {
+            get
+            {
+                return isNewSketch;
+            }
+            set
+            {
+                isNewSketch = value;
+            }
+        }
+
         public SMLine JumpPointLine
         {
             get
@@ -377,6 +403,85 @@ namespace SketchUp
             set
             {
                 jumpPointLine = value;
+            }
+        }
+
+        public string LastAngDir
+        {
+            get
+            {
+                return lastAngDir;
+            }
+            set
+            {
+                lastAngDir = value;
+            }
+        }
+
+        public string LastDir
+        {
+            get
+            {
+                return lastDir;
+            }
+            set
+            {
+                lastDir = value;
+            }
+        }
+
+        public Image MainImage
+        {
+            get
+            {
+                if (_mainImage==null)
+                {
+                    _mainImage = new Bitmap(ExpSketchPBox.Width, ExpSketchPBox.Height);
+                }
+                return _mainImage;
+            }
+            set
+            {
+                _mainImage = value;
+            }
+        }
+
+        private List<PointF> NewSectionPoints
+        {
+            get
+            {
+                if (_newSectionPoints == null)
+                    _newSectionPoints = new List<PointF>();
+
+                return _newSectionPoints;
+            }
+            set
+            {
+                _newSectionPoints = value;
+            }
+        }
+
+        public decimal NextSectArea
+        {
+            get
+            {
+                return nextSectArea;
+            }
+            set
+            {
+                nextSectArea = value;
+            }
+        }
+
+        public static string NextSectLtr
+        {
+            get
+            {
+                return nextSectLtr;
+            }
+            set
+            {
+                nextSectLtr = value;
             }
         }
 
@@ -434,6 +539,42 @@ namespace SketchUp
             set
             {
                 redPen = value;
+            }
+        }
+
+        public PointF ScaledBeginPoint
+        {
+            get
+            {
+                return scaledBeginPoint;
+            }
+            set
+            {
+                scaledBeginPoint = value;
+            }
+        }
+
+        public PointF ScaledJumpPoint
+        {
+            get
+            {
+                return scaledJumpPoint;
+            }
+            set
+            {
+                scaledJumpPoint = value;
+            }
+        }
+
+        public PointF SectionAttachPoint
+        {
+            get
+            {
+                return sectionAttachPoint;
+            }
+            set
+            {
+                sectionAttachPoint = value;
             }
         }
 
@@ -499,23 +640,18 @@ namespace SketchUp
             }
         }
 
-        private List<PointF> NewSectionPoints
+        public bool UndoJump
         {
             get
             {
-                if (_newSectionPoints == null)
-                    _newSectionPoints = new List<PointF>();
-
-                return _newSectionPoints;
+                return undoJump;
             }
             set
             {
-                _newSectionPoints = value;
+                undoJump = value;
             }
         }
 
-        bool firstTimeLoaded;
-        Bitmap sketchImage;
         #endregion Properties
     }
 }

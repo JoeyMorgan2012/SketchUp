@@ -84,7 +84,7 @@ namespace SketchUp
                 allSectionLines = new List<SMLine>();
                 if (Sections != null)
                 {
-                    foreach (SMSection sms in Sections)
+                    foreach (SMSection sms in Sections.Where(l=>l.Lines!=null&&l.Lines.Count>0))
                     {
                         allSectionLines.AddRange(sms.Lines);
                     }
@@ -366,8 +366,54 @@ namespace SketchUp
             }
         }
 
-     
-     
+        public List<SMLine> PosibleJumpLines
+        {
+            get
+            {
+                if (JumpMouseLocation!=null)
+                {
+                    possibleJumpLines = LinesWithClosestEndPoint(JumpMouseLocation);
+                }
+                return possibleJumpLines;
+            }
+
+            set
+            {
+                possibleJumpLines = value;
+            }
+        }
+
+        private List<SMLine> LinesWithClosestEndPoint(PointF mouseLocation)
+        {
+      
+            foreach (SMLine l in AllSectionLines)
+            {
+                l.ComparisonPoint = mouseLocation;
+            }
+            decimal minDist = (from l in AllSectionLines select l.EndPointDistanceFromComparisonPoint).Min();
+            List<SMLine> jumpLines = (from l in AllSectionLines where Math.Round(l.EndPointDistanceFromComparisonPoint,2) == Math.Round(minDist,2) select l).ToList();
+            return jumpLines;
+        }
+
+        public PointF JumpMouseLocation
+        {
+            get
+            {
+                return jumpMouseLocation;
+            }
+
+            set
+            {
+                jumpMouseLocation = value;
+                foreach (SMLine l in AllSectionLines)
+                {
+                    l.ComparisonPoint = jumpMouseLocation;
+                }
+            }
+        }
+
+        private PointF closestPointToComparisonPoint;
+        private PointF jumpMouseLocation;
         private string lastSectionLetter;
         private string nextSectionLetter;
         private int snapShotIndex;
@@ -387,5 +433,6 @@ namespace SketchUp
         private string storeyEx;
         private decimal storeys;
         private decimal totalSqFt;
+        private List<SMLine> possibleJumpLines;
     }
 }

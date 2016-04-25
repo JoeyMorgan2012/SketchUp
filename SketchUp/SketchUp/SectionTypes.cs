@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -9,11 +10,13 @@ namespace SketchUp
 {
     public partial class SectionTypes : Form
     {
+     
+
         public SectionTypes(SWallTech.CAMRA_Connection conn, ParcelData data, bool addSection, int lineCount, bool newSketch)
         {
             _conn = conn;
             _currentParcel = data;
-
+            parcelWorkingCopy = SketchUpGlobals.ParcelWorkingCopy;
             _AddSection = addSection;
 
             InitializeComponent();
@@ -25,16 +28,11 @@ namespace SketchUp
             Card = _currentParcel.Card;
             btnAdd.Enabled = false;
 
-            //Rectangle r = Screen.PrimaryScreen.WorkingArea;
-            //this.StartPosition = FormStartPosition.Manual;
-            //this.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width - (this.Width + 50),
-            //    Screen.PrimaryScreen.WorkingArea.Height - (this.Height + 50));
-
-            ListSectionCollection();
+             ListSectionCollection();
             SectionTypesCbox.DataSource = sectTypeList;
             ReSet();
             GetNextSection(Record, Card);
-
+            
             if (CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
             {
                 CurOccTxt.Text = "Residential Occupancy";
@@ -51,7 +49,30 @@ namespace SketchUp
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
+            AddSectionToWorkingParcel();
+            
             this.Close();
+        }
+
+        private void AddSectionToWorkingParcel()
+        {
+            decimal storeys = 0.00M;
+            SMSection newSection = new SMSection(parcelWorkingCopy);
+            newSection.SectionLetter = SectLtrTxt.Text;
+            newSection.SectionType = SectionTypesCbox.SelectedValue.ToString();
+            decimal.TryParse(SectionStoriesTxt.Text, out storeys);
+            newSection.Storeys = storeys;
+            parcelWorkingCopy.Sections.Add(newSection);
+            parcelWorkingCopy.SnapShotIndex++;
+            SketchUpGlobals.SketchSnapshots.Add(parcelWorkingCopy);
+
+#if DEBUG
+            StringBuilder traceOut = new StringBuilder();
+            traceOut.AppendLine(string.Format("New section added: {0}", newSection.SectionLetter));
+            traceOut.AppendLine(string.Format("{0}", ""));
+            Debug.WriteLine(string.Format("{0}", traceOut.ToString()));
+
+#endif
         }
 
         private void ChkBase()
@@ -89,14 +110,7 @@ namespace SketchUp
                 }
             }
 
-            //if (nextSec == null)
-            //{
-            //    StringBuilder secSql = new StringBuilder();
-            //    secSql.Append(String.Format("select max(jssect) from section where jsrecord = {0} and jsdwell = {1} ", _record, _card));
-
-            //    nextSec = (string)_fox.ExecuteScalar(secSql.ToString());
-            //}
-
+            
             if (nextSec.Trim() == String.Empty)
             {
                 nextSec = "A";
@@ -436,6 +450,11 @@ namespace SketchUp
             SectionSizeTxt.Focus();
         }
 
+        public static string nextSec
+        {
+            get; set;
+        }
+
         public static int _nextLineCount
         {
             get; set;
@@ -466,33 +485,33 @@ namespace SketchUp
             get; set;
         }
 
-        public static string nextSec
+        public SMParcel ParcelWorkingCopy
         {
-            get; set;
+            get
+            {
+                return parcelWorkingCopy;
+            }
+
+            set
+            {
+                parcelWorkingCopy = value;
+            }
         }
-
-        public static bool _AddSection = false;
-
-        public static bool _blankSize = false;
-
-        public static bool _isnewSketch = false;
-
-        private bool _AddStory = false;
-
-        private bool _AddType = false;
-
-        private bool _blankStory = false;
-
-        private bool _checkStory = false;
-
-        // TODO: Remove if not needed:	DBAccessManager _fox = null;
-        private SWallTech.CAMRA_Connection _conn = null;
-
-        private ParcelData _currentParcel = null;
 
         private int Card = 0;
         private int Record = 0;
         private string Section = String.Empty;
         private List<string> sectTypeList = null;
+        public static bool _AddSection = false;
+        private bool _AddStory = false;
+        private bool _AddType = false;
+        public static bool _blankSize = false;
+        private bool _blankStory = false;
+        private bool _checkStory = false;
+        SMParcel parcelWorkingCopy;
+        // TODO: Remove if not needed:	DBAccessManager _fox = null;
+        private SWallTech.CAMRA_Connection _conn = null;
+        private ParcelData _currentParcel = null;
+        public static bool _isnewSketch = false;
     }
 }

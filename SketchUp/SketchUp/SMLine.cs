@@ -436,7 +436,7 @@ namespace SketchUp
         {
             get
             {
-                endPointDistanceFromComparisonPoint = (decimal)SMGlobal.LineLength(ComparisonPoint, ScaledEndPoint);
+                endPointDistanceFromComparisonPoint = Math.Round((decimal)SMGlobal.LineLength(ComparisonPoint, ScaledEndPoint),2);
                 return endPointDistanceFromComparisonPoint;
             }
 

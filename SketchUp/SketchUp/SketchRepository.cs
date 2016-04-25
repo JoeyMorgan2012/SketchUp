@@ -60,8 +60,20 @@ namespace SketchUp
                 }
                 else
                 {
-                    return new SMParcel();
+                    SMParcel parcel = new SMParcel
+                    {
+                        Record = recordNumber,
+                        Card = dwellingNumber,
+                        HasSketch = "N",
+                        Storeys = 0,
+                        StoreyEx = string.Empty,
+                        Scale = 1,
+                        TotalSqFt = 0,
+                        ExSketch = string.Empty
+                    };
+                    return parcel;
                 }
+                
             }
             catch (Exception ex)
             {

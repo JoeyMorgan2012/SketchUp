@@ -262,6 +262,7 @@ namespace SketchUp
             return _section;
         }
 
+        [CodeRefactoringState(IsToDo =true,ChangeDescription ="Section CRUD is not implemented.",ReplacesExistingCode =false)]
         public bool InsertOrUpdate(DBAccessManager _fox)
         {
             if (IsDataValid)
@@ -269,11 +270,9 @@ namespace SketchUp
                 if (IsNewRecord)
                 {
                     string _insertSQL = string.Format("insert into {13}.{14}section (jsrecord,jsdwell,jssect,jsstory,jsdesc,jssketch,jssqft,js0depr,jsclass,jsvalue,jsfactor,jsdeprc ) values ({0},{1},'{2}','{3}',{4},'{5}','{6}',{7},'{8}','{9}',{10},{11},{12} ) ", jsrecord, jsdwell, jssect, jstype, jsstory, jsdesc, jssketch, jssqft, js0depr, jsclass, jsvalue, jsfactor, jsdeprc, SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix);
-
-                    //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "_insertSQL", _insertSQL);
-                    _fox.ExecuteNonSelectStatement(_insertSQL);
-
-                    //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "_insertSQL", _insertSQL);
+                    
+                    //TODO: Add the CRUD operations
+                
                 }
                 else
                 {

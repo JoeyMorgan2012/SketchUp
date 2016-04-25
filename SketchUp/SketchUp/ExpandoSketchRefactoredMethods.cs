@@ -36,7 +36,7 @@ namespace SketchUp
 
             //float ty1 = NextStartY;
 
-            ExpSketchPBox.Image = _mainimage;
+            ExpSketchPBox.Image = MainImage;
 
             ////click++;
             ////savpic.Add(click, imageToByteArray(_mainimage));
@@ -75,6 +75,146 @@ namespace SketchUp
 
         #endregion May not be needed
 
+        #region Sketching Methods
+
+        private void SetScaledStartPoints()
+        {
+            try
+            {
+                if (SketchUpGlobals.ParcelWorkingCopy != null && SketchUpGlobals.ParcelWorkingCopy.Sections != null)
+                {
+                    decimal sketchScale = SketchUpGlobals.ParcelWorkingCopy.Scale;
+                    foreach (SMSection s in SketchUpGlobals.ParcelWorkingCopy.Sections)
+                    {
+                        foreach (SMLine line in s.Lines)
+                        {
+                            var lineStartX = (float)((line.StartX * sketchScale) + (decimal)SketchOrigin.X);
+                            var lineStartY = (float)((line.StartY * sketchScale) + (decimal)SketchOrigin.Y);
+                            line.ScaledStartPoint = new PointF(lineStartX, lineStartY);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+								Trace.WriteLine(errMessage);
+								Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+#if DEBUG
+
+								MessageBox.Show(errMessage);
+#endif
+                throw;
+            }
+        }
+
+        private void SetSectionCenterPoints()
+        {
+            try
+            {
+                List<PointF> sectionPoints = new List<PointF>();
+                foreach (SMSection section in SketchUpGlobals.ParcelWorkingCopy.Sections)
+                {
+                    sectionPoints = new List<PointF>();
+                    foreach (SMLine line in section.Lines)
+                    {
+                        sectionPoints.Add(line.ScaledStartPoint);
+                        sectionPoints.Add(line.ScaledEndPoint);
+                    }
+                    PolygonF sectionBounds = new PolygonF(sectionPoints.ToArray<PointF>());
+                    section.ScaledSectionCenter = PointF.Add(sectionBounds.CenterPointOfBounds, new SizeF(0, -12));
+                }
+            }
+            catch (Exception ex)
+            {
+                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+								Trace.WriteLine(errMessage);
+								Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+#if DEBUG
+
+								MessageBox.Show(errMessage);
+#endif
+                throw;
+            }
+        }
+
+        private void SetSketchOrigin()
+        {
+            //Using the scale and the offsets, determine the point to be considered as "0,0" for the sketch;
+            try
+            {
+                var sketchAreaWidth = ExpSketchPBox.Width - 20;
+                var sketchAreaHeight = ExpSketchPBox.Height - 20;
+
+                PointF pictureBoxCorner = ExpSketchPBox.Location;
+                var extraWidth = (ExpSketchPBox.Width - 20) - (SketchUpGlobals.ParcelWorkingCopy.Scale * SketchUpGlobals.ParcelWorkingCopy.SketchXSize);
+                var extraHeight = (ExpSketchPBox.Height - 20) - (SketchUpGlobals.ParcelWorkingCopy.Scale * SketchUpGlobals.ParcelWorkingCopy.SketchYSize);
+                var paddingX = (extraWidth / 2) + 10;
+                var paddingY = (extraHeight / 2) + 10;
+                var xLocation = (SketchUpGlobals.ParcelWorkingCopy.OffsetX * SketchUpGlobals.ParcelWorkingCopy.Scale) + paddingX;
+                var yLocation = (SketchUpGlobals.ParcelWorkingCopy.OffsetY * SketchUpGlobals.ParcelWorkingCopy.Scale) + paddingY;
+
+                SketchOrigin = new PointF((float)xLocation, (float)yLocation);
+            }
+            catch (Exception ex)
+            {
+                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+                Trace.WriteLine(errMessage);
+                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+#if DEBUG
+
+                MessageBox.Show(errMessage);
+#endif
+                throw;
+            }
+        }
+
+        private void SetSketchScale()
+        {
+            try
+            {
+                //Determine the size of the sketch drawing area, which is the picture box less 10 px on a side, so height-20 and width-20. Padding is 10.
+                int boxHeight = ExpSketchPBox.Height - 20;
+                int boxWidth = ExpSketchPBox.Width - 20;
+                decimal xScale = Math.Floor(boxWidth / SketchUpGlobals.ParcelWorkingCopy.SketchXSize);
+                decimal yScale = Math.Floor(boxHeight / SketchUpGlobals.ParcelWorkingCopy.SketchYSize);
+                SketchUpGlobals.ParcelWorkingCopy.Scale = (decimal)SMGlobal.SmallerDouble(xScale, yScale);
+            }
+            catch (Exception ex)
+            {
+                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+                Trace.WriteLine(errMessage);
+                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+#if DEBUG
+
+                MessageBox.Show(errMessage);
+#endif
+                throw;
+            }
+        }
+
+        #endregion Sketching Methods
+
+        [CodeRefactoringState(ExtractedFrom = "JumpToCorner", ExtractedMethod = true, ChangeDescription = "Adds X-Line to SMLines Collection, not database.", IsToDo = false)]
+        private void AddXLine(string sectionLetter)
+        {
+            SMSection thisSection = (from s in SketchUpGlobals.ParcelWorkingCopy.Sections where s.SectionLetter == sectionLetter select s).FirstOrDefault<SMSection>();
+            SMLine xLine = new SMLine { Record = thisSection.Record, Dwelling = thisSection.Dwelling, SectionLetter = thisSection.SectionLetter, LineNumber = thisSection.Lines.Count + 1, StartX = 0, StartY = 0, EndX = 0, EndY = 0, ParentParcel = thisSection.ParentParcel, Direction = "X" };
+            SketchUpGlobals.ParcelWorkingCopy.Sections.Where(s => s.SectionLetter == sectionLetter).FirstOrDefault<SMSection>().Lines.Add(xLine);
+        }
+
+        //ToDo: Begin here to hook in parcel updates
+        private void DoneDrawingBtn_Click(object sender, EventArgs e)
+        {
+            ReorderParcelStructure();
+            RefreshParcelImage();
+            SetActiveButtonAppearance();
+        }
+
+        private void endSectionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+        }
+
         private string MultiPointsAvailable(List<string> sectionLetterList)
         {
             string multisectatch = String.Empty;
@@ -96,33 +236,14 @@ namespace SketchUp
             return multisectatch;
         }
 
-        [CodeRefactoringState(ExtractedFrom ="JumpToCorner",ExtractedMethod =true,ChangeDescription ="Adds X-Line to SMLines Collection, not database.",IsToDo= false)]
-        private void AddXLine(string sectionLetter)
-        {
-            SMSection thisSection = (from s in SketchUpGlobals.ParcelWorkingCopy.Sections where s.SectionLetter == sectionLetter select s).FirstOrDefault<SMSection>();
-            SMLine xLine = new SMLine { Record = thisSection.Record, Dwelling = thisSection.Dwelling, SectionLetter = thisSection.SectionLetter, LineNumber = thisSection.Lines.Count + 1, StartX = 0, StartY = 0, EndX = 0, EndY = 0, ParentParcel = thisSection.ParentParcel, Direction = "X" };
-            SketchUpGlobals.ParcelWorkingCopy.Sections.Where(s => s.SectionLetter == sectionLetter).FirstOrDefault<SMSection>().Lines.Add(xLine);
-        }
-
-        //ToDo: Begin here to hook in parcel updates
-        private void DoneDrawingBtn_Click(object sender, EventArgs e)
-        {
-            ReorderParcelStructure();
-            RefreshParcelImage();
-            SetActiveButtonAppearance();
-        }
-
-        private void DrawCurrentParcelSketch()
-        {
-        }
-
-        private void endSectionToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
-
         private void RefreshParcelImage()
         {
-            DrawCurrentParcelSketch();
+            RenderCurrentSketch();
+        }
+
+        private void RenderCurrentSketch()
+        {
+            throw new NotImplementedException();
         }
 
         private void ReorderParcelStructure()
@@ -155,7 +276,7 @@ namespace SketchUp
         private void UndoLine()
         {
             SMParcel parcel = SketchUpGlobals.ParcelWorkingCopy;
-            string workingSectionLetter = _nextSectLtr;
+            string workingSectionLetter = NextSectLtr;
             SMSection workingSection = (from s in parcel.Sections where s.SectionLetter == workingSectionLetter select s).FirstOrDefault();
             int lastLineNumber = (from l in workingSection.Lines select l.LineNumber).Max();
             parcel.Sections.Remove(parcel.Sections.Where(l => l.SectionLetter == workingSectionLetter).FirstOrDefault());
@@ -166,70 +287,30 @@ namespace SketchUp
             RenderCurrentSketch();
         }
 
-        private void RenderCurrentSketch()
-        {
-            throw new NotImplementedException();
-        }
-
         #endregion Form Events and Menu
 
-        #region Save or Discard Changes Refactored
+        #region Misc. Refactored Methods
 
-        private void DiscardChangesAndExit()
+        private void MoveCursor(PointF jumpPointScaled)
         {
-            SketchUpGlobals.SketchSnapshots.Clear();
-            SketchUpGlobals.SMParcelFromData.SnapShotIndex = 0;
-            SketchUpGlobals.SketchSnapshots.Add(SketchUpGlobals.SMParcelFromData);
+            Color penColor;
+            this.Cursor = new Cursor(Cursor.Current.Handle);
+            Cursor.Position = new Point(Convert.ToInt32(JumpX) - 50, Convert.ToInt32(JumpY) - 50);
 
-            MessageBox.Show(
-                string.Format("Reverting to Version {0} with {1} Sections.",
-                SketchUpGlobals.SMParcelFromData.SnapShotIndex,
-                SketchUpGlobals.SMParcelFromData.Sections.Count));
+            penColor = (_undoMode || draw) ? Color.Red : Color.Black;
+            int jumpXScaled = Convert.ToInt32(jumpPointScaled.X);
+            int jumpYScaled = Convert.ToInt32(jumpPointScaled.Y);
+            Graphics g = Graphics.FromImage(MainImage);
+            Pen pen1 = new Pen(Color.Red, 4);
+            g.DrawRectangle(pen1, jumpXScaled, jumpYScaled, 1, 1);
+            g.Save();
 
-            this.Close();
+            ExpSketchPBox.Image = MainImage;
+
+            DMouseClick();
         }
 
-        private void PromptToSaveOrDiscard()
-        {
-            string message = "Do you want to save changes?";
-            DialogResult response = MessageBox.Show(message, "Save Changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
-            switch (response)
-            {
-                case DialogResult.Cancel:
-                case DialogResult.None:
-
-                    // Do we need to do anything here?
-                    break;
-
-                case DialogResult.Yes:
-                    SaveCurrentParcelToDatabaseAndExit();
-
-                    break;
-
-                case DialogResult.No:
-                    DiscardChangesAndExit();
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        private void SaveCurrentParcelToDatabaseAndExit()
-        {
-            Reorder();
-            MessageBox.Show(
-                string.Format("Saving Version {0} with {1} Sections to Database.",
-                SketchUpGlobals.ParcelWorkingCopy.SnapShotIndex,
-                SketchUpGlobals.ParcelWorkingCopy.Sections.Count));
-            this.Close();
-        }
-
-        #endregion Save or Discard Changes Refactored
-
-        #region SketchManagerDrawingMethods
-
-        #endregion SketchManagerDrawingMethods
+        #endregion Misc. Refactored Methods
 
         #region refactored SQL inserts and updates
 
@@ -494,11 +575,11 @@ namespace SketchUp
 
                     if (_nextStoryHeight < 1.0m)
                     {
-                        _nextSectArea = (Math.Round(Convert.ToDecimal(sectionPolygon.Area), 1) * _nextStoryHeight);
+                        NextSectArea = (Math.Round(Convert.ToDecimal(sectionPolygon.Area), 1) * _nextStoryHeight);
                     }
                     if (_nextStoryHeight >= 1.0m)
                     {
-                        _nextSectArea = Math.Round(Convert.ToDecimal(sectionPolygon.Area), 1);
+                        NextSectArea = Math.Round(Convert.ToDecimal(sectionPolygon.Area), 1);
                     }
                 }
 
@@ -508,7 +589,7 @@ namespace SketchUp
                               SketchUpGlobals.LocalityPreFix,
                                _currentParcel.Record,
                                _currentParcel.Card,
-                                   _nextSectLtr));
+                                   NextSectLtr));
 
                 try
                 {
@@ -553,7 +634,7 @@ namespace SketchUp
                     addSect.Append(String.Format(" values ( {0},{1},'{2}',{3},'{4}',{5},{6},{7},{8},{9},{10},{11},{12},'{13}' ) ",
                         _currentParcel.Record, //0
                         _currentParcel.Card, // 1
-                        _nextSectLtr.Trim(), // 2
+                        NextSectLtr.Trim(), // 2
                         lineCnt, //3
                         direction.Trim(), //4
                         lengthX, //5
@@ -606,7 +687,7 @@ namespace SketchUp
         private void BuildAddSQLAng(float prevX, float prevY, decimal distDX, decimal distDY, string direction, decimal length, int _lineCnt, bool closing, float startx, float starty)
         {
             _isclosing = closing;
-            _lastAngDir = direction;
+            LastAngDir = direction;
 
             pt2X = 0;
             pt2Y = 0;
@@ -874,7 +955,7 @@ namespace SketchUp
                                 //SketchUpGlobals.FcLocalityPrefix,
                                 _currentParcel.Record,
                                 _currentParcel.Card,
-                                _nextSectLtr));
+                                NextSectLtr));
 
                 try
                 {
@@ -910,11 +991,11 @@ namespace SketchUp
 
                     if (_nextStoryHeight < 1.0m)
                     {
-                        _nextSectArea = (Math.Round(Convert.ToDecimal(sectionPolygon.Area), 1) * _nextStoryHeight);
+                        NextSectArea = (Math.Round(Convert.ToDecimal(sectionPolygon.Area), 1) * _nextStoryHeight);
                     }
                     if (_nextStoryHeight >= 1.0m)
                     {
-                        _nextSectArea = Math.Round(Convert.ToDecimal(sectionPolygon.Area), 1);
+                        NextSectArea = Math.Round(Convert.ToDecimal(sectionPolygon.Area), 1);
                     }
                 }
 
@@ -935,7 +1016,7 @@ namespace SketchUp
                     addSectAng.Append(String.Format(" values ( {0},{1},'{2}',{3},'{4}',{5},{6},{7},{8},{9},{10},{11},{12},'{13}' ) ",
                         _currentParcel.Record,
                         _currentParcel.Card,
-                        _nextSectLtr.Trim(),
+                        NextSectLtr.Trim(),
                         lineCnt,
                         direction.Trim(),
                         lengthX,
@@ -970,26 +1051,274 @@ namespace SketchUp
         }
 
         #endregion refactored SQL inserts and updates
-        #region Misc. Refactored Methods
 
-        private void MoveCursor(PointF jumpPointScaled)
+        #region Save or Discard Changes Refactored
+
+        private void DiscardChangesAndExit()
         {
-            Color penColor;
-            this.Cursor = new Cursor(Cursor.Current.Handle);
-            Cursor.Position = new Point(Convert.ToInt32(JumpX) - 50, Convert.ToInt32(JumpY) - 50);
+            SketchUpGlobals.SketchSnapshots.Clear();
+            SketchUpGlobals.SMParcelFromData.SnapShotIndex = 0;
+            SketchUpGlobals.SketchSnapshots.Add(SketchUpGlobals.SMParcelFromData);
 
-            penColor = (_undoMode || draw) ? Color.Red : Color.Black;
-            int jumpXScaled = Convert.ToInt32(jumpPointScaled.X);
-            int jumpYScaled = Convert.ToInt32(jumpPointScaled.Y);
-            Graphics g = Graphics.FromImage(_mainimage);
-            Pen pen1 = new Pen(Color.Red, 4);
-            g.DrawRectangle(pen1, jumpXScaled, jumpYScaled, 1, 1);
+            MessageBox.Show(
+                string.Format("Reverting to Version {0} with {1} Sections.",
+                SketchUpGlobals.SMParcelFromData.SnapShotIndex,
+                SketchUpGlobals.SMParcelFromData.Sections.Count));
+
+            this.Close();
+        }
+
+        private void PromptToSaveOrDiscard()
+        {
+            string message = "Do you want to save changes?";
+            DialogResult response = MessageBox.Show(message, "Save Changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
+            switch (response)
+            {
+                case DialogResult.Cancel:
+                case DialogResult.None:
+
+                    // Do we need to do anything here?
+                    break;
+
+                case DialogResult.Yes:
+                    SaveCurrentParcelToDatabaseAndExit();
+
+                    break;
+
+                case DialogResult.No:
+                    DiscardChangesAndExit();
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        private void SaveCurrentParcelToDatabaseAndExit()
+        {
+            Reorder();
+            MessageBox.Show(
+                string.Format("Saving Version {0} with {1} Sections to Database.",
+                SketchUpGlobals.ParcelWorkingCopy.SnapShotIndex,
+                SketchUpGlobals.ParcelWorkingCopy.Sections.Count));
+            this.Close();
+        }
+
+        #endregion Save or Discard Changes Refactored
+
+        #region SketchManagerDrawingMethods
+
+        private void DrawLabel(SMSection section)
+        {
+            string label = section.SectionLabel;
+
+            Font font = new Font("Segoe UI", 10, FontStyle.Bold, GraphicsUnit.Point);
+            int labelLength = (int)section.SectionLabel.Length;
+
+            PointF labelLocation = section.ScaledSectionCenter;
+
+            g.DrawString(label, font, RedBrush, labelLocation);
+        }
+
+        private void DrawLabel(SMLine line, bool showEndpoints)
+        {
+            string label = line.LineLabel;
+
+            Font font = new Font("Segoe UI", 8, FontStyle.Regular, GraphicsUnit.Point);
+
+            PointF labelStartPoint = line.LineLabelPlacementPoint(SketchOrigin);
+            g.DrawString(label, font, BlackBrush, labelStartPoint);
+            if (showEndpoints)
+            {
+                ShowPoint(string.Format("{0}{1}\nbeg\n{2:N1},{3:N1}", line.SectionLetter, line.LineNumber, line.StartX, line.StartY), line.ScaledStartPoint);
+                ShowPoint(string.Format("{0}{1}\nend\n{2:N1},{3:N1}", line.SectionLetter, line.LineNumber, line.EndX, line.EndY), line.EndPoint);
+            }
+        }
+
+        private void DrawLabel(SMLine line)
+        {
+            string label = line.LineLabel;
+
+            Font font = new Font("Segoe UI", 8, FontStyle.Regular, GraphicsUnit.Point);
+
+            PointF labelStartPoint = line.LineLabelPlacementPoint(SketchOrigin);
+            g.DrawString(label, font, BlackBrush, labelStartPoint);
+        }
+
+        private void DrawLine(SMLine line)
+        {
+            //PointF drawLineStart = new PointF(line.ScaledStartPoint.X + SketchOrigin.X, line.ScaledStartPoint.Y + SketchOrigin.Y);
+            //PointF drawLineEnd = new PointF(line.ScaledEndPoint.X + SketchOrigin.X, line.ScaledEndPoint.Y + SketchOrigin.Y);
+            PointF drawLineStart = new PointF(line.ScaledStartPoint.X, line.ScaledStartPoint.Y);
+            PointF drawLineEnd = new PointF(line.ScaledEndPoint.X, line.ScaledEndPoint.Y);
+            g.DrawLine(BluePen, drawLineStart, drawLineEnd);
+            DrawLabel(line);
+        }
+
+        private void DrawLine(SMLine line, bool omitLabel = true)
+        {
+            //PointF drawLineStart = new PointF(line.ScaledStartPoint.X + SketchOrigin.X, line.ScaledStartPoint.Y + SketchOrigin.Y);
+            //PointF drawLineEnd = new PointF(line.ScaledEndPoint.X + SketchOrigin.X, line.ScaledEndPoint.Y + SketchOrigin.Y);
+            PointF drawLineStart = new PointF(line.ScaledStartPoint.X, line.ScaledStartPoint.Y);
+            PointF drawLineEnd = new PointF(line.ScaledEndPoint.X, line.ScaledEndPoint.Y);
+            g.DrawLine(BluePen, drawLineStart, drawLineEnd);
+            if (!omitLabel)
+            {
+                DrawLabel(line);
+            }
+        }
+
+        private void DrawLine(SMLine line, Pen pen)
+        {
+            PointF drawLineStart = new PointF(line.ScaledStartPoint.X + SketchOrigin.X, line.ScaledStartPoint.Y + SketchOrigin.Y);
+            PointF drawLineEnd = new PointF(line.ScaledEndPoint.X + SketchOrigin.X, line.ScaledEndPoint.Y + SketchOrigin.Y);
+
+            g.DrawLine(pen, drawLineStart, drawLineEnd);
+            DrawLabel(line);
+        }
+
+        private void DrawLine(SMLine line, Pen pen, bool omitLabel = true)
+        {
+            PointF drawLineStart = new PointF(line.ScaledStartPoint.X + SketchOrigin.X, line.ScaledStartPoint.Y + SketchOrigin.Y);
+            PointF drawLineEnd = new PointF(line.ScaledEndPoint.X + SketchOrigin.X, line.ScaledEndPoint.Y + SketchOrigin.Y);
+
+            g.DrawLine(pen, drawLineStart, drawLineEnd);
+            if (!omitLabel)
+            {
+                DrawLabel(line, omitLabel);
+            }
+        }
+
+        private void DrawSections(bool ShowPoints = false)
+        {
+            if (SketchUpGlobals.ParcelWorkingCopy == null)
+            {
+                RenderSketch();
+            }
+            if (SketchUpGlobals.ParcelWorkingCopy.Sections != null)
+            {
+                foreach (SMSection section in SketchUpGlobals.ParcelWorkingCopy.Sections.OrderBy(l => l.SectionLetter))
+                {
+                    if (section.Lines != null)
+                    {
+                        foreach (SMLine l in section.Lines.OrderBy(n => n.LineNumber))
+                        {
+                            DrawLine(l);
+                            if (ShowPoints)
+                            {
+                                ShowPoint(string.Format("{0}{1}\nbeg\n{2:N1},{3:N1}", l.SectionLetter, l.LineNumber, l.StartX, l.StartY), l.ScaledStartPoint);
+                                ShowPoint(string.Format("{0}{1}\nend\n{2:N1},{3:N1}", l.SectionLetter, l.LineNumber, l.EndX, l.EndY), l.EndPoint);
+                            }
+                        }
+                    }
+                    DrawLabel(section);
+                }
+            }
+        }
+
+        private void DrawSections(string sectionLetter)
+        {
+            if (SketchUpGlobals.ParcelWorkingCopy == null)
+            {
+                RenderSketch();
+            }
+            if (SketchUpGlobals.ParcelWorkingCopy.Sections != null)
+            {
+                SMSection selectedSection = (from s in SketchUpGlobals.ParcelWorkingCopy.Sections where s.SectionLetter == sectionLetter select s).FirstOrDefault<SMSection>();
+
+                if (selectedSection.Lines != null)
+                {
+                    foreach (SMLine l in selectedSection.Lines.OrderBy(n => n.LineNumber))
+                    {
+                        DrawLine(l, false);
+                    }
+                }
+            }
+        }
+
+        private Bitmap RenderSketch()
+        {
+            try
+            {
+                Bitmap sketcher = new Bitmap(ExpSketchPBox.Width, ExpSketchPBox.Height);
+                SetSketchScale();
+                SetSketchOrigin();
+                SetScaledStartPoints();
+                SetSectionCenterPoints();
+                sketcher=ShowSketchFromBitMap();
+                return sketcher;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+                Trace.WriteLine(errMessage);
+                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+#if DEBUG
+
+                MessageBox.Show(errMessage);
+#endif
+                throw;
+            }
+        }
+
+        private void ShowPoint(string pointLabel, PointF pointToLabel)
+        {
+            Graphics g = ExpSketchPBox.CreateGraphics();
+            PointF[] region = new PointF[] { new PointF(pointToLabel.X - 4, pointToLabel.Y - 4), new PointF(pointToLabel.X - 4, pointToLabel.Y + 4), new PointF(pointToLabel.X + 4, pointToLabel.Y + 4), new PointF(pointToLabel.X + 4, pointToLabel.Y - 4) };
+            PolygonF pointPolygon = new PolygonF(region);
+            
+            g.DrawPolygon(BluePen, region);
+            g.DrawString(pointLabel, DefaultFont, GreenBrush, new PointF(pointToLabel.X - 16, pointToLabel.Y - 16));
             g.Save();
 
-            ExpSketchPBox.Image = _mainimage;
-
-            DMouseClick();
         }
-        #endregion
+
+        private void ShowPoint(string pointLabel, PointF pointToLabel, SizeF labelOffset)
+        {
+            PointF[] region = new PointF[] { new PointF(pointToLabel.X, pointToLabel.Y - 14), new PointF(pointToLabel.X - 4, pointToLabel.Y + 4), new PointF(pointToLabel.X + 4, pointToLabel.Y + 4), new PointF(pointToLabel.X + 4, pointToLabel.Y - 4) };
+            PolygonF pointPolygon = new PolygonF(region);
+
+            g.DrawPolygon(BluePen, region);
+            g.DrawString(pointLabel, DefaultFont, GreenBrush, PointF.Add(new PointF(pointToLabel.X, pointToLabel.Y + 16), labelOffset));
+        }
+
+        private void ShowPoint(string pointLabel, PointF pointToLabel, SizeF labelOffset, Pen pen)
+        {
+            PointF[] region = new PointF[] { new PointF(pointToLabel.X - 4, pointToLabel.Y - 4), new PointF(pointToLabel.X - 4, pointToLabel.Y + 4), new PointF(pointToLabel.X + 4, pointToLabel.Y + 4), new PointF(pointToLabel.X + 4, pointToLabel.Y - 4) };
+            PolygonF pointPolygon = new PolygonF(region);
+
+            g.DrawPolygon(pen, region);
+            g.DrawString(pointLabel, DefaultFont, GreenBrush, PointF.Add(new PointF(pointToLabel.X, pointToLabel.Y + 16), labelOffset));
+        }
+
+        private Bitmap ShowSketchFromBitMap()
+        {
+            try
+            {
+                Bitmap bmpWorking = new Bitmap(ExpSketchPBox.Width, ExpSketchPBox.Height);
+
+                g = Graphics.FromImage(bmpWorking);
+
+                g.Clear(Color.White);
+                DrawSections();
+
+                // DrawSectionsOntoBitMap(graphics, true);
+                //graphics.Flush();
+                return bmpWorking;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+								Trace.WriteLine(errMessage);
+								Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+#if DEBUG
+
+								MessageBox.Show(errMessage);
+#endif
+                throw;
+            }
+        }
+
+        #endregion SketchManagerDrawingMethods
     }
 }

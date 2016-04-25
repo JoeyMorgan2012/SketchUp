@@ -46,7 +46,7 @@ namespace SketchUp
 
                 if (draw)
                 {
-                    Graphics g = Graphics.FromImage(_mainimage);
+                    Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Red);
                     Pen pen1 = new Pen(Color.Red, 2);
                     Font f = new Font("Arial", 8, FontStyle.Bold);
@@ -57,7 +57,7 @@ namespace SketchUp
 
                 if (!draw)
                 {
-                    Graphics g = Graphics.FromImage(_mainimage);
+                    Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Black);
                     Pen pen1 = new Pen(Color.Cyan, 5);
                     Font f = new Font("Arial", 8, FontStyle.Bold);
@@ -101,7 +101,7 @@ namespace SketchUp
 
                 DistText.Focus();
 
-                ExpSketchPBox.Image = _mainimage;
+                ExpSketchPBox.Image = MainImage;
                 //click++;
                 _StartX.Remove(click);
                 _StartY.Remove(click);
@@ -257,7 +257,7 @@ namespace SketchUp
 
                 if (draw)
                 {
-                    Graphics g = Graphics.FromImage(_mainimage);
+                    Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Red);
                     Pen pen1 = new Pen(Color.Red, 2);
                     Font f = new Font("Arial", 8, FontStyle.Bold);
@@ -267,7 +267,7 @@ namespace SketchUp
                 }
                 if (!draw)
                 {
-                    Graphics g = Graphics.FromImage(_mainimage);
+                    Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Black);
                     Pen pen1 = new Pen(Color.Cyan, 5);
                     Font f = new Font("Arial", 8, FontStyle.Bold);
@@ -319,7 +319,7 @@ namespace SketchUp
 
                 DistText.Focus();
 
-                ExpSketchPBox.Image = _mainimage;
+                ExpSketchPBox.Image = MainImage;
                 //click++;
                 _StartX.Remove(click);
                 _StartY.Remove(click);
@@ -501,7 +501,7 @@ namespace SketchUp
 
                 if (draw)
                 {
-                    Graphics g = Graphics.FromImage(_mainimage);
+                    Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Red);
                     Pen pen1 = new Pen(Color.Red, 2);
                     Font f = new Font("Arial", 8, FontStyle.Bold);
@@ -512,7 +512,7 @@ namespace SketchUp
 
                 if (!draw)
                 {
-                    Graphics g = Graphics.FromImage(_mainimage);
+                    Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Black);
                     Pen pen1 = new Pen(Color.Cyan, 5);
                     Font f = new Font("Arial", 8, FontStyle.Bold);
@@ -547,7 +547,7 @@ namespace SketchUp
 
                 DistText.Focus();
 
-                ExpSketchPBox.Image = _mainimage;
+                ExpSketchPBox.Image = MainImage;
                 //click++;
                 _StartX.Remove(click);
                 _StartY.Remove(click);
@@ -634,7 +634,7 @@ namespace SketchUp
 
                 if (draw)
                 {
-                    Graphics g = Graphics.FromImage(_mainimage);
+                    Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Red);
                     Pen pen1 = new Pen(Color.Red, 2);
                     Font f = new Font("Arial", 8, FontStyle.Bold);
@@ -645,7 +645,7 @@ namespace SketchUp
 
                 if (!draw)
                 {
-                    Graphics g = Graphics.FromImage(_mainimage);
+                    Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Black);
                     Pen pen1 = new Pen(Color.Cyan, 5);
                     Font f = new Font("Arial", 8, FontStyle.Bold);
@@ -680,7 +680,7 @@ namespace SketchUp
 
                 DistText.Focus();
 
-                ExpSketchPBox.Image = _mainimage;
+                ExpSketchPBox.Image = MainImage;
                 //click++;
                 _StartX.Remove(click);
                 _StartY.Remove(click);
@@ -771,7 +771,7 @@ namespace SketchUp
 
                 if (draw)
                 {
-                    Graphics g = Graphics.FromImage(_mainimage);
+                    Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Red);
                     Pen pen1 = new Pen(Color.Red, 2);
                     Font f = new Font("Arial", 8, FontStyle.Bold);
@@ -781,7 +781,7 @@ namespace SketchUp
                 }
                 if (!draw)
                 {
-                    Graphics g = Graphics.FromImage(_mainimage);
+                    Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Black);
                     Pen pen1 = new Pen(Color.Cyan, 5);
                     Font f = new Font("Arial", 8, FontStyle.Bold);
@@ -827,7 +827,7 @@ namespace SketchUp
 
                 DistText.Focus();
 
-                ExpSketchPBox.Image = _mainimage;
+                ExpSketchPBox.Image = MainImage;
 
                 //click++;
                 _StartX.Remove(click);
@@ -1000,7 +1000,7 @@ namespace SketchUp
 
                 if (draw)
                 {
-                    Graphics g = Graphics.FromImage(_mainimage);
+                    Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Red);
                     Pen pen1 = new Pen(Color.Red, 2);
                     Font f = new Font("Arial", 8, FontStyle.Bold);
@@ -1011,7 +1011,7 @@ namespace SketchUp
 
                 if (!draw)
                 {
-                    Graphics g = Graphics.FromImage(_mainimage);
+                    Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Black);
                     Pen pen1 = new Pen(Color.Cyan, 5);
                     Font f = new Font("Arial", 8, FontStyle.Bold);
@@ -1046,7 +1046,7 @@ namespace SketchUp
 
                 DistText.Focus();
 
-                ExpSketchPBox.Image = _mainimage;
+                ExpSketchPBox.Image = MainImage;
                 //click++;
                 _StartX.Remove(click);
                 _StartY.Remove(click);
@@ -1141,7 +1141,7 @@ namespace SketchUp
 
                 if (draw)
                 {
-                    Graphics g = Graphics.FromImage(_mainimage);
+                    Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Red);
                     Pen pen1 = new Pen(Color.Red, 2);
                     Pen pen2 = new Pen(Color.Green, 2);
@@ -1153,7 +1153,7 @@ namespace SketchUp
 
                 if (!draw)
                 {
-                    Graphics g = Graphics.FromImage(_mainimage);
+                    Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Black);
                     Pen pen1 = new Pen(Color.Cyan, 5);
                     Font f = new Font("Arial", 8, FontStyle.Bold);
@@ -1188,7 +1188,7 @@ namespace SketchUp
 
                 DistText.Focus();
 
-                ExpSketchPBox.Image = _mainimage;
+                ExpSketchPBox.Image = MainImage;
                 //click++;
                 _StartX.Remove(click);
                 _StartY.Remove(click);
@@ -1270,7 +1270,7 @@ namespace SketchUp
 
                 if (draw)
                 {
-                    Graphics g = Graphics.FromImage(_mainimage);
+                    Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Red);
                     Pen pen1 = new Pen(Color.Red, 2);
                     Font f = new Font("Arial", 8, FontStyle.Bold);
@@ -1280,7 +1280,7 @@ namespace SketchUp
                 }
                 if (!draw)
                 {
-                    Graphics g = Graphics.FromImage(_mainimage);
+                    Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Black);
                     Pen pen1 = new Pen(Color.Cyan, 5);
                     Font f = new Font("Arial", 8, FontStyle.Bold);
@@ -1325,7 +1325,7 @@ namespace SketchUp
 
                 DistText.Focus();
 
-                ExpSketchPBox.Image = _mainimage;
+                ExpSketchPBox.Image = MainImage;
                 //click++;
                 _StartX.Remove(click);
                 _StartY.Remove(click);
@@ -1454,7 +1454,7 @@ namespace SketchUp
 
         private void HandleEastKeys()
         {
-            _lastDir = "E";
+            LastDir = "E";
             if (_isAngle == false)
             {
                 MoveEast(NextStartX, NextStartY);
@@ -1470,7 +1470,7 @@ namespace SketchUp
         {
             _isKeyValid = IsValidDirection("N");
 
-            _lastDir = "N";
+            LastDir = "N";
             if (_isAngle == false)
             {
                 MoveNorth(NextStartX, NextStartY);
@@ -1485,7 +1485,7 @@ namespace SketchUp
         private void HandleSouthKeys()
         {
             _isKeyValid = IsValidDirection("S");
-            _lastDir = "S";
+            LastDir = "S";
             if (_isAngle == false)
             {
                 MoveSouth(NextStartX, NextStartY);
@@ -1500,7 +1500,7 @@ namespace SketchUp
         private void HandleWestKeys()
         {
             _isKeyValid = IsValidDirection("W");
-            _lastDir = "W";
+            LastDir = "W";
             if (_isAngle == false)
             {
                 MoveWest(NextStartX, NextStartY);

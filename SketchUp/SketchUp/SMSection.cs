@@ -249,6 +249,7 @@ namespace SketchUp
         {
             record = parcel.Record;
             dwelling = parcel.Card;
+            ParentParcel = parcel;
         }
 
         #endregion Constructors

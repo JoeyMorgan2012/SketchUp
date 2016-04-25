@@ -25,11 +25,13 @@ namespace SketchRenderPoC
             //TODO: Change this so the parcel data is loaded with the main form, index of 0, and each successive index is one greater, so each "version" is stored in the list.
             InitializeComponent();
             this.ParcelWorkingCopy = ts.TestParcel();
+            ParcelWorkingCopy.SnapShotIndex = 0;
             SketchUpGlobals.SketchSnapshots.Add(ParcelWorkingCopy);
             graphics = pctMain.CreateGraphics();
             BluePen = new Pen(Color.DarkBlue, 3);
             RedPen = new Pen(Color.Red, 2);
             firstTimeLoaded = true;
+            ParcelWorkingCopy.SnapShotIndex = 1;
             RenderSketch();
             graphics.Save();
             
@@ -169,7 +171,7 @@ namespace SketchRenderPoC
                // DrawSectionsOntoBitMap(graphics, true);
                 //graphics.Flush();
                 pctMain.Image = SketchImage;
-            SaveImageForVersion();
+          //  SaveImageForVersion();
             
         }
 
@@ -198,20 +200,7 @@ namespace SketchRenderPoC
 
         #endregion control events
 
-        #region Debug only
-
-        private void DebugOnlyDisplayResults()
-        {
-#if DEBUG
-            graphics.DrawRectangle(BluePen, SketchOrigin.X, SketchOrigin.Y, 2, 2);
-            Brush redBrush = Brushes.Red;
-            Font textFont = new Font("Arial", 12);
-            graphics.DrawString(string.Format("Origin: {0},{1}", SketchOrigin.X, SketchOrigin.Y), textFont, redBrush, SketchOrigin.X + 10, SketchOrigin.Y + 10);
-            graphics.DrawString(string.Format("Scale: {0}", ParcelWorkingCopy.Scale), textFont, redBrush, SketchOrigin.X + 10, SketchOrigin.Y + 20);
-#endif
-        }
-
-        #endregion Debug only
+      
 
         #region Fields
 
@@ -420,16 +409,16 @@ namespace SketchRenderPoC
             DrawLabel(line);
         }
 
-        private void DrawLine(SMLine line, Pen pen)
+        private void DrawLine(Graphics gr, SMLine line, Pen pen)
         {
             PointF drawLineStart = new PointF(line.ScaledStartPoint.X + SketchOrigin.X, line.ScaledStartPoint.Y + SketchOrigin.Y);
             PointF drawLineEnd = new PointF(line.ScaledEndPoint.X + SketchOrigin.X, line.ScaledEndPoint.Y + SketchOrigin.Y);
 
-            graphics.DrawLine(pen, drawLineStart, drawLineEnd);
+            gr.DrawLine(pen, drawLineStart, drawLineEnd);
             DrawLabel(line);
         }
 
-        private void DrawLine(SMLine line, Pen pen,bool omitLabel=true)
+        private void DrawLine(Graphics gr,SMLine line, Pen pen,bool omitLabel=true)
         {
             PointF drawLineStart = new PointF(line.ScaledStartPoint.X + SketchOrigin.X, line.ScaledStartPoint.Y + SketchOrigin.Y);
             PointF drawLineEnd = new PointF(line.ScaledEndPoint.X + SketchOrigin.X, line.ScaledEndPoint.Y + SketchOrigin.Y);
@@ -1018,6 +1007,27 @@ namespace SketchRenderPoC
         private void TestSketchForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             graphics.Dispose();
+        }
+
+        private void cmenuJump_Click(object sender, EventArgs e)
+        {
+            PointF clickPoint =MousePosition;
+            float relativeX = clickPoint.X + pctMain.Left;
+            float relativeY = clickPoint.Y + pctMain.Top;
+
+            ParcelWorkingCopy.JumpMouseLocation = new PointF(relativeX,relativeY);
+            statLblStepInfo.Text = string.Format("Mouse jump from {0},{1}", clickPoint.X, clickPoint.Y);
+            List <SMLine> closestLines= ParcelWorkingCopy.PosibleJumpLines;
+            Graphics g = pctMain.CreateGraphics();
+ if (closestLines!=null)
+                {
+            foreach (SMLine l in closestLines)
+            {
+
+                    DrawLine(g,l, RedPen, false);
+
+                }
+            }
         }
     }
 }

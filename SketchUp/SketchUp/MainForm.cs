@@ -51,6 +51,7 @@ namespace SketchUp
             SketchUpGlobals.SMParcelFromData.SnapShotIndex = 0;
             SketchUpGlobals.SketchSnapshots.Add(SketchUpGlobals.SMParcelFromData);
             mainFormParcel = SketchUpGlobals.SMParcelFromData;
+
         }
 
         public void LoadDataFromCamraDb()
@@ -86,6 +87,7 @@ namespace SketchUp
 
         private void PrepareSketchManager()
         {
+            
         }
 
         #endregion Constructor
@@ -102,8 +104,8 @@ namespace SketchUp
         {
             try
             {
-                //TODO: Remove debugging code
-                // EditSketch(SketchUpGlobals.ParcelWorkingCopy);
+
+                AddWorkingCopyOfSketchToSnapshots();
 
                 GetSelectedImages();
             }
@@ -112,6 +114,8 @@ namespace SketchUp
                 Console.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
             }
         }
+
+       
 
         //TODO: Remove debugging code
         //private void EditSketch(SMParcel workingCopyOfParcel)
@@ -208,7 +212,12 @@ namespace SketchUp
                 EditImage.Text = "Add Sketch";
             }
         }
-
+        private void AddWorkingCopyOfSketchToSnapshots()
+        {
+            SMParcel parcel = MainFormParcel;
+            parcel.SnapShotIndex++;
+            SketchUpGlobals.SketchSnapshots.Add(parcel);
+        }
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             //Program.ShowCheckpointLog();
@@ -333,7 +342,7 @@ namespace SketchUp
             MessageBox.Show("Clean Up unfinished Section");
 
             StringBuilder countSec = new StringBuilder();
-            countSec.Append(String.Format("select count(*) from {0}.{1}line where jlsect = '{2}' ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, ExpandoSketch._nextSectLtr));
+            countSec.Append(String.Format("select count(*) from {0}.{1}line where jlsect = '{2}' ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, ExpandoSketch.NextSectLtr));
 
             int sectcount = Convert.ToInt32(SketchUpGlobals.CamraDbConn.DBConnection.ExecuteScalar(countSec.ToString()));
 
@@ -342,7 +351,7 @@ namespace SketchUp
                 Cursor = Cursors.WaitCursor;
 
                 StringBuilder cleanup = new StringBuilder();
-                cleanup.Append(String.Format("delete from {0}.{1}line where jlsect = '{2}' ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, ExpandoSketch._nextSectLtr));
+                cleanup.Append(String.Format("delete from {0}.{1}line where jlsect = '{2}' ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, ExpandoSketch.NextSectLtr));
                 cleanup.Append(String.Format(" and jlrecord = {0} and jldwell = {1} ",
                             SketchUpGlobals.CurrentParcel.mrecno,
                             SketchUpGlobals.CurrentParcel.mdwell));
