@@ -260,20 +260,14 @@ namespace SketchUp
 
         private static void DrawSketchIfDataExists(ref decimal MINX, ref decimal MAXX, ref decimal MINY, ref decimal MAXY, SMSection section, List<LineInfo> LINELIST, List<PointF> pts)
         {
-#if DEBUG
-
-            //Debugging Code -- remove for production release
-            //var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-            //UtilityMethods.LogMethodCall(fullStack, true);
-#endif
 
             foreach (SMLine line in section.Lines)
             {
                 //int seq = Convert.ToInt32(_lineReader.GetDecimal(ord_JLLINE));
                 decimal x = line.StartX;
                 decimal y = line.StartY;
-                decimal x2 = line.EndX;
-                decimal y2 = line.EndY;
+                decimal x2 =line.EndX;
+                decimal y2 =line.EndY;
 
                 PointF pt = new PointF(Convert.ToSingle(x), Convert.ToSingle(y));
 

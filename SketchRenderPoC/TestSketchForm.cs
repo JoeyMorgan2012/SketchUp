@@ -40,7 +40,7 @@ namespace SketchRenderPoC
 
         private SMParcel GetOriginalParcelFromDb(int record, int dwelling, SketchRepository sr)
         {
-            SMParcel parcel = sr.SelectParcelData(record, dwelling);
+            SMParcel parcel = sr.SelectParcelAll(record, dwelling);
             parcel.Sections = sr.SelectParcelSections(parcel);
             foreach (SMSection sms in parcel.Sections)
             {

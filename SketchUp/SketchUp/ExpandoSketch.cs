@@ -17,7 +17,7 @@ namespace SketchUp
     public partial class ExpandoSketch : Form
     {
         #region Constructor
-
+        //TODO: Add DI for SMParcel LocalParcelCopy for next release
         public ExpandoSketch(ParcelData currentParcel, string sketchFolder,
       string sketchRecord, string sketchCard, string _locality, SWallTech.CAMRA_Connection _fox,
       SectionDataCollection currentSection, bool hasSketch, Image sketchImage, bool hasNewSketch)
@@ -115,15 +115,15 @@ namespace SketchUp
                 InitializeDataTablesAndVariables(currentParcel, sketchFolder, sketchRecord, sketchCard, _locality, _fox, currentSection, hasSketch, hasNewSketch);
 
                 InitializeDisplayDataGrid();
-
-                SketchUpGlobals.HasSketch = (SketchUpGlobals.ParcelWorkingCopy != null && SketchUpGlobals.ParcelWorkingCopy.AllSectionLines.Count > 0);
+                LocalParcelCopy = SketchUpGlobals.ParcelWorkingCopy;
+                SketchUpGlobals.HasSketch = (LocalParcelCopy != null && LocalParcelCopy.AllSectionLines.Count > 0);
                 IsNewSketch = !SketchUpGlobals.HasSketch;
                 //HACK - Easier to repeat than track down the usages at this juncture
                 SketchUpGlobals.HasNewSketch = IsNewSketch;
                 if (SketchUpGlobals.HasSketch == true)
                 {
                     MainImage = RenderSketch();
-                    _currentScale = (float)SketchUpGlobals.ParcelWorkingCopy.Scale;
+                    _currentScale = (float)LocalParcelCopy.Scale;
 
                     //MainImage = currentParcel.GetSketchImage(ExpSketchPBox.Width, ExpSketchPBox.Height, 1000, 572, 400, out _scale);
                     //_currentScale = _scale;
@@ -1834,65 +1834,7 @@ namespace SketchUp
             return goodDir;
         }
 
-        private void JumptoCorner()
-        {
-            float txtx = NextStartX;
-            float txty = NextStartY;
-            float jx = _mouseX;
-            float jy = _mouseY;
-            float _scaleBaseX = ScaleBaseX;
-            float _scaleBaseY = ScaleBaseY;
-            float CurrentScale = _currentScale;
-            int crrec = _currentParcel.Record;
-            int crcard = _currentParcel.Card;
-
-            CurrentSecLtr = String.Empty;
-            _newIndex = 0;
-            currentAttachmentLine = 0;
-            if (IsNewSketch == false)
-            {
-                PointF mouseLocation = new PointF(_mouseX,_mouseY);
-
-                foreach (SMLine l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines.Where(s => s.SectionLetter != SketchUpGlobals.ParcelWorkingCopy.LastSectionLetter))
-                {
-                    l.ComparisonPoint = mouseLocation;
-                }
-                int shortestDistance = (from l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines select (int)l.EndPointDistanceFromComparisonPoint).Min();
-                List<SMLine> connectionLines = (from l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines where (int)l.EndPointDistanceFromComparisonPoint == shortestDistance select l).ToList();
-                bool sketchHasLineData = connectionLines.Count > 0;
-                if (connectionLines == null || connectionLines.Count == 0)
-                {
-                    string message = string.Format("No lines contain an available connection point from point {0},{1}", mouseLocation.X, mouseLocation.Y);
-
-                    Trace.WriteLine(message);
-
-#if DEBUG
-
-                    MessageBox.Show(message);
-#endif
-                    throw new InvalidDataException(message);
-                }
-                else
-                {
-                    SecLetters = (from l in connectionLines select l.SectionLetter).ToList();
-                    if (SecLetters.Count > 1)
-                    {
-                        AttSectLtr = MultiPointsAvailable(SecLetters);
-                        AttachmentSection = (from s in SketchUpGlobals.ParcelWorkingCopy.Sections where s.SectionLetter == AttSectLtr select s).FirstOrDefault();
-                        JumpPointLine = (from l in connectionLines where l.SectionLetter == AttSectLtr select l).FirstOrDefault();
-                    }
-                    else
-                    {
-                        AttSectLtr = SecLetters[0];
-                        AttachmentSection = (from s in SketchUpGlobals.ParcelWorkingCopy.Sections where s.SectionLetter == AttSectLtr select s).FirstOrDefault();
-                        JumpPointLine = connectionLines[0];
-                    }
-                    ScaledJumpPoint = JumpPointLine.ScaledEndPoint;
-                    MoveCursor(scaledJumpPoint);
-                }
-            }
-        }
-
+     
         private void JumptoCornerOriginal()
         {
             float txtx = NextStartX;
@@ -2242,7 +2184,7 @@ namespace SketchUp
             SMParcel parcel = SketchUpGlobals.ParcelWorkingCopy;
             MainImage = _currentParcel.GetSketchImage(parcel,ExpSketchPBox.Width, ExpSketchPBox.Height,
                 1000, 572, 400, out scaleOut);
-            DrawingScale = scaleOut;
+            DrawingScale = (float)parcel.Scale;
             _currentScale = DrawingScale;
             RenderSketch();
 
@@ -3808,7 +3750,7 @@ namespace SketchUp
 
         private void BeginSectionBtn_Click(object sender, EventArgs e)
         {
-            SetActiveButtonAppearance();
+          
             float xxx = NextStartX;
             float yyy = NextStartY;
 

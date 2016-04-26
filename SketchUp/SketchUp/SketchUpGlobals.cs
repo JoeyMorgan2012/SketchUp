@@ -317,6 +317,12 @@ namespace SketchUp
                     int lastIndex = (from p in SketchSnapshots select p.SnapShotIndex).Max();
                     parcelWorkingCopy = (from p in SketchSnapshots where p.SnapShotIndex == lastIndex select p).FirstOrDefault<SMParcel>();
                 }
+                else
+                {
+                    parcelWorkingCopy = SketchMgrRepo.SelectParcelAll(Record, Card);
+                    parcelWorkingCopy.SnapShotIndex = 0;
+                    SketchSnapshots.Add(parcelWorkingCopy);
+                }
 
                 return parcelWorkingCopy;
             }
@@ -383,6 +389,10 @@ namespace SketchUp
         {
             get
             {
+                if (sketchMgrRepo==null)
+                {
+                    sketchMgrRepo = new SketchRepository(IpAddress, "CAMRA2", "CAMRA2", LocalityPreFix);
+                }
                 return sketchMgrRepo;
             }
 

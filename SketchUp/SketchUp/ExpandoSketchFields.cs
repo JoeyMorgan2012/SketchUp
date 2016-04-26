@@ -42,7 +42,7 @@ namespace SketchUp
         #region Fields
 
         #region private fields
-
+        
         private decimal adjNewSecX = 0;
         private decimal adjNewSecY = 0;
         private decimal adjOldSecX = 0;
@@ -662,6 +662,19 @@ namespace SketchUp
             set
             {
                 drawingScale = value;
+            }
+        }
+
+        public List<SMLine> JumpPointLines
+        {
+            get
+            {
+                return jumpPointLines;
+            }
+
+            set
+            {
+                jumpPointLines = value;
             }
         }
 

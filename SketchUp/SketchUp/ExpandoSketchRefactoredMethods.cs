@@ -76,6 +76,66 @@ namespace SketchUp
         #endregion May not be needed
 
         #region Sketching Methods
+        private void JumptoCorner()
+        {
+            float txtx = NextStartX;
+            float txty = NextStartY;
+            float jx = _mouseX;
+            float jy = _mouseY;
+            float _scaleBaseX = ScaleBaseX;
+            float _scaleBaseY = ScaleBaseY;
+            float CurrentScale = _currentScale;
+            int crrec = _currentParcel.Record;
+            int crcard = _currentParcel.Card;
+
+            CurrentSecLtr = String.Empty;
+            _newIndex = 0;
+            currentAttachmentLine = 0;
+            if (IsNewSketch == false)
+            {
+                PointF mouseLocation = new PointF(_mouseX, _mouseY);
+
+                foreach (SMLine l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines.Where(s => s.SectionLetter != SketchUpGlobals.ParcelWorkingCopy.LastSectionLetter))
+                {
+                    l.ComparisonPoint = mouseLocation;
+                }
+                int shortestDistance = (from l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines select (int)l.EndPointDistanceFromComparisonPoint).Min();
+                List<SMLine> connectionLines = (from l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines where (int)l.EndPointDistanceFromComparisonPoint == shortestDistance select l).ToList();
+                bool sketchHasLineData = connectionLines.Count > 0;
+                if (connectionLines == null || connectionLines.Count == 0)
+                {
+                    string message = string.Format("No lines contain an available connection point from point {0},{1}", mouseLocation.X, mouseLocation.Y);
+
+                    Trace.WriteLine(message);
+
+#if DEBUG
+
+                    MessageBox.Show(message);
+#endif
+                    throw new InvalidDataException(message);
+                }
+                else
+                {
+                    SecLetters = (from l in connectionLines select l.SectionLetter).ToList();
+                    if (SecLetters.Count > 1)
+                    {
+                        AttSectLtr = MultiPointsAvailable(SecLetters);
+                        AttachmentSection = (from s in SketchUpGlobals.ParcelWorkingCopy.Sections where s.SectionLetter == AttSectLtr select s).FirstOrDefault();
+                        JumpPointLine = (from l in connectionLines where l.SectionLetter == AttSectLtr select l).FirstOrDefault();
+                    }
+                    else
+                    {
+                        AttSectLtr = SecLetters[0];
+                        AttachmentSection = (from s in SketchUpGlobals.ParcelWorkingCopy.Sections where s.SectionLetter == AttSectLtr select s).FirstOrDefault();
+                        JumpPointLine = connectionLines[0];
+                    }
+                    ScaledJumpPoint = JumpPointLine.ScaledEndPoint;
+                    MoveCursor(scaledJumpPoint);
+                    SetActiveButtonAppearance();
+                    BeginSectionBtn.Enabled = scaledJumpPoint!=null;
+                }
+            }
+        }
 
         private void SetScaledStartPoints()
         {
@@ -180,9 +240,9 @@ namespace SketchUp
                 //decimal yScale = Math.Floor(boxHeight / SketchUpGlobals.ParcelWorkingCopy.SketchYSize);
                 //SketchUpGlobals.ParcelWorkingCopy.Scale = (decimal)SMGlobal.SmallerDouble(xScale, yScale);
 
-                decimal xScale = (decimal)DrawingScale;
+                decimal xScale = Math.Floor(boxWidth / SketchUpGlobals.ParcelWorkingCopy.SketchXSize);
                 decimal yScale = Math.Floor(boxHeight / SketchUpGlobals.ParcelWorkingCopy.SketchYSize);
-                SketchUpGlobals.ParcelWorkingCopy.Scale = (decimal)SMGlobal.SmallerDouble(xScale, yScale);
+                SketchUpGlobals.ParcelWorkingCopy.Scale = 0.75M*SMGlobal.SmallerDouble(xScale, yScale);
 
             }
             catch (Exception ex)
@@ -265,12 +325,14 @@ namespace SketchUp
         {
             BeginSectionBtn.BackColor = Color.Cyan;
             BeginSectionBtn.Text = "Active";
+            BeginSectionBtn.Enabled = false;
         }
 
         private void SetReadyButtonAppearance()
         {
             BeginSectionBtn.BackColor = Color.PaleTurquoise;
             BeginSectionBtn.Text = "Begin";
+         
         }
 
         private void tsbExitSketch_Click(object sender, EventArgs e)
@@ -1106,7 +1168,8 @@ namespace SketchUp
                 string.Format("Saving Version {0} with {1} Sections to Database.",
                 SketchUpGlobals.ParcelWorkingCopy.SnapShotIndex,
                 SketchUpGlobals.ParcelWorkingCopy.Sections.Count));
-            this.Close();
+            throw new NotImplementedException();
+            //this.Close();
         }
 
         #endregion Save or Discard Changes Refactored
@@ -1152,8 +1215,7 @@ namespace SketchUp
 
         private void DrawLine(SMLine line)
         {
-            //PointF drawLineStart = new PointF(line.ScaledStartPoint.X + SketchOrigin.X, line.ScaledStartPoint.Y + SketchOrigin.Y);
-            //PointF drawLineEnd = new PointF(line.ScaledEndPoint.X + SketchOrigin.X, line.ScaledEndPoint.Y + SketchOrigin.Y);
+         
             PointF drawLineStart = new PointF(line.ScaledStartPoint.X, line.ScaledStartPoint.Y);
             PointF drawLineEnd = new PointF(line.ScaledEndPoint.X, line.ScaledEndPoint.Y);
             g.DrawLine(BluePen, drawLineStart, drawLineEnd);
@@ -1162,8 +1224,7 @@ namespace SketchUp
 
         private void DrawLine(SMLine line, bool omitLabel = true)
         {
-            //PointF drawLineStart = new PointF(line.ScaledStartPoint.X + SketchOrigin.X, line.ScaledStartPoint.Y + SketchOrigin.Y);
-            //PointF drawLineEnd = new PointF(line.ScaledEndPoint.X + SketchOrigin.X, line.ScaledEndPoint.Y + SketchOrigin.Y);
+          
             PointF drawLineStart = new PointF(line.ScaledStartPoint.X, line.ScaledStartPoint.Y);
             PointF drawLineEnd = new PointF(line.ScaledEndPoint.X, line.ScaledEndPoint.Y);
             g.DrawLine(BluePen, drawLineStart, drawLineEnd);

@@ -75,7 +75,7 @@
             this.ExpandoSketchTools.Name = "ExpandoSketchTools";
             this.ExpandoSketchTools.Size = new System.Drawing.Size(1014, 54);
             this.ExpandoSketchTools.TabIndex = 0;
-            this.ExpandoSketchTools.Text = "toolStrip1";
+            this.ExpandoSketchTools.Text = "Sketch Tools";
             // 
             // AddSectionContextMenu
             // 
