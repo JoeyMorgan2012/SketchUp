@@ -122,7 +122,7 @@ namespace SketchUp
         private decimal NewSplitLIneDist = 0;
         private string OffSetAttSpLineDir = String.Empty;
         private Pen orangePen;
-        private SMParcel parcelWorkingCopy;
+        private SMParcel localParcelCopy;
         private decimal prevPt2X = 0;
         private decimal prevPt2Y = 0;
         private decimal prevTst1 = 0;
@@ -197,7 +197,7 @@ namespace SketchUp
         private bool _reOpenSec = false;
         private int _savedAttLine;
         private string _savedAttSection = "";
-        private float _scale = 1.0f;
+        private float drawingScale = 1.0f;
         private Dictionary<int, float> _StartX = null;
         private Dictionary<int, float> _StartY = null;
 
@@ -501,15 +501,15 @@ namespace SketchUp
             }
         }
 
-        public SMParcel ParcelWorkingCopy
+        public SMParcel LocalParcelCopy
         {
             get
             {
-                return parcelWorkingCopy;
+                return localParcelCopy;
             }
             set
             {
-                parcelWorkingCopy = value;
+                localParcelCopy = value;
             }
         }
 
@@ -649,6 +649,19 @@ namespace SketchUp
             set
             {
                 undoJump = value;
+            }
+        }
+
+        public float DrawingScale
+        {
+            get
+            {
+                return drawingScale;
+            }
+
+            set
+            {
+                drawingScale = value;
             }
         }
 

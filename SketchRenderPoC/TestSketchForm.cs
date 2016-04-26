@@ -32,6 +32,7 @@ namespace SketchRenderPoC
             RedPen = new Pen(Color.Red, 2);
             firstTimeLoaded = true;
             ParcelWorkingCopy.SnapShotIndex = 1;
+            SketchUpGlobals.SketchSnapshots.Add(ParcelWorkingCopy);
             RenderSketch();
             graphics.Save();
             

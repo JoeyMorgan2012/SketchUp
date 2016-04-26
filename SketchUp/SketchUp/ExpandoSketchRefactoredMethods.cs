@@ -176,9 +176,14 @@ namespace SketchUp
                 //Determine the size of the sketch drawing area, which is the picture box less 10 px on a side, so height-20 and width-20. Padding is 10.
                 int boxHeight = ExpSketchPBox.Height - 20;
                 int boxWidth = ExpSketchPBox.Width - 20;
-                decimal xScale = Math.Floor(boxWidth / SketchUpGlobals.ParcelWorkingCopy.SketchXSize);
+                //decimal xScale = Math.Floor(boxWidth / SketchUpGlobals.ParcelWorkingCopy.SketchXSize);
+                //decimal yScale = Math.Floor(boxHeight / SketchUpGlobals.ParcelWorkingCopy.SketchYSize);
+                //SketchUpGlobals.ParcelWorkingCopy.Scale = (decimal)SMGlobal.SmallerDouble(xScale, yScale);
+
+                decimal xScale = (decimal)DrawingScale;
                 decimal yScale = Math.Floor(boxHeight / SketchUpGlobals.ParcelWorkingCopy.SketchYSize);
                 SketchUpGlobals.ParcelWorkingCopy.Scale = (decimal)SMGlobal.SmallerDouble(xScale, yScale);
+
             }
             catch (Exception ex)
             {
@@ -1320,5 +1325,7 @@ namespace SketchUp
         }
 
         #endregion SketchManagerDrawingMethods
+
+
     }
 }

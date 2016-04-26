@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Timers;
@@ -42,18 +44,6 @@ namespace SketchUp
             }
         }
 
-        private void InitializeParcelSnapshots()
-        {
-            SketchUpGlobals.SketchSnapshots.Clear();
-            sketchRepo = GetSketchRepository();
-            SketchUpGlobals.SMParcelFromData = StoredSMParcel(SketchUpGlobals.Record,
-            SketchUpGlobals.Card, sketchRepo);
-            SketchUpGlobals.SMParcelFromData.SnapShotIndex = 0;
-            SketchUpGlobals.SketchSnapshots.Add(SketchUpGlobals.SMParcelFromData);
-            mainFormParcel = SketchUpGlobals.SMParcelFromData;
-
-        }
-
         public void LoadDataFromCamraDb()
         {
             InitializeComponent();
@@ -65,19 +55,41 @@ namespace SketchUp
             splash.UpdateProgress(20);
             Application.DoEvents();
 
-            SketchUpGlobals.DbAccessMgr = null;
-            splash.UpdateProgress(30);
-            Application.DoEvents();
-            ParseArgsToProperties(Program.commandLineArgs);
-            splash.UpdateProgress(45);
-            Application.DoEvents();
+            try
+            {
+                SketchUpGlobals.DbAccessMgr = null;
+                splash.UpdateProgress(30);
+                Application.DoEvents();
+                ParseArgsToProperties(Program.commandLineArgs);
+                splash.UpdateProgress(45);
+                Application.DoEvents();
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
 
-            EstablishCamraConnection();
+                MessageBox.Show(ex.Message);
+#endif
+                Logger.Error(ex, string.Format("{0}.{1}", MethodBase.GetCurrentMethod().Module.Name, MethodBase.GetCurrentMethod().Name));
+                throw;
+            }
 
-            splash.UpdateProgress(65);
-            Application.DoEvents();
-            SetConnectionLibraryParameters(SketchUpGlobals.DbAccessMgr);
+            try
+            {
+                EstablishCamraConnection();
+                splash.UpdateProgress(65);
+                Application.DoEvents();
+                SetConnectionLibraryParameters(SketchUpGlobals.DbAccessMgr);
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
 
+                MessageBox.Show(ex.Message);
+#endif
+                Logger.Error(ex, string.Format("{0}.{1}", MethodBase.GetCurrentMethod().Module.Name, MethodBase.GetCurrentMethod().Name));
+                throw;
+            }
             splash.UpdateProgress(85);
             Application.DoEvents();
             InitializeParcelSnapshots();
@@ -85,9 +97,32 @@ namespace SketchUp
             Application.DoEvents();
         }
 
+        private void InitializeParcelSnapshots()
+        {
+            try
+            {
+                SketchUpGlobals.SketchSnapshots.Clear();
+                sketchRepo = GetSketchRepository();
+                SketchUpGlobals.SMParcelFromData = StoredSMParcel(SketchUpGlobals.Record,
+                SketchUpGlobals.Card, sketchRepo);
+                SketchUpGlobals.SMParcelFromData.SnapShotIndex = 0;
+                SketchUpGlobals.SketchSnapshots.Add(SketchUpGlobals.SMParcelFromData);
+                mainFormParcel = SketchUpGlobals.SMParcelFromData;
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+
+                MessageBox.Show(ex.Message);
+#endif
+                Logger.Error(ex, string.Format("{0}.{1}", MethodBase.GetCurrentMethod().Module.Name, MethodBase.GetCurrentMethod().Name));
+                throw;
+                throw;
+            }
+        }
+
         private void PrepareSketchManager()
         {
-            
         }
 
         #endregion Constructor
@@ -100,11 +135,27 @@ namespace SketchUp
 
         #region Form Control Methods
 
+        private static int CountSectionsInDb()
+        {
+            StringBuilder cntSect = new StringBuilder();
+            cntSect.Append(String.Format("select count(*) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ",
+                        SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, SketchUpGlobals.CurrentParcel.Record, SketchUpGlobals.CurrentParcel.Card));
+
+            int SectionCnt = Convert.ToInt32(SketchUpGlobals.CamraDbConn.DBConnection.ExecuteScalar(cntSect.ToString()));
+            return SectionCnt;
+        }
+
+        private void AddWorkingCopyOfSketchToSnapshots()
+        {
+            SMParcel parcel = MainFormParcel;
+            parcel.SnapShotIndex++;
+            SketchUpGlobals.SketchSnapshots.Add(parcel);
+        }
+
         private void EditImage_Click(object sender, EventArgs e)
         {
             try
             {
-
                 AddWorkingCopyOfSketchToSnapshots();
 
                 GetSelectedImages();
@@ -115,15 +166,6 @@ namespace SketchUp
             }
         }
 
-       
-
-        //TODO: Remove debugging code
-        //private void EditSketch(SMParcel workingCopyOfParcel)
-        //{
-        //    EditSketchForm editor = new EditSketchForm(SketchUpGlobals.ParcelWorkingCopy);
-        //    editor.ShowDialog(this);
-        //}
-
         private void GetSelectedImages()
         {
             SketchUpGlobals.SubSections = new SectionDataCollection(SketchUpGlobals.CamraDbConn, SketchUpGlobals.CurrentParcel.mrecno, SketchUpGlobals.CurrentParcel.mdwell);
@@ -132,6 +174,7 @@ namespace SketchUp
             getSketch(SketchUpGlobals.CurrentParcel.Record, SketchUpGlobals.CurrentParcel.Card);
 
             //Ask Dave why this happens twice
+
             SketchUpGlobals.CurrentSketchImage = SketchUpGlobals.CurrentParcel.GetSketchImage(374);
             sketchBox.Image = SketchUpGlobals.CurrentSketchImage;
 
@@ -140,24 +183,18 @@ namespace SketchUp
                 EditImage.Text = "Edit Sketch";
             }
 
-            StringBuilder delXline = new StringBuilder();
-            delXline.Append(String.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jldirect = 'X' ",
-                                        SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, SketchUpGlobals.CurrentParcel.Record, SketchUpGlobals.CurrentParcel.Card));
+            ClearX();
 
-            SketchUpGlobals.CamraDbConn.DBConnection.ExecuteNonSelectStatement(delXline.ToString());
-
-            StringBuilder cntSect = new StringBuilder();
-            cntSect.Append(String.Format("select count(*) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ",
-                        SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, SketchUpGlobals.CurrentParcel.Record, SketchUpGlobals.CurrentParcel.Card));
-
-            int SectionCnt = Convert.ToInt32(SketchUpGlobals.CamraDbConn.DBConnection.ExecuteScalar(cntSect.ToString()));
+            int SectionCnt = CountSectionsInDb();
 
             bool omitSketch = false;
 
             if (SectionCnt == 0)
             {
+                SketchUpGlobals.HasNewSketch = false;
+                SketchUpGlobals.HasSketch = false;
                 DialogResult result;
-                result = (MessageBox.Show("Add Sketch ?", "Sketch Does Not Exist", MessageBoxButtons.YesNo, MessageBoxIcon.Question));
+                result = (MessageBox.Show("Add Sketch?", "Sketch Does Not Exist", MessageBoxButtons.YesNo, MessageBoxIcon.Question));
 
                 if (result == DialogResult.Yes)
                 {
@@ -201,26 +238,14 @@ namespace SketchUp
                 sketchBox.Image = SketchUpGlobals.CurrentSketchImage;
             }
 
-            // TODO: Remove if not needed:
-            //if (ExpandoSketch.RefreshEditImageBtn == true)
-            //{
-            //	//EditImage.Text = "Add Sketch";
-            //}
-
             if (ExpandoSketch._deleteMaster == true)
             {
                 EditImage.Text = "Add Sketch";
             }
         }
-        private void AddWorkingCopyOfSketchToSnapshots()
-        {
-            SMParcel parcel = MainFormParcel;
-            parcel.SnapShotIndex++;
-            SketchUpGlobals.SketchSnapshots.Add(parcel);
-        }
+
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            //Program.ShowCheckpointLog();
             Application.Exit();
         }
 
@@ -249,8 +274,7 @@ namespace SketchUp
             this.WindowState = FormWindowState.Normal;
         }
 
-        //TODO: Start here Thursday Feb 11
-        private void SelectRecordBtn_Click(object sender, EventArgs e)
+        private void SelectRecord()
         {
             if (SketchUpGlobals.Record == 0)
             {
@@ -278,9 +302,164 @@ namespace SketchUp
             }
         }
 
+        private void SelectRecordBtn_Click(object sender, EventArgs e)
+        {
+            SelectRecord();
+        }
+
         #endregion Form Control Methods
 
         #region Private Methods
+
+        public void LoadInitialSketch()
+        {
+            SketchUpGlobals.CurrentParcel = ParcelData.getParcel(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
+
+            SketchUpGlobals.SubSections = new SectionDataCollection(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
+            FixLength(SketchUpGlobals.Record, SketchUpGlobals.Card);
+            int tr = SketchUpGlobals.CurrentParcel.mrecno;
+            ClearX();
+            int seccnt = SectionCount();
+            Application.DoEvents();
+            SetTextAddOrEdit(seccnt);
+            Application.DoEvents();
+            if (CamraSupport.VacantOccupancies.Contains(SketchUpGlobals.CurrentParcel.moccup))
+            {
+                int gar1cde = 0;
+                int gar1cnt = 0;
+                int gar2cde = SketchUpGlobals.CurrentParcel.mgart2;
+                int gar2cnt = SketchUpGlobals.CurrentParcel.mgarN2;
+                int cpcde = 0;
+                int cpcnt = 0;
+                int bicnt = 0;
+
+                if (SketchUpGlobals.CurrentParcel.mgart2 != 64)
+                {
+                    gar2cde = 0;
+                    gar2cnt = 0;
+                }
+                Application.DoEvents();
+                UpdateGarageAndCarportNumbersInDb(gar1cde, gar1cnt, gar2cde, gar2cnt, cpcde, cpcnt, bicnt);
+                if (seccnt == 0)
+                {
+                    DialogResult secresult;
+                    secresult = (MessageBox.Show("Must Enter Master Record Info Before Sketch", "Missing Master Information", MessageBoxButtons.OKCancel, MessageBoxIcon.Information));
+                    Application.DoEvents();
+                    if (secresult == DialogResult.OK)
+                    {
+                        this.WindowState = FormWindowState.Minimized;
+                    }
+                    if (secresult == DialogResult.Cancel)
+                    {
+                        //Ask Dave if there needs to be something else done here.
+                        splash.UpdateProgress();
+                        Application.DoEvents();
+                    }
+                }
+                SetTextAddOrEdit(seccnt);
+            }
+
+            try
+            {
+                getSketch(SketchUpGlobals.CurrentParcel.mrecno, SketchUpGlobals.CurrentParcel.mdwell);
+            }
+            catch (Exception ex)
+            {
+                Logger.TraceMessage(string.Format("{0} failed. Error: {1}", "", ex.Message));
+                Logger.Error(ex, MethodBase.GetCurrentMethod().Module.Name);
+#if DEBUG
+                MessageBox.Show(ex.Message);
+#endif
+                throw;
+            }
+
+            SketchUpGlobals.CurrentSketchImage = SketchUpGlobals.CurrentParcel.GetSketchImage(374);
+            sketchBox.Image = SketchUpGlobals.CurrentSketchImage;
+        }
+
+        public void ParseArgsToProperties(CommandLineArguments args)
+        {
+            SketchUpGlobals.LocalLib = args.Library;
+            SketchUpGlobals.LocalityPreFix = args.Locality;
+            SketchUpGlobals.Record = args.Record;
+            SketchUpGlobals.Card = args.Card;
+            SketchUpGlobals.IpAddress = args.IPAddress;
+            SketchUp.Properties.Settings.Default.IPAddress = SketchUpGlobals.IpAddress;
+        }
+
+        //TODO: Make private again for release
+        public FormSplash ShowSplashScreen()
+        {
+            FormSplash splash = new FormSplash();
+            splash.Show();
+            splash.Update();
+            Cursor = Cursors.WaitCursor;
+            return splash;
+        }
+
+        public void UpdateStatus(string status)
+        {
+            try
+            {
+                statusMessage.Text = status;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, MethodBase.GetCurrentMethod().Module.Name);
+                Console.WriteLine(string.Format("Status bar not available. Status message: {0}", ex.Message));
+            }
+        }
+
+        private static void DeletePartialSectionInDb()
+        {
+            StringBuilder cleanup = new StringBuilder();
+            cleanup.Append(String.Format("delete from {0}.{1}line where jlsect = '{2}' ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, ExpandoSketch.NextSectLtr));
+            cleanup.Append(String.Format(" and jlrecord = {0} and jldwell = {1} ",
+                        SketchUpGlobals.CurrentParcel.mrecno,
+                        SketchUpGlobals.CurrentParcel.mdwell));
+
+            SketchUpGlobals.CamraDbConn.DBConnection.ExecuteNonSelectStatement(cleanup.ToString());
+        }
+
+        private static int MasterRecordCount()
+        {
+            StringBuilder checkMain = new StringBuilder();
+            checkMain.Append(String.Format("select count(*) from {0}.{1}mast where mrecno = {2} and mdwell = {3} ",
+                        SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix, SketchUpGlobals.Record, SketchUpGlobals.Card));
+
+            int recordCount = Convert.ToInt32(SketchUpGlobals.CamraDbConn.DBConnection.ExecuteScalar(checkMain.ToString()));
+            return recordCount;
+        }
+
+        private static void SetFCValues(string IP)
+        {
+            SketchUpGlobals.FcLib = Program.commandLineArgs.Library;
+            SketchUpGlobals.FcLocalityPrefix = Program.commandLineArgs.Locality;
+
+            SketchUpGlobals.FcCard = Program.commandLineArgs.Card;
+            SketchUpGlobals.FcIpAddress = Program.commandLineArgs.IPAddress;
+            SketchUpGlobals.FcRecord = Program.commandLineArgs.Record;
+            SketchUpGlobals.InitalRecord = Program.commandLineArgs.Record;
+            SketchUpGlobals.InitalCard = Program.commandLineArgs.Card;
+            SketchUpGlobals.LocalityPreFix = Program.commandLineArgs.Locality;
+        }
+
+        private static void UpdateGarageAndCarportNumbersInDb(int gar1cde, int gar1cnt, int gar2cde, int gar2cnt, int cpcde, int cpcnt, int bicnt)
+        {
+            string clrvac = string.Format("update {0}.{1}mast set mgart = {2}, mgar#c = {3}, mgart2 = {4}, mgar#2 = {5}, mcarpt = {6}, mcar#c = {7}, mbi#c = {8}  where mrecno = {9} and mdwell = {10} ",
+                                SketchUpGlobals.FcLib,
+                                SketchUpGlobals.FcLocalityPrefix,
+                                gar1cde,
+                                gar1cnt,
+                                gar2cde,
+                                gar2cnt,
+                                cpcde,
+                                cpcnt,
+                                bicnt,
+                        SketchUpGlobals.CurrentParcel.mrecno,
+                        SketchUpGlobals.CurrentParcel.mdwell);
+            SketchUpGlobals.CamraDbConn.DBConnection.ExecuteNonSelectStatement(clrvac);
+        }
 
         private void AddSketchToParcel()
         {
@@ -320,11 +499,7 @@ namespace SketchUp
 
         private void CheckGoodRecord(int _record, int Card)
         {
-            StringBuilder checkMain = new StringBuilder();
-            checkMain.Append(String.Format("select count(*) from {0}.{1}mast where mrecno = {2} and mdwell = {3} ",
-                        SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix, SketchUpGlobals.Record, SketchUpGlobals.Card));
-
-            SketchUpGlobals.Checker = Convert.ToInt32(SketchUpGlobals.CamraDbConn.DBConnection.ExecuteScalar(checkMain.ToString()));
+            SketchUpGlobals.Checker = MasterRecordCount();
 
             if (SketchUpGlobals.Checker == 0)
             {
@@ -350,14 +525,8 @@ namespace SketchUp
             {
                 Cursor = Cursors.WaitCursor;
 
-                StringBuilder cleanup = new StringBuilder();
-                cleanup.Append(String.Format("delete from {0}.{1}line where jlsect = '{2}' ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, ExpandoSketch.NextSectLtr));
-                cleanup.Append(String.Format(" and jlrecord = {0} and jldwell = {1} ",
-                            SketchUpGlobals.CurrentParcel.mrecno,
-                            SketchUpGlobals.CurrentParcel.mdwell));
-
-                SketchUpGlobals.CamraDbConn.DBConnection.ExecuteNonSelectStatement(cleanup.ToString());
-
+                DeletePartialSectionInDb();
+                DeletePartialSectionInModels();
                 Cursor = Cursors.Default;
             }
         }
@@ -406,6 +575,25 @@ namespace SketchUp
 
                 Application.DoEvents();
                 Application.Exit();
+            }
+        }
+
+        private void DeletePartialSectionInModels()
+        {
+            SMParcel parcel = SketchUpGlobals.ParcelWorkingCopy;
+            SMParcel original = SketchUpGlobals.SMParcelFromData;
+            if (parcel.Sections.Count > original.Sections.Count)
+            {
+                string partialSection = parcel.LastSectionLetter;
+                List<SMSection> sectionsAdded = (from s in parcel.Sections where !original.Sections.Contains(s) select s).ToList();
+                foreach (SMSection s in sectionsAdded)
+                {
+                    s.Lines.RemoveAll(l => l.SectionLetter == s.SectionLetter);
+                    parcel.Sections.RemoveAll(a => sectionsAdded.Contains(a));
+                }
+
+                parcel.SnapShotIndex++;
+                SketchUpGlobals.SketchSnapshots.Add(parcel);
             }
         }
 
@@ -494,92 +682,6 @@ namespace SketchUp
             }
         }
 
-        public void LoadInitialSketch()
-        {
-            SketchUpGlobals.CurrentParcel = ParcelData.getParcel(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
-
-            SketchUpGlobals.SubSections = new SectionDataCollection(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
-            FixLength(SketchUpGlobals.Record, SketchUpGlobals.Card);
-            int tr = SketchUpGlobals.CurrentParcel.mrecno;
-            ClearX();
-            int seccnt = SectionCount();
-            Application.DoEvents();
-            SetTextAddOrEdit(seccnt);
-            Application.DoEvents();
-            if (CamraSupport.VacantOccupancies.Contains(SketchUpGlobals.CurrentParcel.moccup))
-            {
-                int gar1cde = 0;
-                int gar1cnt = 0;
-                int gar2cde = SketchUpGlobals.CurrentParcel.mgart2;
-                int gar2cnt = SketchUpGlobals.CurrentParcel.mgarN2;
-                int cpcde = 0;
-                int cpcnt = 0;
-                int bicnt = 0;
-
-                if (SketchUpGlobals.CurrentParcel.mgart2 != 64)
-                {
-                    gar2cde = 0;
-                    gar2cnt = 0;
-                }
-                Application.DoEvents();
-                string clrvac = string.Format("update {0}.{1}mast set mgart = {2}, mgar#c = {3}, mgart2 = {4}, mgar#2 = {5}, mcarpt = {6}, mcar#c = {7}, mbi#c = {8}  where mrecno = {9} and mdwell = {10} ",
-                                    SketchUpGlobals.FcLib,
-                                    SketchUpGlobals.FcLocalityPrefix,
-                                    gar1cde,
-                                    gar1cnt,
-                                    gar2cde,
-                                    gar2cnt,
-                                    cpcde,
-                                    cpcnt,
-                                    bicnt,
-                            SketchUpGlobals.CurrentParcel.mrecno,
-                            SketchUpGlobals.CurrentParcel.mdwell);
-                SketchUpGlobals.CamraDbConn.DBConnection.ExecuteNonSelectStatement(clrvac);
-                if (seccnt == 0)
-                {
-                    DialogResult secresult;
-                    secresult = (MessageBox.Show("Must Enter Master Record Info Before Sketch", "Missing Master Information", MessageBoxButtons.OKCancel, MessageBoxIcon.Information));
-                    Application.DoEvents();
-                    if (secresult == DialogResult.OK)
-                    {
-                        this.WindowState = FormWindowState.Minimized;
-                    }
-                    if (secresult == DialogResult.Cancel)
-                    {
-                        //Ask Dave if there needs to be something else done here.
-                        splash.UpdateProgress();
-                        Application.DoEvents();
-                    }
-                }
-                SetTextAddOrEdit(seccnt);
-            }
-
-            try
-            {
-                getSketch(SketchUpGlobals.CurrentParcel.mrecno, SketchUpGlobals.CurrentParcel.mdwell);
-            }
-            catch (Exception ex)
-            {
-                Logger.TraceMessage(string.Format("{0} failed. Error: {1}", "", ex.Message));
-                Logger.Error(ex, MethodBase.GetCurrentMethod().Module.Name);
-                MessageBox.Show(ex.Message);
-                throw;
-            }
-
-            SketchUpGlobals.CurrentSketchImage = SketchUpGlobals.CurrentParcel.GetSketchImage(374);
-            sketchBox.Image = SketchUpGlobals.CurrentSketchImage;
-        }
-
-        public void ParseArgsToProperties(CommandLineArguments args)
-        {
-            SketchUpGlobals.LocalLib = args.Library;
-            SketchUpGlobals.LocalityPreFix = args.Locality;
-            SketchUpGlobals.Record = args.Record;
-            SketchUpGlobals.Card = args.Card;
-            SketchUpGlobals.IpAddress = args.IPAddress;
-            SketchUp.Properties.Settings.Default.IPAddress = SketchUpGlobals.IpAddress;
-        }
-
         private void RecordTxt_Leave(object sender, EventArgs e)
         {
             int rec = 0;
@@ -657,19 +759,6 @@ namespace SketchUp
             splash.Close();
         }
 
-        private static void SetFCValues(string IP)
-        {
-            SketchUpGlobals.FcLib = Program.commandLineArgs.Library;
-            SketchUpGlobals.FcLocalityPrefix = Program.commandLineArgs.Locality;
-
-            SketchUpGlobals.FcCard = Program.commandLineArgs.Card;
-            SketchUpGlobals.FcIpAddress = Program.commandLineArgs.IPAddress;
-            SketchUpGlobals.FcRecord = Program.commandLineArgs.Record;
-            SketchUpGlobals.InitalRecord = Program.commandLineArgs.Record;
-            SketchUpGlobals.InitalCard = Program.commandLineArgs.Card;
-            SketchUpGlobals.LocalityPreFix = Program.commandLineArgs.Locality;
-        }
-
         private void SetSketchBoxValues(ref string sketchpath)
         {
             SketchUpGlobals.CurrentSketchImage = SketchUpGlobals.CurrentParcel.GetSketchImage(374);
@@ -701,54 +790,14 @@ namespace SketchUp
             }
         }
 
-        //TODO: Make private again for release
-        public FormSplash ShowSplashScreen()
-        {
-            FormSplash splash = new FormSplash();
-            splash.Show();
-            splash.Update();
-            Cursor = Cursors.WaitCursor;
-            return splash;
-        }
-
         private void ShowUpdateMessage()
         {
             Application.Run(new UpdateInfo());
         }
 
-        public void UpdateStatus(string status)
-        {
-            try
-            {
-                statusMessage.Text = status;
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, MethodBase.GetCurrentMethod().Module.Name);
-                Console.WriteLine(string.Format("Status bar not available. Status message: {0}", ex.Message));
-            }
-        }
-
         #endregion Private Methods
 
         #region Properties
-
-        private SMParcel mainFormParcel;
-
-        private Image sketchImage;
-
-        public Image SketchImage
-        {
-            get
-            {
-                return sketchImage;
-            }
-
-            set
-            {
-                sketchImage = value;
-            }
-        }
 
         public SMParcel MainFormParcel
         {
@@ -771,6 +820,19 @@ namespace SketchUp
             set
             {
                 mainFormParcel = value;
+            }
+        }
+
+        public Image SketchImage
+        {
+            get
+            {
+                return sketchImage;
+            }
+
+            set
+            {
+                sketchImage = value;
             }
         }
 
@@ -798,23 +860,14 @@ namespace SketchUp
             }
         }
 
+        private SMParcel mainFormParcel;
+
+        private Image sketchImage;
         private SketchRepository sketchRepo;
 
         #endregion Properties
 
         #region SMParcel Initializations
-
-        private SMParcel StoredSMParcel(int record, int dwelling, SketchRepository sr)
-        {
-            SMParcel parcel = sr.SelectParcelData(record, dwelling);
-            parcel.Sections = sr.SelectParcelSections(parcel);
-            foreach (SMSection sms in parcel.Sections)
-            {
-                sms.Lines = sr.SelectSectionLines(sms);
-            }
-            parcel.IdentifyAttachedToSections();
-            return parcel;
-        }
 
         private SMParcel GetParcelFromDatabase(int record, int dwelling, SketchRepository sr)
         {
@@ -844,6 +897,18 @@ namespace SketchUp
 #endif
                 throw;
             }
+        }
+
+        private SMParcel StoredSMParcel(int record, int dwelling, SketchRepository sr)
+        {
+            SMParcel parcel = sr.SelectParcelData(record, dwelling);
+            parcel.Sections = sr.SelectParcelSections(parcel);
+            foreach (SMSection sms in parcel.Sections)
+            {
+                sms.Lines = sr.SelectSectionLines(sms);
+            }
+            parcel.IdentifyAttachedToSections();
+            return parcel;
         }
 
         #endregion SMParcel Initializations

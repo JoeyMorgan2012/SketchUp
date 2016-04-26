@@ -98,7 +98,7 @@ namespace SketchUp
             }
         }
 
-        public string HasSketch
+        public bool HasSketch
         {
             get
             {
@@ -262,7 +262,7 @@ namespace SketchUp
         private decimal depreciation;
         private string description;
         private int dwelling;
-        private string hasSketch;
+        private bool hasSketch;
         private List<SMLine> lines;
         private int record;
         private bool refreshSection = true;

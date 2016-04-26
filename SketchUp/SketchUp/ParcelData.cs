@@ -2316,20 +2316,23 @@ namespace SketchUp
 
 		public Bitmap GetSketchImage()
 		{
+            SMParcel parcel = SketchUpGlobals.ParcelWorkingCopy;
 			return GetSketchImage(400);
 		}
 
-		public Bitmap GetSketchImage(int bitmapWidth, int bitmapHeight, int sketchSizeXinPixels, int sketchSizeYinPixels, int sketchSizeInPixels, out float scale)
+		public Bitmap GetSketchImage(SMParcel parcel,int bitmapWidth, int bitmapHeight, int sketchSizeXinPixels, int sketchSizeYinPixels, int sketchSizeInPixels, out float scale)
 		{
 
 			BuildingSketcher sketcher = new BuildingSketcher(Sketch.BuildingSections);
-			return sketcher.DrawSketch(bitmapWidth, bitmapHeight, sketchSizeXinPixels, sketchSizeYinPixels, sketchSizeInPixels, out scale);
+			return sketcher.DrawSketch(parcel,bitmapWidth, bitmapHeight, sketchSizeXinPixels, sketchSizeYinPixels, sketchSizeInPixels, out scale);
 		}
 
 		public Bitmap GetSketchImage(int sketchSizeInPixels)
 		{
+          //  SMParcel parcel = SketchUpGlobals.ParcelWorkingCopy;
 			float scale = 1.0f;
-			return GetSketchImage(sketchSizeInPixels, sketchSizeInPixels, sketchSizeInPixels, sketchSizeInPixels, sketchSizeInPixels, out scale);
+            SMParcel parcel = SketchUpGlobals.ParcelWorkingCopy;
+			return GetSketchImage(parcel,sketchSizeInPixels, sketchSizeInPixels, sketchSizeInPixels, sketchSizeInPixels, sketchSizeInPixels, out scale);
 		}
 
 		private void SetOriginalValues()

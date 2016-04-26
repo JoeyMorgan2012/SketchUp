@@ -112,7 +112,7 @@ namespace SketchUp
                             SectionType = row["JSTYPE"].ToString().Trim(),
                             Storeys = storeys,
                             Description = row["JSDESC"].ToString().Trim(),
-                            HasSketch = row["JSSKETCH"].ToString().Trim(),
+                            HasSketch = row["JSSKETCH"].ToString().Trim().ToUpper() == "Y" ? true : false,
                             SqFt = squareFeet,
                             ZeroDepr = row["JS0DEPR"].ToString().Trim(),
                             SectionClass = row["JSCLASS"].ToString().Trim(),

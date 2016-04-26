@@ -27,32 +27,6 @@ namespace SketchUp
 
         #endregion Constructors
 
-        public enum SupportedTypes
-        {
-            BMP,
-            GIF,
-            JPG,
-            PNG,
-            TIF,
-            WMF
-        }
-
-        public static float basePtX;
-
-        public static float basePtY;
-
-        public BuildingSectionCollection Sections;
-
-        private const int SizeInPixelsDefault = 400;
-
-        private BuildingSectionCollection _sections;
-
-        private int _sizeInPixels = 400;
-
-        private Bitmap _sketch;
-
-        private SupportedTypes _type = SupportedTypes.JPG;
-
         #region Property values
 
         public int Card
@@ -94,11 +68,14 @@ namespace SketchUp
 
         #endregion Property values
 
+        #region Refactored Code for BuildingSketcher.DrawSketch
+
         public Bitmap DrawSketch()
         {
             try
             {
-                return DrawSketch(SizeInPixelsDefault);
+                SMParcel parcel = SketchUpGlobals.ParcelWorkingCopy;
+                return DrawSketch(parcel, SizeInPixelsDefault);
             }
             catch (Exception ex)
             {
@@ -111,17 +88,10 @@ namespace SketchUp
             }
         }
 
-        public Bitmap DrawSketch(int sizeInPixels)
-        {
-            float scale = 1.0f;
-
-            return DrawSketch(sizeInPixels, sizeInPixels, sizeInPixels, sizeInPixels, sizeInPixels, out scale);
-        }
-
-        public Bitmap DrawSketch(int bitmapWidth, int bitmapHeight, int sizeXinPixels, int sizeYinPixels, int sizeInPixels, out float scaleOut)
+        public Bitmap DrawSketch(SMParcel parcel, int bitmapWidth, int bitmapHeight, int sizeXinPixels, int sizeYinPixels, int sizeInPixels, out float scaleOut)
         {
             scaleOut = 1.0f;
-            if (Sections == null || Sections.Count == 0)
+            if (parcel.Sections == null || parcel.Sections.Count == 0)
             {
                 return null;
             }
@@ -149,17 +119,19 @@ namespace SketchUp
 
                 #region Loop through sections
 
-                foreach (BuildingSection section in Sections)
+                decimal sqFt = 0.00M;
+                foreach (SMSection section in parcel.Sections)
                 {
                     SectionInfo sectInfo = new SectionInfo();
                     sectInfo.SECT = section.SectionLetter;
                     sectInfo.TYPE = section.SectionType;
-                    sectInfo.STORY = section.StoryHeight;
-                    sectInfo.SQFT = section.SquareFootage;
+                    sectInfo.STORY = section.Storeys;
+                    decimal.TryParse(section.SqFt.ToString(), out sqFt);
+                    sectInfo.SQFT = sqFt;
                     List<LineInfo> LINELIST = new List<LineInfo>();
                     List<PointF> pts = new List<PointF>();
 
-                    if (section.HasSketch && section.SectionLines != null && section.SectionLines.Count > 0)
+                    if (section.HasSketch && (section.Lines != null) && section.Lines.Count > 0)
                     {
                         DrawSketchIfDataExists(ref MINX, ref MAXX, ref MINY, ref MAXY, section, LINELIST, pts);
                     }
@@ -182,14 +154,17 @@ namespace SketchUp
             }
         }
 
+        public Bitmap DrawSketch(SMParcel parcel, int sizeInPixels)
+        {
+            float scale = 1.0f;
+
+            return DrawSketch(parcel, sizeInPixels, sizeInPixels, sizeInPixels, sizeInPixels, sizeInPixels, out scale);
+        }
+
+        #endregion Refactored Code for BuildingSketcher.DrawSketch
+
         private static void CenterLabelInPolygon(Brush brush, Font font, Graphics g, SectionInfo sect, PolygonF poly, ref string TYPELABEL, ref SizeF sz)
         {
-#if DEBUG
-
-            //Debugging Code -- remove for production release
-            //var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-            //UtilityMethods.LogMethodCall(fullStack, true);
-#endif
             if (sz.Width >= poly.Bounds.Width)
             {
                 TYPELABEL = sect.SECT.Trim();
@@ -217,12 +192,6 @@ namespace SketchUp
 
         private static SizeF DrawLinesWithDimensions(Brush brush, Font font, Graphics g, PolygonF poly, SizeF sz, LineInfo line)
         {
-#if DEBUG
-
-            //Debugging Code -- remove for production release
-            //var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-            //UtilityMethods.LogMethodCall(fullStack, true);
-#endif
             SizeF dimSz = g.MeasureString(line.LENGTH.ToString(), font);
 
             if ("N".Equals(line.DIRECTION) || "S".Equals(line.DIRECTION))
@@ -270,12 +239,6 @@ namespace SketchUp
 
         private static SizeF DrawSectionA(Brush brush, Font font, Graphics g, SectionInfo sect, PolygonF poly, string TYPELABEL, SizeF sz, PointF tp)
         {
-#if DEBUG
-
-            //Debugging Code -- remove for production release
-            //var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-            //UtilityMethods.LogMethodCall(fullStack, true);
-#endif
             tp.Y -= sz.Height;
             sz = g.MeasureString(sect.SQFT.ToString(), font);
             PointF sq = new PointF();
@@ -295,7 +258,7 @@ namespace SketchUp
             return sz;
         }
 
-        private static void DrawSketchIfDataExists(ref decimal MINX, ref decimal MAXX, ref decimal MINY, ref decimal MAXY, BuildingSection section, List<LineInfo> LINELIST, List<PointF> pts)
+        private static void DrawSketchIfDataExists(ref decimal MINX, ref decimal MAXX, ref decimal MINY, ref decimal MAXY, SMSection section, List<LineInfo> LINELIST, List<PointF> pts)
         {
 #if DEBUG
 
@@ -304,13 +267,13 @@ namespace SketchUp
             //UtilityMethods.LogMethodCall(fullStack, true);
 #endif
 
-            foreach (BuildingLine line in section.SectionLines)
+            foreach (SMLine line in section.Lines)
             {
                 //int seq = Convert.ToInt32(_lineReader.GetDecimal(ord_JLLINE));
-                decimal x = line.Point1X;
-                decimal y = line.Point1Y;
-                decimal x2 = line.Point2X;
-                decimal y2 = line.Point2Y;
+                decimal x = line.StartX;
+                decimal y = line.StartY;
+                decimal x2 = line.EndX;
+                decimal y2 = line.EndY;
 
                 PointF pt = new PointF(Convert.ToSingle(x), Convert.ToSingle(y));
 
@@ -331,7 +294,7 @@ namespace SketchUp
                     MAXY = y;
                 }
 
-                string dir = line.Directional;
+                string dir = line.Direction;
                 if ("N".Equals(dir) || "S".Equals(dir) || "E".Equals(dir) || "W".Equals(dir))
                 {
                     LineInfo lineInfo = new LineInfo();
@@ -367,12 +330,6 @@ namespace SketchUp
 
         private static List<string> NoLabelTypesList()
         {
-#if DEBUG
-
-            //Debugging Code -- remove for production release
-            //var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-            //UtilityMethods.LogMethodCall(fullStack, true);
-#endif
             List<string> noLabelTypes = new List<string>();
             noLabelTypes.Add("OH");
             noLabelTypes.Add("LAG");
@@ -384,12 +341,6 @@ namespace SketchUp
 
         private static void ScaleAndAdjustCenterpoint(float scale, float TOTAL_X_ADJ, float TOTAL_Y_ADJ, SectionInfo sect, int j)
         {
-#if DEBUG
-
-            //Debugging Code -- remove for production release
-            //var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-            //UtilityMethods.LogMethodCall(fullStack, true);
-#endif
             sect.LINELIST[j].LINE_CENTER_POINT.X *= scale;
             sect.LINELIST[j].LINE_CENTER_POINT.X += TOTAL_X_ADJ;
             sect.LINELIST[j].LINE_CENTER_POINT.Y *= scale;
@@ -398,12 +349,6 @@ namespace SketchUp
 
         private static int ScaleAndAdjustLine(float scale, float TOTAL_X_ADJ, float TOTAL_Y_ADJ, SectionInfo sect, int linCnt, int i)
         {
-#if DEBUG
-
-            //Debugging Code -- remove for production release
-            //var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-            //UtilityMethods.LogMethodCall(fullStack, true);
-#endif
             linCnt++;
             sect.POINTS[i].X *= scale;
             sect.POINTS[i].X += TOTAL_X_ADJ;
@@ -412,14 +357,9 @@ namespace SketchUp
             return linCnt;
         }
 
-        private static void TranslateToDirection(BuildingLine line, ref PointF pt, string dir, ref LineInfo lineInfo)
+        private static void TranslateToDirection(SMLine line, ref PointF pt, string dir, ref LineInfo lineInfo)
         {
-#if DEBUG
 
-            //Debugging Code -- remove for production release
-            //var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-            //UtilityMethods.LogMethodCall(fullStack, true);
-#endif
             switch (dir)
             {
                 case "N":
@@ -595,6 +535,25 @@ namespace SketchUp
 
             return secCnt;
         }
+
+        public enum SupportedTypes
+        {
+            BMP,
+            GIF,
+            JPG,
+            PNG,
+            TIF,
+            WMF
+        }
+
+        public static float basePtX;
+        public static float basePtY;
+        public BuildingSectionCollection Sections;
+        private const int SizeInPixelsDefault = 400;
+        private BuildingSectionCollection _sections;
+        private int _sizeInPixels = 400;
+        private Bitmap _sketch;
+        private SupportedTypes _type = SupportedTypes.JPG;
 
         public event SketchCreatedEventHandler SketchCreatedEvent;
 
