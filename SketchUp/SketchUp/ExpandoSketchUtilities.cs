@@ -60,6 +60,18 @@ namespace SketchUp
                         reverseDirection = "SE";
                         break;
                     }
+               
+                case "S":
+                    {
+                        reverseDirection = "N";
+                        break;
+                    }
+                case "N":
+                    {
+                        reverseDirection = "S";
+                        break;
+                    }
+                   
                 default:
                     Console.WriteLine(string.Format("Error occurred in {0}, in procedure {1}.\n{2} is not a valid direction value.", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, direction));
                     break;

@@ -191,6 +191,9 @@
     <Compile Include="ExpandoSketch.Designer.cs">
       <DependentUpon>ExpandoSketch.cs</DependentUpon>
     </Compile>
+    <Compile Include="ExpandoSketchDrawingMethods.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ExpandoSketchFields.cs">
       <SubType>Form</SubType>
     </Compile>

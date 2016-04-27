@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -99,8 +100,10 @@ namespace SketchUp
                 {
                     l.ComparisonPoint = mouseLocation;
                 }
-                int shortestDistance = (from l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines select (int)l.EndPointDistanceFromComparisonPoint).Min();
-                List<SMLine> connectionLines = (from l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines where (int)l.EndPointDistanceFromComparisonPoint == shortestDistance select l).ToList();
+                decimal shortestDistance = Math.Round((from l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines select l.EndPointDistanceFromComparisonPoint).Min(),2);
+                List<SMLine> connectionLines = (from l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines where Math.Round(l.EndPointDistanceFromComparisonPoint,2) == shortestDistance select l).ToList();
+
+
                 bool sketchHasLineData = connectionLines.Count > 0;
                 if (connectionLines == null || connectionLines.Count == 0)
                 {
@@ -122,21 +125,75 @@ namespace SketchUp
                         AttSectLtr = MultiPointsAvailable(SecLetters);
                         AttachmentSection = (from s in SketchUpGlobals.ParcelWorkingCopy.Sections where s.SectionLetter == AttSectLtr select s).FirstOrDefault();
                         JumpPointLine = (from l in connectionLines where l.SectionLetter == AttSectLtr select l).FirstOrDefault();
+
+
                     }
                     else
                     {
                         AttSectLtr = SecLetters[0];
                         AttachmentSection = (from s in SketchUpGlobals.ParcelWorkingCopy.Sections where s.SectionLetter == AttSectLtr select s).FirstOrDefault();
                         JumpPointLine = connectionLines[0];
+
                     }
+
                     ScaledJumpPoint = JumpPointLine.ScaledEndPoint;
-                    MoveCursor(scaledJumpPoint);
+                    LegalMoveDirections = GetLegalMoveDirections(ScaledJumpPoint, AttSectLtr);
+                    MoveCursor(ScaledJumpPoint);
+                    LoadLegacyJumpTable();
                     SetActiveButtonAppearance();
-                    BeginSectionBtn.Enabled = scaledJumpPoint!=null;
+                    BeginSectionBtn.Enabled = scaledJumpPoint != null;
                 }
             }
         }
 
+        private void LoadLegacyJumpTable()
+        {
+            JumpTable = ConstructJumpTable();
+            JumpTable.Clear();
+            AddListItemsToJumpTableList(ScaledJumpPoint.X, ScaledJumpPoint.Y, LocalParcelCopy.Scale, LocalParcelCopy.AllSectionLines);
+        }
+
+        private List<string> GetLegalMoveDirections(PointF scaledJumpPoint, string attachSectionLetter)
+        {
+            List<SMLine> linesWithJumpPoint = (from l in LocalParcelCopy.AllSectionLines where l.SectionLetter == attachSectionLetter && (l.ScaledStartPoint == scaledJumpPoint || l.ScaledEndPoint == scaledJumpPoint) select l).ToList();
+            List<string> legalDirections = new List<string>();
+            legalDirections.AddRange((from l in LocalParcelCopy.AllSectionLines where l.ScaledStartPoint == scaledJumpPoint && l.SectionLetter == attachSectionLetter select l.Direction).ToList());
+       
+            legalDirections.AddRange((from l in linesWithJumpPoint select l.Direction).ToList().Distinct());
+
+            return legalDirections;
+
+        }
+
+        //private List<string> GetLegalMoveDirections(PointF scaledJumpPoint)
+        //{
+        //      List<string> legalDirections = new List<string>();
+        //    legalDirections.AddRange((from l in LocalParcelCopy.AllSectionLines where l.ScaledStartPoint == scaledJumpPoint select l.Direction).ToList());
+          
+        //    legalDirections.AddRange((from l in LocalParcelCopy.AllSectionLines where l.ScaledEndPoint == scaledJumpPoint  select ReverseDirection(l.Direction)).ToList());
+        //    return legalDirections.Distinct().ToList();
+        //}
+        private void SetScaledStartPoint(SMLine line)
+        {
+            try
+            {
+                decimal sketchScale = line.ParentParcel.Scale;
+                            var lineStartX = (float)((line.StartX * sketchScale) + (decimal)SketchOrigin.X);
+                            var lineStartY = (float)((line.StartY * sketchScale) + (decimal)SketchOrigin.Y);
+                      
+            }
+            catch (Exception ex)
+            {
+                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+                Trace.WriteLine(errMessage);
+                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+#if DEBUG
+
+                MessageBox.Show(errMessage);
+#endif
+                throw;
+            }
+        }
         private void SetScaledStartPoints()
         {
             try
@@ -274,6 +331,8 @@ namespace SketchUp
             ReorderParcelStructure();
             RefreshParcelImage();
             SetActiveButtonAppearance();
+            jumpToolStripMenuItem.Enabled = false;
+            AddSectionContextMenu.Enabled = false;
         }
 
         private void endSectionToolStripMenuItem_Click(object sender, EventArgs e)
@@ -357,7 +416,18 @@ namespace SketchUp
         #endregion Form Events and Menu
 
         #region Misc. Refactored Methods
-
+        private void AdjustLine(SMParcel parcel, string sectionLetter, int lineNumber, decimal newStartX, decimal newStartY, decimal newEndX, decimal newEndY)
+        {
+            SMLine selectedLine = (from l in parcel.AllSectionLines where l.SectionLetter == sectionLetter && l.LineNumber == lineNumber select l).FirstOrDefault();
+            if (selectedLine!=null)
+            {
+                selectedLine.StartX=newStartX;
+                selectedLine.StartY = newStartY;
+                selectedLine.EndX = newEndX;
+                selectedLine.EndY = newEndY;
+                SetScaledStartPoint(selectedLine);
+            }
+        }
         private void MoveCursor(PointF jumpPointScaled)
         {
             Color penColor;
@@ -1386,7 +1456,85 @@ namespace SketchUp
         }
 
         #endregion SketchManagerDrawingMethods
+        #region Jump Table Methods
 
+    
+
+        private void AddJumpTableRow(float jx, float jy, float CurrentScale, SMLine line)
+        {
+            try
+            {
+                decimal Distance = 0;
+
+
+                DataRow row = JumpTable.NewRow();
+                row["Record"] = line.Record;
+                row["Card"] = line.Dwelling;
+                row["Sect"] = line.SectionLetter;
+                row["LineNo"] = line.LineNumber;
+                row["Direct"] = line.Direction;
+                row["XLen"] = line.XLength;
+                row["YLen"] = line.YLength;
+                row["Length"] = line.LineLength;
+                row["Angle"] = line.LineAngle;
+                row["XPt1"] = line.StartX;
+                row["YPt1"] = line.StartY;
+                row["XPt2"] = line.EndX;
+                row["YPt2"] = line.EndY;
+                row["Attach"] = line.AttachedSection;
+
+                float xPt2 = (float)line.EndX;
+                float yPt2 = (float)line.EndY;
+
+                float xPoint = (ScaleBaseX + (Convert.ToSingle(xPt2) * CurrentScale));
+                float yPoint = (ScaleBaseY + (Convert.ToSingle(yPt2) * CurrentScale));
+
+                float xDiff = (jx - xPoint);
+                float yDiff = (jy - yPoint);
+
+                double xDiffSquared = Math.Pow(Convert.ToDouble(xDiff), 2);
+                double yDiffSquared = Math.Pow(Convert.ToDouble(yDiff), 2);
+
+                Distance = Convert.ToDecimal(Math.Sqrt(Math.Pow(Convert.ToDouble(xDiff), 2) + Math.Pow(Convert.ToDouble(yDiff), 2)));
+
+                row["Dist"] = Distance;
+
+                JumpTable.Rows.Add(row);
+            }
+            catch (Exception ex)
+            {
+                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+                Trace.WriteLine(errMessage);
+                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+#if DEBUG
+
+                MessageBox.Show(errMessage);
+#endif
+
+
+                throw;
+            }
+            
+        }
+
+        private void AddListItemsToJumpTableList(float jx, float jy, decimal CurrentScale, List<SMLine>lines)
+        {
+            try
+            {
+            foreach (SMLine l in lines)
+            {
+                    AddJumpTableRow(jx, jy, (float)CurrentScale, l);
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+                throw;
+            }
+        }
+
+        
+        #endregion
 
     }
 }

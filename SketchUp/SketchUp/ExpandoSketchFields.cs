@@ -42,13 +42,16 @@ namespace SketchUp
         #region Fields
 
         #region private fields
-        
+        private DataTable attachPoints;
         private decimal adjNewSecX = 0;
         private decimal adjNewSecY = 0;
         private decimal adjOldSecX = 0;
         private decimal adjOldSecY = 0;
         private decimal AngD1 = 0;
         private decimal AngD2 = 0;
+        bool firstTimeLoaded;
+        Bitmap sketchImage;
+        private List<SMLine> jumpPointLines;
         /*
 		Refactored by renaming and providing for null values. Going to ensure that the
 		naming conventions are consistent for all properties. Any field that backs a property
@@ -101,7 +104,7 @@ namespace SketchUp
         private DataTable JumpTable = null;
         private float JumpX = 0;
         private float JumpY = 0;
-        private string legalMoveDirection;
+        private List<string> legalMoveDirections;
         private int lineCnt = 0;
         private int LineNumberToBreak = 0;
         private string Locality = String.Empty;
@@ -275,14 +278,23 @@ namespace SketchUp
 
         #endregion Public Fields
 
-     
+
         #endregion Fields
 
-      
-        #region Properties
 
-        bool firstTimeLoaded;
-        Bitmap sketchImage;
+        #region Properties
+        public DataTable AttachPoints
+        {
+            get
+            {
+                return attachPoints;
+            }
+            set
+            {
+                attachPoints = value;
+            }
+        }
+       
 
         public SMSection AttachmentSection
         {
@@ -675,6 +687,19 @@ namespace SketchUp
             set
             {
                 jumpPointLines = value;
+            }
+        }
+
+        public List<string> LegalMoveDirections
+        {
+            get
+            {
+                return legalMoveDirections;
+            }
+
+            set
+            {
+                legalMoveDirections = value;
             }
         }
 

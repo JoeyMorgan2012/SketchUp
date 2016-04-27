@@ -27,7 +27,7 @@ namespace SketchUp
 
         
 
-        private DataSet MultiSelectAttachmentPoints(List<SMLine>connectionLines)
+        private DataTable MultiSelectAttachmentPoints(List<SMLine>connectionLines)
         {
     
 
@@ -43,9 +43,16 @@ namespace SketchUp
 
             foreach (SMLine line in connectionLines)
             {
-                
+                DataRow newRow = mulattpts.NewRow();
+                newRow.SetField("Sect", line.SectionLetter);
+                newRow.SetField("Line", line.LineNumber);
+                newRow.SetField("X1", line.StartX);
+                newRow.SetField("Y1", line.StartY);
+                newRow.SetField("X2", line.EndX);
+                newRow.SetField("Y2", line.EndY);
+                mulattpts.Rows.Add(newRow);
             }
-            return atpts;
+            return mulattpts;
         }
 
       
@@ -75,8 +82,15 @@ namespace SketchUp
         public static List<string> attsec = new List<string>();
         public static DataTable mulattpts = null;
 
-       // private CAMRA_Connection _fox = null;
+        // private CAMRA_Connection _fox = null;
 
         #endregion Fields
+
+        private void btnSelect_Click(object sender, EventArgs e)
+        {
+            adjsec = SecLetterCbox.SelectedText;
+            
+            this.Close();
+        }
     }
 }

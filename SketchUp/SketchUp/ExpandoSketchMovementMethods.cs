@@ -1237,12 +1237,7 @@ namespace SketchUp
 
         public void MoveWest(float startx, float starty)
         {
-#if DEBUG
 
-            //Debugging Code -- remove for production release
-            var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-            UtilityMethods.LogMethodCall(fullStack, true);
-#endif
             if (_isKeyValid == true)
             {
                 StrxD = 0;
@@ -1327,10 +1322,10 @@ namespace SketchUp
 
                 ExpSketchPBox.Image = MainImage;
                 //click++;
-                _StartX.Remove(click);
-                _StartY.Remove(click);
-                _StartX.Add(click, PrevX);
-                _StartY.Add(click, PrevY);
+                //_StartX.Remove(click);
+                //_StartY.Remove(click);
+                //_StartX.Add(click, PrevX);
+                //_StartY.Add(click, PrevY);
 
                 //savpic.Add(click, imageToByteArray(_mainimage));
 

@@ -92,9 +92,7 @@ namespace SketchUp
             }
             splash.UpdateProgress(85);
             Application.DoEvents();
-            InitializeParcelSnapshots();
-            splash.UpdateProgress(100);
-            Application.DoEvents();
+           
         }
 
         private void InitializeParcelSnapshots()
@@ -123,6 +121,9 @@ namespace SketchUp
 
         private void PrepareSketchManager()
         {
+            InitializeParcelSnapshots();
+            splash.UpdateProgress(100);
+            Application.DoEvents();
         }
 
         #endregion Constructor
@@ -137,19 +138,47 @@ namespace SketchUp
 
         private static int CountSectionsInDb()
         {
-            StringBuilder cntSect = new StringBuilder();
-            cntSect.Append(String.Format("select count(*) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ",
-                        SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, SketchUpGlobals.CurrentParcel.Record, SketchUpGlobals.CurrentParcel.Card));
+            try
+            {
+                StringBuilder cntSect = new StringBuilder();
+                cntSect.Append(String.Format("select count(*) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ",
+                            SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, SketchUpGlobals.CurrentParcel.Record, SketchUpGlobals.CurrentParcel.Card));
 
-            int SectionCnt = Convert.ToInt32(SketchUpGlobals.CamraDbConn.DBConnection.ExecuteScalar(cntSect.ToString()));
-            return SectionCnt;
+                int SectionCnt = Convert.ToInt32(SketchUpGlobals.CamraDbConn.DBConnection.ExecuteScalar(cntSect.ToString()));
+                return SectionCnt;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+                Trace.WriteLine(errMessage);
+                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+#if DEBUG
+
+                MessageBox.Show(errMessage);
+#endif
+                throw;
+            }
         }
 
         private void AddWorkingCopyOfSketchToSnapshots()
         {
-            SMParcel parcel = MainFormParcel;
-            parcel.SnapShotIndex++;
-            SketchUpGlobals.SketchSnapshots.Add(parcel);
+            try
+            {
+                SMParcel parcel = MainFormParcel;
+                parcel.SnapShotIndex++;
+                SketchUpGlobals.SketchSnapshots.Add(parcel);
+            }
+            catch (Exception ex)
+            {
+                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+                Trace.WriteLine(errMessage);
+                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+#if DEBUG
+
+                MessageBox.Show(errMessage);
+#endif
+                throw;
+            }
         }
 
         private void EditImage_Click(object sender, EventArgs e)
@@ -176,7 +205,8 @@ namespace SketchUp
             //Ask Dave why this happens twice
 
             SketchUpGlobals.CurrentSketchImage = SketchUpGlobals.CurrentParcel.GetSketchImage(374);
-            sketchBox.Image = SketchUpGlobals.CurrentSketchImage;
+            SketchImage= SketchUpGlobals.CurrentSketchImage;
+            sketchBox.Image = SketchImage;
 
             if (EditImage.Text == "Add Sketch")
             {
@@ -210,8 +240,8 @@ namespace SketchUp
                 }
             }
             SetTextAddOrEdit(SectionCnt);
-
-            if (omitSketch == false && ExpandoSketch._cantSketch == false)
+            bool doSketch = !(omitSketch || ExpandoSketch._cantSketch);
+            if (doSketch)
             {
                 ExpandoSketch skexp = new ExpandoSketch(SketchUpGlobals.CurrentParcel, SketchUpGlobals.SketchFolder, SketchUpGlobals.CurrentParcel.mrecno.ToString(), SketchUpGlobals.CurrentParcel.mdwell.ToString(),
                    SketchUpGlobals.FcLocalityPrefix, SketchUpGlobals.CamraDbConn, SketchUpGlobals.SubSections, SketchUpGlobals.HasSketch, SketchUpGlobals.SketchImage, SketchUpGlobals.HasNewSketch);
@@ -580,20 +610,34 @@ namespace SketchUp
 
         private void DeletePartialSectionInModels()
         {
-            SMParcel parcel = SketchUpGlobals.ParcelWorkingCopy;
-            SMParcel original = SketchUpGlobals.SMParcelFromData;
-            if (parcel.Sections.Count > original.Sections.Count)
+            try
             {
-                string partialSection = parcel.LastSectionLetter;
-                List<SMSection> sectionsAdded = (from s in parcel.Sections where !original.Sections.Contains(s) select s).ToList();
-                foreach (SMSection s in sectionsAdded)
+                SMParcel parcel = SketchUpGlobals.ParcelWorkingCopy;
+                SMParcel original = SketchUpGlobals.SMParcelFromData;
+                if (parcel.Sections.Count > original.Sections.Count)
                 {
-                    s.Lines.RemoveAll(l => l.SectionLetter == s.SectionLetter);
-                    parcel.Sections.RemoveAll(a => sectionsAdded.Contains(a));
-                }
+                    string partialSection = parcel.LastSectionLetter;
+                    List<SMSection> sectionsAdded = (from s in parcel.Sections where !original.Sections.Contains(s) select s).ToList();
+                    foreach (SMSection s in sectionsAdded)
+                    {
+                        s.Lines.RemoveAll(l => l.SectionLetter == s.SectionLetter);
+                        parcel.Sections.RemoveAll(a => sectionsAdded.Contains(a));
+                    }
 
-                parcel.SnapShotIndex++;
-                SketchUpGlobals.SketchSnapshots.Add(parcel);
+                    parcel.SnapShotIndex++;
+                    SketchUpGlobals.SketchSnapshots.Add(parcel);
+                }
+            }
+            catch (Exception ex)
+            {
+                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+                Trace.WriteLine(errMessage);
+                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+#if DEBUG
+
+                MessageBox.Show(errMessage);
+#endif
+                throw;
             }
         }
 
