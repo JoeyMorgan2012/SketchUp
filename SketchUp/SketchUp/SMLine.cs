@@ -346,7 +346,7 @@ namespace SketchUp
                 case "E": //Left to right, label goes below line
                 case "S": //top to bottom, label goes to the right
 
-                    labelText = string.Format("{0}-{1} {2:F2}' {3}", SectionLetter, LineNumber, LineLength, arrow);
+                    labelText = string.Format("{0:N2}'{1}", LineLength, arrow);
 
                     //labelText = string.Format("{0} {1}-{2}\n{3},{4} to {5},{6}", arrow, SectionLetter, LineNumber, ScaledStartPoint.X, ScaledStartPoint.Y, ScaledEndPoint.X, ScaledEndPoint.Y);
                     break;
@@ -354,7 +354,7 @@ namespace SketchUp
                 case "W": //right to left, label goes above line
                 case "N": //Bottom to top, label goes to the left
 
-                    labelText = string.Format(" {3} {0}-{1} {2:F2}'", SectionLetter, LineNumber, LineLength, arrow);
+                    labelText = string.Format("{0}{1:N2}'", arrow,LineLength);
 
                     //labelText = string.Format(" {1}-{2}\n{3},{4} to {5},{6} {0}", arrow, SectionLetter, LineNumber, ScaledStartPoint.X, ScaledStartPoint.Y, ScaledEndPoint.X, ScaledEndPoint.Y);
                     break;

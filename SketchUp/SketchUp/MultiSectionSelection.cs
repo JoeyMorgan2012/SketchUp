@@ -31,28 +31,28 @@ namespace SketchUp
         {
     
 
-            mulattpts = new DataTable();
-            mulattpts.Columns.Add("Sect", typeof(string));
-            mulattpts.Columns.Add("Line", typeof(int));
-            mulattpts.Columns.Add("X1", typeof(decimal));
-            mulattpts.Columns.Add("Y1", typeof(decimal));
-            mulattpts.Columns.Add("X2", typeof(decimal));
-            mulattpts.Columns.Add("Y2", typeof(decimal));
+            MultiplePointsDataTable = new DataTable();
+            MultiplePointsDataTable.Columns.Add("Sect", typeof(string));
+            MultiplePointsDataTable.Columns.Add("Line", typeof(int));
+            MultiplePointsDataTable.Columns.Add("X1", typeof(decimal));
+            MultiplePointsDataTable.Columns.Add("Y1", typeof(decimal));
+            MultiplePointsDataTable.Columns.Add("X2", typeof(decimal));
+            MultiplePointsDataTable.Columns.Add("Y2", typeof(decimal));
 
             DataSet atpts = null;
 
             foreach (SMLine line in connectionLines)
             {
-                DataRow newRow = mulattpts.NewRow();
+                DataRow newRow = MultiplePointsDataTable.NewRow();
                 newRow.SetField("Sect", line.SectionLetter);
                 newRow.SetField("Line", line.LineNumber);
                 newRow.SetField("X1", line.StartX);
                 newRow.SetField("Y1", line.StartY);
                 newRow.SetField("X2", line.EndX);
                 newRow.SetField("Y2", line.EndY);
-                mulattpts.Rows.Add(newRow);
+                MultiplePointsDataTable.Rows.Add(newRow);
             }
-            return mulattpts;
+            return MultiplePointsDataTable;
         }
 
       
@@ -80,7 +80,7 @@ namespace SketchUp
 
         public static string adjsec = String.Empty;
         public static List<string> attsec = new List<string>();
-        public static DataTable mulattpts = null;
+        public static DataTable MultiplePointsDataTable = null;
 
         // private CAMRA_Connection _fox = null;
 

@@ -210,7 +210,7 @@ namespace SketchUp
         private SMParcel workingCopyOfParcel;
 
         #endregion Fields
-
+        
         #region Properties
 
         public string DataSource

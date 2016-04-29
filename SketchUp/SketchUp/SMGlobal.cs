@@ -182,6 +182,20 @@ namespace SketchUp
             }
             return slope;
         }
-        
+
+        public static PointF DbPointToScaledPoint(decimal dataX, decimal dataY, decimal scale, PointF sketchOrigin)
+        {   
+            var screenX = (float)((dataX * scale) + (decimal)sketchOrigin.X);
+            var screenY = (float)((dataY * scale) + (decimal)sketchOrigin.Y);
+            PointF scaledPoint =new PointF(screenX,screenY);
+            return scaledPoint;
+        }
+        public static PointF ScaledPointToDbPoint(decimal screenX, decimal screenY, decimal scale, PointF sketchOrigin)
+        {
+            var dataX = (float)((screenX / scale) - (decimal)sketchOrigin.X);
+            var  dataY= (float)((screenY / scale) - (decimal)sketchOrigin.Y);
+            PointF dbPoint = new PointF(dataX, dataY);
+            return dbPoint;
+        }
     }
 }

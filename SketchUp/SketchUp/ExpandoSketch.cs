@@ -83,7 +83,7 @@ namespace SketchUp
 
             AreaTable = ConstructAreaTable();
 
-            MulPts = ConstructMulPtsTable();
+            MultiplePoints = ConstructMulPtsTable();
 
             undoPoints = ConstructUndoPointsTable();
             sortDist = ConstructSortDistanceTable();
@@ -156,7 +156,7 @@ namespace SketchUp
             catch (Exception ex)
             {
                 string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
-                Trace.WriteLine(errMessage);
+                Console.WriteLine(errMessage);
                 Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
 #if DEBUG
 
@@ -319,7 +319,7 @@ namespace SketchUp
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}.", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+                Console.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}.", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
                 throw;
             }
             return ret;
@@ -443,7 +443,7 @@ namespace SketchUp
                     }
                     if (y1 == y2)
                     {
-                        redist =Math.Abs((x1 - x2) / _currentScale);
+                        redist = Math.Abs((x1 - x2) / _currentScale);
                     }
                 }
                 if (undodirect == "NE" || undodirect == "SE" || undodirect == "NW" || undodirect == "SW")
@@ -477,7 +477,7 @@ namespace SketchUp
                     SolidBrush brush = new SolidBrush(Color.Red);
                     Pen pen1x = new Pen(Color.Red, 2);
                     Pen pen1w = new Pen(Color.White, 2);
-                    Font f = new Font("Arial", 8, FontStyle.Bold);
+                    Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                     g.DrawLine(pen1x, StartX, StartY, (StartX + (redist * _currentScale)), StartY);
 
@@ -491,7 +491,7 @@ namespace SketchUp
                     SolidBrush brush = new SolidBrush(Color.Red);
                     Pen pen1x = new Pen(Color.Red, 2);
                     Pen pen1w = new Pen(Color.White, 2);
-                    Font f = new Font("Arial", 8, FontStyle.Bold);
+                    Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                     g.DrawLine(pen1x, StartX, StartY, StartX, (StartY - (redist * _currentScale)));
 
@@ -505,7 +505,7 @@ namespace SketchUp
                     SolidBrush brush = new SolidBrush(Color.Red);
                     Pen pen1x = new Pen(Color.Red, 2);
                     Pen pen1w = new Pen(Color.White, 2);
-                    Font f = new Font("Arial", 8, FontStyle.Bold);
+                    Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                     g.DrawLine(pen1x, StartX, StartY, StartX, (StartY + (redist * _currentScale)));
 
@@ -519,7 +519,7 @@ namespace SketchUp
                     SolidBrush brush = new SolidBrush(Color.Red);
                     Pen pen1x = new Pen(Color.Red, 2);
                     Pen pen1w = new Pen(Color.White, 2);
-                    Font f = new Font("Arial", 8, FontStyle.Bold);
+                    Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                     g.DrawLine(pen1x, StartX, StartY, (StartX - (redist * _currentScale)), StartY);
 
@@ -533,7 +533,7 @@ namespace SketchUp
                     SolidBrush brush = new SolidBrush(Color.Red);
                     Pen pen1x = new Pen(Color.Red, 2);
                     Pen pen1w = new Pen(Color.White, 2);
-                    Font f = new Font("Arial", 8, FontStyle.Bold);
+                    Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                     g.DrawLine(pen1x, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * _currentScale)), (StartY - (Convert.ToInt16(AngD2) * _currentScale)));
 
@@ -547,7 +547,7 @@ namespace SketchUp
                     SolidBrush brush = new SolidBrush(Color.Red);
                     Pen pen1x = new Pen(Color.Red, 2);
                     Pen pen1w = new Pen(Color.White, 2);
-                    Font f = new Font("Arial", 8, FontStyle.Bold);
+                    Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                     g.DrawLine(pen1x, StartX, StartY, (StartX + (Convert.ToInt16(AngD1) * _currentScale)), (StartY - (Convert.ToInt16(AngD2) * _currentScale)));
 
@@ -561,7 +561,7 @@ namespace SketchUp
                     SolidBrush brush = new SolidBrush(Color.Red);
                     Pen pen1x = new Pen(Color.Red, 2);
                     Pen pen1w = new Pen(Color.White, 2);
-                    Font f = new Font("Arial", 8, FontStyle.Bold);
+                    Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                     g.DrawLine(pen1x, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * _currentScale)), (StartY + (Convert.ToInt16(AngD2) * _currentScale)));
 
@@ -575,7 +575,7 @@ namespace SketchUp
                     SolidBrush brush = new SolidBrush(Color.Red);
                     Pen pen1x = new Pen(Color.Red, 2);
                     Pen pen1w = new Pen(Color.White, 2);
-                    Font f = new Font("Arial", 8, FontStyle.Bold);
+                    Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                     g.DrawLine(pen1x, StartX, StartY, (StartX + (Convert.ToInt16(AngD1) * _currentScale)), (StartY + (Convert.ToInt16(AngD2) * _currentScale)));
 
@@ -1088,9 +1088,9 @@ namespace SketchUp
             Pen whitePen = new Pen(Color.White, 2);
             Pen blackPen = new Pen(Color.Black, 2);
 
-            Font LbLf = new Font("Arial", 10, FontStyle.Bold);
-            Font TitleF = new Font("Arial", 10, FontStyle.Bold | FontStyle.Underline);
-            Font MainTitle = new System.Drawing.Font("Arial", 15, FontStyle.Bold | FontStyle.Underline);
+            Font LbLf = new Font("Segue UI", 10, FontStyle.Bold);
+            Font TitleF = new Font("Segue UI", 10, FontStyle.Bold | FontStyle.Underline);
+            Font MainTitle = new System.Drawing.Font("Segue UI", 15, FontStyle.Bold | FontStyle.Underline);
             char[] leadzero = new char[] { '0' };
 
             g.DrawString(Locality, TitleF, Lblbrush, new PointF(10, 10));
@@ -1596,7 +1596,7 @@ namespace SketchUp
                     break;
 
                 default:
-                    Trace.WriteLine(string.Format("Error occurred in {0}, in procedure {1}. AttSpLineDir not in NEWS. ", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name));
+                    Console.WriteLine(string.Format("Error occurred in {0}, in procedure {1}. AttSpLineDir not in NEWS. ", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name));
                     break;
             }
 
@@ -1639,7 +1639,7 @@ namespace SketchUp
                     break;
 
                 default:
-                    Trace.WriteLine(string.Format("Error occurred in {0}, in procedure {1}. CurrentAttDir not in NEWS.", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name));
+                    Console.WriteLine(string.Format("Error occurred in {0}, in procedure {1}. CurrentAttDir not in NEWS.", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name));
                     break;
             }
             AdjustLine(newEndX, newEndY, newDistX, newDistY, EndEndX, EndEndY, finDist);
@@ -1715,7 +1715,7 @@ namespace SketchUp
             catch (Exception ex)
             {
                 string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
-                Trace.WriteLine(errMessage);
+                Console.WriteLine(errMessage);
                 Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
 #if DEBUG
 
@@ -1905,7 +1905,7 @@ namespace SketchUp
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+                Console.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
 
                 throw;
             }
@@ -2021,9 +2021,9 @@ namespace SketchUp
             int savedAttLine = Convert.ToInt32(JumpTable.Rows[rowindex]["LineNo"].ToString());
 
             _savedAttLine = Convert.ToInt32(SortedJumpTableDataView[0]["LineNo"].ToString());
-            Trace.WriteLine(string.Format("_savedAttLine = Convert.ToInt32(JumpTable.Rows[rowindex][LineNo]={0}", _savedAttLine));
-            Trace.WriteLine(string.Format("************ ({0} is not subsequently used.******** ", _savedAttLine));
-            Trace.WriteLine(string.Format("_savedAttLine = Convert.ToInt32(SortedJumpTableDataView[0][LineNo]={0}", _savedAttLine));
+            Console.WriteLine(string.Format("_savedAttLine = Convert.ToInt32(JumpTable.Rows[rowindex][LineNo]={0}", _savedAttLine));
+            Console.WriteLine(string.Format("************ ({0} is not subsequently used.******** ", _savedAttLine));
+            Console.WriteLine(string.Format("_savedAttLine = Convert.ToInt32(SortedJumpTableDataView[0][LineNo]={0}", _savedAttLine));
 
             //Ask Dave why this is set here if it is set differently above
             //Ask Dave why sometimes the rowindex of the JumpTable is used and othertimes the row[0] of the Sorted Jump Table
@@ -2041,7 +2041,7 @@ namespace SketchUp
 
             startSplitX = Convert.ToDecimal(SortedJumpTableDataView[0]["XPt1"].ToString());
             startSplitY = Convert.ToDecimal(SortedJumpTableDataView[0]["YPt1"].ToString());
-            Trace.WriteLine(string.Format("Start split point: {0},{1}", startSplitX, startSplitY));
+            Console.WriteLine(string.Format("Start split point: {0},{1}", startSplitX, startSplitY));
             /* More Rube Goldberg code. These values are set, but then they are not used anywhere.
              -JMM
                         decimal tsplit2 = Convert.ToDecimal(SortedJumpTableDataView[0]["XPt2"].ToString());
@@ -2054,8 +2054,9 @@ namespace SketchUp
             //TODO: Find the last moved direction and the direction of the Current AttLine. If they are not the same call undo and return to main screen.
             _mouseX = Convert.ToInt32(JumpX);
             _mouseY = Convert.ToInt32(JumpY);
-            Trace.WriteLine(string.Format("Mouse moved to {0},{1}", JumpX, JumpY));
-            Trace.WriteLine(string.Format("Section attachment is {0} Line {1}, _priorDirection is {2}", _savedAttSection, currentAttachmentLine, _priorDirection));
+            Console.WriteLine(string.Format("Mouse moved to {0},{1}", JumpX, JumpY));
+            Console.WriteLine(string.Format("Section attachment is {0} Line {1}, _priorDirection is {2}", _savedAttSection, currentAttachmentLine, _priorDirection));
+
             //LegalMoveDirections = AttachLineDirection(_savedAttSection, currentAttachmentLine);
             MoveCursor();
             return secltr;
@@ -2457,7 +2458,7 @@ namespace SketchUp
 
         private bool IsValidDirection(string moveDirection)
         {
-
+           
             bool goodDir = (LegalMoveDirections.Contains(moveDirection) || BeginSectionBtn.Text == "Active" || !checkDirection);
             return goodDir;
         }
@@ -2505,7 +2506,7 @@ namespace SketchUp
                 JumpTable = ConstructJumpTable();
                 JumpTable.Clear();
 
-               // AddListItemsToJumpTableList(jx, jy, CurrentScale, lines);
+                // AddListItemsToJumpTableList(jx, jy, CurrentScale, lines);
 
                 string secltr = String.Empty;
                 string curltr = String.Empty;
@@ -2558,8 +2559,8 @@ namespace SketchUp
         {
             Color penColor;
             Cursor = new Cursor(Cursor.Current.Handle);
-            Cursor.Position = new Point(Convert.ToInt32(JumpX) - 50, Convert.ToInt32(JumpY) - 50);
-
+             Cursor.Position = new Point(Convert.ToInt32(JumpX) - 50, Convert.ToInt32(JumpY) - 50);
+            Cursor.Position = new Point(Convert.ToInt32(JumpX) - 50, Convert.ToInt32(JumpY) );
             penColor = (_undoMode || draw) ? Color.Red : Color.Black;
 
             Graphics g = Graphics.FromImage(MainImage);
@@ -2569,7 +2570,7 @@ namespace SketchUp
 
             ExpSketchPBox.Image = MainImage;
 
-            DMouseClick();
+            //DMouseClick();
         }
 
         private decimal OriginalDistanceX()
@@ -3073,7 +3074,7 @@ namespace SketchUp
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+                Console.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
                 throw;
             }
         }
@@ -3259,8 +3260,6 @@ namespace SketchUp
         {
             SaveSketchData();
         }
-
-      
 
         private void AddMaster()
         {
@@ -3535,29 +3534,6 @@ namespace SketchUp
 
         private void HandleDirectionalKeys(KeyEventArgs e)
         {
-            ////string legalDirectionName = string.Empty;
-            ////switch (LegalMoveDirections)
-            ////{
-            ////    case "E":
-            ////        legalDirectionName = "East";
-            ////        break;
-
-            ////    case "S":
-            ////        legalDirectionName = "South";
-            ////        break;
-
-            ////    case "W":
-            ////        legalDirectionName = "West";
-            ////        break;
-
-            ////    case "N":
-            ////        legalDirectionName = "North";
-            ////        break;
-
-            ////    default:
-            ////        legalDirectionName = "in a clockwise direction, relative to the anchoring section";
-            ////        break;
-            //}
 
             if (e.KeyCode == Keys.Right || e.KeyCode == Keys.R || e.KeyCode == Keys.E)
             {
@@ -3568,7 +3544,6 @@ namespace SketchUp
                 }
                 else
                 {
-                   
                     //UndoJump = true;
                     //RevertToPriorVersion();
                 }
@@ -3658,7 +3633,7 @@ namespace SketchUp
         {
             try
             {
-               string  legalDirs = string.Empty;
+                string legalDirs = string.Empty;
                 string message = string.Format("You may only move {0} from this jump point.", legalDirs);
                 MessageBox.Show(message, "Illegal direction", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                 UndoJump = true;
@@ -3668,7 +3643,7 @@ namespace SketchUp
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+                Console.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
                 Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
                 throw;
             }
@@ -3705,7 +3680,7 @@ namespace SketchUp
         {
             draw = true;
 
-            DMouseClick();
+            //DMouseClick();
         }
 
         private void BeginSectionBtn_Click(object sender, EventArgs e)
@@ -3809,7 +3784,7 @@ namespace SketchUp
                 draw = true;
 
                 lineCnt = 0;
-                DMouseClick();
+                //DMouseClick();
             }
         }
 
@@ -4034,7 +4009,7 @@ namespace SketchUp
                 g.DrawRectangle(pen1, e.X, e.Y, 1, 1);
                 g.Save();
 
-                DMouseClick();
+                //DMouseClick();
             }
         }
 
@@ -4153,7 +4128,7 @@ namespace SketchUp
                 Graphics g = Graphics.FromImage(MainImage);
                 SolidBrush brush = new SolidBrush(Color.Blue);
                 Pen pen1 = new Pen(Color.Red, 2);
-                Font f = new Font("Arial", 8, FontStyle.Bold);
+                Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                 g.DrawString(FieldText.Text.Trim(), f, brush, new PointF(_mouseX + 5, _mouseY));
 

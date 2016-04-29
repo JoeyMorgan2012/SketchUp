@@ -13,13 +13,13 @@ namespace SketchUp
     /// <para>This file contains fields, properties and enums for the ExpandoSketch Form class.</para>
     /// <para></para>ExpandoSketchMovementMethods.cs</para>
     /// <para>All of the methods involving moving along a cardinal direction or quarter.</para>
+    /// <para>ExpandoSketchRefactoredMethods.cs</para>
+    /// <para>A combination of Methods that replace the same named methods in the original and new methods refactored out from them for SOLID coding.</para>
+    /// <para>ExpandoSketchDrawingMethods.cs</para>
+    /// <para>Methods specific to working with graphics objects</para>
     /// <para></para>
     /// <para></para>
-    /// <para></para>
-    /// <para></para>
-    /// <para></para>
-    /// <para></para>
-    /// 
+    ///
     /// </summary>
     public partial class ExpandoSketch : Form
     {
@@ -37,33 +37,42 @@ namespace SketchUp
             NW
         }
 
+        private enum SketchDrawingState
+        {
+            BeginPointSelected,
+            DeletingSection,
+            Drawing,
+            EditingSectionDescription,
+            JumpMoveToBeginPoint,
+            JumpPointSelected,
+            SavedToDb,
+            Saving,
+            SectionAdded,
+            SectionClosed,
+            SketchLoaded,
+            UndoAll,
+            UndoLastLine,
+            UndoSection
+        }
+
         #endregion Enums
 
         #region Fields
 
         #region private fields
-        private DataTable attachPoints;
+
         private decimal adjNewSecX = 0;
         private decimal adjNewSecY = 0;
         private decimal adjOldSecX = 0;
         private decimal adjOldSecY = 0;
         private decimal AngD1 = 0;
         private decimal AngD2 = 0;
-        bool firstTimeLoaded;
-        Bitmap sketchImage;
-        private List<SMLine> jumpPointLines;
-        /*
-		Refactored by renaming and providing for null values. Going to ensure that the
-		naming conventions are consistent for all properties. Any field that backs a property
-		will be in camel case (e.g. camelCase) while fields that are not property-backing will be
-		in Pascal case. (e.g. PascalCase).
-
-		*/
         private DataTable AreaTable = null;
         private DataTable AttachmentPointsDataTable = null;
         private SMSection attachmentSection;
+        private DataTable attachPoints;
 
-     //   private DataTable AttachPoints = null;
+        //   private DataTable AttachPoints = null;
         private int AttLineNo = 0;
         private string AttSectLtr = String.Empty;
         private string AttSpLineDir = String.Empty;
@@ -86,21 +95,25 @@ namespace SketchUp
         private string CurrentAttDir = String.Empty;
         private string CurrentSecLtr = String.Empty;
         private DataTable displayDataTable = null;
+        private float drawingScale = 1.0f;
         private DataTable DupAttPoints = null;
+        private PointF endOfJumpMovePoint;
         private float endOldSecX = 0;
         private float endOldSecY = 0;
         private float EndX = 0;
         private decimal EndxD = 0;
         private float EndY = 0;
         private decimal EndyD = 0;
+        private bool firstTimeLoaded;
         private List<string> FixSect = null;
+        private Graphics g;
         private List<int> GarCodes = null;
         private List<String> GarTypes = null;
-        private Graphics g;
         private Brush greenBrush;
         private bool isInAddNewPointMode = false;
         private bool isLastLine;
         private SMLine jumpPointLine;
+        private List<SMLine> jumpPointLines;
         private DataTable JumpTable = null;
         private float JumpX = 0;
         private float JumpY = 0;
@@ -108,11 +121,12 @@ namespace SketchUp
         private int lineCnt = 0;
         private int LineNumberToBreak = 0;
         private string Locality = String.Empty;
+        private SMParcel localParcelCopy;
         private string midDirect = String.Empty;
         private int midLine = 0;
         private string midSection = String.Empty;
         private byte[] ms = null;
-        private DataTable MulPts = null;
+        private DataTable MultiplePoints = null;
         private int mylineNo = 0;
 
         //private decimal Xadj1 = 0;
@@ -125,7 +139,6 @@ namespace SketchUp
         private decimal NewSplitLIneDist = 0;
         private string OffSetAttSpLineDir = String.Empty;
         private Pen orangePen;
-        private SMParcel localParcelCopy;
         private decimal prevPt2X = 0;
         private decimal prevPt2Y = 0;
         private decimal prevTst1 = 0;
@@ -140,7 +153,7 @@ namespace SketchUp
         private DataTable REJumpTable = null;
         private DataTable RESpJumpTable = null;
 
-     //   private Dictionary<int, byte[]> savpic = null;
+        //   private Dictionary<int, byte[]> savpic = null;
         private float ScaleBaseX = 0;
         private float ScaleBaseY = 0;
         private PointF scaledBeginPoint;
@@ -157,6 +170,14 @@ namespace SketchUp
         private SMParcel selectedParcel;
         private string SketchCard = String.Empty;
         private string SketchFolder = String.Empty;
+        private Bitmap sketchImage;
+        /*
+		Refactored by renaming and providing for null values. Going to ensure that the
+		naming conventions are consistent for all properties. Any field that backs a property
+		will be in camel case (e.g. camelCase) while fields that are not property-backing will be
+		in Pascal case. (e.g. PascalCase).
+
+		*/
         private Bitmap sketchImageBMP;
         private PointF sketchOrigin;
         private string SketchRecord = String.Empty;
@@ -200,7 +221,6 @@ namespace SketchUp
         private bool _reOpenSec = false;
         private int _savedAttLine;
         private string _savedAttSection = "";
-        private float drawingScale = 1.0f;
         private Dictionary<int, float> _StartX = null;
         private Dictionary<int, float> _StartY = null;
 
@@ -278,23 +298,9 @@ namespace SketchUp
 
         #endregion Public Fields
 
-
         #endregion Fields
 
-
         #region Properties
-        public DataTable AttachPoints
-        {
-            get
-            {
-                return attachPoints;
-            }
-            set
-            {
-                attachPoints = value;
-            }
-        }
-       
 
         public SMSection AttachmentSection
         {
@@ -308,7 +314,17 @@ namespace SketchUp
             }
         }
 
-     
+        public DataTable AttachPoints
+        {
+            get
+            {
+                return attachPoints;
+            }
+            set
+            {
+                attachPoints = value;
+            }
+        }
 
         public Brush BlackBrush
         {
@@ -369,6 +385,30 @@ namespace SketchUp
             }
         }
 
+        public float DrawingScale
+        {
+            get
+            {
+                return drawingScale;
+            }
+            set
+            {
+                drawingScale = value;
+            }
+        }
+
+        public PointF EndOfJumpMovePoint
+        {
+            get
+            {
+                return endOfJumpMovePoint;
+            }
+            set
+            {
+                endOfJumpMovePoint = value;
+            }
+        }
+
         public bool FirstTimeLoaded
         {
             get
@@ -418,6 +458,18 @@ namespace SketchUp
             }
         }
 
+        public List<SMLine> JumpPointLines
+        {
+            get
+            {
+                return jumpPointLines;
+            }
+            set
+            {
+                jumpPointLines = value;
+            }
+        }
+
         public string LastAngDir
         {
             get
@@ -442,11 +494,35 @@ namespace SketchUp
             }
         }
 
+        public List<string> LegalMoveDirections
+        {
+            get
+            {
+                return legalMoveDirections;
+            }
+            set
+            {
+                legalMoveDirections = value;
+            }
+        }
+
+        public SMParcel LocalParcelCopy
+        {
+            get
+            {
+                return localParcelCopy;
+            }
+            set
+            {
+                localParcelCopy = value;
+            }
+        }
+
         public Image MainImage
         {
             get
             {
-                if (_mainImage==null)
+                if (_mainImage == null)
                 {
                     _mainImage = new Bitmap(ExpSketchPBox.Width, ExpSketchPBox.Height);
                 }
@@ -510,18 +586,6 @@ namespace SketchUp
             set
             {
                 orangePen = value;
-            }
-        }
-
-        public SMParcel LocalParcelCopy
-        {
-            get
-            {
-                return localParcelCopy;
-            }
-            set
-            {
-                localParcelCopy = value;
             }
         }
 
@@ -661,45 +725,6 @@ namespace SketchUp
             set
             {
                 undoJump = value;
-            }
-        }
-
-        public float DrawingScale
-        {
-            get
-            {
-                return drawingScale;
-            }
-
-            set
-            {
-                drawingScale = value;
-            }
-        }
-
-        public List<SMLine> JumpPointLines
-        {
-            get
-            {
-                return jumpPointLines;
-            }
-
-            set
-            {
-                jumpPointLines = value;
-            }
-        }
-
-        public List<string> LegalMoveDirections
-        {
-            get
-            {
-                return legalMoveDirections;
-            }
-
-            set
-            {
-                legalMoveDirections = value;
             }
         }
 

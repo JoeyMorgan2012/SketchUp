@@ -14,6 +14,7 @@ namespace SketchUp
 {
     public partial class ExpandoSketch : Form
     {
+        private const int sketchBoxPaddingTotal = 20;
         #region Form Events and Menu
 
         #region May not be needed
@@ -77,73 +78,18 @@ namespace SketchUp
         #endregion May not be needed
 
         #region Sketching Methods
-        private void JumptoCorner()
+
+    
+
+        private static List<SMLine> LinesWithClosestEndpoints(PointF mouseLocation)
         {
-            float txtx = NextStartX;
-            float txty = NextStartY;
-            float jx = _mouseX;
-            float jy = _mouseY;
-            float _scaleBaseX = ScaleBaseX;
-            float _scaleBaseY = ScaleBaseY;
-            float CurrentScale = _currentScale;
-            int crrec = _currentParcel.Record;
-            int crcard = _currentParcel.Card;
-
-            CurrentSecLtr = String.Empty;
-            _newIndex = 0;
-            currentAttachmentLine = 0;
-            if (IsNewSketch == false)
+            foreach (SMLine l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines.Where(s => s.SectionLetter != SketchUpGlobals.ParcelWorkingCopy.LastSectionLetter))
             {
-                PointF mouseLocation = new PointF(_mouseX, _mouseY);
-
-                foreach (SMLine l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines.Where(s => s.SectionLetter != SketchUpGlobals.ParcelWorkingCopy.LastSectionLetter))
-                {
-                    l.ComparisonPoint = mouseLocation;
-                }
-                decimal shortestDistance = Math.Round((from l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines select l.EndPointDistanceFromComparisonPoint).Min(),2);
-                List<SMLine> connectionLines = (from l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines where Math.Round(l.EndPointDistanceFromComparisonPoint,2) == shortestDistance select l).ToList();
-
-
-                bool sketchHasLineData = connectionLines.Count > 0;
-                if (connectionLines == null || connectionLines.Count == 0)
-                {
-                    string message = string.Format("No lines contain an available connection point from point {0},{1}", mouseLocation.X, mouseLocation.Y);
-
-                    Trace.WriteLine(message);
-
-#if DEBUG
-
-                    MessageBox.Show(message);
-#endif
-                    throw new InvalidDataException(message);
-                }
-                else
-                {
-                    SecLetters = (from l in connectionLines select l.SectionLetter).ToList();
-                    if (SecLetters.Count > 1)
-                    {
-                        AttSectLtr = MultiPointsAvailable(SecLetters);
-                        AttachmentSection = (from s in SketchUpGlobals.ParcelWorkingCopy.Sections where s.SectionLetter == AttSectLtr select s).FirstOrDefault();
-                        JumpPointLine = (from l in connectionLines where l.SectionLetter == AttSectLtr select l).FirstOrDefault();
-
-
-                    }
-                    else
-                    {
-                        AttSectLtr = SecLetters[0];
-                        AttachmentSection = (from s in SketchUpGlobals.ParcelWorkingCopy.Sections where s.SectionLetter == AttSectLtr select s).FirstOrDefault();
-                        JumpPointLine = connectionLines[0];
-
-                    }
-
-                    ScaledJumpPoint = JumpPointLine.ScaledEndPoint;
-                    LegalMoveDirections = GetLegalMoveDirections(ScaledJumpPoint, AttSectLtr);
-                    MoveCursor(ScaledJumpPoint);
-                    LoadLegacyJumpTable();
-                    SetActiveButtonAppearance();
-                    BeginSectionBtn.Enabled = scaledJumpPoint != null;
-                }
+                l.ComparisonPoint = mouseLocation;
             }
+            decimal shortestDistance = Math.Round((from l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines select l.EndPointDistanceFromComparisonPoint).Min(), 2);
+            List<SMLine> connectionLines = (from l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines where Math.Round(l.EndPointDistanceFromComparisonPoint, 2) == shortestDistance select l).ToList();
+            return connectionLines;
         }
 
         private void LoadLegacyJumpTable()
@@ -153,23 +99,11 @@ namespace SketchUp
             AddListItemsToJumpTableList(ScaledJumpPoint.X, ScaledJumpPoint.Y, LocalParcelCopy.Scale, LocalParcelCopy.AllSectionLines);
         }
 
-        private List<string> GetLegalMoveDirections(PointF scaledJumpPoint, string attachSectionLetter)
-        {
-            List<SMLine> linesWithJumpPoint = (from l in LocalParcelCopy.AllSectionLines where l.SectionLetter == attachSectionLetter && (l.ScaledStartPoint == scaledJumpPoint || l.ScaledEndPoint == scaledJumpPoint) select l).ToList();
-            List<string> legalDirections = new List<string>();
-            legalDirections.AddRange((from l in LocalParcelCopy.AllSectionLines where l.ScaledStartPoint == scaledJumpPoint && l.SectionLetter == attachSectionLetter select l.Direction).ToList());
-       
-            legalDirections.AddRange((from l in linesWithJumpPoint select l.Direction).ToList().Distinct());
-
-            return legalDirections;
-
-        }
-
         //private List<string> GetLegalMoveDirections(PointF scaledJumpPoint)
         //{
         //      List<string> legalDirections = new List<string>();
         //    legalDirections.AddRange((from l in LocalParcelCopy.AllSectionLines where l.ScaledStartPoint == scaledJumpPoint select l.Direction).ToList());
-          
+
         //    legalDirections.AddRange((from l in LocalParcelCopy.AllSectionLines where l.ScaledEndPoint == scaledJumpPoint  select ReverseDirection(l.Direction)).ToList());
         //    return legalDirections.Distinct().ToList();
         //}
@@ -178,14 +112,15 @@ namespace SketchUp
             try
             {
                 decimal sketchScale = line.ParentParcel.Scale;
-                            var lineStartX = (float)((line.StartX * sketchScale) + (decimal)SketchOrigin.X);
-                            var lineStartY = (float)((line.StartY * sketchScale) + (decimal)SketchOrigin.Y);
-                      
+                var lineStartX = (float)((line.StartX * sketchScale) + (decimal)SketchOrigin.X);
+                var lineStartY = (float)((line.StartY * sketchScale) + (decimal)SketchOrigin.Y);
+                line.ScaledStartPoint=new PointF(lineStartX,lineStartY);
+
             }
             catch (Exception ex)
             {
                 string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
-                Trace.WriteLine(errMessage);
+                Console.WriteLine(errMessage);
                 Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
 #if DEBUG
 
@@ -194,6 +129,7 @@ namespace SketchUp
                 throw;
             }
         }
+
         private void SetScaledStartPoints()
         {
             try
@@ -205,9 +141,9 @@ namespace SketchUp
                     {
                         foreach (SMLine line in s.Lines)
                         {
-                            var lineStartX = (float)((line.StartX * sketchScale) + (decimal)SketchOrigin.X);
-                            var lineStartY = (float)((line.StartY * sketchScale) + (decimal)SketchOrigin.Y);
-                            line.ScaledStartPoint = new PointF(lineStartX, lineStartY);
+                            //var lineStartX = (float)((line.StartX * sketchScale) + (decimal)SketchOrigin.X);
+                            //var lineStartY = (float)((line.StartY * sketchScale) + (decimal)SketchOrigin.Y);
+                            line.ScaledStartPoint = SMGlobal.DbPointToScaledPoint(line.StartX, line.StartY, line.ParentParcel.Scale, SketchOrigin);
                         }
                     }
                 }
@@ -215,11 +151,11 @@ namespace SketchUp
             catch (Exception ex)
             {
                 string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
-								Trace.WriteLine(errMessage);
-								Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+                Console.WriteLine(errMessage);
+                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
 #if DEBUG
 
-								MessageBox.Show(errMessage);
+                MessageBox.Show(errMessage);
 #endif
                 throw;
             }
@@ -245,11 +181,11 @@ namespace SketchUp
             catch (Exception ex)
             {
                 string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
-								Trace.WriteLine(errMessage);
-								Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+                Console.WriteLine(errMessage);
+                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
 #if DEBUG
 
-								MessageBox.Show(errMessage);
+                MessageBox.Show(errMessage);
 #endif
                 throw;
             }
@@ -260,12 +196,12 @@ namespace SketchUp
             //Using the scale and the offsets, determine the point to be considered as "0,0" for the sketch;
             try
             {
-                var sketchAreaWidth = ExpSketchPBox.Width - 20;
-                var sketchAreaHeight = ExpSketchPBox.Height - 20;
+                var sketchAreaWidth = ExpSketchPBox.Width - sketchBoxPaddingTotal;
+                var sketchAreaHeight = ExpSketchPBox.Height - sketchBoxPaddingTotal;
 
                 PointF pictureBoxCorner = ExpSketchPBox.Location;
-                var extraWidth = (ExpSketchPBox.Width - 20) - (SketchUpGlobals.ParcelWorkingCopy.Scale * SketchUpGlobals.ParcelWorkingCopy.SketchXSize);
-                var extraHeight = (ExpSketchPBox.Height - 20) - (SketchUpGlobals.ParcelWorkingCopy.Scale * SketchUpGlobals.ParcelWorkingCopy.SketchYSize);
+                var extraWidth = (ExpSketchPBox.Width - sketchBoxPaddingTotal) - (SketchUpGlobals.ParcelWorkingCopy.Scale * SketchUpGlobals.ParcelWorkingCopy.SketchXSize);
+                var extraHeight = (ExpSketchPBox.Height - sketchBoxPaddingTotal) - (SketchUpGlobals.ParcelWorkingCopy.Scale * SketchUpGlobals.ParcelWorkingCopy.SketchYSize);
                 var paddingX = (extraWidth / 2) + 10;
                 var paddingY = (extraHeight / 2) + 10;
                 var xLocation = (SketchUpGlobals.ParcelWorkingCopy.OffsetX * SketchUpGlobals.ParcelWorkingCopy.Scale) + paddingX;
@@ -276,8 +212,8 @@ namespace SketchUp
             catch (Exception ex)
             {
                 string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
-                Trace.WriteLine(errMessage);
-                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+                Console.WriteLine(errMessage);
+           
 #if DEBUG
 
                 MessageBox.Show(errMessage);
@@ -290,22 +226,18 @@ namespace SketchUp
         {
             try
             {
-                //Determine the size of the sketch drawing area, which is the picture box less 10 px on a side, so height-20 and width-20. Padding is 10.
-                int boxHeight = ExpSketchPBox.Height - 20;
-                int boxWidth = ExpSketchPBox.Width - 20;
-                //decimal xScale = Math.Floor(boxWidth / SketchUpGlobals.ParcelWorkingCopy.SketchXSize);
-                //decimal yScale = Math.Floor(boxHeight / SketchUpGlobals.ParcelWorkingCopy.SketchYSize);
-                //SketchUpGlobals.ParcelWorkingCopy.Scale = (decimal)SMGlobal.SmallerDouble(xScale, yScale);
-
+                //Determine the size of the sketch drawing area, which is the picture box less 30 px on a side, so height-sketchBoxPadding and width-sketchBoxPaddingTotal. Padding is sketchBoxPaddingTotal/2.
+                int boxHeight = ExpSketchPBox.Height - sketchBoxPaddingTotal;
+                int boxWidth = ExpSketchPBox.Width - sketchBoxPaddingTotal;
                 decimal xScale = Math.Floor(boxWidth / SketchUpGlobals.ParcelWorkingCopy.SketchXSize);
                 decimal yScale = Math.Floor(boxHeight / SketchUpGlobals.ParcelWorkingCopy.SketchYSize);
-                SketchUpGlobals.ParcelWorkingCopy.Scale = 0.75M*SMGlobal.SmallerDouble(xScale, yScale);
-
+                // Allow 25% for the titles and to draw.
+                SketchUpGlobals.ParcelWorkingCopy.Scale = 0.75M * SMGlobal.SmallerDouble(xScale, yScale);
             }
             catch (Exception ex)
             {
                 string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
-                Trace.WriteLine(errMessage);
+                Console.WriteLine(errMessage);
                 Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
 #if DEBUG
 
@@ -341,23 +273,23 @@ namespace SketchUp
 
         private string MultiPointsAvailable(List<string> sectionLetterList)
         {
-            string multisectatch = String.Empty;
+            string multipleSectionsAttachment = String.Empty;
 
             if (sectionLetterList.Count > 1)
             {
-                MulPts.Clear();
+                MultiplePoints.Clear();
 
-                MultiSectionSelection attsecltr = new MultiSectionSelection(sectionLetterList);
-                attsecltr.ShowDialog(this);
+                MultiSectionSelection attachmentSectionLetterSelected = new MultiSectionSelection(sectionLetterList);
+                attachmentSectionLetterSelected.ShowDialog(this);
 
-                multisectatch = MultiSectionSelection.adjsec;
+                multipleSectionsAttachment = MultiSectionSelection.adjsec;
 
-                MulPts = MultiSectionSelection.mulattpts;
+                MultiplePoints = MultiSectionSelection.MultiplePointsDataTable;
 
                 _hasMultiSection = true;
             }
 
-            return multisectatch;
+            return multipleSectionsAttachment;
         }
 
         private void RefreshParcelImage()
@@ -377,6 +309,12 @@ namespace SketchUp
 
         private void RevertToPriorVersion()
         {
+#if DEBUG
+			StringBuilder traceOut = new StringBuilder();
+			traceOut.AppendLine(string.Format("{0}", ""));
+			Console.WriteLine(string.Format("{0}", traceOut.ToString())); 
+            Trace.WriteLine(string.Format("{0}", traceOut.ToString()));
+#endif
             throw new NotImplementedException();
         }
 
@@ -391,7 +329,7 @@ namespace SketchUp
         {
             BeginSectionBtn.BackColor = Color.PaleTurquoise;
             BeginSectionBtn.Text = "Begin";
-         
+            BeginSectionBtn.Enabled = ScaledJumpPoint != null;
         }
 
         private void tsbExitSketch_Click(object sender, EventArgs e)
@@ -416,27 +354,30 @@ namespace SketchUp
         #endregion Form Events and Menu
 
         #region Misc. Refactored Methods
+
         private void AdjustLine(SMParcel parcel, string sectionLetter, int lineNumber, decimal newStartX, decimal newStartY, decimal newEndX, decimal newEndY)
         {
             SMLine selectedLine = (from l in parcel.AllSectionLines where l.SectionLetter == sectionLetter && l.LineNumber == lineNumber select l).FirstOrDefault();
-            if (selectedLine!=null)
+            if (selectedLine != null)
             {
-                selectedLine.StartX=newStartX;
+                selectedLine.StartX = newStartX;
                 selectedLine.StartY = newStartY;
                 selectedLine.EndX = newEndX;
                 selectedLine.EndY = newEndY;
                 SetScaledStartPoint(selectedLine);
             }
         }
-        private void MoveCursor(PointF jumpPointScaled)
+
+        private void MoveCursorToJumpPoint(PointF jumpPointScaled)
         {
             Color penColor;
             this.Cursor = new Cursor(Cursor.Current.Handle);
-            Cursor.Position = new Point(Convert.ToInt32(JumpX) - 50, Convert.ToInt32(JumpY) - 50);
-
-            penColor = (_undoMode || draw) ? Color.Red : Color.Black;
             int jumpXScaled = Convert.ToInt32(jumpPointScaled.X);
             int jumpYScaled = Convert.ToInt32(jumpPointScaled.Y);
+            Cursor.Position = new Point(jumpXScaled,jumpYScaled);
+
+            penColor = (_undoMode || draw) ? Color.Red : Color.Black;
+          
             Graphics g = Graphics.FromImage(MainImage);
             Pen pen1 = new Pen(Color.Red, 4);
             g.DrawRectangle(pen1, jumpXScaled, jumpYScaled, 1, 1);
@@ -444,7 +385,8 @@ namespace SketchUp
 
             ExpSketchPBox.Image = MainImage;
 
-            DMouseClick();
+            //DMouseClick();
+
         }
 
         #endregion Misc. Refactored Methods
@@ -749,7 +691,7 @@ namespace SketchUp
                 {
                     MessageBox.Show("Next Line will Max Section Lines", "Line Count Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-                if (lineCnt > 20)
+                if (lineCnt > sketchBoxPaddingTotal)
                 {
                     MessageBox.Show("Section Lines Exceeded", "Critical Line Count", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 }
@@ -762,7 +704,7 @@ namespace SketchUp
                 decimal tX1 = rndPt2X;
                 decimal tY1 = rndPt2Y;
 
-                if (lineCnt <= 20)
+                if (lineCnt <= sketchBoxPaddingTotal)
                 {
                     StringBuilder addSect = new StringBuilder();
                     addSect.Append(String.Format("insert into {0}.{1}line (jlrecord,jldwell,jlsect,jlline#,jldirect,jlxlen,jlylen, jllinelen,jlangle,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach) ",
@@ -787,7 +729,7 @@ namespace SketchUp
 #if DEBUG
                     StringBuilder traceOut = new StringBuilder();
                     traceOut.AppendLine(string.Format("Section Adding SQL: {0}", addSect.ToString()));
-                    Trace.WriteLine(string.Format("{0}", traceOut.ToString()));
+                    Console.WriteLine(string.Format("{0}", traceOut.ToString()));
 #endif
                     NextStartX = (float)rndPt2X;
                     NextStartY = (float)rndPt2Y;
@@ -803,7 +745,7 @@ namespace SketchUp
                             catch (Exception ex)
                             {
                                 string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
-                                Trace.WriteLine(errMessage);
+                                Console.WriteLine(errMessage);
                                 Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
 #if DEBUG
 
@@ -1116,7 +1058,7 @@ namespace SketchUp
                     MessageBox.Show("Next Line will Max Section Lines", "Line Count Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
 
-                if (lineCnt > 20)
+                if (lineCnt > sketchBoxPaddingTotal)
                 {
                     MessageBox.Show("Section Lines Exceeded", "Critical Line Count", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 }
@@ -1138,7 +1080,7 @@ namespace SketchUp
 
                 int checkcnt = lineCnt;
 
-                if (lineCnt <= 20)
+                if (lineCnt <= sketchBoxPaddingTotal)
                 {
                     //MessageBox.Show(String.Format("Insert into Line Record - {0}, Card - {1} at 2416", _currentParcel.Record, _currentParcel.Card));
 
@@ -1239,6 +1181,7 @@ namespace SketchUp
                 SketchUpGlobals.ParcelWorkingCopy.SnapShotIndex,
                 SketchUpGlobals.ParcelWorkingCopy.Sections.Count));
             throw new NotImplementedException();
+
             //this.Close();
         }
 
@@ -1285,7 +1228,6 @@ namespace SketchUp
 
         private void DrawLine(SMLine line)
         {
-         
             PointF drawLineStart = new PointF(line.ScaledStartPoint.X, line.ScaledStartPoint.Y);
             PointF drawLineEnd = new PointF(line.ScaledEndPoint.X, line.ScaledEndPoint.Y);
             g.DrawLine(BluePen, drawLineStart, drawLineEnd);
@@ -1294,7 +1236,6 @@ namespace SketchUp
 
         private void DrawLine(SMLine line, bool omitLabel = true)
         {
-          
             PointF drawLineStart = new PointF(line.ScaledStartPoint.X, line.ScaledStartPoint.Y);
             PointF drawLineEnd = new PointF(line.ScaledEndPoint.X, line.ScaledEndPoint.Y);
             g.DrawLine(BluePen, drawLineStart, drawLineEnd);
@@ -1381,13 +1322,13 @@ namespace SketchUp
                 SetSketchOrigin();
                 SetScaledStartPoints();
                 SetSectionCenterPoints();
-                sketcher=ShowSketchFromBitMap();
+                sketcher = ShowSketchFromBitMap();
                 return sketcher;
             }
             catch (Exception ex)
             {
                 string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
-                Trace.WriteLine(errMessage);
+                Console.WriteLine(errMessage);
                 Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
 #if DEBUG
 
@@ -1402,11 +1343,10 @@ namespace SketchUp
             Graphics g = ExpSketchPBox.CreateGraphics();
             PointF[] region = new PointF[] { new PointF(pointToLabel.X - 4, pointToLabel.Y - 4), new PointF(pointToLabel.X - 4, pointToLabel.Y + 4), new PointF(pointToLabel.X + 4, pointToLabel.Y + 4), new PointF(pointToLabel.X + 4, pointToLabel.Y - 4) };
             PolygonF pointPolygon = new PolygonF(region);
-            
+
             g.DrawPolygon(BluePen, region);
             g.DrawString(pointLabel, DefaultFont, GreenBrush, new PointF(pointToLabel.X - 16, pointToLabel.Y - 16));
             g.Save();
-
         }
 
         private void ShowPoint(string pointLabel, PointF pointToLabel, SizeF labelOffset)
@@ -1445,27 +1385,25 @@ namespace SketchUp
             catch (Exception ex)
             {
                 string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
-								Trace.WriteLine(errMessage);
-								Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+                Console.WriteLine(errMessage);
+                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
 #if DEBUG
 
-								MessageBox.Show(errMessage);
+                MessageBox.Show(errMessage);
 #endif
                 throw;
             }
         }
 
         #endregion SketchManagerDrawingMethods
-        #region Jump Table Methods
 
-    
+        #region Jump Table Methods
 
         private void AddJumpTableRow(float jx, float jy, float CurrentScale, SMLine line)
         {
             try
             {
                 decimal Distance = 0;
-
 
                 DataRow row = JumpTable.NewRow();
                 row["Record"] = line.Record;
@@ -1504,37 +1442,33 @@ namespace SketchUp
             catch (Exception ex)
             {
                 string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
-                Trace.WriteLine(errMessage);
+                Console.WriteLine(errMessage);
                 Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
 #if DEBUG
 
                 MessageBox.Show(errMessage);
 #endif
 
-
                 throw;
             }
-            
         }
 
-        private void AddListItemsToJumpTableList(float jx, float jy, decimal CurrentScale, List<SMLine>lines)
+        private void AddListItemsToJumpTableList(float jx, float jy, decimal CurrentScale, List<SMLine> lines)
         {
             try
             {
-            foreach (SMLine l in lines)
-            {
+                foreach (SMLine l in lines)
+                {
                     AddJumpTableRow(jx, jy, (float)CurrentScale, l);
                 }
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+                Console.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
                 throw;
             }
         }
 
-        
-        #endregion
-
+        #endregion Jump Table Methods
     }
 }

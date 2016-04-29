@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
@@ -9,7 +11,113 @@ namespace SketchUp
 {
     public partial class ExpandoSketch : Form
     {
-        #region Movement Methods
+        public void MoveEastToBegin(PointF startPointScaled, decimal lineLength)
+        {
+            if (_isKeyValid == true)
+            {
+                decimal scaledLength = lineLength * LocalParcelCopy.Scale;
+                float newX = startPointScaled.X + (float)scaledLength;
+                    EndOfJumpMovePoint = new PointF(newX, startPointScaled.Y);
+         
+                Graphics g = Graphics.FromImage(MainImage);
+                SolidBrush brush = new SolidBrush(Color.Red);
+                Pen pen1 = new Pen(Color.Red, 2);
+                Font f = new Font("Segue UI", 8, FontStyle.Bold);
+
+                g.DrawLine(pen1, startPointScaled, EndOfJumpMovePoint);
+                g.DrawString(_lenString, f, brush, new PointF((startPointScaled.X + txtLocf), (startPointScaled.Y - 15)));
+            }
+        }
+
+        public void MoveWestToBegin(PointF startPointScaled, decimal lineLength)
+        {
+            if (_isKeyValid == true)
+            {
+                decimal scaledLength = lineLength * LocalParcelCopy.Scale;
+                float newX = startPointScaled.X - (float)scaledLength;
+                EndOfJumpMovePoint = new PointF(newX, startPointScaled.Y);
+                Graphics g = Graphics.FromImage(MainImage);
+                SolidBrush brush = new SolidBrush(Color.Red);
+                Pen pen1 = new Pen(Color.Red, 2);
+                Font f = new Font("Segue UI", 8, FontStyle.Bold);
+
+                g.DrawLine(pen1, startPointScaled, EndOfJumpMovePoint);
+                g.DrawString(_lenString, f, brush, new PointF((startPointScaled.X + txtLocf), (startPointScaled.Y - 15)));
+            }
+        }
+
+        private List<string> GetLegalMoveDirections(PointF scaledJumpPoint, string attachSectionLetter)
+        {
+            List<SMLine> linesWithJumpPoint = (from l in LocalParcelCopy.AllSectionLines where l.SectionLetter == attachSectionLetter && (l.ScaledStartPoint == scaledJumpPoint || l.ScaledEndPoint == scaledJumpPoint) select l).ToList();
+            List<string> legalDirections = new List<string>();
+            legalDirections.AddRange((from l in LocalParcelCopy.AllSectionLines where l.ScaledStartPoint == scaledJumpPoint && l.SectionLetter == attachSectionLetter select l.Direction).ToList());
+
+            legalDirections.AddRange((from l in linesWithJumpPoint select l.Direction).Distinct().ToList());
+            LegalMoveDirections = legalDirections;
+            return legalDirections;
+        }
+
+        private void JumptoCorner()
+        {
+            float txtx = NextStartX;
+            float txty = NextStartY;
+            float jx = _mouseX;
+            float jy = _mouseY;
+            float _scaleBaseX = ScaleBaseX;
+            float _scaleBaseY = ScaleBaseY;
+            float CurrentScale = _currentScale;
+            int crrec = _currentParcel.Record;
+            int crcard = _currentParcel.Card;
+
+            CurrentSecLtr = String.Empty;
+            _newIndex = 0;
+            currentAttachmentLine = 0;
+            if (IsNewSketch == false)
+            {
+                PointF mouseLocation = new PointF(_mouseX, _mouseY);
+
+                List<SMLine> connectionLines = LinesWithClosestEndpoints(mouseLocation);
+
+                bool sketchHasLineData = (connectionLines.Count > 0);
+                if (connectionLines == null || connectionLines.Count == 0)
+                {
+                    string message = string.Format("No lines contain an available connection point from point {0},{1}", mouseLocation.X, mouseLocation.Y);
+
+                    Console.WriteLine(message);
+
+#if DEBUG
+
+                    MessageBox.Show(message);
+#endif
+                    throw new InvalidDataException(message);
+                }
+                else
+                {
+                    SecLetters = (from l in connectionLines select l.SectionLetter).ToList();
+                    if (SecLetters.Count > 1)
+                    {
+                        AttSectLtr = MultiPointsAvailable(SecLetters);
+                        AttachmentSection = (from s in LocalParcelCopy.Sections where s.SectionLetter == AttSectLtr select s).FirstOrDefault();
+                        JumpPointLine = (from l in connectionLines where l.SectionLetter == AttSectLtr select l).FirstOrDefault();
+                    }
+                    else
+                    {
+                        AttSectLtr = SecLetters[0];
+                        AttachmentSection = (from s in LocalParcelCopy.Sections where s.SectionLetter == AttSectLtr select s).FirstOrDefault();
+                        JumpPointLine = connectionLines[0];
+                    }
+
+                    ScaledJumpPoint = JumpPointLine.ScaledEndPoint;
+                    LegalMoveDirections = GetLegalMoveDirections(ScaledJumpPoint, AttSectLtr);
+                    MoveCursorToJumpPoint(ScaledJumpPoint);
+                    LoadLegacyJumpTable();
+                    SetReadyButtonAppearance();
+                    _isJumpMode = true;
+                }
+            }
+        }
+
+        #region Original Movement Methods
 
         public void MoveEast(float startx, float starty)
         {
@@ -39,7 +147,9 @@ namespace SketchUp
 
                 distance = Convert.ToDecimal(distanceD);
 
-                _lenString = String.Format("{0} ft.", distanceD.ToString("N1"));
+                //_lenString = String.Format("{0} ft.", distanceD.ToString("N1"));
+                _lenString = String.Format("{0:N1} ft.", distanceD.ToString());
+
                 txtLocf = ((distanceD * _currentScale) / 2);
 
                 decimal jup = Convert.ToDecimal(distanceD);
@@ -49,7 +159,7 @@ namespace SketchUp
                     Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Red);
                     Pen pen1 = new Pen(Color.Red, 2);
-                    Font f = new Font("Arial", 8, FontStyle.Bold);
+                    Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                     g.DrawLine(pen1, StartX, StartY, (StartX + (distanceD * _currentScale)), StartY);
                     g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
@@ -60,7 +170,7 @@ namespace SketchUp
                     Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Black);
                     Pen pen1 = new Pen(Color.Cyan, 5);
-                    Font f = new Font("Arial", 8, FontStyle.Bold);
+                    Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                     g.DrawLine(pen1, StartX, StartY, (StartX + (distanceD * _currentScale)), StartY);
                     if (distance < 10)
@@ -102,11 +212,13 @@ namespace SketchUp
                 DistText.Focus();
 
                 ExpSketchPBox.Image = MainImage;
+
                 //click++;
                 _StartX.Remove(click);
                 _StartY.Remove(click);
                 _StartX.Add(click, PrevX);
                 _StartY.Add(click, PrevY);
+
                 //savpic.Add(click, imageToByteArray(_mainimage));
 
                 decimal XadjD = 0;
@@ -252,7 +364,8 @@ namespace SketchUp
 
                 distance = Convert.ToDecimal(distanceD);
 
-                _lenString = String.Format("{0} ft.", distanceD.ToString("N1"));
+                //_lenString = String.Format("{0} ft.", distanceD.ToString("N1"));
+                _lenString = String.Format("{0:N1} ft.", distanceD.ToString());
                 txtLocf = ((distanceD * _currentScale) / 2);
 
                 if (draw)
@@ -260,7 +373,7 @@ namespace SketchUp
                     Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Red);
                     Pen pen1 = new Pen(Color.Red, 2);
-                    Font f = new Font("Arial", 8, FontStyle.Bold);
+                    Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                     g.DrawLine(pen1, StartX, StartY, StartX, (StartY - (distanceD * _currentScale)));
                     g.DrawString(_lenString, f, brush, new PointF((StartX + 15), (StartY - txtLocf)));
@@ -270,7 +383,7 @@ namespace SketchUp
                     Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Black);
                     Pen pen1 = new Pen(Color.Cyan, 5);
-                    Font f = new Font("Arial", 8, FontStyle.Bold);
+                    Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                     g.DrawLine(pen1, StartX, StartY, StartX, (StartY - (distanceD * _currentScale)));
                     if (distance < 10)
@@ -320,11 +433,13 @@ namespace SketchUp
                 DistText.Focus();
 
                 ExpSketchPBox.Image = MainImage;
+
                 //click++;
                 _StartX.Remove(click);
                 _StartY.Remove(click);
                 _StartX.Add(click, PrevX);
                 _StartY.Add(click, PrevY);
+
                 //savpic.Add(click, imageToByteArray(_mainimage));
 
                 decimal XadjD = 0;
@@ -452,7 +567,6 @@ namespace SketchUp
             }
         }
 
-
         public void MoveNorthEast(float startx, float starty)
         {
 #if DEBUG
@@ -504,7 +618,7 @@ namespace SketchUp
                     Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Red);
                     Pen pen1 = new Pen(Color.Red, 2);
-                    Font f = new Font("Arial", 8, FontStyle.Bold);
+                    Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                     g.DrawLine(pen1, StartX, StartY, (StartX + (Convert.ToInt16(AngD1) * _currentScale)), (StartY - (Convert.ToInt16(AngD2) * _currentScale)));
                     g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
@@ -515,7 +629,7 @@ namespace SketchUp
                     Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Black);
                     Pen pen1 = new Pen(Color.Cyan, 5);
-                    Font f = new Font("Arial", 8, FontStyle.Bold);
+                    Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                     g.DrawLine(pen1, StartX, StartY, (StartX + (Convert.ToInt16(AngD1) * _currentScale)), (StartY - (Convert.ToInt16(AngD2) * _currentScale)));
                     if (distance < 10)
@@ -548,11 +662,13 @@ namespace SketchUp
                 DistText.Focus();
 
                 ExpSketchPBox.Image = MainImage;
+
                 //click++;
                 _StartX.Remove(click);
                 _StartY.Remove(click);
                 _StartX.Add(click, PrevX);
                 _StartY.Add(click, PrevY);
+
                 //savpic.Add(click, imageToByteArray(_mainimage));
 
                 Xadj = (((ScaleBaseX - PrevX) / _currentScale) * -1);
@@ -637,7 +753,7 @@ namespace SketchUp
                     Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Red);
                     Pen pen1 = new Pen(Color.Red, 2);
-                    Font f = new Font("Arial", 8, FontStyle.Bold);
+                    Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                     g.DrawLine(pen1, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * _currentScale)), (StartY - (Convert.ToInt16(AngD2) * _currentScale)));
                     g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
@@ -648,7 +764,7 @@ namespace SketchUp
                     Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Black);
                     Pen pen1 = new Pen(Color.Cyan, 5);
-                    Font f = new Font("Arial", 8, FontStyle.Bold);
+                    Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                     g.DrawLine(pen1, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * _currentScale)), (StartY - (Convert.ToInt16(AngD2) * _currentScale)));
                     if (distance < 10)
@@ -681,11 +797,13 @@ namespace SketchUp
                 DistText.Focus();
 
                 ExpSketchPBox.Image = MainImage;
+
                 //click++;
                 _StartX.Remove(click);
                 _StartY.Remove(click);
                 _StartX.Add(click, PrevX);
                 _StartY.Add(click, PrevY);
+
                 //savpic.Add(click, imageToByteArray(_mainimage));
 
                 Xadj = (((ScaleBaseX - PrevX) / _currentScale) * -1);
@@ -727,23 +845,8 @@ namespace SketchUp
             AngleForm.SouthWest = false;
         }
 
-
-        private void AddMoveToImage()
-        {
-            try
-            {
-                AddMoveToImage();
-            }
-            catch (Exception)
-            {
-             
-                throw;
-            }
-        }
-
         public void MoveSouth(float startx, float starty)
         {
-
             if (_isKeyValid == true)
             {
                 StrxD = 0;
@@ -766,7 +869,8 @@ namespace SketchUp
 
                 distance = Convert.ToDecimal(distanceD);
 
-                _lenString = String.Format("{0} ft.", distanceD.ToString("N1"));
+                //_lenString = String.Format("{0} ft.", distanceD.ToString("N1"));
+                _lenString = String.Format("{0:N1} ft.", distanceD.ToString());
                 txtLocf = ((distanceD * _currentScale) / 2);
 
                 if (draw)
@@ -774,7 +878,7 @@ namespace SketchUp
                     Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Red);
                     Pen pen1 = new Pen(Color.Red, 2);
-                    Font f = new Font("Arial", 8, FontStyle.Bold);
+                    Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                     g.DrawLine(pen1, StartX, StartY, StartX, (StartY + (distanceD * _currentScale)));
                     g.DrawString(_lenString, f, brush, new PointF((StartX + 15), (StartY + txtLocf)));
@@ -784,7 +888,7 @@ namespace SketchUp
                     Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Black);
                     Pen pen1 = new Pen(Color.Cyan, 5);
-                    Font f = new Font("Arial", 8, FontStyle.Bold);
+                    Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                     g.DrawLine(pen1, StartX, StartY, StartX, (StartY + (distanceD * _currentScale)));
                     if (distance < 10)
@@ -834,6 +938,7 @@ namespace SketchUp
                 _StartY.Remove(click);
                 _StartX.Add(click, PrevX);
                 _StartY.Add(click, PrevY);
+
                 //savpic.Add(click, imageToByteArray(_mainimage));
 
                 decimal XadjD = 0;
@@ -1003,7 +1108,7 @@ namespace SketchUp
                     Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Red);
                     Pen pen1 = new Pen(Color.Red, 2);
-                    Font f = new Font("Arial", 8, FontStyle.Bold);
+                    Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                     g.DrawLine(pen1, StartX, StartY, (StartX + (Convert.ToInt16(AngD1) * _currentScale)), (StartY + (Convert.ToInt16(AngD2) * _currentScale)));
                     g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
@@ -1014,7 +1119,7 @@ namespace SketchUp
                     Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Black);
                     Pen pen1 = new Pen(Color.Cyan, 5);
-                    Font f = new Font("Arial", 8, FontStyle.Bold);
+                    Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                     g.DrawLine(pen1, StartX, StartY, (StartX + (Convert.ToInt16(AngD1) * _currentScale)), (StartY + (Convert.ToInt16(AngD2) * _currentScale)));
                     if (distance < 10)
@@ -1047,11 +1152,13 @@ namespace SketchUp
                 DistText.Focus();
 
                 ExpSketchPBox.Image = MainImage;
+
                 //click++;
                 _StartX.Remove(click);
                 _StartY.Remove(click);
                 _StartX.Add(click, PrevX);
                 _StartY.Add(click, PrevY);
+
                 //savpic.Add(click, imageToByteArray(_mainimage));
 
                 Xadj = (((ScaleBaseX - PrevX) / _currentScale) * -1);
@@ -1145,7 +1252,7 @@ namespace SketchUp
                     SolidBrush brush = new SolidBrush(Color.Red);
                     Pen pen1 = new Pen(Color.Red, 2);
                     Pen pen2 = new Pen(Color.Green, 2);
-                    Font f = new Font("Arial", 8, FontStyle.Bold);
+                    Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                     g.DrawLine(pen1, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * _currentScale)), (StartY + (Convert.ToInt16(AngD2) * _currentScale)));
                     g.DrawString(_lenString, f, brush, new PointF((StartX + txtLocf), (StartY - 15)));
@@ -1156,7 +1263,7 @@ namespace SketchUp
                     Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Black);
                     Pen pen1 = new Pen(Color.Cyan, 5);
-                    Font f = new Font("Arial", 8, FontStyle.Bold);
+                    Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                     g.DrawLine(pen1, StartX, StartY, (StartX - (Convert.ToInt16(AngD1) * _currentScale)), (StartY + (Convert.ToInt16(AngD2) * _currentScale)));
                     if (distance < 10)
@@ -1189,11 +1296,13 @@ namespace SketchUp
                 DistText.Focus();
 
                 ExpSketchPBox.Image = MainImage;
+
                 //click++;
                 _StartX.Remove(click);
                 _StartY.Remove(click);
                 _StartX.Add(click, PrevX);
                 _StartY.Add(click, PrevY);
+
                 //savpic.Add(click, imageToByteArray(_mainimage));
 
                 Xadj = (((ScaleBaseX - PrevX) / _currentScale) * -1);
@@ -1237,7 +1346,6 @@ namespace SketchUp
 
         public void MoveWest(float startx, float starty)
         {
-
             if (_isKeyValid == true)
             {
                 StrxD = 0;
@@ -1260,7 +1368,8 @@ namespace SketchUp
 
                 distance = Convert.ToDecimal(distanceD);
 
-                _lenString = String.Format("{0} ft.", distanceD.ToString("N1"));
+                //_lenString = String.Format("{0} ft.", distanceD.ToString("N1"));
+                _lenString = String.Format("{0:N1} ft.", distanceD.ToString());
                 txtLocf = ((distanceD * _currentScale) / 2);
 
                 if (draw)
@@ -1268,7 +1377,7 @@ namespace SketchUp
                     Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Red);
                     Pen pen1 = new Pen(Color.Red, 2);
-                    Font f = new Font("Arial", 8, FontStyle.Bold);
+                    Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                     g.DrawLine(pen1, StartX, StartY, (StartX - (distanceD * _currentScale)), StartY);
                     g.DrawString(_lenString, f, brush, new PointF((StartX - txtLocf), (StartY - 15)));
@@ -1278,7 +1387,7 @@ namespace SketchUp
                     Graphics g = Graphics.FromImage(MainImage);
                     SolidBrush brush = new SolidBrush(Color.Black);
                     Pen pen1 = new Pen(Color.Cyan, 5);
-                    Font f = new Font("Arial", 8, FontStyle.Bold);
+                    Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
                     g.DrawLine(pen1, StartX, StartY, (StartX - (distanceD * _currentScale)), StartY);
                     if (distance < 10)
@@ -1321,6 +1430,7 @@ namespace SketchUp
                 DistText.Focus();
 
                 ExpSketchPBox.Image = MainImage;
+
                 //click++;
                 //_StartX.Remove(click);
                 //_StartY.Remove(click);
@@ -1447,12 +1557,34 @@ namespace SketchUp
             }
         }
 
+        private void AddMoveToImage()
+        {
+            try
+            {
+                AddMoveToImage();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         private void HandleEastKeys()
         {
             LastDir = "E";
             if (_isAngle == false)
             {
-                MoveEast(NextStartX, NextStartY);
+                if (_isJumpMode)
+                {
+                    decimal distanceValue = 0;
+                    decimal.TryParse(DistText.Text, out distanceValue);
+                    MoveEastToBegin(ScaledJumpPoint, distanceValue);
+                }
+                else if (draw)
+                {
+                    MoveEast(NextStartX, NextStartY);
+                }
+                DistText.Text = string.Empty;
                 DistText.Focus();
             }
             if (_isAngle == true)
@@ -1496,17 +1628,20 @@ namespace SketchUp
         {
             _isKeyValid = IsValidDirection("W");
             LastDir = "W";
-            if (_isAngle == false)
+            if (_isJumpMode)
             {
-                MoveWest(NextStartX, NextStartY);
-                DistText.Focus();
+                decimal distanceValue = 0;
+                decimal.TryParse(DistText.Text, out distanceValue);
+                MoveEastToBegin(ScaledJumpPoint, distanceValue);
             }
-            if (_isAngle == true)
+            else if (draw)
             {
-                MeasureAngle();
+                MoveEast(NextStartX, NextStartY);
             }
+            DistText.Text = string.Empty;
+            DistText.Focus();
         }
 
-        #endregion Movement Methods
+        #endregion Original Movement Methods
     }
 }

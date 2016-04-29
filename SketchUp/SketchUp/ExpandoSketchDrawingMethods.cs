@@ -17,9 +17,9 @@ namespace SketchUp
             Pen whitePen = new Pen(Color.White, 2);
             Pen blackPen = new Pen(Color.Black, 2);
 
-            Font LbLf = new Font("Arial", 10, FontStyle.Bold);
-            Font TitleF = new Font("Arial", 10, FontStyle.Bold | FontStyle.Underline);
-            Font MainTitle = new System.Drawing.Font("Arial", 15, FontStyle.Bold | FontStyle.Underline);
+            Font LbLf = new Font("Segue UI", 10, FontStyle.Bold);
+            Font TitleF = new Font("Segue UI", 10, FontStyle.Bold | FontStyle.Underline);
+            Font MainTitle = new System.Drawing.Font("Segue UI", 15, FontStyle.Bold | FontStyle.Underline);
             char[] leadzero = new char[] { '0' };
 
             g.DrawString(SketchUpGlobals.LocalityPreFix, TitleF, Lblbrush, new PointF(10, 10));

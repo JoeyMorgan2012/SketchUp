@@ -104,7 +104,7 @@ namespace SketchUp
                 Brush brush = new SolidBrush(Color.Black);
 
                 float em = EmSizeSetting(sizeInPixels);
-                Font font = new Font(FontFamily.GenericSansSerif, em);
+                Font font = new Font("Segue UI", em);
 
                 List<string> noLabelTypes = NoLabelTypesList();
 
@@ -192,7 +192,7 @@ namespace SketchUp
 
         private static SizeF DrawLinesWithDimensions(Brush brush, Font font, Graphics g, PolygonF poly, SizeF sz, LineInfo line)
         {
-            SizeF dimSz = g.MeasureString(line.LENGTH.ToString(), font);
+            SizeF dimSz = g.MeasureString(string.Format("{0:N2}", line.LENGTH.ToString()), font);
 
             if ("N".Equals(line.DIRECTION) || "S".Equals(line.DIRECTION))
             {
@@ -207,7 +207,7 @@ namespace SketchUp
                     {
                         dimPt.X -= dimSz.Width + 2;
                     }
-                    g.DrawString(line.LENGTH.ToString(), font, brush, dimPt);
+                    g.DrawString(string.Format("{0:N2}",line.LENGTH.ToString()), font, brush, dimPt);
                 }
             }
             else if ("E".Equals(line.DIRECTION) || "W".Equals(line.DIRECTION))
@@ -230,7 +230,7 @@ namespace SketchUp
                     {
                         dimPt.Y -= dimSz.Height + 2;
                     }
-                    g.DrawString(line.LENGTH.ToString(), font, brush, dimPt);
+                    g.DrawString(string.Format("{0:N2}",line.LENGTH.ToString()), font, brush, dimPt);
                 }
             }
 
@@ -303,20 +303,15 @@ namespace SketchUp
 
         private static float EmSizeSetting(int sizeInPixels)
         {
-#if DEBUG
 
-            //Debugging Code -- remove for production release
-            //var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-            //UtilityMethods.LogMethodCall(fullStack, true);
-#endif
-            float em = 8;
+            float em = 7;
             if (sizeInPixels < 300)
             {
-                em = 6;
+                em = 5;
             }
             else if (sizeInPixels > 500)
             {
-                em = 10;
+                em = 9;
             }
 
             return em;
@@ -393,7 +388,7 @@ namespace SketchUp
 
                 Graphics g = Graphics.FromImage(_sketch);
                 g.FillRectangle(new SolidBrush(Color.White), new Rectangle(0, 0, bitmapWidth, bitmapHeight));  // bitmapWidth set at 1000, Height at 600
-                int buffer = 20;
+                int buffer = 20; 
                 int sizeNoBuffer = sizeInPixels - (buffer * 2);
 
                 // Calculate scale and translation
