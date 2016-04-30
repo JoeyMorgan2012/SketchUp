@@ -26,10 +26,10 @@
             this.MainMenu = new System.Windows.Forms.MenuStrip();
             this.beginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.drawingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addSectionTsMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.runTest1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsmListParcelSnapshots = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmAllTests = new System.Windows.Forms.ToolStripMenuItem();
+            this.runTest2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.runTest3 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.tsMenuExitForm = new System.Windows.Forms.ToolStripMenuItem();
@@ -83,10 +83,10 @@
             // drawingToolStripMenuItem
             // 
             this.drawingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addSectionTsMenu,
+            this.runTest1,
             this.toolStripSeparator1,
-            this.tsmListParcelSnapshots,
-            this.tsmAllTests,
+            this.runTest2,
+            this.runTest3,
             this.toolStripSeparator2,
             this.toolStripSeparator3,
             this.tsMenuExitForm});
@@ -95,52 +95,53 @@
             this.drawingToolStripMenuItem.Text = "Tests";
             this.drawingToolStripMenuItem.Click += new System.EventHandler(this.drawingToolStripMenuItem_Click);
             // 
-            // addSectionTsMenu
+            // runTest1
             // 
-            this.addSectionTsMenu.AutoToolTip = true;
-            this.addSectionTsMenu.Image = global::SketchUp.Properties.Resources.AddControl_16x_32;
-            this.addSectionTsMenu.Name = "addSectionTsMenu";
-            this.addSectionTsMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D1)));
-            this.addSectionTsMenu.Size = new System.Drawing.Size(279, 26);
-            this.addSectionTsMenu.Text = "Break Lines D3 and D4";
-            this.addSectionTsMenu.ToolTipText = "Add a Building Section";
-            this.addSectionTsMenu.Click += new System.EventHandler(this.addSectionTsMenu_Click);
+            this.runTest1.AutoToolTip = true;
+            this.runTest1.Image = global::SketchUp.Properties.Resources.AddControl_16x_32;
+            this.runTest1.Name = "runTest1";
+            this.runTest1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D1)));
+            this.runTest1.Size = new System.Drawing.Size(238, 26);
+            this.runTest1.Text = "Test 1";
+            this.runTest1.ToolTipText = "Add a Building Section";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(276, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(235, 6);
             // 
-            // tsmListParcelSnapshots
+            // runTest2
             // 
-            this.tsmListParcelSnapshots.Name = "tsmListParcelSnapshots";
-            this.tsmListParcelSnapshots.Size = new System.Drawing.Size(279, 26);
-            this.tsmListParcelSnapshots.Text = "List Parcel Snapshots";
-            this.tsmListParcelSnapshots.Click += new System.EventHandler(this.tsmListParcelSnapshots_Click);
+            this.runTest2.Name = "runTest2";
+            this.runTest2.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D2)));
+            this.runTest2.Size = new System.Drawing.Size(238, 26);
+            this.runTest2.Text = "Begin Drawing";
+            this.runTest2.Click += new System.EventHandler(this.tsmListParcelSnapshots_Click);
             // 
-            // tsmAllTests
+            // runTest3
             // 
-            this.tsmAllTests.Name = "tsmAllTests";
-            this.tsmAllTests.Size = new System.Drawing.Size(279, 26);
-            this.tsmAllTests.Text = "All Tests";
-            this.tsmAllTests.Click += new System.EventHandler(this.tsmAllTests_Click);
+            this.runTest3.Name = "runTest3";
+            this.runTest3.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D3)));
+            this.runTest3.Size = new System.Drawing.Size(238, 26);
+            this.runTest3.Text = "End Drawing";
+            this.runTest3.Click += new System.EventHandler(this.tsmAllTests_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(276, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(235, 6);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(276, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(235, 6);
             // 
             // tsMenuExitForm
             // 
             this.tsMenuExitForm.AutoToolTip = true;
             this.tsMenuExitForm.Name = "tsMenuExitForm";
             this.tsMenuExitForm.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.X)));
-            this.tsMenuExitForm.Size = new System.Drawing.Size(279, 26);
+            this.tsMenuExitForm.Size = new System.Drawing.Size(238, 26);
             this.tsMenuExitForm.Text = "Exit Sketch View";
             this.tsMenuExitForm.ToolTipText = "Return to the Main Screen";
             this.tsMenuExitForm.Click += new System.EventHandler(this.tsMenuExitForm_Click);
@@ -236,6 +237,7 @@
             this.pctMain.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pctMain.TabIndex = 4;
             this.pctMain.TabStop = false;
+            this.pctMain.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pctMain_MouseDown);
             this.pctMain.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pctMain_MouseMove);
             // 
             // snapshotsDgv
@@ -368,14 +370,14 @@
         private System.Windows.Forms.ToolStripMenuItem sectionFToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cmenuJump;
         private System.Windows.Forms.ToolStripMenuItem drawingToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addSectionTsMenu;
-        private System.Windows.Forms.ToolStripMenuItem tsmAllTests;
+        private System.Windows.Forms.ToolStripMenuItem runTest1;
+        private System.Windows.Forms.ToolStripMenuItem runTest3;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem tsMenuExitForm;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem drawSketchToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem tsmListParcelSnapshots;
+        private System.Windows.Forms.ToolStripMenuItem runTest2;
         private System.Windows.Forms.ToolStripStatusLabel statLblStepInfo;
         private System.Windows.Forms.DataGridView snapshotsDgv;
         private System.Windows.Forms.BindingSource sketchUpGlobalsBindingSource;

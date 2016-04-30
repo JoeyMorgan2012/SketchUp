@@ -86,7 +86,7 @@
             this.beginPointToolStripMenuItem,
             this.endSectionToolStripMenuItem});
             this.AddSectionContextMenu.Name = "contextMenuStrip1";
-            this.AddSectionContextMenu.Size = new System.Drawing.Size(234, 82);
+            this.AddSectionContextMenu.Size = new System.Drawing.Size(236, 82);
             this.AddSectionContextMenu.Click += new System.EventHandler(this.beginPointToolStripMenuItem_Click);
             // 
             // jumpToolStripMenuItem
@@ -96,7 +96,7 @@
             this.jumpToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("jumpToolStripMenuItem.Image")));
             this.jumpToolStripMenuItem.Name = "jumpToolStripMenuItem";
             this.jumpToolStripMenuItem.ShowShortcutKeys = false;
-            this.jumpToolStripMenuItem.Size = new System.Drawing.Size(233, 26);
+            this.jumpToolStripMenuItem.Size = new System.Drawing.Size(235, 26);
             this.jumpToolStripMenuItem.Text = "Jump to Nearest Corner";
             this.jumpToolStripMenuItem.ToolTipText = "Jump to Nearest Corner (Choose Section Type to Enable";
             this.jumpToolStripMenuItem.Click += new System.EventHandler(this.jumpToolStripMenuItem_Click);
@@ -107,7 +107,7 @@
             this.beginPointToolStripMenuItem.Enabled = false;
             this.beginPointToolStripMenuItem.Image = global::SketchUp.Properties.Resources.Edit_32xMD;
             this.beginPointToolStripMenuItem.Name = "beginPointToolStripMenuItem";
-            this.beginPointToolStripMenuItem.Size = new System.Drawing.Size(233, 26);
+            this.beginPointToolStripMenuItem.Size = new System.Drawing.Size(235, 26);
             this.beginPointToolStripMenuItem.Text = "Begin Drawing Section";
             this.beginPointToolStripMenuItem.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             this.beginPointToolStripMenuItem.ToolTipText = "Set the point where the section will attach to the existing sketch.";
@@ -119,7 +119,7 @@
             this.endSectionToolStripMenuItem.Enabled = false;
             this.endSectionToolStripMenuItem.Image = global::SketchUp.Properties.Resources.GreenCheck;
             this.endSectionToolStripMenuItem.Name = "endSectionToolStripMenuItem";
-            this.endSectionToolStripMenuItem.Size = new System.Drawing.Size(233, 26);
+            this.endSectionToolStripMenuItem.Size = new System.Drawing.Size(235, 26);
             this.endSectionToolStripMenuItem.Text = "End Section Edit";
             this.endSectionToolStripMenuItem.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             this.endSectionToolStripMenuItem.ToolTipText = "End drawing the section";
@@ -279,6 +279,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Edit Sketch";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ExpandoSketch_FormClosing);
+            this.Shown += new System.EventHandler(this.ExpandoSketch_Shown);
             this.ExpandoSketchTools.ResumeLayout(false);
             this.ExpandoSketchTools.PerformLayout();
             this.AddSectionContextMenu.ResumeLayout(false);

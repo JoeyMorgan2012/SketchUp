@@ -197,6 +197,7 @@ namespace SketchUp
 
         private void GetSelectedImages()
         {
+            //This is the legacy code getting all the master data, rat tables,etc.
             SketchUpGlobals.SubSections = new SectionDataCollection(SketchUpGlobals.CamraDbConn, SketchUpGlobals.CurrentParcel.mrecno, SketchUpGlobals.CurrentParcel.mdwell);
 
             SketchUpGlobals.CurrentParcel.BuildSketchData();
@@ -253,25 +254,30 @@ namespace SketchUp
                     CleanUpSketch();
                 }
 
-                int record = SketchUpGlobals.CurrentParcel.mrecno;
-                int card = SketchUpGlobals.CurrentParcel.mdwell;
-
-                SketchUpGlobals.CurrentParcel = null;
-                SketchUpGlobals.SubSections = null;
-
-                SketchUpGlobals.CurrentParcel = ParcelData.getParcel(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
-                SketchUpGlobals.SubSections = new SectionDataCollection(SketchUpGlobals.CamraDbConn, record, card);
-
-                SketchUpGlobals.CurrentParcel.BuildSketchData();
-                getSketch(SketchUpGlobals.CurrentParcel.Record, SketchUpGlobals.CurrentParcel.Card);
-                SketchUpGlobals.CurrentSketchImage = SketchUpGlobals.CurrentParcel.GetSketchImage(374);
-                sketchBox.Image = SketchUpGlobals.CurrentSketchImage;
+                RetrieveAndShowCurrentSketchImage();
             }
 
             if (ExpandoSketch._deleteMaster == true)
             {
                 EditImage.Text = "Add Sketch";
             }
+        }
+
+        private void RetrieveAndShowCurrentSketchImage()
+        {
+            int record = SketchUpGlobals.CurrentParcel.mrecno;
+            int card = SketchUpGlobals.CurrentParcel.mdwell;
+
+            SketchUpGlobals.CurrentParcel = null;
+            SketchUpGlobals.SubSections = null;
+
+            SketchUpGlobals.CurrentParcel = ParcelData.getParcel(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
+            SketchUpGlobals.SubSections = new SectionDataCollection(SketchUpGlobals.CamraDbConn, record, card);
+
+            SketchUpGlobals.CurrentParcel.BuildSketchData();
+            getSketch(SketchUpGlobals.CurrentParcel.Record, SketchUpGlobals.CurrentParcel.Card);
+            SketchUpGlobals.CurrentSketchImage = SketchUpGlobals.CurrentParcel.GetSketchImage(374);
+            sketchBox.Image = SketchUpGlobals.CurrentSketchImage;
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)

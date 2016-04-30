@@ -1,6 +1,6 @@
 ﻿namespace SketchUp
 {
-    partial class SectionTypes
+    partial class SelectSectionTypeDialog
     {
         /// <summary>
         /// Required designer variable.

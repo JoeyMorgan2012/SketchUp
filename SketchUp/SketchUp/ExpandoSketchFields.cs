@@ -6,21 +6,22 @@ using System.Windows.Forms;
 
 namespace SketchUp
 {
-    /// <summary>
-    /// <para>The ExpandoSketch Form contains all of the sketch-rendering code.
-    /// </para><para>The original file was over 8,000 lines long, so the class is broken into several physical files defining the logical class. The breakdown is:</para>
-    /// <para>ExpandoSketchFields.cs</para>
-    /// <para>This file contains fields, properties and enums for the ExpandoSketch Form class.</para>
-    /// <para></para>ExpandoSketchMovementMethods.cs</para>
-    /// <para>All of the methods involving moving along a cardinal direction or quarter.</para>
-    /// <para>ExpandoSketchRefactoredMethods.cs</para>
-    /// <para>A combination of Methods that replace the same named methods in the original and new methods refactored out from them for SOLID coding.</para>
-    /// <para>ExpandoSketchDrawingMethods.cs</para>
-    /// <para>Methods specific to working with graphics objects</para>
-    /// <para></para>
-    /// <para></para>
-    ///
-    /// </summary>
+/*
+    The ExpandoSketch Form contains all of the sketch-rendering code.
+    The original file was over 8,000 lines long, so the class is broken into several physical files defining the logical class. The breakdown is:
+
+        ExpandoSketchFields.cs
+        This file contains fields, properties and enums for the ExpandoSketch Form class.
+     ExpandoSketchMovementMethods.cs
+        All of the methods involving moving along a cardinal direction or quarter.
+     ExpandoSketchRefactoredMethods.cs
+        A combination of Methods that replace the same named methods in the original and new methods refactored out from them for SOLID coding.
+     ExpandoSketchDrawingMethods.cs
+        Methods specific to working with graphics objects.
+     ExpandoSketchUtilites.cs
+        Non-static misc. methods for things like reversing a direction, rounding, etc. 
+        (More are in SMGlobal.cs, which is static.)
+*/
     public partial class ExpandoSketch : Form
     {
         #region Enums
@@ -60,7 +61,7 @@ namespace SketchUp
         #region Fields
 
         #region private fields
-
+        private SketchDrawingState sketchingState;
         private decimal adjNewSecX = 0;
         private decimal adjNewSecY = 0;
         private decimal adjOldSecX = 0;
@@ -71,8 +72,6 @@ namespace SketchUp
         private DataTable AttachmentPointsDataTable = null;
         private SMSection attachmentSection;
         private DataTable attachPoints;
-
-        //   private DataTable AttachPoints = null;
         private int AttLineNo = 0;
         private string AttSectLtr = String.Empty;
         private string AttSpLineDir = String.Empty;
@@ -83,14 +82,14 @@ namespace SketchUp
         private Brush blueBrush;
         private Pen bluePen;
         private static bool checkDirection = false;
-
+        
         // TODO: Remove if not needed:
         private int click = 0;
 
         //Undo uses this but we are re-doing undo. JMM 3-15-2016
-        private Color color = Color.Red;
-        private List<int> cpCodes = null;
-        private List<String> cpTypes = null;
+        private Color colorRed = Color.Red;
+        private List<int> carportCodes = null;
+        private List<String> carportTypes = null;
         private int currentAttachmentLine = 0;
         private string CurrentAttDir = String.Empty;
         private string CurrentSecLtr = String.Empty;
@@ -233,7 +232,7 @@ namespace SketchUp
         public decimal begSplitX = 0;
         public decimal begSplitY = 0;
         public string ConnectSec = String.Empty;
-        public int CPcnt = 0;
+        public int carportCount = 0;
         public decimal CPSize = 0;
         public int CurSecLineCnt = 0;
         public SWallTech.CAMRA_Connection dbConn = null;
@@ -369,19 +368,19 @@ namespace SketchUp
             }
         }
 
-        public List<int> CpCodes
+        public List<int> CarportCodes
         {
             get
             {
-                if (cpCodes == null)
+                if (carportCodes == null)
                 {
-                    cpCodes = new List<int>();
+                    carportCodes = new List<int>();
                 }
-                return cpCodes;
+                return carportCodes;
             }
             set
             {
-                cpCodes = value;
+                carportCodes = value;
             }
         }
 
@@ -725,6 +724,19 @@ namespace SketchUp
             set
             {
                 undoJump = value;
+            }
+        }
+
+        private SketchDrawingState SketchingState
+        {
+            get
+            {
+                return sketchingState;
+            }
+
+            set
+            {
+                sketchingState = value;
             }
         }
 

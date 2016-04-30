@@ -36,6 +36,7 @@ namespace SketchUp
                 decimal scaledLength = lineLength * LocalParcelCopy.Scale;
                 float newX = startPointScaled.X - (float)scaledLength;
                 EndOfJumpMovePoint = new PointF(newX, startPointScaled.Y);
+                ScaledBeginPoint = EndOfJumpMovePoint;
                 Graphics g = Graphics.FromImage(MainImage);
                 SolidBrush brush = new SolidBrush(Color.Red);
                 Pen pen1 = new Pen(Color.Red, 2);
@@ -59,15 +60,10 @@ namespace SketchUp
 
         private void JumptoCorner()
         {
-            float txtx = NextStartX;
-            float txty = NextStartY;
-            float jx = _mouseX;
-            float jy = _mouseY;
-            float _scaleBaseX = ScaleBaseX;
-            float _scaleBaseY = ScaleBaseY;
-            float CurrentScale = _currentScale;
-            int crrec = _currentParcel.Record;
-            int crcard = _currentParcel.Card;
+          
+           // float CurrentScale = _currentScale;
+            //int crrec = _currentParcel.Record;
+            //int crcard = _currentParcel.Card;
 
             CurrentSecLtr = String.Empty;
             _newIndex = 0;
@@ -113,10 +109,65 @@ namespace SketchUp
                     LoadLegacyJumpTable();
                     SetReadyButtonAppearance();
                     _isJumpMode = true;
+                    SketchingState = SketchDrawingState.JumpPointSelected;
                 }
             }
         }
+        private void MoveCursorToJumpPoint(PointF jumpPointScaled)
+        {
 
+            Color penColor;
+            this.Cursor = new Cursor(Cursor.Current.Handle);
+            int jumpXScaled = Convert.ToInt32(jumpPointScaled.X);
+            int jumpYScaled = Convert.ToInt32(jumpPointScaled.Y);
+            Cursor.Position = new Point(jumpXScaled, jumpYScaled);
+
+            penColor = (_undoMode || draw) ? Color.Red : Color.Black;
+
+            Graphics g = Graphics.FromImage(MainImage);
+            Pen pen1 = new Pen(Color.Red, 4);
+            g.DrawRectangle(pen1, jumpXScaled, jumpYScaled, 1, 1);
+            g.Save();
+
+            ExpSketchPBox.Image = MainImage;
+
+            //DMouseClick();
+
+        }
+        public void AddEastLineToSection(PointF startPoint, decimal distance)
+        {
+            SMSection workingSection = (from s in LocalParcelCopy.Sections where s.SectionLetter == s.ParentParcel.LastSectionLetter select s).FirstOrDefault();
+            if (workingSection!=null)
+            {
+                decimal scale = LocalParcelCopy.Scale;
+                float endPointX = startPoint.X + (float)(distance * LocalParcelCopy.Scale);
+                float endPointY = startPoint.Y;
+
+                PointF dbStartPoint = SMGlobal.ScaledPointToDbPoint((decimal)startPoint.X, (decimal)startPoint.Y, scale, SketchOrigin);
+                PointF endPoint = new PointF(endPointX, endPointY);
+                decimal dbStartX = (decimal)dbStartPoint.X;
+                decimal dbStartY = (decimal)dbStartPoint.Y;
+                decimal dbEndY = dbStartY;
+                decimal dbEndX = dbStartX + distance;
+                int nextLineNumber = (from l in workingSection.Lines select l.LineNumber).Max() + 1;
+                SMLine newLine = new SMLine { Record = workingSection.Record, Dwelling = workingSection.Dwelling, SectionLetter = workingSection.SectionLetter, Direction = "E", XLength = Math.Round((distance / scale), 2), ParentParcel = workingSection.ParentParcel, ParentSection = workingSection, StartX = dbStartX, StartY = dbStartY, EndX = dbEndX, EndY = dbEndY };
+                workingSection.Lines.Add(newLine);
+                LocalParcelCopy.SnapShotIndex++;
+                SketchUpGlobals.SketchSnapshots.Add(LocalParcelCopy);
+                Graphics g = Graphics.FromImage(MainImage);
+                SolidBrush brush = new SolidBrush(Color.Black);
+                Pen pen1 = new Pen(Color.Cyan, 5);
+                Font f = new Font("Segue UI", 8, FontStyle.Bold);
+                DrawLine(newLine, pen1, false);
+                // Do I need to do this? EraseSectionFromDrawing(workingSection);
+
+            }
+        }
+
+        private void EraseSectionFromDrawing(SMSection workingSection)
+        {
+           //TODO: Draw everything with a white pen to earase the section and redraw it.
+        }
         #region Original Movement Methods
 
         public void MoveEast(float startx, float starty)
@@ -1572,17 +1623,21 @@ namespace SketchUp
         private void HandleEastKeys()
         {
             LastDir = "E";
+            decimal distanceValue = 0;
+            decimal.TryParse(DistText.Text, out distanceValue);
             if (_isAngle == false)
             {
-                if (_isJumpMode)
+                if (_isJumpMode || SketchingState == SketchDrawingState.JumpMoveToBeginPoint)
                 {
-                    decimal distanceValue = 0;
-                    decimal.TryParse(DistText.Text, out distanceValue);
+
                     MoveEastToBegin(ScaledJumpPoint, distanceValue);
                 }
-                else if (draw)
+                else if (draw || SketchingState == SketchDrawingState.BeginPointSelected)
                 {
-                    MoveEast(NextStartX, NextStartY);
+                    ScaledBeginPoint = ScaledJumpPoint;
+                    //TODO: Handle this with the addition of the line and the drawing of it using the LocalParcelCopy
+                    AddEastLineToSection(ScaledBeginPoint, distanceValue);
+                        
                 }
                 DistText.Text = string.Empty;
                 DistText.Focus();

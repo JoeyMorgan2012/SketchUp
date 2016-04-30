@@ -8,11 +8,11 @@ using System.Windows.Forms;
 
 namespace SketchUp
 {
-    public partial class SectionTypes : Form
+    public partial class SelectSectionTypeDialog : Form
     {
      
 
-        public SectionTypes(SWallTech.CAMRA_Connection conn, ParcelData data, bool addSection, int lineCount, bool newSketch)
+        public SelectSectionTypeDialog(SWallTech.CAMRA_Connection conn, ParcelData data, bool addSection, int lineCount, bool newSketch)
         {
             _conn = conn;
             _currentParcel = data;
@@ -65,7 +65,7 @@ namespace SketchUp
             parcelWorkingCopy.Sections.Add(newSection);
             parcelWorkingCopy.SnapShotIndex++;
             SketchUpGlobals.SketchSnapshots.Add(parcelWorkingCopy);
-
+           
 #if DEBUG
             StringBuilder traceOut = new StringBuilder();
             traceOut.AppendLine(string.Format("New section added: {0}", newSection.SectionLetter));

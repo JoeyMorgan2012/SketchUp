@@ -272,11 +272,11 @@
     </Compile>
     <Compile Include="SectionData.cs" />
     <Compile Include="SectionDataCollection.cs" />
-    <Compile Include="SectionTypes.cs">
+    <Compile Include="SelectSectionTypeDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SectionTypes.Designer.cs">
-      <DependentUpon>SectionTypes.cs</DependentUpon>
+    <Compile Include="SelectSectionTypeDialog.Designer.cs">
+      <DependentUpon>SelectSectionTypeDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="SingleInstanceController.cs" />
@@ -360,8 +360,8 @@
     <EmbeddedResource Include="SectionAdditionDialog.resx">
       <DependentUpon>SectionAdditionDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SectionTypes.resx">
-      <DependentUpon>SectionTypes.cs</DependentUpon>
+    <EmbeddedResource Include="SelectSectionTypeDialog.resx">
+      <DependentUpon>SelectSectionTypeDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SketchDistance.resx">
       <DependentUpon>SketchDistance.cs</DependentUpon>
