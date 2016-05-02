@@ -14,7 +14,7 @@ namespace SketchUp
 {
     public partial class ExpandoSketch : Form
     {
-        private const int sketchBoxPaddingTotal = 20;
+      
         #region Form Events and Menu
 
         #region May not be needed
@@ -79,7 +79,7 @@ namespace SketchUp
 
         #region Sketching Methods
 
-    
+        private const int sketchBoxPaddingTotal = 20;
 
         private static List<SMLine> LinesWithClosestEndpoints(PointF mouseLocation)
         {
@@ -107,145 +107,7 @@ namespace SketchUp
         //    legalDirections.AddRange((from l in LocalParcelCopy.AllSectionLines where l.ScaledEndPoint == scaledJumpPoint  select ReverseDirection(l.Direction)).ToList());
         //    return legalDirections.Distinct().ToList();
         //}
-        private void SetScaledStartPoint(SMLine line)
-        {
-            try
-            {
-                decimal sketchScale = line.ParentParcel.Scale;
-                var lineStartX = (float)((line.StartX * sketchScale) + (decimal)SketchOrigin.X);
-                var lineStartY = (float)((line.StartY * sketchScale) + (decimal)SketchOrigin.Y);
-                line.ScaledStartPoint=new PointF(lineStartX,lineStartY);
-
-            }
-            catch (Exception ex)
-            {
-                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
-                Console.WriteLine(errMessage);
-                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
-#if DEBUG
-
-                MessageBox.Show(errMessage);
-#endif
-                throw;
-            }
-        }
-
-        private void SetScaledStartPoints()
-        {
-            try
-            {
-                if (SketchUpGlobals.ParcelWorkingCopy != null && SketchUpGlobals.ParcelWorkingCopy.Sections != null)
-                {
-                    decimal sketchScale = SketchUpGlobals.ParcelWorkingCopy.Scale;
-                    foreach (SMSection s in SketchUpGlobals.ParcelWorkingCopy.Sections)
-                    {
-                        foreach (SMLine line in s.Lines)
-                        {
-                            //var lineStartX = (float)((line.StartX * sketchScale) + (decimal)SketchOrigin.X);
-                            //var lineStartY = (float)((line.StartY * sketchScale) + (decimal)SketchOrigin.Y);
-                            line.ScaledStartPoint = SMGlobal.DbPointToScaledPoint(line.StartX, line.StartY, line.ParentParcel.Scale, SketchOrigin);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
-                Console.WriteLine(errMessage);
-                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
-#if DEBUG
-
-                MessageBox.Show(errMessage);
-#endif
-                throw;
-            }
-        }
-
-        private void SetSectionCenterPoints()
-        {
-            try
-            {
-                List<PointF> sectionPoints = new List<PointF>();
-                foreach (SMSection section in SketchUpGlobals.ParcelWorkingCopy.Sections)
-                {
-                    sectionPoints = new List<PointF>();
-                    foreach (SMLine line in section.Lines)
-                    {
-                        sectionPoints.Add(line.ScaledStartPoint);
-                        sectionPoints.Add(line.ScaledEndPoint);
-                    }
-                    PolygonF sectionBounds = new PolygonF(sectionPoints.ToArray<PointF>());
-                    section.ScaledSectionCenter = PointF.Add(sectionBounds.CenterPointOfBounds, new SizeF(0, -12));
-                }
-            }
-            catch (Exception ex)
-            {
-                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
-                Console.WriteLine(errMessage);
-                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
-#if DEBUG
-
-                MessageBox.Show(errMessage);
-#endif
-                throw;
-            }
-        }
-
-        private void SetSketchOrigin()
-        {
-            //Using the scale and the offsets, determine the point to be considered as "0,0" for the sketch;
-            try
-            {
-                var sketchAreaWidth = ExpSketchPBox.Width - sketchBoxPaddingTotal;
-                var sketchAreaHeight = ExpSketchPBox.Height - sketchBoxPaddingTotal;
-
-                PointF pictureBoxCorner = ExpSketchPBox.Location;
-                var extraWidth = (ExpSketchPBox.Width - sketchBoxPaddingTotal) - (SketchUpGlobals.ParcelWorkingCopy.Scale * SketchUpGlobals.ParcelWorkingCopy.SketchXSize);
-                var extraHeight = (ExpSketchPBox.Height - sketchBoxPaddingTotal) - (SketchUpGlobals.ParcelWorkingCopy.Scale * SketchUpGlobals.ParcelWorkingCopy.SketchYSize);
-                var paddingX = (extraWidth / 2) + 10;
-                var paddingY = (extraHeight / 2) + 10;
-                var xLocation = (SketchUpGlobals.ParcelWorkingCopy.OffsetX * SketchUpGlobals.ParcelWorkingCopy.Scale) + paddingX;
-                var yLocation = (SketchUpGlobals.ParcelWorkingCopy.OffsetY * SketchUpGlobals.ParcelWorkingCopy.Scale) + paddingY;
-
-                SketchOrigin = new PointF((float)xLocation, (float)yLocation);
-            }
-            catch (Exception ex)
-            {
-                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
-                Console.WriteLine(errMessage);
-           
-#if DEBUG
-
-                MessageBox.Show(errMessage);
-#endif
-                throw;
-            }
-        }
-
-        private void SetSketchScale()
-        {
-            try
-            {
-                //Determine the size of the sketch drawing area, which is the picture box less 30 px on a side, so height-sketchBoxPadding and width-sketchBoxPaddingTotal. Padding is sketchBoxPaddingTotal/2.
-                int boxHeight = ExpSketchPBox.Height - sketchBoxPaddingTotal;
-                int boxWidth = ExpSketchPBox.Width - sketchBoxPaddingTotal;
-                decimal xScale = Math.Floor(boxWidth / SketchUpGlobals.ParcelWorkingCopy.SketchXSize);
-                decimal yScale = Math.Floor(boxHeight / SketchUpGlobals.ParcelWorkingCopy.SketchYSize);
-                // Allow 25% for the titles and to draw.
-                SketchUpGlobals.ParcelWorkingCopy.Scale = 0.75M * SMGlobal.SmallerDouble(xScale, yScale);
-            }
-            catch (Exception ex)
-            {
-                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
-                Console.WriteLine(errMessage);
-                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
-#if DEBUG
-
-                MessageBox.Show(errMessage);
-#endif
-                throw;
-            }
-        }
+      
 
         #endregion Sketching Methods
 
@@ -355,18 +217,7 @@ namespace SketchUp
 
         #region Misc. Refactored Methods
 
-        private void AdjustLine(SMParcel parcel, string sectionLetter, int lineNumber, decimal newStartX, decimal newStartY, decimal newEndX, decimal newEndY)
-        {
-            SMLine selectedLine = (from l in parcel.AllSectionLines where l.SectionLetter == sectionLetter && l.LineNumber == lineNumber select l).FirstOrDefault();
-            if (selectedLine != null)
-            {
-                selectedLine.StartX = newStartX;
-                selectedLine.StartY = newStartY;
-                selectedLine.EndX = newEndX;
-                selectedLine.EndY = newEndY;
-                SetScaledStartPoint(selectedLine);
-            }
-        }
+       
 
     
 

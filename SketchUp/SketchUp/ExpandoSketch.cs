@@ -46,6 +46,8 @@ namespace SketchUp
                 LocalParcelCopy.SnapShotIndex++;
                 AddParcelToSnapshots(LocalParcelCopy);
             }
+            SMSketcher sketcher = new SMSketcher(LocalParcelCopy, ExpSketchPBox);
+
             ShowWorkingCopySketch(currentParcel, sketchFolder, sketchRecord, sketchCard, _locality, _fox, currentSection, hasSketch, hasNewSketch);
         }
 
@@ -130,9 +132,11 @@ namespace SketchUp
                 SketchUpGlobals.HasNewSketch = IsNewSketch;
                 if (SketchUpGlobals.HasSketch == true)
                 {
-                    MainImage = RenderSketch();
-                    _currentScale = (float)LocalParcelCopy.Scale;
+                    SMSketcher sketcher = new SMSketcher(LocalParcelCopy,ExpSketchPBox);
 
+                    MainImage = sketcher.RenderSketch();
+                    _currentScale = (float)LocalParcelCopy.Scale;
+                    
                     //MainImage = currentParcel.GetSketchImage(ExpSketchPBox.Width, ExpSketchPBox.Height, 1000, 572, 400, out _scale);
                     //_currentScale = _scale;
                 }
@@ -160,7 +164,7 @@ namespace SketchUp
                     _currentScale = Convert.ToSingle(7.2);
                 }
 
-                DrawParcelLabel();
+                
 
                 ExpSketchPBox.Image = MainImage;
             }
@@ -1091,7 +1095,8 @@ namespace SketchUp
                 1000, 572, 400, out scaleOut);
             DrawingScale = (float)parcel.Scale;
             _currentScale = DrawingScale;
-            RenderSketch();
+            SMSketcher sketcher = new SMSketcher(parcel,ExpSketchPBox);
+                MainImage=sketcher.RenderSketch();
 
             Graphics g = Graphics.FromImage(MainImage);
             SolidBrush Lblbrush = new SolidBrush(Color.Black);

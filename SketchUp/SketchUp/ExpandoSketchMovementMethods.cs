@@ -134,35 +134,35 @@ namespace SketchUp
             //DMouseClick();
 
         }
-        public void AddEastLineToSection(PointF startPoint, decimal distance)
-        {
-            SMSection workingSection = (from s in LocalParcelCopy.Sections where s.SectionLetter == s.ParentParcel.LastSectionLetter select s).FirstOrDefault();
-            if (workingSection!=null)
-            {
-                decimal scale = LocalParcelCopy.Scale;
-                float endPointX = startPoint.X + (float)(distance * LocalParcelCopy.Scale);
-                float endPointY = startPoint.Y;
+        //public void AddEastLineToSection(PointF startPoint, decimal distance)
+        //{
+        //    SMSection workingSection = (from s in LocalParcelCopy.Sections where s.SectionLetter == s.ParentParcel.LastSectionLetter select s).FirstOrDefault();
+        //    if (workingSection!=null)
+        //    {
+        //        decimal scale = LocalParcelCopy.Scale;
+        //        float endPointX = startPoint.X + (float)(distance * LocalParcelCopy.Scale);
+        //        float endPointY = startPoint.Y;
 
-                PointF dbStartPoint = SMGlobal.ScaledPointToDbPoint((decimal)startPoint.X, (decimal)startPoint.Y, scale, SketchOrigin);
-                PointF endPoint = new PointF(endPointX, endPointY);
-                decimal dbStartX = (decimal)dbStartPoint.X;
-                decimal dbStartY = (decimal)dbStartPoint.Y;
-                decimal dbEndY = dbStartY;
-                decimal dbEndX = dbStartX + distance;
-                int nextLineNumber = (from l in workingSection.Lines select l.LineNumber).Max() + 1;
-                SMLine newLine = new SMLine { Record = workingSection.Record, Dwelling = workingSection.Dwelling, SectionLetter = workingSection.SectionLetter, Direction = "E", XLength = Math.Round((distance / scale), 2), ParentParcel = workingSection.ParentParcel, ParentSection = workingSection, StartX = dbStartX, StartY = dbStartY, EndX = dbEndX, EndY = dbEndY };
-                workingSection.Lines.Add(newLine);
-                LocalParcelCopy.SnapShotIndex++;
-                SketchUpGlobals.SketchSnapshots.Add(LocalParcelCopy);
-                Graphics g = Graphics.FromImage(MainImage);
-                SolidBrush brush = new SolidBrush(Color.Black);
-                Pen pen1 = new Pen(Color.Cyan, 5);
-                Font f = new Font("Segue UI", 8, FontStyle.Bold);
-                DrawLine(newLine, pen1, false);
-                // Do I need to do this? EraseSectionFromDrawing(workingSection);
+        //        PointF dbStartPoint = SMGlobal.ScaledPointToDbPoint((decimal)startPoint.X, (decimal)startPoint.Y, scale, SketchOrigin);
+        //        PointF endPoint = new PointF(endPointX, endPointY);
+        //        decimal dbStartX = (decimal)dbStartPoint.X;
+        //        decimal dbStartY = (decimal)dbStartPoint.Y;
+        //        decimal dbEndY = dbStartY;
+        //        decimal dbEndX = dbStartX + distance;
+        //        int nextLineNumber = (from l in workingSection.Lines select l.LineNumber).Max() + 1;
+        //        SMLine newLine = new SMLine { Record = workingSection.Record, Dwelling = workingSection.Dwelling, SectionLetter = workingSection.SectionLetter, Direction = "E", XLength = Math.Round((distance / scale), 2), ParentParcel = workingSection.ParentParcel, ParentSection = workingSection, StartX = dbStartX, StartY = dbStartY, EndX = dbEndX, EndY = dbEndY };
+        //        workingSection.Lines.Add(newLine);
+        //        LocalParcelCopy.SnapShotIndex++;
+        //        SketchUpGlobals.SketchSnapshots.Add(LocalParcelCopy);
+        //        Graphics g = Graphics.FromImage(MainImage);
+        //        SolidBrush brush = new SolidBrush(Color.Black);
+        //        Pen pen1 = new Pen(Color.Cyan, 5);
+        //        Font f = new Font("Segue UI", 8, FontStyle.Bold);
+        //        DrawLine(newLine, pen1, false);
+        //        // Do I need to do this? EraseSectionFromDrawing(workingSection);
 
-            }
-        }
+        //    }
+        //}
 
         private void EraseSectionFromDrawing(SMSection workingSection)
         {
@@ -1636,7 +1636,7 @@ namespace SketchUp
                 {
                     ScaledBeginPoint = ScaledJumpPoint;
                     //TODO: Handle this with the addition of the line and the drawing of it using the LocalParcelCopy
-                    AddEastLineToSection(ScaledBeginPoint, distanceValue);
+               //     AddEastLineToSection(ScaledBeginPoint, distanceValue);
                         
                 }
                 DistText.Text = string.Empty;

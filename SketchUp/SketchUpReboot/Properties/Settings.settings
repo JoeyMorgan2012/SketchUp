@@ -1,0 +1,32 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SketchUpReboot.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="CAMRA_MARTConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=MILES;Initial Catalog=CAMRA_MART;Integrated Security=True&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=MILES;Initial Catalog=CAMRA_MART;Integrated Security=True</Value>
+    </Setting>
+    <Setting Name="IPAddress" Type="System.String" Scope="User">
+      <Value Profile="(Default)">192.168.176.241</Value>
+    </Setting>
+    <Setting Name="UserName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">CAMRA2</Value>
+    </Setting>
+    <Setting Name="Password" Type="System.String" Scope="User">
+      <Value Profile="(Default)">CAMRA2</Value>
+    </Setting>
+    <Setting Name="Library" Type="System.String" Scope="User">
+      <Value Profile="(Default)">NATIVE</Value>
+    </Setting>
+    <Setting Name="Locality" Type="System.String" Scope="User">
+      <Value Profile="(Default)">AUG</Value>
+    </Setting>
+    <Setting Name="LocalityName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Augusta County</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

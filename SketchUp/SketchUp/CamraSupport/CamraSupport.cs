@@ -1,248 +1,15 @@
-﻿using System;
+﻿using SWallTech;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using SWallTech;
 
 namespace SketchUp
 {
     public static class CamraSupport
     {
-        public static string _assInitDescription(this List<AssessorCodes> list, string code)
-        {
-            var q = from h in list
-                    where h._assInitCode == code
-                    select h._assInitDescription;
-
-            return q.SingleOrDefault();
-        }
-
-        public static string _dataEntryOpInitDescription(this List<DataEntryOperatorCode> list, string code)
-        {
-            var q = from h in list
-                    where h._dataEntryOpCode == code
-                    select h._dataEntryOpDescription;
-
-            return q.SingleOrDefault();
-        }
-
-        public static string _floorAbreviation(this List<FloorAbreviation> list, string code)
-        {
-            var q = from h in list
-                    where h.FlrCode == code
-                    select h.FlrAbreviation;
-
-            return q.SingleOrDefault();
-        }
-
-        public static string _InWallAbreviation(this List<InWallAbreviation> list, string code)
-        {
-            var q = from h in list
-                    where h.WallCode == code
-                    select h.WallAbreviation;
-
-            return q.SingleOrDefault();
-        }
-
-        public static string _landUseDescription(this List<LandUseType> list, string code)
-        {
-            var q = from h in list
-                    where h._landUseCode == code
-                    select h._landUseDescription;
-            return q.SingleOrDefault();
-        }
-
-        public static string _magDistDescription(this List<MagDistrictCodes> list, string code)
-        {
-            var q = from h in list
-                    where h._magDistCode == code
-                    select h._magDistDescription;
-            return q.SingleOrDefault();
-        }
-
-        public static string _subDivDescription(this List<SubDivisionCodes> list, string code)
-        {
-            var q = from h in list
-                    where h._subDivCode == code
-                    select h._subDivDescription;
-
-            return q.SingleOrDefault();
-        }
-
-        public static string _userCodeDescription(this List<UserCodeType> list, string code)
-        {
-            var q = from h in list
-                    where h._userCode == code
-                    select h._userCodeDescription;
-            return q.SingleOrDefault();
-        }
-
-        public static string CommercialIncomeSections(this List<CommercialIncomeSections> list, string code)
-        {
-            var q = from h in list
-                    where h._commIncSectionType == code
-                    select h._commIncSectionDescription;
-
-            return q.SingleOrDefault();
-        }
-
-        public static string CommercialSectionType(this List<CommercialSections> list, string code)
-        {
-            var q = from h in list
-                    where h._commSectionType == code
-                    select h._commSectionDescription;
-
-            return q.SingleOrDefault();
-        }
-
-        public static string CommercialSectionTypeDescription(this List<CommercialSections> list, string code)
-        {
-            var q = from h in list
-                    where h._commSectionType == code
-                    select h._commSectionDescription;
-
-            return q.SingleOrDefault();
-        }
-
-        public static string Description(this List<StabType> list, string code)
-        {
-            var q = from h in list
-                    where h.Code == code
-                    select h.Description;
-
-            return q.SingleOrDefault();
-        }
-
-        public static DismWeights DisWght(this List<DismWeights> list, decimal code)
-        {
-            var q = from h in list
-                    where h._wtStory == code
-                    select h;
-
-            return q.SingleOrDefault();
-        }
-
-        public static List<string> GetClassCodeList()
-        {
-            if (Rates.ClassValues == null)
-            {
-                return null;
-            }
-            return Rates.ClassValues.Keys.OrderBy(f => f).ToList<string>();
-        }
-
-        public static decimal GetClassValue(string cls)
-        {
-            decimal retValue = 0;
-            if (Rates.ClassValues.ContainsKey(cls))
-            {
-                retValue = Rates.ClassValues[cls];
-            }
-            return retValue;
-        }
-
-        public static string HSTypeDescription(this List<HomeSiteType> list, Int32 code)
-        {
-            var q = from h in list
-                    where h.HSCode == code
-                    select h.HSDescription;
-            return q.SingleOrDefault();
-        }
-
-        public static void Init(SWallTech.CAMRA_Connection conn)
-        {
-            DBAccessManager db = conn.DBConnection;
-            ClearValues();
-            InitializeRatTableCollectionLists(conn);
-            GetGasLogRate(db);
-            GetNoMaxAc(db);
-            GetRat2Data(db);
-            GetCapitalizationRates(db);
-            GetMapCoordinates(db);
-            GetRentalRates(db);
-            GetHomesiteDescription();
-            GetLandDescription();
-            GetLandUseDescription();
-            GetWaterRates();
-            GetDeckTypes(db);
-            GetAllPorchTypes(db);
-            GetPatioTypes(db);
-            GetGarageTypes(db);
-            GetCarportTypes(db);
-            GetUserCodeDescriptions(db);
-            GetSubdivisionCodeDescriptions(db);
-            GetMagisterialDistricts(db);
-            GetWaterRates(db);
-            GetSewerRates(db);
-            GetOtherImprovementCodes(db);
-            GetAssessorInitalCodeDescriptions(db);
-            GetDataEntryOperatorDescriptions(db);
-            GetOccupancyListAndDescriptions(db);
-            GetBuildingSectionTypesAndRates(db);
-            GetStabFileData(db);
-        }
-
-        public static string LandDescription(this List<LandType> list, Int32 code)
-        {
-            var q = from h in list
-                    where h.LandCode == code
-                    select h.LandDescription;
-            return q.SingleOrDefault();
-        }
-
-        public static MapCoordinates MapCoordinate(this List<MapCoordinates> list, string code)
-        {
-            var q = from h in list
-                    where h._subMap == code
-                    select h;
-
-            return q.SingleOrDefault();
-        }
-
-        public static decimal ResidentialSectionRate(this List<ResidentialSections> list, string code)
-        {
-            var q = from h in list
-                    where h._resSectionType == code
-                    select h._resSectionRate;
-            return q.SingleOrDefault();
-        }
-
-        public static string ResidentialSectionTypeDescription(this List<ResidentialSections> list, string code)
-        {
-            var q = from h in list
-                    where h._resSectionType == code
-                    select h._resSectionDescription;
-            return q.SingleOrDefault();
-        }
-
-        public static string SewerTypeDescription(this List<SewerRates> list, Int32 code)
-        {
-            var q = from h in list
-                    where h.SewerCode == code
-                    select h.SewerDescription;
-            return q.SingleOrDefault();
-        }
-
-        public static StdDeviations StdDeviation(this List<StdDeviations> list, decimal code)
-        {
-            var q = from h in list
-                    where h._sdStory == code
-                    select h;
-
-            return q.SingleOrDefault();
-        }
-
-        public static WaterRates WaterTypes(this List<WaterRates> list, Int32 code)
-        {
-            var q = from h in list
-                    where h.WaterCode == code
-                    select h;
-
-            return q.SingleOrDefault();
-        }
-
         private static void ClearValues()
         {
             Rates.Rate1Master = null;
@@ -368,6 +135,51 @@ namespace SketchUp
             ZoningDescriptionCollection = null;
             ZoningDescriptionCollection_srt = null;
             UserCodeTypeCollection = null;
+        }
+
+        public static string CommercialIncomeSections(this List<CommercialIncomeSections> list, string code)
+        {
+            var q = from h in list
+                    where h._commIncSectionType == code
+                    select h._commIncSectionDescription;
+
+            return q.SingleOrDefault();
+        }
+
+        public static string CommercialSectionType(this List<CommercialSections> list, string code)
+        {
+            var q = from h in list
+                    where h._commSectionType == code
+                    select h._commSectionDescription;
+
+            return q.SingleOrDefault();
+        }
+
+        public static string CommercialSectionTypeDescription(this List<CommercialSections> list, string code)
+        {
+            var q = from h in list
+                    where h._commSectionType == code
+                    select h._commSectionDescription;
+
+            return q.SingleOrDefault();
+        }
+
+        public static string Description(this List<StabType> list, string code)
+        {
+            var q = from h in list
+                    where h.Code == code
+                    select h.Description;
+
+            return q.SingleOrDefault();
+        }
+
+        public static DismWeights DisWght(this List<DismWeights> list, decimal code)
+        {
+            var q = from h in list
+                    where h._wtStory == code
+                    select h;
+
+            return q.SingleOrDefault();
         }
 
         private static void GetAllPorchTypes(DBAccessManager db)
@@ -574,6 +386,25 @@ namespace SketchUp
                     CarPortTypes.Add(garcode);
                 }
             }
+        }
+
+        public static List<string> GetClassCodeList()
+        {
+            if (Rates.ClassValues == null)
+            {
+                return null;
+            }
+            return Rates.ClassValues.Keys.OrderBy(f => f).ToList<string>();
+        }
+
+        public static decimal GetClassValue(string cls)
+        {
+            decimal retValue = 0;
+            if (Rates.ClassValues.ContainsKey(cls))
+            {
+                retValue = Rates.ClassValues[cls];
+            }
+            return retValue;
         }
 
         private static void GetDataEntryOperatorDescriptions(DBAccessManager db)
@@ -993,6 +824,20 @@ namespace SketchUp
             }
         }
 
+        private static void GetWaterRates()
+        {
+            var ds_WaterRate = from l in Rates.Rate1Master.GetRat1TypeCollection(Rat1Master.Rat1Types.SiteCode)
+                               select new WaterRates()
+                               {
+                                   WaterCode = int.Parse(l.Value.ElemCode.TrimEnd(new char[] { ' ' }).Substring(1)),
+                                   WaterDescription = l.Value.Description,
+                                   WaterRate = Convert.ToInt32(l.Value.Rate)
+                               };
+
+            //TODO: Ask Dave: Why was the AddRange in GetWaterRates commented out??
+            WaterRateCollection.AddRange(ds_WaterRate);
+        }
+
         private static void GetWaterRates(DBAccessManager db)
         {
             DataSet ds_WaterRates = db.RunSelectStatement(String.Format(
@@ -1009,18 +854,45 @@ namespace SketchUp
             }
         }
 
-        private static void GetWaterRates()
+        public static string HSTypeDescription(this List<HomeSiteType> list, Int32 code)
         {
-            var ds_WaterRate = from l in Rates.Rate1Master.GetRat1TypeCollection(Rat1Master.Rat1Types.SiteCode)
-                               select new WaterRates()
-                               {
-                                   WaterCode = int.Parse(l.Value.ElemCode.TrimEnd(new char[] { ' ' }).Substring(1)),
-                                   WaterDescription = l.Value.Description,
-                                   WaterRate = Convert.ToInt32(l.Value.Rate)
-                               };
+            var q = from h in list
+                    where h.HSCode == code
+                    select h.HSDescription;
+            return q.SingleOrDefault();
+        }
 
-            //TODO: Ask Dave: Why was the AddRange in GetWaterRates commented out??
-            WaterRateCollection.AddRange(ds_WaterRate);
+        public static void Init(SWallTech.CAMRA_Connection conn)
+        {
+            DBAccessManager db = conn.DBConnection;
+            ClearValues();
+            InitializeRatTableCollectionLists(conn);
+            GetGasLogRate(db);
+            GetNoMaxAc(db);
+            GetRat2Data(db);
+            GetCapitalizationRates(db);
+            GetMapCoordinates(db);
+            GetRentalRates(db);
+            GetHomesiteDescription();
+            GetLandDescription();
+            GetLandUseDescription();
+            GetWaterRates();
+            GetDeckTypes(db);
+            GetAllPorchTypes(db);
+            GetPatioTypes(db);
+            GetGarageTypes(db);
+            GetCarportTypes(db);
+            GetUserCodeDescriptions(db);
+            GetSubdivisionCodeDescriptions(db);
+            GetMagisterialDistricts(db);
+            GetWaterRates(db);
+            GetSewerRates(db);
+            GetOtherImprovementCodes(db);
+            GetAssessorInitalCodeDescriptions(db);
+            GetDataEntryOperatorDescriptions(db);
+            GetOccupancyListAndDescriptions(db);
+            GetBuildingSectionTypesAndRates(db);
+            GetStabFileData(db);
         }
 
         private static void InitializeRatTableCollectionLists(CAMRA_Connection conn)
@@ -1124,6 +996,23 @@ namespace SketchUp
             ZoningDescriptionCollection_srt = new List<ZoningDescriptionD>();
         }
 
+        public static string LandDescription(this List<LandType> list, Int32 code)
+        {
+            var q = from h in list
+                    where h.LandCode == code
+                    select h.LandDescription;
+            return q.SingleOrDefault();
+        }
+
+        public static MapCoordinates MapCoordinate(this List<MapCoordinates> list, string code)
+        {
+            var q = from h in list
+                    where h._subMap == code
+                    select h;
+
+            return q.SingleOrDefault();
+        }
+
         private static void ParseRatTableDataToLists(List<StabType> allStabTypes)
         {
             var BAS = (from t in allStabTypes where t.Type == "BAS" select t).ToList<StabType>();
@@ -1164,6 +1053,117 @@ namespace SketchUp
             SewerTypeCollection.AddRange(SEW);
             TerrainTypeCollection.AddRange(TER);
             WaterTypeCollection.AddRange(WAT);
+        }
+
+        public static decimal ResidentialSectionRate(this List<ResidentialSections> list, string code)
+        {
+            var q = from h in list
+                    where h._resSectionType == code
+                    select h._resSectionRate;
+            return q.SingleOrDefault();
+        }
+
+        public static string ResidentialSectionTypeDescription(this List<ResidentialSections> list, string code)
+        {
+            var q = from h in list
+                    where h._resSectionType == code
+                    select h._resSectionDescription;
+            return q.SingleOrDefault();
+        }
+
+        public static string SewerTypeDescription(this List<SewerRates> list, Int32 code)
+        {
+            var q = from h in list
+                    where h.SewerCode == code
+                    select h.SewerDescription;
+            return q.SingleOrDefault();
+        }
+
+        public static StdDeviations StdDeviation(this List<StdDeviations> list, decimal code)
+        {
+            var q = from h in list
+                    where h._sdStory == code
+                    select h;
+
+            return q.SingleOrDefault();
+        }
+
+        public static WaterRates WaterTypes(this List<WaterRates> list, Int32 code)
+        {
+            var q = from h in list
+                    where h.WaterCode == code
+                    select h;
+
+            return q.SingleOrDefault();
+        }
+
+        public static string _assInitDescription(this List<AssessorCodes> list, string code)
+        {
+            var q = from h in list
+                    where h._assInitCode == code
+                    select h._assInitDescription;
+
+            return q.SingleOrDefault();
+        }
+
+        public static string _dataEntryOpInitDescription(this List<DataEntryOperatorCode> list, string code)
+        {
+            var q = from h in list
+                    where h._dataEntryOpCode == code
+                    select h._dataEntryOpDescription;
+
+            return q.SingleOrDefault();
+        }
+
+        public static string _floorAbreviation(this List<FloorAbreviation> list, string code)
+        {
+            var q = from h in list
+                    where h.FlrCode == code
+                    select h.FlrAbreviation;
+
+            return q.SingleOrDefault();
+        }
+
+        public static string _InWallAbreviation(this List<InWallAbreviation> list, string code)
+        {
+            var q = from h in list
+                    where h.WallCode == code
+                    select h.WallAbreviation;
+
+            return q.SingleOrDefault();
+        }
+
+        public static string _landUseDescription(this List<LandUseType> list, string code)
+        {
+            var q = from h in list
+                    where h._landUseCode == code
+                    select h._landUseDescription;
+            return q.SingleOrDefault();
+        }
+
+        public static string _magDistDescription(this List<MagDistrictCodes> list, string code)
+        {
+            var q = from h in list
+                    where h._magDistCode == code
+                    select h._magDistDescription;
+            return q.SingleOrDefault();
+        }
+
+        public static string _subDivDescription(this List<SubDivisionCodes> list, string code)
+        {
+            var q = from h in list
+                    where h._subDivCode == code
+                    select h._subDivDescription;
+
+            return q.SingleOrDefault();
+        }
+
+        public static string _userCodeDescription(this List<UserCodeType> list, string code)
+        {
+            var q = from h in list
+                    where h._userCode == code
+                    select h._userCodeDescription;
+            return q.SingleOrDefault();
         }
 
         public static string ListCommercialOccupancies
@@ -1262,7 +1262,6 @@ namespace SketchUp
 
         //public static List<string> CarPortTypes = new List<string>() { "CP", "BCP", "WCP", "BWCP", "UCP", "CPB", "CPU", "CPW", "CPWB" };
         public static List<string> CarPortTypes = new List<string>();
-
         public static List<CharacteristicTypeDescription> CharacteristicDescriptionCollection;
         public static List<CharacteristicTypeDescriptionD> CharacteristicDescriptionCollection_srt;
         public static List<StabType> CharacteristicTypeCollection;
@@ -1282,7 +1281,6 @@ namespace SketchUp
 
         //public static List<string> DeckTypes = new List<string>() { "DECK", "DEK", "DK", "DEKA", "DEKG" };
         public static List<string> DeckTypes = new List<string>();
-
         public static decimal DefDepCondA;
         public static decimal DefDepCondF;
         public static decimal DefDepCondG;
@@ -1297,7 +1295,6 @@ namespace SketchUp
 
         //public static List<string> EnclPorchTypes = new List<string>() { "EPOR", "EPR", "JPOR", "POEB", "POEF", "PORJ" };
         public static List<string> EnclPorchTypes = new List<string>();
-
         public static decimal EquityYieldRate;
         public static List<StabType> ExteriorWallTypeCollection;
         public static List<StabTypeD> ExteriorWallTypeCollection_srt;
@@ -1315,7 +1312,6 @@ namespace SketchUp
         //public static List<string> GarageTypes = new List<string>() { "GAR", "BGAR", "FGAR", "UGAR", "GARL","GARB","GARF","GABK","GACB","GCEB",
         //                                                              "GAFV","GACB","GALF","GAUB","GAUF","GCEF" };
         public static List<string> GarageTypes = new List<string>();
-
         public static int HalfBathCnt;
         public static List<StabType> HeatTypeCollection;
         public static List<StabTypeD> HeatTypeCollection_srt;
@@ -1357,13 +1353,11 @@ namespace SketchUp
 
         //public static List<string> PatioTypes = new List<string>() { "PAT", "BPAT", "CPAT", "WPAT", "PATO", "PABK", "PACN", "PACV", "PATW" };
         public static List<string> PatioTypes = new List<string>();
-
         public static List<PavementTypeDescription> PavementDescriptionCollection;
         public static List<PavementTypeDescriptionD> PavementDescriptionCollection_srt;
 
         //public static List<string> PorchTypes = new List<string>() { "POR" };
         public static List<string> PorchTypes = new List<string>();
-
         public static List<int> PrintStructureOccupancies = new List<int>() { 10, 12, 16, 20, 21, 22, 24, 11, 13, 14, 17, 26 };
         public static int ProjectionPeriod;
         public static string ReassessmentDate;
@@ -1388,7 +1382,6 @@ namespace SketchUp
 
         //public static List<string> ScrnPorchTypes = new List<string>() { "SPOR", "PORS" };
         public static List<string> ScrnPorchTypes = new List<string>();
-
         public static List<SewerTypeDescription> SewerDescriptionCollection;
         public static List<SewerTypeDescriptionD> SewerDescriptionCollection_srt;
         public static List<SewerRates> SewerRateCollection;

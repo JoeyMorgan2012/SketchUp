@@ -257,7 +257,7 @@ namespace SketchRenderPoC
 
                 MultiplePoints = MultiSectionSelection.MultiplePointsDataTable;
 
-                _hasMultiSection = true;
+               // _hasMultiSection = true;
             }
 
             return multipleSectionsAttachment;
@@ -1213,7 +1213,7 @@ namespace SketchRenderPoC
             ShowParcelLineByVersionInDataGrid();
         }
 
-        private bool _hasMultiSection;
+       // TODO: Remove if not needed:	 private bool _hasMultiSection;
         private PointF breakPoint1 = new PointF(-10, -2);
         private PointF breakPoint2 = new PointF(0, -12);
         private bool firstTimeLoaded = false;

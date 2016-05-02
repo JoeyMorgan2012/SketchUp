@@ -191,9 +191,6 @@
     <Compile Include="ExpandoSketch.Designer.cs">
       <DependentUpon>ExpandoSketch.cs</DependentUpon>
     </Compile>
-    <Compile Include="ExpandoSketchDrawingMethods.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="ExpandoSketchFields.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -310,6 +307,7 @@
     <Compile Include="SMParcel.cs" />
     <Compile Include="SMPointComparer.cs" />
     <Compile Include="SMSection.cs" />
+    <Compile Include="SMSketcher.cs" />
     <Compile Include="UpdateInfo.cs">
       <SubType>Form</SubType>
     </Compile>
