@@ -389,24 +389,26 @@ namespace SketchUp
             switch (Direction)
             {
                 case "E": //Left to right, label goes below line
-                    labelStartX = ScaledStartPoint.X;
+                          //labelStartX = ScaledStartPoint.X-(labelLength*2);
+                    labelStartX = lineMidPoint.X - ((float)ParentParcel.Scale * (labelLength / 2));
                     labelStartY = lineMidPoint.Y + 10;
 
                     break;
 
                 case "W": //right to left, label goes above line
-                    labelStartX = (ScaledEndPoint.X) - labelLength - ((float)(XLength * ParentParcel.Scale) / 2);
+                    //labelStartX = (ScaledEndPoint.X) + ((float)(XLength * ParentParcel.Scale) / 2);
+                    labelStartX = lineMidPoint.X - ((float)ParentParcel.Scale * (labelLength / 2));
                     labelStartY = lineMidPoint.Y - 20;
                     break;
 
                 case "N": //Bottom to top, label goes to the left
-                    labelStartX = lineMidPoint.X + labelLength - 20;
-                    labelStartY = lineMidPoint.Y;
+                    labelStartX = lineMidPoint.X - (((float)ParentParcel.Scale *(labelLength)));
+                    labelStartY = lineMidPoint.Y-10;
                     break;
 
                 case "S": //top to bottom, label goes to the right
-                    labelStartX = lineMidPoint.X - labelLength + 20;
-                    labelStartY = lineMidPoint.Y;
+                    labelStartX = lineMidPoint.X + 10;
+                    labelStartY = lineMidPoint.Y-10;
 
                     //labelStartX = lineMidPoint.X + sketchOriginPoint.X - labelLength + 20;
                     //labelStartY = lineMidPoint.Y + sketchOriginPoint.Y;

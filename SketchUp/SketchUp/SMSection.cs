@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using SWallTech;
 
 namespace SketchUp
 {
@@ -321,6 +322,7 @@ namespace SketchUp
         {
             get
             {
+                scaledSectionCenter = ComputeLabelLocation();
                 return scaledSectionCenter;
             }
 
@@ -328,6 +330,22 @@ namespace SketchUp
             {
                 scaledSectionCenter = value;
             }
+        }
+
+        private PointF ComputeLabelLocation()
+        {
+            List<PointF> sectionPoints = new List<PointF>();
+            foreach (SMLine line in Lines)
+            {
+                sectionPoints.Add(line.ScaledStartPoint);
+                sectionPoints.Add(line.ScaledEndPoint);
+            }
+            PolygonF sectionBounds = new PolygonF(sectionPoints.ToArray<PointF>());
+            PointF exactCenter = sectionBounds.CenterPointOfBounds;
+            float labelSize = SectionType.Length;
+            PointF adjustedCenter = PointF.Add(sectionBounds.CenterPointOfBounds, new SizeF(-labelSize, -20));
+            return adjustedCenter;
+            
         }
 
         public string SectionLabel

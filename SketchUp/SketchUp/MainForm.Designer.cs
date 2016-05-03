@@ -131,7 +131,7 @@
             // statusMessage
             // 
             this.statusMessage.Name = "statusMessage";
-            this.statusMessage.Size = new System.Drawing.Size(0, 19);
+            this.statusMessage.Size = new System.Drawing.Size(0, 17);
             // 
             // sketchBox
             // 
@@ -141,7 +141,6 @@
             this.sketchBox.MinimumSize = new System.Drawing.Size(550, 517);
             this.sketchBox.Name = "sketchBox";
             this.sketchBox.Size = new System.Drawing.Size(550, 517);
-            this.sketchBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.sketchBox.TabIndex = 9;
             this.sketchBox.TabStop = false;
             this.sketchBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.sketchBox_MouseMove);

@@ -47,15 +47,6 @@ namespace SketchUp
             }
         }
 
-        private void ShowDbVersionOfSketch()
-        {
-            SMSketcher sketcher = new SMSketcher(SketchUpGlobals.SMParcelFromData, sketchBox);
-            sketcher.SketchFont = new Font("Segue UI", 6);
-            sketcher.PenColor = Color.Blue;
-            sketcher.SketchPen = new Pen(sketcher.PenColor, 2);
-            sketchBox.Image = sketcher.RenderSketch();
-        }
-
         public void LoadDataFromCamraDb()
         {
             InitializeComponent();
@@ -104,7 +95,6 @@ namespace SketchUp
             }
             splash.UpdateProgress(85);
             Application.DoEvents();
-           
         }
 
         private void InitializeParcelSnapshots()
@@ -127,7 +117,6 @@ namespace SketchUp
 #endif
                 Logger.Error(ex, string.Format("{0}.{1}", MethodBase.GetCurrentMethod().Module.Name, MethodBase.GetCurrentMethod().Name));
                 throw;
-              
             }
         }
 
@@ -136,6 +125,16 @@ namespace SketchUp
             InitializeParcelSnapshots();
             splash.UpdateProgress(100);
             Application.DoEvents();
+        }
+
+        private void ShowDbVersionOfSketch()
+        {
+            SMSketcher sketcher = new SMSketcher(SketchUpGlobals.SMParcelFromData,  sketchBox);
+            sketcher.SketchFont = new Font("Segue UI", 6);
+            sketcher.PenColor = Color.Blue;
+            sketcher.SketchPen = new Pen(sketcher.PenColor, 2);
+            sketcher.RenderSketch(true);
+            sketchBox.Image = sketcher.SketchImage;
         }
 
         #endregion Constructor
@@ -148,29 +147,29 @@ namespace SketchUp
 
         #region Form Control Methods
 
-//        private static int CountSectionsInDb()
-//        {
-//            try
-//            {
-//                StringBuilder cntSect = new StringBuilder();
-//                cntSect.Append(String.Format("select count(*) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ",
-//                            SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, SketchUpGlobals.CurrentParcel.Record, SketchUpGlobals.CurrentParcel.Card));
+        //        private static int CountSectionsInDb()
+        //        {
+        //            try
+        //            {
+        //                StringBuilder cntSect = new StringBuilder();
+        //                cntSect.Append(String.Format("select count(*) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ",
+        //                            SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, SketchUpGlobals.CurrentParcel.Record, SketchUpGlobals.CurrentParcel.Card));
 
-//                int SectionCnt = Convert.ToInt32(SketchUpGlobals.CamraDbConn.DBConnection.ExecuteScalar(cntSect.ToString()));
-//                return SectionCnt;
-//            }
-//            catch (Exception ex)
-//            {
-//                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
-//                Trace.WriteLine(errMessage);
-//                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
-//#if DEBUG
+        //                int SectionCnt = Convert.ToInt32(SketchUpGlobals.CamraDbConn.DBConnection.ExecuteScalar(cntSect.ToString()));
+        //                return SectionCnt;
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+        //                Trace.WriteLine(errMessage);
+        //                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+        //#if DEBUG
 
-//                MessageBox.Show(errMessage);
-//#endif
-//                throw;
-//            }
-//        }
+        //                MessageBox.Show(errMessage);
+        //#endif
+        //                throw;
+        //            }
+        //        }
 
         private void AddWorkingCopyOfSketchToSnapshots()
         {
@@ -210,7 +209,7 @@ namespace SketchUp
         private void GetSelectedImages()
         {
             //This is the legacy code getting all the master data, rat tables,etc.
-            /* Trying to eliminate anything that is extraneous 
+            /* Trying to eliminate anything that is extraneous
             SketchUpGlobals.SubSections = new SectionDataCollection(SketchUpGlobals.CamraDbConn, SketchUpGlobals.CurrentParcel.mrecno, SketchUpGlobals.CurrentParcel.mdwell);
 
             SketchUpGlobals.CurrentParcel.BuildSketchData();
@@ -224,9 +223,9 @@ namespace SketchUp
             */
             SMSketcher sketcher = new SMSketcher(MainFormParcel, sketchBox);
             sketcher.PenColor = Color.Blue;
-            sketcher.SketchPen = new Pen(sketcher.PenColor,5);
-
-            SketchUpGlobals.SketchImage = sketcher.RenderSketch();
+            sketcher.SketchPen = new Pen(sketcher.PenColor, 5);
+            sketcher.RenderSketch();
+            SketchUpGlobals.SketchImage = sketcher.SketchImage;
             if (EditImage.Text == "Add Sketch")
             {
                 EditImage.Text = "Edit Sketch";
@@ -262,8 +261,6 @@ namespace SketchUp
             bool doSketch = !(omitSketch || ExpandoSketch._cantSketch);
             if (doSketch)
             {
-                
-        
                 ExpandoSketch skexp = new ExpandoSketch(SketchUpGlobals.CurrentParcel, SketchUpGlobals.SketchFolder, SketchUpGlobals.CurrentParcel.mrecno.ToString(), SketchUpGlobals.CurrentParcel.mdwell.ToString(),
                    SketchUpGlobals.FcLocalityPrefix, SketchUpGlobals.CamraDbConn, SketchUpGlobals.SubSections, SketchUpGlobals.HasSketch, SketchUpGlobals.SketchImage, SketchUpGlobals.HasNewSketch);
 
@@ -281,24 +278,6 @@ namespace SketchUp
             {
                 EditImage.Text = "Add Sketch";
             }
-        }
-
-        private void RetrieveAndShowCurrentSketchImage()
-        {
-            //int record = SketchUpGlobals.CurrentParcel.mrecno;
-            //int card = SketchUpGlobals.CurrentParcel.mdwell;
-
-            //SketchUpGlobals.CurrentParcel = null;
-            //SketchUpGlobals.SubSections = null;
-
-            //SketchUpGlobals.CurrentParcel = ParcelData.getParcel(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
-            //SketchUpGlobals.SubSections = new SectionDataCollection(SketchUpGlobals.CamraDbConn, record, card);
-
-            //SketchUpGlobals.CurrentParcel.BuildSketchData();
-            //getSketch(SketchUpGlobals.CurrentParcel.Record, SketchUpGlobals.CurrentParcel.Card);
-            //SketchUpGlobals.CurrentSketchImage = SketchUpGlobals.CurrentParcel.GetSketchImage(374);
-            
-            sketchBox.Image = SketchUpGlobals.CurrentSketchImage;
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -329,6 +308,26 @@ namespace SketchUp
         private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             this.WindowState = FormWindowState.Normal;
+        }
+
+        private void RetrieveAndShowCurrentSketchImage()
+        {
+            //int record = SketchUpGlobals.CurrentParcel.mrecno;
+            //int card = SketchUpGlobals.CurrentParcel.mdwell;
+
+            //SketchUpGlobals.CurrentParcel = null;
+            //SketchUpGlobals.SubSections = null;
+
+            //SketchUpGlobals.CurrentParcel = ParcelData.getParcel(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
+            //SketchUpGlobals.SubSections = new SectionDataCollection(SketchUpGlobals.CamraDbConn, record, card);
+
+            //SketchUpGlobals.CurrentParcel.BuildSketchData();
+            //getSketch(SketchUpGlobals.CurrentParcel.Record, SketchUpGlobals.CurrentParcel.Card);
+            //SketchUpGlobals.CurrentSketchImage = SketchUpGlobals.CurrentParcel.GetSketchImage(374);
+            SMSketcher sms = new SMSketcher(SketchUpGlobals.ParcelWorkingCopy, sketchBox);
+            sms.RenderSketch();
+            SketchUpGlobals.SketchImage = sms.SketchImage;
+            sketchBox.Image = sms.SketchImage;
         }
 
         private void SelectRecord()
@@ -429,7 +428,7 @@ namespace SketchUp
 #endif
                 throw;
             }
-            
+
             SketchUpGlobals.CurrentSketchImage = SketchUpGlobals.CurrentParcel.GetSketchImage(374);
             sketchBox.Image = SketchUpGlobals.CurrentSketchImage;
         }
@@ -984,7 +983,12 @@ namespace SketchUp
 
         #endregion SMParcel Initializations
 
-                private void timer_Tick(object sender, EventArgs e)
+        private void sketchBox_MouseMove(object sender, MouseEventArgs e)
+        {
+            statusMessage.Text = string.Format("{0},{1}", e.X, e.Y);
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
         {
             splash.UpdateProgress();
         }
@@ -997,11 +1001,6 @@ namespace SketchUp
                 splash.UpdateProgress();
             });
             Invoke(reportProgress);
-        }
-
-        private void sketchBox_MouseMove(object sender, MouseEventArgs e)
-        {
-            statusMessage.Text = string.Format("{0},{1}", e.X, e.Y);
         }
     }
 }

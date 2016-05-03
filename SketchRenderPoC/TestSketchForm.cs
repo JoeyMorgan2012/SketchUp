@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SketchUp;
+using SWallTech;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -9,8 +11,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
-using SketchUp;
-using SWallTech;
 
 namespace SketchRenderPoC
 {
@@ -18,21 +18,35 @@ namespace SketchRenderPoC
     {
         #region Constructor
 
+        //private void RenderSketch(PictureBox target)
+        //{
+        //    SetSketchScale(target);
+        //    SetSketchOrigin(target);
+        //    SetScaledStartPoints();
+        //    SetSectionCenterPoints();
+        //    ShowSketchFromBitMap();
+        //}
+
+        private TestSetup ts = new TestSetup();
+
         public TestSketchForm()
 
         {
+
             InitializeComponent();
-            this.LocalParcelCopy = ts.TestParcel();
+            LocalParcelCopy = ts.TestParcel();
             LocalParcelCopy.SnapShotIndex = 0;
+            PictureBox targetContainer = sketchBox;
             SketchUpGlobals.SketchSnapshots.Add(LocalParcelCopy);
-            graphics = pctMain.CreateGraphics();
+
+            graphics = targetContainer.CreateGraphics();
             BluePen = new Pen(Color.DarkBlue, 3);
             RedPen = new Pen(Color.Red, 2);
             firstTimeLoaded = true;
             LocalParcelCopy.SnapShotIndex = 1;
+          
             SketchUpGlobals.SketchSnapshots.Add(LocalParcelCopy);
-            RenderSketch();
-            graphics.Save();
+          
         }
 
         private SMParcel GetOriginalParcelFromDb(int record, int dwelling, SketchRepository sr)
@@ -97,33 +111,13 @@ namespace SketchRenderPoC
             SketchUpGlobals.CurrentParcel = pdc.GetParcel(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
         }
 
-        private void RenderSketch()
-        {
-            SetSketchScale();
-            SetSketchOrigin();
-            SetScaledStartPoints();
-            SetSectionCenterPoints();
-            ShowSketchFromBitMap();
-        }
-
-        private TestSetup ts = new TestSetup();
-
         #endregion Constructor
 
         #region control events
 
         #region toolStripMenuItems
 
-        private static List<SMLine> LinesWithClosestEndpoints(PointF mouseLocation)
-        {
-            foreach (SMLine l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines.Where(s => s.SectionLetter != SketchUpGlobals.ParcelWorkingCopy.LastSectionLetter))
-            {
-                l.ComparisonPoint = mouseLocation;
-            }
-            decimal shortestDistance = Math.Round((from l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines select l.EndPointDistanceFromComparisonPoint).Min(), 2);
-            List<SMLine> connectionLines = (from l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines where Math.Round(l.EndPointDistanceFromComparisonPoint, 2) == shortestDistance select l).ToList();
-            return connectionLines;
-        }
+        private Bitmap sketchImage;
 
         private void addSectionTsMenu_Click(object sender, EventArgs e)
         {
@@ -147,15 +141,14 @@ namespace SketchRenderPoC
             DeleteSketch();
         }
 
-        private void DrawSectionsOntoBitMap(Graphics graphics, bool v)
-        {
-            ShowSketchFromBitMap();
-        }
+        
 
         private void drawSketchToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ShowSketchFromBitMap();
-            SaveImageForVersion();
+            SMSketcher sms = new SMSketcher(LocalParcelCopy, sketchBox);
+            sms.RenderSketch(true);
+            sketchBox.Image = sms.SketchImage;
+          
         }
 
         private List<string> GetLegalMoveDirections(PointF scaledJumpPoint, string attachSectionLetter)
@@ -171,9 +164,12 @@ namespace SketchRenderPoC
 
         private void JumpToNearestCorner()
         {
+            string message=string.Format("Raw Mouse Location is {0},{1}", MousePosition.X, MousePosition.Y);
             float mouseX = MousePosition.X - SketchOrigin.X;
             float mouseY = MousePosition.Y - SketchOrigin.Y;
-            PointF mouseLocation = MousePosition;
+            PointF mouseLocation = new PointF(mouseX, mouseY);
+            message += string.Format("   Calculated Position is {0},{1}", mouseX, mouseY);
+            debugInfoLabel.Text = message;
             List<string> connectionSectionLetters = new List<string>();
             string AttSectLtr = "A";
             foreach (SMLine l in LocalParcelCopy.AllSectionLines)
@@ -187,15 +183,15 @@ namespace SketchRenderPoC
             bool sketchHasLineData = (connectionLines.Count > 0);
             if (connectionLines == null || connectionLines.Count == 0)
             {
-                string message = string.Format("No lines contain an available connection point from point {0},{1}", mouseLocation.X, mouseLocation.Y);
+                string errMessage = string.Format("No lines contain an available connection point from point {0},{1}", mouseLocation.X, mouseLocation.Y);
 
-                Console.WriteLine(message);
+                Console.WriteLine(errMessage);
 
 #if DEBUG
 
-                MessageBox.Show(message);
+                MessageBox.Show(errMessage);
 #endif
-                throw new InvalidDataException(message);
+                throw new InvalidDataException(errMessage);
             }
             else
             {
@@ -219,26 +215,36 @@ namespace SketchRenderPoC
             }
         }
 
+        private static List<SMLine> LinesWithClosestEndpoints(PointF mouseLocation)
+        {
+            foreach (SMLine l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines.Where(s => s.SectionLetter != SketchUpGlobals.ParcelWorkingCopy.LastSectionLetter))
+            {
+                l.ComparisonPoint = mouseLocation;
+            }
+            decimal shortestDistance = Math.Round((from l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines select l.EndPointDistanceFromComparisonPoint).Min(), 2);
+            List<SMLine> connectionLines = (from l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines where Math.Round(l.EndPointDistanceFromComparisonPoint, 2) == shortestDistance select l).ToList();
+            return connectionLines;
+        }
+
         private void MoveCursorToJumpPoint(PointF closestCornerPoint)
         {
             Color penColor = Color.Teal;
             PointF dbPoint = SMGlobal.ScaledPointToDbPoint((decimal)closestCornerPoint.X, (decimal)closestCornerPoint.Y, LocalParcelCopy.Scale, SketchOrigin);
-            this.Cursor = new Cursor(Cursor.Current.Handle);
+            Cursor = new Cursor(Cursor.Current.Handle);
             int jumpXScaled = Convert.ToInt32(closestCornerPoint.X);
             int jumpYScaled = Convert.ToInt32(closestCornerPoint.Y);
             Cursor.Position = new Point(jumpXScaled, jumpYScaled);
 
             //penColor = (_undoMode || draw) ? Color.Red : Color.Black;
 
-            Graphics g = Graphics.FromImage(SketchImage);
+            Graphics g = sketchBox.CreateGraphics();
             Pen pen1 = new Pen(Color.Red, 4);
             g.DrawRectangle(pen1, jumpXScaled, jumpYScaled, 1, 1);
             g.Save();
 
-            pctMain.Image = SketchImage;
-            string statusMessage = string.Format("Jump is to point {0},{1} which corresponsed to {2},{3} in the database.", closestCornerPoint.X, closestCornerPoint.Y, dbPoint.X, dbPoint.Y);
-            statLblStepInfo.Text = statusMessage;
-
+           // sketchBox.Image = SketchImage;
+          
+            distanceText.Focus();
             //DMouseClick();
         }
 
@@ -277,23 +283,12 @@ namespace SketchRenderPoC
             sketchImage.Save(imageName);
         }
 
-        private void ShowSketchFromBitMap()
-        {
-            SketchImage = new Bitmap(pctMain.Width, pctMain.Height);
-
-            graphics = Graphics.FromImage(SketchImage);
-
-            graphics.Clear(Color.White);
-            DrawSections();
-            pctMain.Image = SketchImage;
-        }
+   
 
         private void tsbGetSketch_Click(object sender, EventArgs e)
         {
             ShowSketch();
         }
-
-        private Bitmap sketchImage;
 
         #endregion toolStripMenuItems
 
@@ -305,7 +300,7 @@ namespace SketchRenderPoC
 
         private void pctMain_MouseMove(object sender, MouseEventArgs e)
         {
-            MouseLocationLabel.Text = string.Format("({0},{1})", e.X, e.Y);
+            mouseLocationLabel.Text = string.Format("({0},{1})", e.X, e.Y);
         }
 
         #endregion control events
@@ -369,62 +364,6 @@ namespace SketchRenderPoC
 
         #region Tests
 
-        public void TestBreakLine1()
-        {
-            SMSection SectionD = BreakSectionLine(sectionLetter, line1Number, breakPoint1, newSectionLetter);
-            LocalParcelCopy.SnapShotIndex += 1;
-            SketchUpGlobals.SketchSnapshots.Add(LocalParcelCopy);
-            GreenBrush = Brushes.MidnightBlue;
-
-            RenderSketch();
-            statLblStepInfo.Text = string.Format("Breaking line D-{0} at {1:N2},{2:N2}...", line1Number, breakPoint1.X, breakPoint1.Y);
-            LabelLinesOffsetNeg(SectionD, line1Number);
-        }
-
-        public void TestBreakLine2()
-        {
-            SMSection SectionD = BreakSectionLine(sectionLetter, line1Number, breakPoint1, newSectionLetter);
-            LocalParcelCopy.SnapShotIndex += 1;
-            SketchUpGlobals.SketchSnapshots.Add(LocalParcelCopy);
-            GreenBrush = Brushes.MidnightBlue;
-            statLblStepInfo.Text = string.Format("Breaking line D-{0} at {1:N2},{2:N2}...", line2Number, breakPoint2.X, breakPoint2.Y);
-            RenderSketch();
-
-            LabelLinesOffsetNeg(SectionD, line1Number);
-        }
-
-        public void TestCombinabilityOfLines()
-        {
-            string sectionLetter = "D";
-            int line1Number = 3;
-            statLblStepInfo.Text = "Combining Lines D3 & D4 again.";
-            SMLineManager lm = new SMLineManager();
-            string newSectionLetter = "G";
-            PointF breakPoint1 = new PointF(-10, -2);
-            PointF breakPoint2 = new PointF(0, -12);
-            string pointLabel = string.Empty;
-            SMSection SectionD = BreakSectionLine(sectionLetter, line1Number, breakPoint1, newSectionLetter);
-            RenderSketch();
-            int lastLineNumber = (from l in SectionD.Lines select l.LineNumber).Max();
-            foreach (SMLine line in SectionD.Lines)
-            {
-                if (line.LineNumber < lastLineNumber)
-                {
-                    SMLine nextLine = (from l in SectionD.Lines where l.LineNumber == line.LineNumber + 1 select l).FirstOrDefault();
-                    Console.WriteLine(string.Format("Comparing lines {0} and {1}", line.LineNumber, nextLine.LineNumber));
-                    bool canCombine = lm.LinesCanBeCombined(line, nextLine);
-                    Console.WriteLine(string.Format("Lines {0} and {1} {2} be combined.", line.LineNumber, nextLine.LineNumber, canCombine ? "can" : "cannot"));
-                }
-                else
-                {
-                    SMLine nextLine = (from l in SectionD.Lines where l.LineNumber == 1 select l).FirstOrDefault();
-                    Console.WriteLine(string.Format("Comparing lines {0} and {1}", line.LineNumber, nextLine.LineNumber));
-                    bool canCombine = lm.LinesCanBeCombined(line, nextLine);
-                    Console.WriteLine(string.Format("Lines {0} and {1} {2} be combined.", line.LineNumber, nextLine.LineNumber, canCombine ? "can" : "cannot"));
-                }
-            }
-        }
-
         private SMSection BreakSectionLine(string sectionLetter, int lineNumber, PointF breakPoint, string newSectionLetter = "")
         {
             LocalParcelCopy = SketchUpGlobals.ParcelWorkingCopy;
@@ -473,16 +412,74 @@ namespace SketchRenderPoC
             }
         }
 
-        #endregion Tests
-
-        public void ShowSketch()
+        private void RenderSketch(PictureBox targetControl)
         {
-            graphics.Clear(Color.White);
-            DrawSections(true);
-
-            //  graphics.Flush();
-            // pctMain.BringToFront();
+            SMSketcher sms = new SMSketcher(LocalParcelCopy, targetControl);
+            sms.RenderSketch(true);
+            targetControl.Image = sms.SketchImage;
         }
+
+        public void TestBreakLine1()
+        {
+            SMSection SectionD = BreakSectionLine(sectionLetter, line1Number, breakPoint1, newSectionLetter);
+            LocalParcelCopy.SnapShotIndex += 1;
+            SketchUpGlobals.SketchSnapshots.Add(LocalParcelCopy);
+            GreenBrush = Brushes.MidnightBlue;
+            SMSketcher sms = new SMSketcher(LocalParcelCopy, sketchBox);
+            sms.RenderSketch(true);
+            sketchBox.Image = sms.SketchImage;
+
+            feedbackStatus.Text = string.Format("Breaking line D-{0} at {1:N2},{2:N2}...", line1Number, breakPoint1.X, breakPoint1.Y);
+            LabelLinesOffsetNeg(SectionD, line1Number);
+        }
+
+        public void TestBreakLine2()
+        {
+            SMSection SectionD = BreakSectionLine(sectionLetter, line1Number, breakPoint1, newSectionLetter);
+            LocalParcelCopy.SnapShotIndex += 1;
+            SketchUpGlobals.SketchSnapshots.Add(LocalParcelCopy);
+            GreenBrush = Brushes.MidnightBlue;
+            feedbackStatus.Text = string.Format("Breaking line D-{0} at {1:N2},{2:N2}...", line2Number, breakPoint2.X, breakPoint2.Y);
+            SMSketcher sms = new SMSketcher(LocalParcelCopy, sketchBox);
+            sms.RenderSketch(true);
+            sketchBox.Image = sms.SketchImage;
+
+            LabelLinesOffsetNeg(SectionD, line1Number);
+        }
+
+        public void TestCombinabilityOfLines()
+        {
+            string sectionLetter = "D";
+            int line1Number = 3;
+            feedbackStatus.Text = "Combining Lines D3 & D4 again.";
+            SMLineManager lm = new SMLineManager();
+            string newSectionLetter = "G";
+            PointF breakPoint1 = new PointF(-10, -2);
+            PointF breakPoint2 = new PointF(0, -12);
+            string pointLabel = string.Empty;
+            SMSection SectionD = BreakSectionLine(sectionLetter, line1Number, breakPoint1, newSectionLetter);
+            RenderSketch(sketchBox);
+            int lastLineNumber = (from l in SectionD.Lines select l.LineNumber).Max();
+            foreach (SMLine line in SectionD.Lines)
+            {
+                if (line.LineNumber < lastLineNumber)
+                {
+                    SMLine nextLine = (from l in SectionD.Lines where l.LineNumber == line.LineNumber + 1 select l).FirstOrDefault();
+                    Console.WriteLine(string.Format("Comparing lines {0} and {1}", line.LineNumber, nextLine.LineNumber));
+                    bool canCombine = lm.LinesCanBeCombined(line, nextLine);
+                    Console.WriteLine(string.Format("Lines {0} and {1} {2} be combined.", line.LineNumber, nextLine.LineNumber, canCombine ? "can" : "cannot"));
+                }
+                else
+                {
+                    SMLine nextLine = (from l in SectionD.Lines where l.LineNumber == 1 select l).FirstOrDefault();
+                    Console.WriteLine(string.Format("Comparing lines {0} and {1}", line.LineNumber, nextLine.LineNumber));
+                    bool canCombine = lm.LinesCanBeCombined(line, nextLine);
+                    Console.WriteLine(string.Format("Lines {0} and {1} {2} be combined.", line.LineNumber, nextLine.LineNumber, canCombine ? "can" : "cannot"));
+                }
+            }
+        }
+
+        #endregion Tests
 
         private void DrawLabel(SMLine line)
         {
@@ -516,22 +513,6 @@ namespace SketchRenderPoC
             graphics.DrawString(label, font, RedBrush, labelLocation);
         }
 
-        private void DrawLine(SMLine line)
-        {
-            PointF drawLineStart = new PointF(line.ScaledStartPoint.X, line.ScaledStartPoint.Y);
-            PointF drawLineEnd = new PointF(line.ScaledEndPoint.X, line.ScaledEndPoint.Y);
-            graphics.DrawLine(BluePen, drawLineStart, drawLineEnd);
-            DrawLabel(line);
-#if DEBUG
-            StringBuilder traceOut = new StringBuilder();
-            traceOut.AppendLine(string.Format("{0}-{1} {2:N2},{3:N2} to {4:N2},{5:N2}", line.SectionLetter, line.LineNumber, line.StartX, line.StartY, line.EndX, line.EndY));
-            traceOut.AppendLine(string.Format("Scaled: {0:N2},{1:N2} to {2:N2},{3:N2}", line.ScaledStartPoint.X, line.ScaledStartPoint.Y, line.ScaledEndPoint.X, line.ScaledEndPoint.Y));
-            traceOut.AppendLine(string.Format("Origin: {0:N2},{1:N2}, scale {2:N2}", SketchOrigin.X, SketchOrigin.Y, LocalParcelCopy.Scale));
-            Trace.WriteLine(string.Format("{0}", traceOut.ToString()));
-            Console.WriteLine(string.Format("{0}", traceOut.ToString()));
-#endif
-        }
-
         private void DrawLine(Graphics gr, SMLine line, Pen pen)
         {
             PointF drawLineStart = new PointF(line.ScaledStartPoint.X + SketchOrigin.X, line.ScaledStartPoint.Y + SketchOrigin.Y);
@@ -539,14 +520,7 @@ namespace SketchRenderPoC
 
             gr.DrawLine(pen, drawLineStart, drawLineEnd);
             DrawLabel(line);
-#if DEBUG
-            StringBuilder traceOut = new StringBuilder();
-            traceOut.AppendLine(string.Format("{0}-{1} {2:N2},{3:N2} to {4:N2},{5:N2}", line.SectionLetter, line.LineNumber, line.StartX, line.StartY, line.EndX, line.EndY));
-            traceOut.AppendLine(string.Format("Scaled: {0:N2},{1:N2} to {2:N2},{3:N2}", line.ScaledStartPoint.X, line.ScaledStartPoint.Y, line.ScaledEndPoint.X, line.ScaledEndPoint.Y));
-            traceOut.AppendLine(string.Format("Origin: {0:N2},{1:N2}, scale {2:N2}", SketchOrigin.X, SketchOrigin.Y, LocalParcelCopy.Scale));
-            Trace.WriteLine(string.Format("{0}", traceOut.ToString()));
-            Console.WriteLine(string.Format("{0}", traceOut.ToString()));
-#endif
+
         }
 
         private void DrawLine(Graphics gr, SMLine line, Pen pen, bool omitLabel = true)
@@ -554,19 +528,21 @@ namespace SketchRenderPoC
             PointF drawLineStart = new PointF(line.ScaledStartPoint.X + SketchOrigin.X, line.ScaledStartPoint.Y + SketchOrigin.Y);
             PointF drawLineEnd = new PointF(line.ScaledEndPoint.X + SketchOrigin.X, line.ScaledEndPoint.Y + SketchOrigin.Y);
 
-            graphics.DrawLine(pen, drawLineStart, drawLineEnd);
+            gr.DrawLine(pen, drawLineStart, drawLineEnd);
             if (!omitLabel)
             {
                 DrawLabel(line, omitLabel);
             }
-#if DEBUG
-            StringBuilder traceOut = new StringBuilder();
-            traceOut.AppendLine(string.Format("{0}-{1} {2:N2},{3:N2} to {4:N2},{5:N2}", line.SectionLetter, line.LineNumber, line.StartX, line.StartY, line.EndX, line.EndY));
-            traceOut.AppendLine(string.Format("Scaled: {0:N2},{1:N2} to {2:N2},{3:N2}", line.ScaledStartPoint.X, line.ScaledStartPoint.Y, line.ScaledEndPoint.X, line.ScaledEndPoint.Y));
-            traceOut.AppendLine(string.Format("Origin: {0:N2},{1:N2}, scale {2:N2}", SketchOrigin.X, SketchOrigin.Y, LocalParcelCopy.Scale));
-            Trace.WriteLine(string.Format("{0}", traceOut.ToString()));
-            Console.WriteLine(string.Format("{0}", traceOut.ToString()));
-#endif
+
+        }
+
+        private void DrawLine(SMLine line)
+        {
+            PointF drawLineStart = new PointF(line.ScaledStartPoint.X, line.ScaledStartPoint.Y);
+            PointF drawLineEnd = new PointF(line.ScaledEndPoint.X, line.ScaledEndPoint.Y);
+            graphics.DrawLine(BluePen, drawLineStart, drawLineEnd);
+            DrawLabel(line);
+
         }
 
         private void DrawLine(SMLine line, bool omitLabel = true)
@@ -576,14 +552,7 @@ namespace SketchRenderPoC
             PointF drawLineStart = new PointF(line.ScaledStartPoint.X, line.ScaledStartPoint.Y);
             PointF drawLineEnd = new PointF(line.ScaledEndPoint.X, line.ScaledEndPoint.Y);
             graphics.DrawLine(BluePen, drawLineStart, drawLineEnd);
-#if DEBUG
-            StringBuilder traceOut = new StringBuilder();
-            traceOut.AppendLine(string.Format("{0}-{1} {2:N2},{3:N2} to {4:N2},{5:N2}", line.SectionLetter, line.LineNumber, line.StartX, line.StartY, line.EndX, line.EndY));
-            traceOut.AppendLine(string.Format("Scaled: {0:N2},{1:N2} to {2:N2},{3:N2}", line.ScaledStartPoint.X, line.ScaledStartPoint.Y, line.ScaledEndPoint.X, line.ScaledEndPoint.Y));
-            traceOut.AppendLine(string.Format("Origin: {0:N2},{1:N2}, scale {2:N2}", SketchOrigin.X, SketchOrigin.Y, LocalParcelCopy.Scale));
-            Trace.WriteLine(string.Format("{0}", traceOut.ToString()));
-            Console.WriteLine(string.Format("{0}", traceOut.ToString()));
-#endif
+
             if (!omitLabel)
             {
                 DrawLabel(line);
@@ -594,7 +563,7 @@ namespace SketchRenderPoC
         {
             if (LocalParcelCopy == null)
             {
-                RenderSketch();
+                RenderSketch(sketchBox);
             }
             if (LocalParcelCopy.Sections != null)
             {
@@ -616,7 +585,7 @@ namespace SketchRenderPoC
         {
             if (parcelWorkingCopy == null)
             {
-                RenderSketch();
+                RenderSketch(sketchBox);
             }
             if (LocalParcelCopy.Sections != null)
             {
@@ -643,7 +612,7 @@ namespace SketchRenderPoC
         {
             if (parcelWorkingCopy == null)
             {
-                RenderSketch();
+                RenderSketch(sketchBox);
             }
             if (LocalParcelCopy.Sections != null)
             {
@@ -692,58 +661,63 @@ namespace SketchRenderPoC
                 {
                     foreach (SMLine line in s.Lines)
                     {
-                        var lineStartX = (float)((line.StartX * sketchScale) + (decimal)SketchOrigin.X);
-                        var lineStartY = (float)((line.StartY * sketchScale) + (decimal)SketchOrigin.Y);
-                        line.ScaledStartPoint = new PointF(lineStartX, lineStartY);
+                        line.ScaledStartPoint = SMGlobal.DbPointToScaledPoint(line.StartX, line.StartY, line.ParentParcel.Scale, SketchOrigin);
+                        
                     }
                 }
             }
         }
 
-        private void SetSectionCenterPoints()
-        {
-            List<PointF> sectionPoints = new List<PointF>();
-            foreach (SMSection section in LocalParcelCopy.Sections)
-            {
-                sectionPoints = new List<PointF>();
-                foreach (SMLine line in section.Lines)
-                {
-                    sectionPoints.Add(line.ScaledStartPoint);
-                    sectionPoints.Add(line.ScaledEndPoint);
-                }
-                PolygonF sectionBounds = new PolygonF(sectionPoints.ToArray<PointF>());
-                section.ScaledSectionCenter = PointF.Add(sectionBounds.CenterPointOfBounds, new SizeF(0, -12));
-            }
-        }
+        //private void SetSectionCenterPoints(SMParcel parcel)
+        //{
+        //    List<PointF> sectionPoints = new List<PointF>();
+        //    foreach (SMSection section in parcel.Sections)
+        //    {
+        //        sectionPoints = new List<PointF>();
+        //        foreach (SMLine line in section.Lines)
+        //        {
+        //            sectionPoints.Add(line.ScaledStartPoint);
+        //            sectionPoints.Add(line.ScaledEndPoint);
+        //        }
+        //        PolygonF sectionBounds = new PolygonF(sectionPoints.ToArray<PointF>());
+        //        PointF exactCenter = sectionBounds.CenterPointOfBounds;
+                
+        //        section.ScaledSectionCenter = PointF.Add(sectionBounds.CenterPointOfBounds, new SizeF(0, -20));
+        //    }
+        //}
 
-        private void SetSketchOrigin()
+        private PointF SetSketchOrigin(PictureBox target, SMParcel parcel)
         {
             //Using the scale and the offsets, determine the point to be considered as "0,0" for the sketch;
-            var sketchAreaWidth = pctMain.Width - 20;
-            var sketchAreaHeight = pctMain.Height - 20;
+            var sketchAreaWidth = target.Width - 20;
+            var sketchAreaHeight = target.Height - 20;
 
-            PointF pictureBoxCorner = pctMain.Location;
-            var extraWidth = (pctMain.Width - 20) - (LocalParcelCopy.Scale * LocalParcelCopy.SketchXSize);
-            var extraHeight = (pctMain.Height - 20) - (parcelWorkingCopy.Scale * LocalParcelCopy.SketchYSize);
+            PointF pictureBoxCorner = target.Location;
+            var extraWidth = (target.Width - 20) - (parcel.Scale * parcel.SketchXSize);
+            var extraHeight = (target.Height - 20) - (parcel.Scale * parcel.SketchYSize);
             var paddingX = (extraWidth / 2) + 10;
             var paddingY = (extraHeight / 2) + 10;
-            var xLocation = (LocalParcelCopy.OffsetX * LocalParcelCopy.Scale) + paddingX;
-            var yLocation = (LocalParcelCopy.OffsetY * LocalParcelCopy.Scale) + paddingY;
+            var xLocation = (parcel.OffsetX * parcel.Scale) + paddingX;
+            var yLocation = (parcel.OffsetY * parcel.Scale) + paddingY;
 
-            SketchOrigin = new PointF((float)xLocation, (float)yLocation);
-#if DEBUG
-            Console.WriteLine("Sketch Origin is at {0},{1}", SketchOrigin.X, SketchOrigin.Y);
-#endif
+            PointF origin = new PointF((float)xLocation, (float)yLocation);
+        
+            
+            return origin;
+
+
+
         }
 
-        private void SetSketchScale()
+        private void SetSketchScale(PictureBox target)
         {
             //Determine the size of the sketch drawing area, which is the picture box less 10 px on a side, so height-20 and width-20. Padding is 10.
-            int boxHeight = pctMain.Height - 20;
-            int boxWidth = pctMain.Width - 20;
+            int boxHeight = target.Height - 20;
+            int boxWidth = target.Width - 20;
             decimal xScale = Math.Floor(boxWidth / LocalParcelCopy.SketchXSize);
             decimal yScale = Math.Floor(boxHeight / LocalParcelCopy.SketchYSize);
-            LocalParcelCopy.Scale = (decimal)SMGlobal.SmallerDouble(xScale, yScale) * 0.75M;
+            LocalParcelCopy.Scale= (decimal)SMGlobal.SmallerDouble(xScale, yScale) * 0.75M;
+            
         }
 
         private void ShowNearestCorners(PointF mouseLocation)
@@ -752,7 +726,7 @@ namespace SketchRenderPoC
             decimal closestDistance = (from d in pointDistances select d.EndPointDistance).Min();
             List<SMLine> nearestLines = (from l in pointDistances where l.EndPointDistance == closestDistance select l.ComparisonLine).ToList();
             Brush violetBrush = Brushes.DarkViolet;
-            Font font = new Font("Lucida Sans Unicode", 10, FontStyle.Bold, GraphicsUnit.Point);
+            Font font = new Font("Segoe UI", 8, FontStyle.Bold, GraphicsUnit.Point);
             foreach (SMLine l in nearestLines)
             {
                 PointF location = PointF.Add(l.ScaledEndPoint, new SizeF(SketchOrigin));
@@ -790,9 +764,20 @@ namespace SketchRenderPoC
             graphics.DrawString(pointLabel, DefaultFont, GreenBrush, PointF.Add(new PointF(pointToLabel.X, pointToLabel.Y + 16), labelOffset));
         }
 
+        public void ShowSketch()
+        {
+            graphics.Clear(Color.White);
+            DrawSections(true);
+
+            //  graphics.Flush();
+            // pctMain.BringToFront();
+        }
+
         #endregion Private Methods
 
         #region Properties
+
+        private Pen orangePen;
 
         public SMSection AttachmentSection
         {
@@ -807,7 +792,6 @@ namespace SketchRenderPoC
                 blackBrush = Brushes.Black;
                 return blackBrush;
             }
-
             set
             {
                 blackBrush = value;
@@ -821,7 +805,6 @@ namespace SketchRenderPoC
                 blueBrush = Brushes.DarkBlue;
                 return blueBrush;
             }
-
             set
             {
                 blueBrush = value;
@@ -839,7 +822,6 @@ namespace SketchRenderPoC
 
                 return bluePen;
             }
-
             set
             {
                 bluePen = value;
@@ -852,7 +834,6 @@ namespace SketchRenderPoC
             {
                 return firstTimeLoaded;
             }
-
             set
             {
                 firstTimeLoaded = value;
@@ -866,7 +847,6 @@ namespace SketchRenderPoC
                 greenBrush = Brushes.DarkGreen;
                 return greenBrush;
             }
-
             set
             {
                 greenBrush = value;
@@ -891,10 +871,33 @@ namespace SketchRenderPoC
             {
                 return parcelWorkingCopy;
             }
-
             set
             {
                 parcelWorkingCopy = value;
+            }
+        }
+
+        public int MouseX
+        {
+            get
+            {
+                return _mouseX;
+            }
+            set
+            {
+                _mouseX = value;
+            }
+        }
+
+        public int MouseY
+        {
+            get
+            {
+                return _mouseY;
+            }
+            set
+            {
+                _mouseY = value;
             }
         }
 
@@ -914,7 +917,6 @@ namespace SketchRenderPoC
                 }
                 return orangePen;
             }
-
             set
             {
                 orangePen = value;
@@ -928,7 +930,6 @@ namespace SketchRenderPoC
                 redBrush = Brushes.DarkRed;
                 return redBrush;
             }
-
             set
             {
                 redBrush = value;
@@ -945,7 +946,6 @@ namespace SketchRenderPoC
                 }
                 return redPen;
             }
-
             set
             {
                 redPen = value;
@@ -964,7 +964,6 @@ namespace SketchRenderPoC
             {
                 return selectedParcel;
             }
-
             set
             {
                 selectedParcel = value;
@@ -977,7 +976,6 @@ namespace SketchRenderPoC
             {
                 return sketchImage;
             }
-
             set
             {
                 sketchImage = value;
@@ -990,40 +988,11 @@ namespace SketchRenderPoC
             {
                 return sketchOrigin;
             }
-
             set
             {
                 sketchOrigin = value;
             }
         }
-
-        public int MouseX
-        {
-            get
-            {
-                return _mouseX;
-            }
-
-            set
-            {
-                _mouseX = value;
-            }
-        }
-
-        public int MouseY
-        {
-            get
-            {
-                return _mouseY;
-            }
-
-            set
-            {
-                _mouseY = value;
-            }
-        }
-
-        private Pen orangePen;
 
         #endregion Properties
 
@@ -1040,7 +1009,7 @@ namespace SketchRenderPoC
             Debug.WriteLine(string.Format("Section {0}", traceOut.ToString()));
 
             TestBreakLine1();
-            statLblStepInfo.Text = "D-3 is now D3 & D4, D4 is now D5.";
+            feedbackStatus.Text = "D-3 is now D3 & D4, D4 is now D5.";
             traceOut = new StringBuilder();
             traceOut.AppendLine(string.Format("Version: {0}", LocalParcelCopy.SnapShotIndex));
             foreach (SMLine line in LocalParcelCopy.AllSectionLines)
@@ -1051,41 +1020,16 @@ namespace SketchRenderPoC
 
             //    CleanUpBrokenLines(lm);
             graphics.Clear(Color.White);
-            RenderSketch();
+            RenderSketch(sketchBox);
         }
 
-        private void CleanUpBrokenLines(SMLineManager lm)
-        {
-            List<SMSection> sectionsList = new List<SMSection>();
-
-            //Go through the sections and combine any lines that can be combined.
-            foreach (SMSection section in LocalParcelCopy.Sections)
-            {
-                sectionsList.Add(ReorganizedSection(lm, section));
-#if DEBUG
-
-#endif
-            }
-            LocalParcelCopy.SnapShotIndex += 1;
-            SketchUpGlobals.SketchSnapshots.Add(LocalParcelCopy);
-
-            StringBuilder traceOut = new StringBuilder();
-            traceOut.AppendLine(string.Format("Version: {0}", LocalParcelCopy.SnapShotIndex));
-            foreach (SMLine line in LocalParcelCopy.AllSectionLines)
-            {
-                traceOut.AppendLine(string.Format("{0}:{1},{2} to {3},{4}", line.SectionLetter + "-" + line.LineNumber, line.StartX, line.StartY, line.EndX, line.EndY));
-            }
-            Debug.WriteLine(string.Format("Section {0}", traceOut.ToString()));
-            LocalParcelCopy.SnapShotIndex++;
-            LocalParcelCopy.Sections = sectionsList;
-            SketchUpGlobals.SketchSnapshots.Add(parcelWorkingCopy);
-        }
+   
 
         private void cmenuJump_Click(object sender, EventArgs e)
         {
-           
-            //PointF jumpPointScaled = MousePosition;
-            MoveCursorToJumpPoint(MousePosition);
+
+            JumpToNearestCorner();
+            //MoveCursorToJumpPoint(MousePosition);
         }
 
         private void DeleteSketch()
@@ -1129,6 +1073,33 @@ namespace SketchRenderPoC
             MessageBox.Show(message);
         }
 
+        private void pctMain_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            {
+                MouseX = e.X;
+                MouseY = e.Y;
+
+                
+            }
+            else if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            {
+            
+                MouseX = e.X;
+                MouseY = e.Y;
+            
+            }
+        }
+
+       
+
+        private void pictTest1_DoubleClick(object sender, EventArgs e)
+        {
+            SMSketcher sms = new SMSketcher(LocalParcelCopy,sketchBox);
+            sms.RenderSketch(false);
+            sketchBox.Image = sms.SketchImage;
+        }
+
         private SMSection ReorganizedSection(SMLineManager lm, SMSection section)
         {
             SMSection reorganizedSection = section;
@@ -1164,21 +1135,7 @@ namespace SketchRenderPoC
             return reorganizedSection;
         }
 
-        private void ShowParcelLineByVersionInDataGrid()
-        {
-            RenderSketch();
-            statLblStepInfo.Text = string.Format("Listing Versions...");
-
-            foreach (SMParcel p in SketchUpGlobals.SketchSnapshots)
-            {
-                statLblStepInfo.Text = string.Format("Listing Version {0}...", p.SnapShotIndex);
-                foreach (SMLine l in p.AllSectionLines)
-                {
-                    snapshotsDgv.Rows.Add(p.SnapShotIndex, l.SectionLetter, l.LineNumber, string.Format("{0:N2},{1:N2}", l.StartX, l.StartY), string.Format("{0:N2},{1:N2}", l.EndX, l.EndY), l.AttachedSection);
-                }
-            }
-        }
-
+   
         private void TestSketchForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             graphics.Dispose();
@@ -1195,7 +1152,7 @@ namespace SketchRenderPoC
 
             //    TestBreakLine2();
 
-            ShowParcelLineByVersionInDataGrid();
+            
         }
 
         private void tsMenuExitForm_Click(object sender, EventArgs e)
@@ -1204,13 +1161,13 @@ namespace SketchRenderPoC
             {
                 graphics.Dispose();
             }
-            this.Dispose();
-            this.Close();
+            Dispose();
+            Close();
         }
 
         private void tsmListParcelSnapshots_Click(object sender, EventArgs e)
         {
-            ShowParcelLineByVersionInDataGrid();
+           
         }
 
        // TODO: Remove if not needed:	 private bool _hasMultiSection;
@@ -1225,22 +1182,9 @@ namespace SketchRenderPoC
         private int _mouseX;
         private int _mouseY;
 
-        private void pctMain_MouseDown(object sender, MouseEventArgs e)
+        private void sketchBox_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.Button == System.Windows.Forms.MouseButtons.Left)
-            {
-                MouseX = e.X;
-                MouseY = e.Y;
-
-                
-            }
-            else if (e.Button == System.Windows.Forms.MouseButtons.Right)
-            {
-            
-                MouseX = e.X;
-                MouseY = e.Y;
-            
-            }
+            mouseLocationLabel.Text = string.Format("{0},{1}", e.X, e.Y);
         }
     }
 }

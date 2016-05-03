@@ -34,6 +34,7 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.tsMenuExitForm = new System.Windows.Forms.ToolStripMenuItem();
             this.drawSketchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.distanceText = new System.Windows.Forms.ToolStripTextBox();
             this.wholeSketchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sectionAToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sectionBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -43,22 +44,15 @@
             this.cmenuDrawing = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cmenuJump = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusMain = new System.Windows.Forms.StatusStrip();
-            this.MouseLocationLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.statLblStepInfo = new System.Windows.Forms.ToolStripStatusLabel();
-            this.pctMain = new System.Windows.Forms.PictureBox();
-            this.snapshotsDgv = new System.Windows.Forms.DataGridView();
-            this.Version = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Section = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Line = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Start = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.End = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Attached = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.mouseLocationLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.sketchBox = new System.Windows.Forms.PictureBox();
             this.sketchUpGlobalsBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.feedbackStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.debugInfoLabel = new System.Windows.Forms.Label();
             this.MainMenu.SuspendLayout();
             this.cmenuDrawing.SuspendLayout();
             this.StatusMain.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pctMain)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.snapshotsDgv)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sketchBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sketchUpGlobalsBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -68,17 +62,18 @@
             this.MainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.beginToolStripMenuItem,
             this.drawingToolStripMenuItem,
-            this.drawSketchToolStripMenuItem});
+            this.drawSketchToolStripMenuItem,
+            this.distanceText});
             this.MainMenu.Location = new System.Drawing.Point(0, 0);
             this.MainMenu.Name = "MainMenu";
-            this.MainMenu.Size = new System.Drawing.Size(1392, 28);
+            this.MainMenu.Size = new System.Drawing.Size(1057, 31);
             this.MainMenu.TabIndex = 0;
             this.MainMenu.Text = "Menu";
             // 
             // beginToolStripMenuItem
             // 
             this.beginToolStripMenuItem.Name = "beginToolStripMenuItem";
-            this.beginToolStripMenuItem.Size = new System.Drawing.Size(12, 24);
+            this.beginToolStripMenuItem.Size = new System.Drawing.Size(12, 27);
             // 
             // drawingToolStripMenuItem
             // 
@@ -91,7 +86,7 @@
             this.toolStripSeparator3,
             this.tsMenuExitForm});
             this.drawingToolStripMenuItem.Name = "drawingToolStripMenuItem";
-            this.drawingToolStripMenuItem.Size = new System.Drawing.Size(54, 24);
+            this.drawingToolStripMenuItem.Size = new System.Drawing.Size(54, 27);
             this.drawingToolStripMenuItem.Text = "Tests";
             this.drawingToolStripMenuItem.Click += new System.EventHandler(this.drawingToolStripMenuItem_Click);
             // 
@@ -149,9 +144,20 @@
             // drawSketchToolStripMenuItem
             // 
             this.drawSketchToolStripMenuItem.Name = "drawSketchToolStripMenuItem";
-            this.drawSketchToolStripMenuItem.Size = new System.Drawing.Size(103, 24);
+            this.drawSketchToolStripMenuItem.Size = new System.Drawing.Size(103, 27);
             this.drawSketchToolStripMenuItem.Text = "Draw Sketch";
             this.drawSketchToolStripMenuItem.Click += new System.EventHandler(this.drawSketchToolStripMenuItem_Click);
+            // 
+            // distanceText
+            // 
+            this.distanceText.AcceptsTab = true;
+            this.distanceText.AutoSize = false;
+            this.distanceText.AutoToolTip = true;
+            this.distanceText.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.distanceText.MaxLength = 10;
+            this.distanceText.Name = "distanceText";
+            this.distanceText.Size = new System.Drawing.Size(100, 27);
+            this.distanceText.ToolTipText = "For an angle, enter the horizontal distance, a comma, and the vertical distance";
             // 
             // wholeSketchToolStripMenuItem
             // 
@@ -207,133 +213,63 @@
             // 
             this.StatusMain.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.StatusMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MouseLocationLabel,
-            this.statLblStepInfo});
-            this.StatusMain.Location = new System.Drawing.Point(0, 876);
+            this.mouseLocationLabel,
+            this.feedbackStatus});
+            this.StatusMain.Location = new System.Drawing.Point(0, 702);
             this.StatusMain.Name = "StatusMain";
-            this.StatusMain.Size = new System.Drawing.Size(1392, 25);
+            this.StatusMain.Size = new System.Drawing.Size(1057, 25);
             this.StatusMain.TabIndex = 2;
             this.StatusMain.Text = "Status";
             // 
-            // MouseLocationLabel
+            // mouseLocationLabel
             // 
-            this.MouseLocationLabel.Name = "MouseLocationLabel";
-            this.MouseLocationLabel.Size = new System.Drawing.Size(0, 20);
+            this.mouseLocationLabel.AutoSize = false;
+            this.mouseLocationLabel.Name = "mouseLocationLabel";
+            this.mouseLocationLabel.Size = new System.Drawing.Size(0, 20);
             // 
-            // statLblStepInfo
+            // sketchBox
             // 
-            this.statLblStepInfo.Name = "statLblStepInfo";
-            this.statLblStepInfo.Size = new System.Drawing.Size(46, 20);
-            this.statLblStepInfo.Text = "Step: ";
-            // 
-            // pctMain
-            // 
-            this.pctMain.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.pctMain.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pctMain.ContextMenuStrip = this.cmenuDrawing;
-            this.pctMain.Location = new System.Drawing.Point(201, 31);
-            this.pctMain.Name = "pctMain";
-            this.pctMain.Size = new System.Drawing.Size(931, 681);
-            this.pctMain.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pctMain.TabIndex = 4;
-            this.pctMain.TabStop = false;
-            this.pctMain.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pctMain_MouseDown);
-            this.pctMain.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pctMain_MouseMove);
-            // 
-            // snapshotsDgv
-            // 
-            this.snapshotsDgv.AllowUserToAddRows = false;
-            this.snapshotsDgv.AllowUserToDeleteRows = false;
-            this.snapshotsDgv.AllowUserToOrderColumns = true;
-            this.snapshotsDgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.snapshotsDgv.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Version,
-            this.Section,
-            this.Line,
-            this.Start,
-            this.End,
-            this.Attached});
-            this.snapshotsDgv.Location = new System.Drawing.Point(399, 718);
-            this.snapshotsDgv.MinimumSize = new System.Drawing.Size(25, 0);
-            this.snapshotsDgv.Name = "snapshotsDgv";
-            this.snapshotsDgv.ReadOnly = true;
-            this.snapshotsDgv.RowTemplate.Height = 24;
-            this.snapshotsDgv.RowTemplate.ReadOnly = true;
-            this.snapshotsDgv.Size = new System.Drawing.Size(551, 150);
-            this.snapshotsDgv.StandardTab = true;
-            this.snapshotsDgv.TabIndex = 5;
-            this.snapshotsDgv.TabStop = false;
-            // 
-            // Version
-            // 
-            this.Version.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Version.HeaderText = "Version";
-            this.Version.MinimumWidth = 25;
-            this.Version.Name = "Version";
-            this.Version.ReadOnly = true;
-            this.Version.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.Version.Width = 62;
-            // 
-            // Section
-            // 
-            this.Section.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Section.HeaderText = "Section";
-            this.Section.MinimumWidth = 25;
-            this.Section.Name = "Section";
-            this.Section.ReadOnly = true;
-            this.Section.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.Section.Width = 61;
-            // 
-            // Line
-            // 
-            this.Line.HeaderText = "Line";
-            this.Line.MinimumWidth = 25;
-            this.Line.Name = "Line";
-            this.Line.ReadOnly = true;
-            this.Line.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // Start
-            // 
-            this.Start.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Start.HeaderText = "Start";
-            this.Start.MinimumWidth = 35;
-            this.Start.Name = "Start";
-            this.Start.ReadOnly = true;
-            this.Start.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.Start.Width = 44;
-            // 
-            // End
-            // 
-            this.End.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.End.HeaderText = "End";
-            this.End.MinimumWidth = 50;
-            this.End.Name = "End";
-            this.End.ReadOnly = true;
-            this.End.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.End.Width = 50;
-            // 
-            // Attached
-            // 
-            this.Attached.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Attached.HeaderText = "Attached";
-            this.Attached.MinimumWidth = 25;
-            this.Attached.Name = "Attached";
-            this.Attached.ReadOnly = true;
-            this.Attached.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.Attached.Width = 70;
+            this.sketchBox.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.sketchBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.sketchBox.ContextMenuStrip = this.cmenuDrawing;
+            this.sketchBox.Dock = System.Windows.Forms.DockStyle.Top;
+            this.sketchBox.Location = new System.Drawing.Point(0, 31);
+            this.sketchBox.Name = "sketchBox";
+            this.sketchBox.Size = new System.Drawing.Size(1057, 629);
+            this.sketchBox.TabIndex = 6;
+            this.sketchBox.TabStop = false;
+            this.sketchBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.sketchBox_MouseMove);
             // 
             // sketchUpGlobalsBindingSource
             // 
             this.sketchUpGlobalsBindingSource.DataSource = typeof(SketchUp.SketchUpGlobals);
+            // 
+            // feedbackStatus
+            // 
+            this.feedbackStatus.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.feedbackStatus.Name = "feedbackStatus";
+            this.feedbackStatus.Size = new System.Drawing.Size(1042, 20);
+            this.feedbackStatus.Spring = true;
+            // 
+            // debugInfoLabel
+            // 
+            this.debugInfoLabel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.debugInfoLabel.AutoEllipsis = true;
+            this.debugInfoLabel.AutoSize = true;
+            this.debugInfoLabel.Location = new System.Drawing.Point(0, 667);
+            this.debugInfoLabel.Name = "debugInfoLabel";
+            this.debugInfoLabel.Size = new System.Drawing.Size(60, 17);
+            this.debugInfoLabel.TabIndex = 7;
+            this.debugInfoLabel.Text = "Status...";
             // 
             // TestSketchForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.ClientSize = new System.Drawing.Size(1392, 901);
-            this.Controls.Add(this.snapshotsDgv);
-            this.Controls.Add(this.pctMain);
+            this.ClientSize = new System.Drawing.Size(1057, 727);
+            this.Controls.Add(this.debugInfoLabel);
+            this.Controls.Add(this.sketchBox);
             this.Controls.Add(this.StatusMain);
             this.Controls.Add(this.MainMenu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -346,8 +282,7 @@
             this.cmenuDrawing.ResumeLayout(false);
             this.StatusMain.ResumeLayout(false);
             this.StatusMain.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pctMain)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.snapshotsDgv)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sketchBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.sketchUpGlobalsBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -360,8 +295,7 @@
         private System.Windows.Forms.ContextMenuStrip cmenuDrawing;
         private System.Windows.Forms.StatusStrip StatusMain;
         private System.Windows.Forms.ToolStripMenuItem beginToolStripMenuItem;
-        private System.Windows.Forms.PictureBox pctMain;
-        private System.Windows.Forms.ToolStripStatusLabel MouseLocationLabel;
+        private System.Windows.Forms.ToolStripStatusLabel mouseLocationLabel;
         private System.Windows.Forms.ToolStripMenuItem wholeSketchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sectionAToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sectionBToolStripMenuItem;
@@ -378,15 +312,11 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem drawSketchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem runTest2;
-        private System.Windows.Forms.ToolStripStatusLabel statLblStepInfo;
-        private System.Windows.Forms.DataGridView snapshotsDgv;
         private System.Windows.Forms.BindingSource sketchUpGlobalsBindingSource;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Attached;
-        private System.Windows.Forms.DataGridViewTextBoxColumn End;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Start;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Line;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Section;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Version;
+        private System.Windows.Forms.PictureBox sketchBox;
+        private System.Windows.Forms.ToolStripTextBox distanceText;
+        private System.Windows.Forms.ToolStripStatusLabel feedbackStatus;
+        private System.Windows.Forms.Label debugInfoLabel;
     }
 }
 

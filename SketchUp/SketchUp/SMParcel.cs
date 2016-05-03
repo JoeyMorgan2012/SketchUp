@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SWallTech;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -8,6 +9,8 @@ namespace SketchUp
 {
     public class SMParcel
     {
+
+        #region Private Methods
         private List<PointF> AllCorners()
         {
             List<PointF> points = new List<PointF>();
@@ -41,6 +44,30 @@ namespace SketchUp
             return Math.Abs(maxX - minX);
         }
 
+        private string GetLastSectionLetter(List<SMSection> sections)
+        {
+            string lastLetter = string.Empty;
+            if (sections != null && sections.Count > 0)
+            {
+                lastLetter = (from s in sections orderby s.SectionLetter descending select s.SectionLetter).FirstOrDefault();
+            }
+            return lastLetter;
+        } 
+      
+
+        private List<SMLine> LinesWithClosestEndPoint(PointF mouseLocation)
+        {
+      
+            foreach (SMLine l in AllSectionLines)
+            {
+                l.ComparisonPoint = mouseLocation;
+            }
+            decimal minDist = (from l in AllSectionLines select l.EndPointDistanceFromComparisonPoint).Min();
+            List<SMLine> jumpLines = (from l in AllSectionLines where Math.Round(l.EndPointDistanceFromComparisonPoint,2) == Math.Round(minDist,2) select l).ToList();
+            return jumpLines;
+        }
+        #endregion
+        #region Public Methods
         public void IdentifyAttachedToSections()
         {
             if (AllSectionLines != null)
@@ -76,7 +103,8 @@ namespace SketchUp
             }
             return selectedSection;
         }
-
+        #endregion
+        #region Properties
         public List<SMLine> AllSectionLines
         {
             get
@@ -84,7 +112,7 @@ namespace SketchUp
                 allSectionLines = new List<SMLine>();
                 if (Sections != null)
                 {
-                    foreach (SMSection sms in Sections.Where(l=>l.Lines!=null&&l.Lines.Count>0))
+                    foreach (SMSection sms in Sections.Where(l => l.Lines != null && l.Lines.Count > 0))
                     {
                         allSectionLines.AddRange(sms.Lines);
                     }
@@ -92,10 +120,21 @@ namespace SketchUp
 
                 return allSectionLines;
             }
-
             set
             {
                 allSectionLines = value;
+            }
+        }
+
+        public int Card
+        {
+            get
+            {
+                return card;
+            }
+            set
+            {
+                card = value;
             }
         }
 
@@ -110,23 +149,9 @@ namespace SketchUp
 
                 return cornerPoints;
             }
-
             set
             {
                 cornerPoints = value;
-            }
-        }
-
-        public int Card
-        {
-            get
-            {
-                return card;
-            }
-
-            set
-            {
-                card = value;
             }
         }
 
@@ -136,7 +161,6 @@ namespace SketchUp
             {
                 return exSketch;
             }
-
             set
             {
                 exSketch = value;
@@ -149,10 +173,51 @@ namespace SketchUp
             {
                 return hasSketch;
             }
-
             set
             {
                 hasSketch = value;
+            }
+        }
+
+        public PointF JumpMouseLocation
+        {
+            get
+            {
+                return jumpMouseLocation;
+            }
+            set
+            {
+                jumpMouseLocation = value;
+                foreach (SMLine l in AllSectionLines)
+                {
+                    l.ComparisonPoint = jumpMouseLocation;
+                }
+            }
+        }
+
+        public string LastSectionLetter
+        {
+            get
+            {
+                lastSectionLetter = GetLastSectionLetter(Sections);
+                return lastSectionLetter;
+            }
+            set
+            {
+                lastSectionLetter = value;
+            }
+        }
+
+        public string NextSectionLetter
+        {
+            get
+            {
+                nextSectionLetter = SketchUp.UtilityMethods.NextLetter(LastSectionLetter);
+                return nextSectionLetter;
+            }
+            set
+            {
+                nextSectionLetter = value;
             }
         }
 
@@ -164,7 +229,6 @@ namespace SketchUp
                 offsetX = Math.Abs(minX);
                 return offsetX;
             }
-
             set
             {
                 offsetX = value;
@@ -179,10 +243,25 @@ namespace SketchUp
                 offsetY = Math.Abs(minY);
                 return offsetY;
             }
-
             set
             {
                 offsetY = value;
+            }
+        }
+
+        public List<SMLine> PosibleJumpLines
+        {
+            get
+            {
+                if (JumpMouseLocation != null)
+                {
+                    possibleJumpLines = LinesWithClosestEndPoint(JumpMouseLocation);
+                }
+                return possibleJumpLines;
+            }
+            set
+            {
+                possibleJumpLines = value;
             }
         }
 
@@ -192,7 +271,6 @@ namespace SketchUp
             {
                 return record;
             }
-
             set
             {
                 record = value;
@@ -205,7 +283,6 @@ namespace SketchUp
             {
                 return refreshParcel;
             }
-
             set
             {
                 refreshParcel = value;
@@ -222,7 +299,6 @@ namespace SketchUp
                 }
                 return scale;
             }
-
             set
             {
                 scale = value;
@@ -240,10 +316,33 @@ namespace SketchUp
                 }
                 return sections;
             }
-
             set
             {
                 sections = value;
+            }
+        }
+        public Image SketchImage
+        {
+            get
+            {
+                return sketchImage;
+            }
+            set
+            {
+                sketchImage = value;
+            }
+        }
+
+        public PointF SketchOrigin
+        {
+            get
+            {
+                return sketchOrigin;
+            }
+
+            set
+            {
+                sketchOrigin = value;
             }
         }
 
@@ -255,7 +354,6 @@ namespace SketchUp
 
                 return sketchXSize;
             }
-
             set
             {
                 sketchXSize = value;
@@ -269,10 +367,21 @@ namespace SketchUp
                 sketchYSize = CalculateYSize();
                 return sketchYSize;
             }
-
             set
             {
                 sketchYSize = value;
+            }
+        }
+
+        public int SnapShotIndex
+        {
+            get
+            {
+                return snapShotIndex;
+            }
+            set
+            {
+                snapShotIndex = value;
             }
         }
 
@@ -282,7 +391,6 @@ namespace SketchUp
             {
                 return storeyEx;
             }
-
             set
             {
                 storeyEx = value;
@@ -295,7 +403,6 @@ namespace SketchUp
             {
                 return storeys;
             }
-
             set
             {
                 storeys = value;
@@ -308,131 +415,38 @@ namespace SketchUp
             {
                 return totalSqFt;
             }
-
             set
             {
                 totalSqFt = value;
             }
         }
 
-        public int SnapShotIndex
-        {
-            get
-            {
-                return snapShotIndex;
-            }
+        private PointF sketchOrigin;
+        #endregion
 
-            set
-            {
-                snapShotIndex = value;
-            }
-        }
-
-        public string LastSectionLetter
-        {
-            get
-            {
-                lastSectionLetter = GetLastSectionLetter(Sections);
-                return lastSectionLetter;
-            }
-
-            set
-            {
-                lastSectionLetter = value;
-            }
-        }
-
-        private string GetLastSectionLetter(List<SMSection> sections)
-        {
-            string lastLetter = string.Empty;
-            if (sections != null && sections.Count > 0)
-            {
-                lastLetter = (from s in sections orderby s.SectionLetter descending select s.SectionLetter).FirstOrDefault();
-            }
-            return lastLetter;
-        }
-
-        public string NextSectionLetter
-        {
-            get
-            {
-                nextSectionLetter = SketchUp.UtilityMethods.NextLetter(LastSectionLetter);
-                return nextSectionLetter;
-            }
-
-            set
-            {
-                nextSectionLetter = value;
-            }
-        }
-
-        public List<SMLine> PosibleJumpLines
-        {
-            get
-            {
-                if (JumpMouseLocation!=null)
-                {
-                    possibleJumpLines = LinesWithClosestEndPoint(JumpMouseLocation);
-                }
-                return possibleJumpLines;
-            }
-
-            set
-            {
-                possibleJumpLines = value;
-            }
-        }
-
-        private List<SMLine> LinesWithClosestEndPoint(PointF mouseLocation)
-        {
-      
-            foreach (SMLine l in AllSectionLines)
-            {
-                l.ComparisonPoint = mouseLocation;
-            }
-            decimal minDist = (from l in AllSectionLines select l.EndPointDistanceFromComparisonPoint).Min();
-            List<SMLine> jumpLines = (from l in AllSectionLines where Math.Round(l.EndPointDistanceFromComparisonPoint,2) == Math.Round(minDist,2) select l).ToList();
-            return jumpLines;
-        }
-
-        public PointF JumpMouseLocation
-        {
-            get
-            {
-                return jumpMouseLocation;
-            }
-
-            set
-            {
-                jumpMouseLocation = value;
-                foreach (SMLine l in AllSectionLines)
-                {
-                    l.ComparisonPoint = jumpMouseLocation;
-                }
-            }
-        }
-
-        private PointF closestPointToComparisonPoint;
+        #region Fields
+        private List<SMLine> allSectionLines;
+        private int card;
+        private List<PointF> cornerPoints;
+        private string exSketch;
+        private string hasSketch;
         private PointF jumpMouseLocation;
         private string lastSectionLetter;
         private string nextSectionLetter;
-        private int snapShotIndex;
-        private List<SMLine> allSectionLines;
-        private List<PointF> cornerPoints;
-        private int card;
-        private string exSketch;
-        private string hasSketch;
         private decimal offsetX;
         private decimal offsetY;
+        private List<SMLine> possibleJumpLines;
         private int record;
         private bool refreshParcel = true;
         private decimal scale;
         private List<SMSection> sections;
+        private Image sketchImage;
         private decimal sketchXSize;
         private decimal sketchYSize;
+        private int snapShotIndex;
         private string storeyEx;
         private decimal storeys;
-        private decimal totalSqFt;
-        private List<SMLine> possibleJumpLines;
+        private decimal totalSqFt; 
+        #endregion
     }
 }

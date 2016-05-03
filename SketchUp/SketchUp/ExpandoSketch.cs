@@ -134,7 +134,8 @@ namespace SketchUp
                 {
                     SMSketcher sketcher = new SMSketcher(LocalParcelCopy,ExpSketchPBox);
 
-                    MainImage = sketcher.RenderSketch();
+                    sketcher.RenderSketch();
+                    MainImage = sketcher.SketchImage;
                     _currentScale = (float)LocalParcelCopy.Scale;
                     
                     //MainImage = currentParcel.GetSketchImage(ExpSketchPBox.Width, ExpSketchPBox.Height, 1000, 572, 400, out _scale);
@@ -1095,10 +1096,12 @@ namespace SketchUp
                 1000, 572, 400, out scaleOut);
             DrawingScale = (float)parcel.Scale;
             _currentScale = DrawingScale;
-            SMSketcher sketcher = new SMSketcher(parcel,ExpSketchPBox);
-                MainImage=sketcher.RenderSketch();
-
             Graphics g = Graphics.FromImage(MainImage);
+            SMSketcher sketcher = new SMSketcher(parcel,ExpSketchPBox);
+            sketcher.RenderSketch(true);
+            MainImage = sketcher.SketchImage;
+
+          
             SolidBrush Lblbrush = new SolidBrush(Color.Black);
             SolidBrush FillBrush = new SolidBrush(Color.White);
             Pen whitePen = new Pen(Color.White, 2);
