@@ -25,8 +25,17 @@ namespace SketchUp
     public partial class ExpandoSketch : Form
     {
         #region Enums
-
-        private enum MoveDirections
+        public enum MovementMode
+        {
+            Draw,
+            Erase,
+            Jump,
+            MoveDrawRed,
+            MoveNoLine,
+            NoMovement
+            
+        }
+        public enum MoveDirections
         {
             N,
             NE,
@@ -35,10 +44,11 @@ namespace SketchUp
             S,
             SW,
             W,
-            NW
+            NW,
+            None
         }
 
-        private enum SketchDrawingState
+        public enum SketchDrawingState
         {
             BeginPointSelected,
             DeletingSection,
@@ -61,7 +71,9 @@ namespace SketchUp
         #region Fields
 
         #region private fields
-        private SketchDrawingState sketchingState;
+       private MoveDirections directionOfMovement;
+       private int directionModifyerY = 1;
+       private int directionModifyerX = 1;
         private decimal adjNewSecX = 0;
         private decimal adjNewSecY = 0;
         private decimal adjOldSecX = 0;
@@ -81,18 +93,23 @@ namespace SketchUp
         private Brush blackBrush;
         private Brush blueBrush;
         private Pen bluePen;
+        private List<int> carportCodes = null;
+        private List<String> carportTypes = null;
         private static bool checkDirection = false;
-        
-        // TODO: Remove if not needed:
-        private int click = 0;
 
         //Undo uses this but we are re-doing undo. JMM 3-15-2016
         private Color colorRed = Color.Red;
-        private List<int> carportCodes = null;
-        private List<String> carportTypes = null;
         private int currentAttachmentLine = 0;
         private string CurrentAttDir = String.Empty;
         private string CurrentSecLtr = String.Empty;
+        private decimal dbEndOfMovementX;
+        private decimal dbEndOfMovementY;
+        private decimal dbLineLengthX;
+        private decimal dbLineLengthY;
+        private PointF dbMovementEndPoint;
+        private PointF dbMovementStartPoint;
+        private decimal dbStartOfMovementX;
+        private decimal dbStartOfMovementY;
         private DataTable displayDataTable = null;
         private float drawingScale = 1.0f;
         private DataTable DupAttPoints = null;
@@ -124,10 +141,11 @@ namespace SketchUp
         private string midDirect = String.Empty;
         private int midLine = 0;
         private string midSection = String.Empty;
+        private decimal movementDistanceScaled;
+        private decimal distanceEntered;
         private byte[] ms = null;
         private DataTable MultiplePoints = null;
         private int mylineNo = 0;
-
         //private decimal Xadj1 = 0;
         //private decimal Yadj1 = 0;
         //public static bool _undoModeA = false;
@@ -156,7 +174,9 @@ namespace SketchUp
         private float ScaleBaseX = 0;
         private float ScaleBaseY = 0;
         private PointF scaledBeginPoint;
+        private PointF scaledEndOfMovement;
         private PointF scaledJumpPoint;
+        private PointF scaledStartOfMovement;
         private float SecBeginX = 0;
         private float SecBeginY = 0;
         private List<String> SecLetters = null;
@@ -170,6 +190,8 @@ namespace SketchUp
         private string SketchCard = String.Empty;
         private string SketchFolder = String.Empty;
         private Bitmap sketchImage;
+        private Bitmap sketchImageBMP;
+        private SketchDrawingState sketchingState;
         /*
 		Refactored by renaming and providing for null values. Going to ensure that the
 		naming conventions are consistent for all properties. Any field that backs a property
@@ -177,7 +199,6 @@ namespace SketchUp
 		in Pascal case. (e.g. PascalCase).
 
 		*/
-        private Bitmap sketchImageBMP;
         private PointF sketchOrigin;
         private string SketchRecord = String.Empty;
         private DataTable sortDist = null;
@@ -231,8 +252,8 @@ namespace SketchUp
         public float BeginSplitY = 0;
         public decimal begSplitX = 0;
         public decimal begSplitY = 0;
-        public string ConnectSec = String.Empty;
         public int carportCount = 0;
+        public string ConnectSec = String.Empty;
         public decimal CPSize = 0;
         public int CurSecLineCnt = 0;
         public SWallTech.CAMRA_Connection dbConn = null;
@@ -381,6 +402,102 @@ namespace SketchUp
             set
             {
                 carportCodes = value;
+            }
+        }
+
+        public decimal DbEndOfMovementX
+        {
+            get
+            {
+                return dbEndOfMovementX;
+            }
+            set
+            {
+                dbEndOfMovementX = value;
+            }
+        }
+
+        public decimal DbEndOfMovementY
+        {
+            get
+            {
+                return dbEndOfMovementY;
+            }
+            set
+            {
+                dbEndOfMovementY = value;
+            }
+        }
+
+        public decimal DbLineLengthX
+        {
+            get
+            {
+                return dbLineLengthX;
+            }
+            set
+            {
+                dbLineLengthX = value;
+            }
+        }
+
+        public decimal DbLineLengthY
+        {
+            get
+            {
+                return dbLineLengthY;
+            }
+            set
+            {
+                dbLineLengthY = value;
+            }
+        }
+
+        public PointF DbMovementEndPoint
+        {
+            get
+            {
+                return dbMovementEndPoint;
+            }
+            set
+            {
+                dbMovementEndPoint = value;
+            }
+        }
+
+        public PointF DbMovementStartPoint
+        {
+            get
+            {
+                return dbMovementStartPoint;
+            }
+            set
+            {
+                dbMovementStartPoint = value;
+            }
+        }
+
+        public decimal DbStartOfMovementX
+        {
+            get
+            {
+                return dbStartOfMovementX;
+            }
+            set
+            {
+                dbStartOfMovementX = value;
+            }
+        }
+
+        public decimal DbStartOfMovementY
+        {
+            get
+            {
+                return dbStartOfMovementY;
+            }
+            set
+            {
+                dbStartOfMovementY = value;
             }
         }
 
@@ -533,6 +650,18 @@ namespace SketchUp
             }
         }
 
+        public decimal MovementDistanceScaled
+        {
+            get
+            {
+                return movementDistanceScaled;
+            }
+            set
+            {
+                movementDistanceScaled = value;
+            }
+        }
+
         private List<PointF> NewSectionPoints
         {
             get
@@ -629,6 +758,18 @@ namespace SketchUp
             }
         }
 
+        public PointF ScaledEndOfMovement
+        {
+            get
+            {
+                return scaledEndOfMovement;
+            }
+            set
+            {
+                scaledEndOfMovement = value;
+            }
+        }
+
         public PointF ScaledJumpPoint
         {
             get
@@ -638,6 +779,18 @@ namespace SketchUp
             set
             {
                 scaledJumpPoint = value;
+            }
+        }
+
+        public PointF ScaledStartOfMovement
+        {
+            get
+            {
+                return scaledStartOfMovement;
+            }
+            set
+            {
+                scaledStartOfMovement = value;
             }
         }
 
@@ -689,6 +842,18 @@ namespace SketchUp
             }
         }
 
+        private SketchDrawingState SketchingState
+        {
+            get
+            {
+                return sketchingState;
+            }
+            set
+            {
+                sketchingState = value;
+            }
+        }
+
         public PointF SketchOrigin
         {
             get
@@ -727,16 +892,56 @@ namespace SketchUp
             }
         }
 
-        private SketchDrawingState SketchingState
+        public MoveDirections DirectionOfMovement
         {
             get
             {
-                return sketchingState;
+                return directionOfMovement;
             }
 
             set
             {
-                sketchingState = value;
+                directionOfMovement = value;
+            }
+        }
+
+        public int DirectionModifyerY
+        {
+            get
+            {
+
+                return directionModifyerY;
+            }
+
+            set
+            {
+                directionModifyerY = value;
+            }
+        }
+
+        public int DirectionModifyerX
+        {
+            get
+            {
+                return directionModifyerX;
+            }
+
+            set
+            {
+                directionModifyerX = value;
+            }
+        }
+
+        public decimal DistanceEntered
+        {
+            get
+            {
+                return distanceEntered;
+            }
+
+            set
+            {
+                distanceEntered = value;
             }
         }
 

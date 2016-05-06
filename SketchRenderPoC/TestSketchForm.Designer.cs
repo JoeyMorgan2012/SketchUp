@@ -1,4 +1,4 @@
-﻿namespace SketchRenderPoC
+﻿namespace SketchUp
 {
     partial class TestSketchForm
     {
@@ -45,9 +45,9 @@
             this.cmenuJump = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusMain = new System.Windows.Forms.StatusStrip();
             this.mouseLocationLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.feedbackStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.sketchBox = new System.Windows.Forms.PictureBox();
             this.sketchUpGlobalsBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.feedbackStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.debugInfoLabel = new System.Windows.Forms.Label();
             this.MainMenu.SuspendLayout();
             this.cmenuDrawing.SuspendLayout();
@@ -99,6 +99,7 @@
             this.runTest1.Size = new System.Drawing.Size(238, 26);
             this.runTest1.Text = "Test 1";
             this.runTest1.ToolTipText = "Add a Building Section";
+            this.runTest1.Click += new System.EventHandler(this.runTest1_Click);
             // 
             // toolStripSeparator1
             // 
@@ -227,6 +228,13 @@
             this.mouseLocationLabel.Name = "mouseLocationLabel";
             this.mouseLocationLabel.Size = new System.Drawing.Size(0, 20);
             // 
+            // feedbackStatus
+            // 
+            this.feedbackStatus.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.feedbackStatus.Name = "feedbackStatus";
+            this.feedbackStatus.Size = new System.Drawing.Size(1042, 20);
+            this.feedbackStatus.Spring = true;
+            // 
             // sketchBox
             // 
             this.sketchBox.BackColor = System.Drawing.SystemColors.ButtonHighlight;
@@ -243,13 +251,6 @@
             // sketchUpGlobalsBindingSource
             // 
             this.sketchUpGlobalsBindingSource.DataSource = typeof(SketchUp.SketchUpGlobals);
-            // 
-            // feedbackStatus
-            // 
-            this.feedbackStatus.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.feedbackStatus.Name = "feedbackStatus";
-            this.feedbackStatus.Size = new System.Drawing.Size(1042, 20);
-            this.feedbackStatus.Spring = true;
             // 
             // debugInfoLabel
             // 

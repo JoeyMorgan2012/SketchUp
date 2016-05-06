@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Text;
 using System.Windows.Forms;
-using SketchUp;
 
 namespace SketchUp
 
 {
-    public partial class AngleForm : Form
+    public partial class AngleFormOriginal : Form
     {
-        public AngleForm()
+        public AngleFormOriginal()
         {
             InitializeComponent();
            
@@ -18,23 +17,18 @@ namespace SketchUp
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
+            NorthEast = false;
+            NorthWest = false;
+            SouthEast = false;
+            SouthWest = false;
             this.Close();
         }
 
-        private ExpandoSketch.MoveDirections angleDirection=ExpandoSketch.MoveDirections.None;
+        public static bool NorthEast = false;
+        public static bool NorthWest = false;
 
-        public ExpandoSketch.MoveDirections AngleDirection
-        {
-            get
-            {
-                return angleDirection;
-            }
-
-            set
-            {
-                angleDirection = value;
-            }
-        }
+        public static bool SouthEast = false;
+        public static bool SouthWest = false;
 
         private void btnSelectDirection_Click(object sender, EventArgs e)
         {
@@ -46,24 +40,22 @@ namespace SketchUp
         {
             if (rbNW.Checked == true)
             {
-                AngleDirection = ExpandoSketch.MoveDirections.NW;
-                
+                NorthWest = true;
             }
 
             if (rbNE.Checked == true)
             {
-                AngleDirection = ExpandoSketch.MoveDirections.NE;
-                
+                NorthEast = true;
             }
 
             if (rbSW.Checked == true)
             {
-                AngleDirection = ExpandoSketch.MoveDirections.SW;
+                SouthWest = true;
             }
 
             if (rbSE.Checked == true)
             {
-                AngleDirection = ExpandoSketch.MoveDirections.SE;
+                SouthEast = true;
             }
         }
     }

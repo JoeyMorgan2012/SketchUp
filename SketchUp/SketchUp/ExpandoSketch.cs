@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SWallTech;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -8,7 +9,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
-using SWallTech;
 
 namespace SketchUp
 {
@@ -32,7 +32,7 @@ namespace SketchUp
     {
         #region Constructor
 
-        //TODO: Add DI for SMParcel LocalParcelCopy for next release
+      
         public ExpandoSketch(ParcelData currentParcel, string sketchFolder,
       string sketchRecord, string sketchCard, string _locality, SWallTech.CAMRA_Connection _fox,
       SectionDataCollection currentSection, bool hasSketch, Image sketchImage, bool hasNewSketch)
@@ -75,7 +75,7 @@ namespace SketchUp
             _hasNewSketch = hasNewSketch;
             IsNewSketch = hasNewSketch;
             _addSection = false;
-            click = 0;
+           
             SketchFolder = sketchFolder;
             SketchRecord = sketchRecord;
             SketchCard = sketchCard;
@@ -1045,46 +1045,46 @@ namespace SketchUp
             }
         }
 
-        public void MeasureAngle()
-        {
-            string anglecalls = DistText.Text.Trim();
+        //public void MeasureAngle()
+        //{
+        //    string anglecalls = DistText.Text.Trim();
 
-            int commaCnt = anglecalls.IndexOf(",");
+        //    int commaCnt = anglecalls.IndexOf(",");
 
-            string D1 = anglecalls.Substring(0, commaCnt).Trim();
+        //    string D1 = anglecalls.Substring(0, commaCnt).Trim();
 
-            string D2 = anglecalls.PadRight(25, ' ').Substring(commaCnt + 1, 10).Trim();
+        //    string D2 = anglecalls.PadRight(25, ' ').Substring(commaCnt + 1, 10).Trim();
 
-            AngD2 = Convert.ToDecimal(D1);
+        //    AngD2 = Convert.ToDecimal(D1);
 
-            AngD1 = Convert.ToDecimal(D2);
+        //    AngD1 = Convert.ToDecimal(D2);
 
-            AngleForm angleDialog = new AngleForm();
-            angleDialog.ShowDialog();
+        //    AngleForm angleDialog = new AngleForm();
+        //    angleDialog.ShowDialog();
 
-            if (_isKeyValid == false)
-            {
-                _isKeyValid = true;
-            }
+        //    if (_isKeyValid == false)
+        //    {
+        //        _isKeyValid = true;
+        //    }
 
-            if (AngleForm.NorthWest == true)
-            {
-                MoveNorthWest(NextStartX, NextStartY);
-            }
+        //    if (AngleForm.NorthWest == true)
+        //    {
+        //        MoveNorthWest(NextStartX, NextStartY);
+        //    }
 
-            if (AngleForm.NorthEast == true)
-            {
-                MoveNorthEast(NextStartX, NextStartY);
-            }
-            if (AngleForm.SouthWest == true)
-            {
-                MoveSouthWest(NextStartX, NextStartY);
-            }
-            if (AngleForm.SouthEast == true)
-            {
-                MoveSouthEast(NextStartX, NextStartY);
-            }
-        }
+        //    if (AngleForm.NorthEast == true)
+        //    {
+        //        MoveNorthEast(NextStartX, NextStartY);
+        //    }
+        //    if (AngleForm.SouthWest == true)
+        //    {
+        //        MoveSouthWest(NextStartX, NextStartY);
+        //    }
+        //    if (AngleForm.SouthEast == true)
+        //    {
+        //        MoveSouthEast(NextStartX, NextStartY);
+        //    }
+        //}
 
         public void RefreshSketch()
         {
@@ -1097,11 +1097,11 @@ namespace SketchUp
             DrawingScale = (float)parcel.Scale;
             _currentScale = DrawingScale;
             Graphics g = Graphics.FromImage(MainImage);
-            SMSketcher sketcher = new SMSketcher(parcel,ExpSketchPBox);
+            SMSketcher sketcher = new SMSketcher(parcel, ExpSketchPBox);
             sketcher.RenderSketch(true);
             MainImage = sketcher.SketchImage;
 
-          
+
             SolidBrush Lblbrush = new SolidBrush(Color.Black);
             SolidBrush FillBrush = new SolidBrush(Color.White);
             Pen whitePen = new Pen(Color.White, 2);
@@ -1913,7 +1913,6 @@ namespace SketchUp
             return lineCount;
         }
 
-
         private int CountSections()
         {
             try
@@ -2082,7 +2081,6 @@ namespace SketchUp
             MoveCursor();
             return secltr;
         }
-
         private void FixOrigLine()
         {
             StringBuilder fixOrigLine = new StringBuilder();
@@ -2347,7 +2345,6 @@ namespace SketchUp
             lines = dbConn.DBConnection.RunSelectStatement(getLine.ToString());
             return lines;
         }
-
         private void GetStartCorner()
         {
             _undoMode = true;
@@ -2575,7 +2572,6 @@ namespace SketchUp
             maxLineCnt = Convert.ToInt32(dbConn.DBConnection.ExecuteScalar(lineCntx.ToString()));
             return maxLineCnt;
         }
-
         private void MoveCursor()
         {
             Color penColor;
@@ -2614,9 +2610,6 @@ namespace SketchUp
             origDistX = Convert.ToDecimal(dbConn.DBConnection.ExecuteScalar(orgLen.ToString()));
             return origDistX;
         }
-
-   
-
         private void ReOpenSec()
         {
             int rowindex = 0;
@@ -3004,7 +2997,6 @@ namespace SketchUp
         {
             isInAddNewPointMode = enabled;
         }
-
         private void ShowMessageBox(string s)
         {
             MessageBox.Show(s);
@@ -3092,7 +3084,6 @@ namespace SketchUp
                 }
             }
         }
-
         #endregion General Class Methods
 
         #region Refactored out from constructor
@@ -3163,40 +3154,6 @@ namespace SketchUp
                 InsertMasterRecord(summedArea, baseStory, ds_master);
             }
         }
-
-        private void GetSectionTypeInfo()
-        {
-            _addSection = true;
-
-            string nextSectionLetter = LocalParcelCopy.NextSectionLetter;
-            NewSectionPoints.Clear();
-            lineCnt = 0;
-            SelectSectionTypeDialog sectionTypeForm = new SelectSectionTypeDialog(dbConn, _currentParcel, _addSection, lineCnt, IsNewSketch);
-
-            sectionTypeForm.ShowDialog(this);
-
-            //Ensure they did not just cancel out by checking that there is a new version of the parcel
-            if (LocalParcelCopy.LastSectionLetter == nextSectionLetter)
-            {
-                NextSectLtr = SelectSectionTypeDialog._nextSectLtr;
-                _nextSectType = SelectSectionTypeDialog._nextSectType;
-                _nextStoryHeight = SelectSectionTypeDialog._nextSectStory;
-                _nextLineCount = SelectSectionTypeDialog._nextLineCount;
-                _hasNewSketch = (NextSectLtr == "A");
-
-                AddSectionContextMenu.Enabled = true;
-                jumpToolStripMenuItem.Enabled = true;
-                SketchingState = SketchDrawingState.SectionAdded;
-                try
-                {
-                    FieldText.Text = String.Format("Sect- {0}, {1} sty {2}", NextSectLtr.Trim(), _nextStoryHeight.ToString("N2"), _nextSectType.Trim());
-                }
-                catch
-                {
-                }
-            }
-        }
-
         private void AddSectionSQL(string dirct, float dist)
         {
             int secCnt = GetSectionsCount();
@@ -3240,6 +3197,39 @@ namespace SketchUp
 
             int secCnt = Convert.ToInt32(dbConn.DBConnection.ExecuteScalar(checkSect.ToString()));
             return secCnt;
+        }
+
+        private void GetSectionTypeInfo()
+        {
+            _addSection = true;
+
+            string nextSectionLetter = LocalParcelCopy.NextSectionLetter;
+            NewSectionPoints.Clear();
+            lineCnt = 0;
+            SelectSectionTypeDialog sectionTypeForm = new SelectSectionTypeDialog(dbConn, _currentParcel, _addSection, lineCnt, IsNewSketch);
+
+            sectionTypeForm.ShowDialog(this);
+
+            //Ensure they did not just cancel out by checking that there is a new version of the parcel
+            if (LocalParcelCopy.LastSectionLetter == nextSectionLetter)
+            {
+                NextSectLtr = SelectSectionTypeDialog._nextSectLtr;
+                _nextSectType = SelectSectionTypeDialog._nextSectType;
+                _nextStoryHeight = SelectSectionTypeDialog._nextSectStory;
+                _nextLineCount = SelectSectionTypeDialog._nextLineCount;
+                _hasNewSketch = (NextSectLtr == "A");
+
+                AddSectionContextMenu.Enabled = true;
+                jumpToolStripMenuItem.Enabled = true;
+                SketchingState = SketchDrawingState.SectionAdded;
+                try
+                {
+                    FieldText.Text = String.Format("Sect- {0}, {1} sty {2}", NextSectLtr.Trim(), _nextStoryHeight.ToString("N2"), _nextSectType.Trim());
+                }
+                catch
+                {
+                }
+            }
         }
 
         private void InsertMasterRecord(decimal summedArea, decimal baseStory, DataSet ds_master)
@@ -3386,101 +3376,9 @@ namespace SketchUp
             }
         }
 
-        private void HandleDirectionalKeys(KeyEventArgs e)
+        private void MeasureAngle()
         {
-
-            if (e.KeyCode == Keys.Right || e.KeyCode == Keys.R || e.KeyCode == Keys.E)
-            {
-                _isKeyValid = IsValidDirection("E");
-                if (_isKeyValid)
-                {
-                    HandleEastKeys();
-                }
-                else
-                {
-                    //UndoJump = true;
-                    //RevertToPriorVersion();
-                }
-            }
-            if (e.KeyCode == Keys.Left || e.KeyCode == Keys.L || e.KeyCode == Keys.W)
-            {
-                _isKeyValid = IsValidDirection("W");
-                if (_isKeyValid)
-                {
-                    HandleWestKeys();
-                }
-                else
-                {
-                    //TODO: Replace this with some valid response.
-                    //string message = string.Format("You may only move {0} from this jump point.", legalDirectionName);
-                    //MessageBox.Show(message, "Illegal direction", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-                    //UndoJump = true;
-                    //RevertToPriorVersion();
-                }
-            }
-            if (e.KeyCode == Keys.Up || e.KeyCode == Keys.U || e.KeyCode == Keys.N)
-            {
-                _isKeyValid = IsValidDirection("N");
-                if (_isKeyValid)
-                {
-                    HandleNorthKeys();
-                }
-                else
-                {
-                    NotifyUserOfLegalMoves();
-                }
-            }
-            if (e.KeyCode == Keys.Down || e.KeyCode == Keys.D || e.KeyCode == Keys.S)
-            {
-                _isKeyValid = IsValidDirection("S");
-                if (_isKeyValid)
-                {
-                    HandleSouthKeys();
-                }
-                else
-                {
-                    NotifyUserOfLegalMoves();
-                }
-            }
-        }
-
-        private void HandleNonArrowKeys(KeyEventArgs e)
-        {
-            bool notNumPad = (e.KeyCode < Keys.NumPad0 || e.KeyCode > Keys.NumPad9);
-            if (notNumPad)
-            {
-                #region Not Numberpad
-
-                if (e.KeyCode == Keys.Tab)
-                {
-                    //Ask Dave what should go here, if anything.
-                }
-
-                if (e.KeyCode != Keys.Back)
-                {
-                    _isKeyValid = true;
-                }
-                bool isNumberKey = (e.KeyCode >= Keys.D1 && e.KeyCode <= Keys.D9 || e.KeyCode == Keys.D0);
-                bool isPunctuation = (e.KeyCode == Keys.Decimal || e.KeyCode == Keys.OemPeriod);
-                {
-                    if (isNumberKey || isPunctuation)
-                    {
-                        _isKeyValid = false;
-                    }
-                    if (e.KeyCode == Keys.Oemcomma)
-                    {
-                        _isKeyValid = false;
-                        _isAngle = true;
-                    }
-                    if (e.KeyCode == Keys.Delete)
-                    {
-                        UndoLine();
-                        _isKeyValid = false;
-                    }
-                }
-
-                #endregion Not Numberpad
-            }
+            throw new NotImplementedException();
         }
 
         private void NotifyUserOfLegalMoves()
@@ -3745,17 +3643,7 @@ namespace SketchUp
             _lenString = String.Empty;
             LastDir = String.Empty;
 
-            // TODO: Remove if not needed:	int tclick = click;
-
-            try
-            {
-                _StartX.Add(click, StartX);
-
-                _StartY.Add(click, StartY);
-            }
-            catch
-            {
-            }
+            
 
             if (_undoMode == true)
             {

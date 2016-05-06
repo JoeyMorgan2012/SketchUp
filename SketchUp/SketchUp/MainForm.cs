@@ -288,6 +288,7 @@ namespace SketchUp
         private void MainForm_Load(object sender, EventArgs e)
         {
             Application.DoEvents();
+            RetrieveAndShowCurrentSketchImage();
         }
 
         private void MainForm_SizeChanged(object sender, EventArgs e)
@@ -312,19 +313,8 @@ namespace SketchUp
 
         private void RetrieveAndShowCurrentSketchImage()
         {
-            //int record = SketchUpGlobals.CurrentParcel.mrecno;
-            //int card = SketchUpGlobals.CurrentParcel.mdwell;
-
-            //SketchUpGlobals.CurrentParcel = null;
-            //SketchUpGlobals.SubSections = null;
-
-            //SketchUpGlobals.CurrentParcel = ParcelData.getParcel(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
-            //SketchUpGlobals.SubSections = new SectionDataCollection(SketchUpGlobals.CamraDbConn, record, card);
-
-            //SketchUpGlobals.CurrentParcel.BuildSketchData();
-            //getSketch(SketchUpGlobals.CurrentParcel.Record, SketchUpGlobals.CurrentParcel.Card);
-            //SketchUpGlobals.CurrentSketchImage = SketchUpGlobals.CurrentParcel.GetSketchImage(374);
-            SMSketcher sms = new SMSketcher(SketchUpGlobals.ParcelWorkingCopy, sketchBox);
+            MainFormParcel = SketchUpGlobals.ParcelWorkingCopy;
+            SMSketcher sms = new SMSketcher(MainFormParcel, sketchBox);
             sms.RenderSketch();
             SketchUpGlobals.SketchImage = sms.SketchImage;
             sketchBox.Image = sms.SketchImage;
@@ -348,7 +338,7 @@ namespace SketchUp
 
                 SketchUpGlobals.InitalRecord = SketchUpGlobals.Record;
                 SketchUpGlobals.InitalCard = SketchUpGlobals.Card;
-
+                GetNewSMParcel(SketchUpGlobals.Record, SketchUpGlobals.Card);
                 CheckGoodRecord(SketchUpGlobals.Record, SketchUpGlobals.Card);
 
                 if (SketchUpGlobals.Checker > 0)
@@ -356,6 +346,15 @@ namespace SketchUp
                     AddSketchToParcel();
                 }
             }
+        }
+
+        private void GetNewSMParcel(int record, int card)
+        {
+            MainFormParcel=SketchRepo.SelectParcelAll(record, card);
+            SketchUpGlobals.SketchSnapshots.Clear();
+            MainFormParcel.SnapShotIndex = 0;
+            SketchUpGlobals.SketchSnapshots.Add(MainFormParcel);
+            SketchUpGlobals.SMParcelFromData = MainFormParcel;
         }
 
         private void SelectRecordBtn_Click(object sender, EventArgs e)
@@ -523,26 +522,29 @@ namespace SketchUp
 
             SketchUpGlobals.SubSections = new SectionDataCollection(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
 
-            if (!CamraSupport.VacantOccupancies.Contains(SketchUpGlobals.CurrentParcel.moccup))
-            {
-                SetTextAddOrEdit(SketchUpGlobals.SubSections.Count);
-            }
+           
             if (CamraSupport.VacantOccupancies.Contains(SketchUpGlobals.CurrentParcel.moccup))
             {
                 MessageBox.Show("Can't Add Sketch to Vacant Parcel...Add Master Record Data!");
                 this.WindowState = FormWindowState.Minimized;
             }
-
+            else
+            {
+                SetTextAddOrEdit(SketchUpGlobals.SubSections.Count);
+            }
             try
             {
                 getSketch(SketchUpGlobals.CurrentParcel.mrecno, SketchUpGlobals.CurrentParcel.mdwell);
+
             }
             catch
             {
             }
-
+            SMSketcher sms = new SMSketcher(SketchUpGlobals.ParcelWorkingCopy, sketchBox);
+            sms.RenderSketch(true);
+            SketchUpGlobals.SketchImage = sms.SketchImage;
             SketchUpGlobals.CurrentSketchImage = SketchUpGlobals.CurrentParcel.GetSketchImage(374);
-            sketchBox.Image = SketchUpGlobals.CurrentSketchImage;
+            sketchBox.Image = SketchUpGlobals.SketchImage;
         }
 
         private void CardTxt_Leave(object sender, EventArgs e)

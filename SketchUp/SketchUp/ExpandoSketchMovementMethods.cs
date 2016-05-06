@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Windows.Forms;
 
 namespace SketchUp
 {
     public partial class ExpandoSketch : Form
     {
+        #region New or modified movementmethods
+
         public void MoveEastToBegin(PointF startPointScaled, decimal lineLength)
         {
             if (_isKeyValid == true)
             {
                 decimal scaledLength = lineLength * LocalParcelCopy.Scale;
                 float newX = startPointScaled.X + (float)scaledLength;
-                    EndOfJumpMovePoint = new PointF(newX, startPointScaled.Y);
-         
+                EndOfJumpMovePoint = new PointF(newX, startPointScaled.Y);
+
                 Graphics g = Graphics.FromImage(MainImage);
                 SolidBrush brush = new SolidBrush(Color.Red);
                 Pen pen1 = new Pen(Color.Red, 2);
@@ -33,18 +33,143 @@ namespace SketchUp
         {
             if (_isKeyValid == true)
             {
-                decimal scaledLength = lineLength * LocalParcelCopy.Scale;
-                float newX = startPointScaled.X - (float)scaledLength;
-                EndOfJumpMovePoint = new PointF(newX, startPointScaled.Y);
-                ScaledBeginPoint = EndOfJumpMovePoint;
+                decimal sketchScale = LocalParcelCopy.Scale;
+                PointF origin = LocalParcelCopy.SketchOrigin;
+                DbLineLengthX = lineLength;
+                ScaledStartOfMovement = startPointScaled;
+                MovementDistanceScaled = lineLength * sketchScale;
+                float newX = startPointScaled.X - (float)movementDistanceScaled;
+                ScaledEndOfMovement = new PointF(newX, startPointScaled.Y);
+                DbMovementStartPoint = SMGlobal.ScaledPointToDbPoint((decimal)ScaledStartOfMovement.X, (decimal)ScaledStartOfMovement.Y, sketchScale, origin);
                 Graphics g = Graphics.FromImage(MainImage);
                 SolidBrush brush = new SolidBrush(Color.Red);
                 Pen pen1 = new Pen(Color.Red, 2);
                 Font f = new Font("Segue UI", 8, FontStyle.Bold);
 
-                g.DrawLine(pen1, startPointScaled, EndOfJumpMovePoint);
-                g.DrawString(_lenString, f, brush, new PointF((startPointScaled.X + txtLocf), (startPointScaled.Y - 15)));
+                g.DrawLine(pen1, startPointScaled, ScaledEndOfMovement);
+
+                g.DrawString(_lenString, f, brush, new PointF((ScaledStartOfMovement.X + txtLocf), (ScaledStartOfMovement.Y - 15)));
+                g.Save();
+                ExpSketchPBox.Refresh();
+                ScaledStartOfMovement = ScaledEndOfMovement;
+
+                DistText.Focus();
+                BeginSectionBtn.Enabled = true;
             }
+        }
+
+        private static Color PenColorForDrawing(MovementMode movementType)
+        {
+            Color penColor;
+            switch (movementType)
+            {
+                case MovementMode.Draw:
+                    penColor = Color.Teal;
+                    break;
+
+                case MovementMode.Erase:
+                    penColor = Color.White;
+                    break;
+
+                case MovementMode.Jump:
+                case MovementMode.MoveDrawRed:
+                    penColor = Color.Red;
+
+                    break;
+
+                case MovementMode.MoveNoLine:
+                case MovementMode.NoMovement:
+
+                default:
+                    penColor = Color.Transparent;
+                    break;
+            }
+
+            return penColor;
+        }
+
+        private void DrawLineOnSketch()
+        {
+            decimal scale = LocalParcelCopy.Scale;
+
+            switch (SketchingState)
+            {
+                case SketchDrawingState.BeginPointSelected:
+                    break;
+
+                case SketchDrawingState.Drawing:
+                    break;
+
+                case SketchDrawingState.JumpMoveToBeginPoint:
+                    break;
+
+                case SketchDrawingState.JumpPointSelected:
+                    break;
+
+                case SketchDrawingState.UndoLastLine:
+
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        private void DrawTealLine(PointF startPoint, PointF endPoint, decimal distance, decimal scaledDistance)
+        {
+            Pen pen = new Pen(Color.Teal, 2);
+            Font font = new Font("Segoe UI", 7);
+            Graphics g = Graphics.FromImage(MainImage);
+            decimal scale = LocalParcelCopy.Scale;
+            g.DrawLine(pen, startPoint, endPoint);
+            Brush brush = Brushes.Black;
+            float labelX;
+            float labelY;
+            PointF labelPoint=startPoint;
+            switch (DirectionOfMovement)
+            {
+                case MoveDirections.N:
+
+                    labelX = startPoint.X - (float)(10 * scale);
+                    labelY = startPoint.Y - (Math.Abs(startPoint.Y - endPoint.Y) / 2f);
+                    labelPoint = new PointF(labelX, labelY);
+                    break;
+
+              
+                case MoveDirections.E:
+
+                    break;
+
+              
+                case MoveDirections.S:
+                    labelX = startPoint.X - (float)(10 * scale);
+                    labelY = endPoint.Y + (Math.Abs(endPoint.Y - startPoint.Y) / 2f);
+                    labelPoint = new PointF(labelX, labelY);
+                    break;
+
+              
+                case MoveDirections.W:
+                    break;
+
+              
+                case MoveDirections.None:
+                    break;
+
+                default:
+                    break;
+            }
+            if (labelPoint!=startPoint)//TODO: Complete
+                //Ignore if I haven't gotten to the placement yet
+            {
+               
+                g.DrawLine(pen, startPoint, endPoint);
+                g.DrawString(distance.ToString(), font, brush, labelPoint);
+            }
+        }
+
+        private void EraseSectionFromDrawing(SMSection workingSection)
+        {
+            //TODO: Draw everything with a white pen to earase the section and redraw it.
         }
 
         private List<string> GetLegalMoveDirections(PointF scaledJumpPoint, string attachSectionLetter)
@@ -58,13 +183,157 @@ namespace SketchUp
             return legalDirections;
         }
 
+        private void HandleDirectionalKeys(KeyEventArgs e)
+        {
+            string textEntered = string.Empty;
+            decimal distanceValue = 0.00M;
+
+            if (!string.IsNullOrEmpty(DistText.Text))
+            {
+                textEntered = DistText.Text;
+
+                if (textEntered.IndexOf(",") > 0)
+                {
+                    _isAngle = true;
+                    ParseAngleEntry(e, textEntered);
+                }
+                else
+                {
+                    decimal.TryParse(DistText.Text, out distanceValue);
+                    MovementDistanceScaled = distanceValue * LocalParcelCopy.Scale;
+                    SetDirectionOfKeyEntered(e);
+                    HandleMovementByKey(DirectionOfMovement, distanceValue);
+                }
+            }
+        }
+
+        private void HandleMovementByKey(MoveDirections direction, decimal distance)
+        {
+            decimal scale = LocalParcelCopy.Scale;
+            decimal scaledDistance = distance * scale;
+            MovementMode movementType;
+            float endX;
+            float endY;
+            switch (SketchingState)
+            {
+                case SketchDrawingState.BeginPointSelected:
+
+                case SketchDrawingState.Drawing:
+                    movementType = MovementMode.Draw;
+                    break;
+
+                case SketchDrawingState.JumpMoveToBeginPoint:
+                case SketchDrawingState.JumpPointSelected:
+                    switch (direction)
+                    {
+                        //Regular directions
+                        case MoveDirections.N:
+                             endX = ScaledStartOfMovement.X;
+                            endY = ScaledStartOfMovement.Y - (float)scaledDistance;
+                          
+                            break;
+ case MoveDirections.E:
+                            endX = ScaledStartOfMovement.X+(float)scaledDistance;
+                            endY = ScaledStartOfMovement.Y;
+
+                            break;
+  case MoveDirections.S:
+                            endX = ScaledStartOfMovement.X;
+                            endY = ScaledStartOfMovement.Y + (float)scaledDistance;
+
+                            break;
+
+  case MoveDirections.W:
+                            endX = ScaledStartOfMovement.X - (float)scaledDistance;
+                            endY = ScaledStartOfMovement.Y;
+
+                            break;
+
+                            //TODO: Handle angles
+                            //case MoveDirections.NE:
+                            //    break;
+
+
+
+                            //case MoveDirections.SE:
+                            //    break;
+
+
+                            //case MoveDirections.SW:
+                            //    break;
+
+
+
+                            //case MoveDirections.NW:
+                            //    break;
+
+                            //case MoveDirections.None:
+                            //    break;
+
+                            default:
+                            endX = ScaledStartOfMovement.X;
+                            endY = ScaledStartOfMovement.Y;
+                            break;
+                    }
+                    ScaledEndOfMovement = new PointF(endX, endY);
+                    DrawTealLine(ScaledStartOfMovement, ScaledEndOfMovement, distance, scaledDistance);
+                    movementType = MovementMode.MoveDrawRed;
+                    break;
+
+                default:
+                    movementType = MovementMode.MoveNoLine;
+                    break;
+            }
+
+            PointF start = ScaledStartOfMovement;
+        }
+
+        private void HandleNonArrowKeys(KeyEventArgs e)
+        {
+            bool notNumPad = (e.KeyCode < Keys.NumPad0 || e.KeyCode > Keys.NumPad9);
+            if (notNumPad)
+            {
+                #region Not Numberpad
+
+                if (e.KeyCode == Keys.Tab)
+                {
+                    //Ask Dave what should go here, if anything.
+                }
+
+                if (e.KeyCode != Keys.Back)
+                {
+                    _isKeyValid = true;
+                }
+                bool isNumberKey = (e.KeyCode >= Keys.D1 && e.KeyCode <= Keys.D9 || e.KeyCode == Keys.D0);
+                bool isPunctuation = (e.KeyCode == Keys.Decimal || e.KeyCode == Keys.OemPeriod);
+                {
+                    if (isNumberKey || isPunctuation)
+                    {
+                        _isKeyValid = false;
+                    }
+                    if (e.KeyCode == Keys.Oemcomma)
+                    {
+                        _isKeyValid = false;
+                        _isAngle = true;
+                    }
+                    if (e.KeyCode == Keys.Delete)
+                    {
+                        UndoLine();
+                        _isKeyValid = false;
+                    }
+                }
+
+                #endregion Not Numberpad
+            }
+        }
+
         private void JumptoCorner()
         {
-          
-           // float CurrentScale = _currentScale;
+            // float CurrentScale = _currentScale;
             //int crrec = _currentParcel.Record;
             //int crcard = _currentParcel.Card;
-
+            decimal scale = LocalParcelCopy.Scale;
+            PointF origin = LocalParcelCopy.SketchOrigin;
             CurrentSecLtr = String.Empty;
             _newIndex = 0;
             currentAttachmentLine = 0;
@@ -105,35 +374,124 @@ namespace SketchUp
 
                     ScaledJumpPoint = JumpPointLine.ScaledEndPoint;
                     LegalMoveDirections = GetLegalMoveDirections(ScaledJumpPoint, AttSectLtr);
-                    MoveCursorToJumpPoint(ScaledJumpPoint);
+                    MoveCursorToNewPoint(ScaledJumpPoint, MovementMode.Jump);
                     LoadLegacyJumpTable();
                     SetReadyButtonAppearance();
                     _isJumpMode = true;
                     SketchingState = SketchDrawingState.JumpPointSelected;
+                    ScaledBeginPoint = ScaledJumpPoint;
+                    DbMovementStartPoint = SMGlobal.ScaledPointToDbPoint((decimal)ScaledBeginPoint.X, (decimal)ScaledBeginPoint.Y, scale, origin);
+
+                    DistText.Focus();
                 }
             }
         }
-        private void MoveCursorToJumpPoint(PointF jumpPointScaled)
-        {
 
+        private void MoveCursorToNewPoint(PointF newPoint, MovementMode movementType)
+        {
             Color penColor;
             this.Cursor = new Cursor(Cursor.Current.Handle);
-            int jumpXScaled = Convert.ToInt32(jumpPointScaled.X);
-            int jumpYScaled = Convert.ToInt32(jumpPointScaled.Y);
+            int jumpXScaled = Convert.ToInt32(newPoint.X);
+            int jumpYScaled = Convert.ToInt32(newPoint.Y);
             Cursor.Position = new Point(jumpXScaled, jumpYScaled);
-
-            penColor = (_undoMode || draw) ? Color.Red : Color.Black;
-
+            penColor = PenColorForDrawing(movementType);
+            _isJumpMode = (SketchingState == SketchDrawingState.JumpPointSelected || SketchingState == SketchDrawingState.JumpMoveToBeginPoint);
             Graphics g = Graphics.FromImage(MainImage);
-            Pen pen1 = new Pen(Color.Red, 4);
+            Pen pen1 = new Pen(penColor, 4);
             g.DrawRectangle(pen1, jumpXScaled, jumpYScaled, 1, 1);
             g.Save();
 
             ExpSketchPBox.Image = MainImage;
-
-            //DMouseClick();
-
+            ExpSketchPBox.Refresh();
         }
+
+        private void ParseAngleEntry(KeyEventArgs e, string textEntered)
+        {
+            string anglecalls = DistText.Text.Trim();
+
+            int commaCnt = anglecalls.IndexOf(",");
+
+            string D1 = anglecalls.Substring(0, commaCnt).Trim();
+
+            string D2 = anglecalls.PadRight(25, ' ').Substring(commaCnt + 1, 10).Trim();
+
+            AngD2 = Convert.ToDecimal(D1);
+
+            AngD1 = Convert.ToDecimal(D2);
+
+            AngleForm angleDialog = new AngleForm();
+            angleDialog.ShowDialog();
+            MoveDirections angleDirection = angleDialog.AngleDirection;
+            if (_isKeyValid == false)
+            {
+                _isKeyValid = true;
+            }
+            switch (angleDirection)
+            {
+                case MoveDirections.NE:
+                    MoveNorthEast(ScaledStartOfMovement.X, ScaledStartOfMovement.Y);
+                    break;
+
+                case MoveDirections.SE:
+                    MoveSouthEast(ScaledStartOfMovement.X, ScaledStartOfMovement.Y);
+                    break;
+
+                case MoveDirections.SW:
+                    MoveSouthWest(ScaledStartOfMovement.X, ScaledStartOfMovement.Y);
+                    break;
+
+                case MoveDirections.NW:
+                    MoveNorthWest(ScaledStartOfMovement.X, ScaledStartOfMovement.Y);
+                    break;
+
+                case MoveDirections.None:
+
+                default:
+                    break;
+            }
+        }
+
+        private void SetDirectionOfKeyEntered(KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Right:
+                case Keys.E:
+                case Keys.R:
+                    DirectionOfMovement = MoveDirections.E;
+
+                    break;
+
+                case Keys.Left:
+                case Keys.L:
+                case Keys.W:
+                    DirectionOfMovement = MoveDirections.W;
+
+                    break;
+
+                case Keys.Up:
+                case Keys.N:
+                case Keys.U:
+                    DirectionOfMovement = MoveDirections.N;
+
+                    break;
+
+                case Keys.Down:
+                case Keys.D:
+                case Keys.S:
+                    DirectionOfMovement = MoveDirections.S;
+
+                    break;
+
+                default:
+                    DirectionOfMovement = MoveDirections.None;
+
+                    break;
+            }
+        }
+
+        #endregion New or modified movementmethods
+
         //public void AddEastLineToSection(PointF startPoint, decimal distance)
         //{
         //    SMSection workingSection = (from s in LocalParcelCopy.Sections where s.SectionLetter == s.ParentParcel.LastSectionLetter select s).FirstOrDefault();
@@ -164,11 +522,7 @@ namespace SketchUp
         //    }
         //}
 
-        private void EraseSectionFromDrawing(SMSection workingSection)
-        {
-           //TODO: Draw everything with a white pen to earase the section and redraw it.
-        }
-        #region Original Movement Methods
+        #region Original Movement Methods modified
 
         public void MoveEast(float startx, float starty)
         {
@@ -263,14 +617,6 @@ namespace SketchUp
                 DistText.Focus();
 
                 ExpSketchPBox.Image = MainImage;
-
-                //click++;
-                _StartX.Remove(click);
-                _StartY.Remove(click);
-                _StartX.Add(click, PrevX);
-                _StartY.Add(click, PrevY);
-
-                //savpic.Add(click, imageToByteArray(_mainimage));
 
                 decimal XadjD = 0;
                 decimal YadjD = 0;
@@ -485,14 +831,6 @@ namespace SketchUp
 
                 ExpSketchPBox.Image = MainImage;
 
-                //click++;
-                _StartX.Remove(click);
-                _StartY.Remove(click);
-                _StartX.Add(click, PrevX);
-                _StartY.Add(click, PrevY);
-
-                //savpic.Add(click, imageToByteArray(_mainimage));
-
                 decimal XadjD = 0;
                 decimal YadjD = 0;
 
@@ -620,12 +958,6 @@ namespace SketchUp
 
         public void MoveNorthEast(float startx, float starty)
         {
-#if DEBUG
-
-            //Debugging Code -- remove for production release
-            var fullStack = new System.Diagnostics.StackTrace(true).GetFrames();
-            UtilityMethods.LogMethodCall(fullStack, true);
-#endif
             if (_isKeyValid == true)
             {
                 StrxD = 0;
@@ -714,14 +1046,6 @@ namespace SketchUp
 
                 ExpSketchPBox.Image = MainImage;
 
-                //click++;
-                _StartX.Remove(click);
-                _StartY.Remove(click);
-                _StartX.Add(click, PrevX);
-                _StartY.Add(click, PrevY);
-
-                //savpic.Add(click, imageToByteArray(_mainimage));
-
                 Xadj = (((ScaleBaseX - PrevX) / _currentScale) * -1);
                 Yadj = (((ScaleBaseY - PrevY) / _currentScale) * -1);
 
@@ -755,10 +1079,10 @@ namespace SketchUp
             }
 
             _isAngle = false;
-            AngleForm.NorthEast = false;
-            AngleForm.NorthWest = false;
-            AngleForm.SouthEast = false;
-            AngleForm.SouthWest = false;
+            AngleFormOriginal.NorthEast = false;
+            AngleFormOriginal.NorthWest = false;
+            AngleFormOriginal.SouthEast = false;
+            AngleFormOriginal.SouthWest = false;
         }
 
         public void MoveNorthWest(float startx, float starty)
@@ -849,14 +1173,6 @@ namespace SketchUp
 
                 ExpSketchPBox.Image = MainImage;
 
-                //click++;
-                _StartX.Remove(click);
-                _StartY.Remove(click);
-                _StartX.Add(click, PrevX);
-                _StartY.Add(click, PrevY);
-
-                //savpic.Add(click, imageToByteArray(_mainimage));
-
                 Xadj = (((ScaleBaseX - PrevX) / _currentScale) * -1);
                 Yadj = (((ScaleBaseY - PrevY) / _currentScale) * -1);
 
@@ -890,10 +1206,10 @@ namespace SketchUp
             }
 
             _isAngle = false;
-            AngleForm.NorthEast = false;
-            AngleForm.NorthWest = false;
-            AngleForm.SouthEast = false;
-            AngleForm.SouthWest = false;
+            AngleFormOriginal.NorthEast = false;
+            AngleFormOriginal.NorthWest = false;
+            AngleFormOriginal.SouthEast = false;
+            AngleFormOriginal.SouthWest = false;
         }
 
         public void MoveSouth(float startx, float starty)
@@ -983,14 +1299,6 @@ namespace SketchUp
                 DistText.Focus();
 
                 ExpSketchPBox.Image = MainImage;
-
-                //click++;
-                _StartX.Remove(click);
-                _StartY.Remove(click);
-                _StartX.Add(click, PrevX);
-                _StartY.Add(click, PrevY);
-
-                //savpic.Add(click, imageToByteArray(_mainimage));
 
                 decimal XadjD = 0;
                 decimal YadjD = 0;
@@ -1204,14 +1512,6 @@ namespace SketchUp
 
                 ExpSketchPBox.Image = MainImage;
 
-                //click++;
-                _StartX.Remove(click);
-                _StartY.Remove(click);
-                _StartX.Add(click, PrevX);
-                _StartY.Add(click, PrevY);
-
-                //savpic.Add(click, imageToByteArray(_mainimage));
-
                 Xadj = (((ScaleBaseX - PrevX) / _currentScale) * -1);
                 Yadj = (((ScaleBaseY - PrevY) / _currentScale) * -1);
 
@@ -1245,10 +1545,10 @@ namespace SketchUp
             }
 
             _isAngle = false;
-            AngleForm.NorthEast = false;
-            AngleForm.NorthWest = false;
-            AngleForm.SouthEast = false;
-            AngleForm.SouthWest = false;
+            AngleFormOriginal.NorthEast = false;
+            AngleFormOriginal.NorthWest = false;
+            AngleFormOriginal.SouthEast = false;
+            AngleFormOriginal.SouthWest = false;
         }
 
         public void MoveSouthWest(float startx, float starty)
@@ -1348,14 +1648,6 @@ namespace SketchUp
 
                 ExpSketchPBox.Image = MainImage;
 
-                //click++;
-                _StartX.Remove(click);
-                _StartY.Remove(click);
-                _StartX.Add(click, PrevX);
-                _StartY.Add(click, PrevY);
-
-                //savpic.Add(click, imageToByteArray(_mainimage));
-
                 Xadj = (((ScaleBaseX - PrevX) / _currentScale) * -1);
                 Yadj = (((ScaleBaseY - PrevY) / _currentScale) * -1);
 
@@ -1389,10 +1681,10 @@ namespace SketchUp
             }
 
             _isAngle = false;
-            AngleForm.NorthEast = false;
-            AngleForm.NorthWest = false;
-            AngleForm.SouthEast = false;
-            AngleForm.SouthWest = false;
+            AngleFormOriginal.NorthEast = false;
+            AngleFormOriginal.NorthWest = false;
+            AngleFormOriginal.SouthEast = false;
+            AngleFormOriginal.SouthWest = false;
         }
 
         public void MoveWest(float startx, float starty)
@@ -1627,17 +1919,16 @@ namespace SketchUp
             decimal.TryParse(DistText.Text, out distanceValue);
             if (_isAngle == false)
             {
-                if (_isJumpMode || SketchingState == SketchDrawingState.JumpMoveToBeginPoint)
+                if (_isJumpMode || SketchingState == SketchDrawingState.JumpMoveToBeginPoint || SketchingState == SketchDrawingState.JumpPointSelected)
                 {
-
                     MoveEastToBegin(ScaledJumpPoint, distanceValue);
                 }
                 else if (draw || SketchingState == SketchDrawingState.BeginPointSelected)
                 {
                     ScaledBeginPoint = ScaledJumpPoint;
+
                     //TODO: Handle this with the addition of the line and the drawing of it using the LocalParcelCopy
-               //     AddEastLineToSection(ScaledBeginPoint, distanceValue);
-                        
+                    //     AddEastLineToSection(ScaledBeginPoint, distanceValue);
                 }
                 DistText.Text = string.Empty;
                 DistText.Focus();
@@ -1650,8 +1941,6 @@ namespace SketchUp
 
         private void HandleNorthKeys()
         {
-            _isKeyValid = IsValidDirection("N");
-
             LastDir = "N";
             if (_isAngle == false)
             {
@@ -1666,7 +1955,6 @@ namespace SketchUp
 
         private void HandleSouthKeys()
         {
-            _isKeyValid = IsValidDirection("S");
             LastDir = "S";
             if (_isAngle == false)
             {
@@ -1681,13 +1969,12 @@ namespace SketchUp
 
         private void HandleWestKeys()
         {
-            _isKeyValid = IsValidDirection("W");
             LastDir = "W";
-            if (_isJumpMode)
+            if (_isJumpMode || SketchingState == SketchDrawingState.JumpMoveToBeginPoint || SketchingState == SketchDrawingState.JumpPointSelected)
             {
                 decimal distanceValue = 0;
                 decimal.TryParse(DistText.Text, out distanceValue);
-                MoveEastToBegin(ScaledJumpPoint, distanceValue);
+                MoveWestToBegin(ScaledJumpPoint, distanceValue);
             }
             else if (draw)
             {
@@ -1697,6 +1984,6 @@ namespace SketchUp
             DistText.Focus();
         }
 
-        #endregion Original Movement Methods
+        #endregion Original Movement Methods modified
     }
 }

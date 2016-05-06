@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace SketchRenderPoC
+namespace SketchUp
 {
     internal static class Program
     {

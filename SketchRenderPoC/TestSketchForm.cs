@@ -12,7 +12,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
-namespace SketchRenderPoC
+namespace SketchUp
 {
     public partial class TestSketchForm : Form
     {
@@ -1185,6 +1185,13 @@ namespace SketchRenderPoC
         private void sketchBox_MouseMove(object sender, MouseEventArgs e)
         {
             mouseLocationLabel.Text = string.Format("{0},{1}", e.X, e.Y);
+        }
+
+        private void runTest1_Click(object sender, EventArgs e)
+        {
+            AngleFormOriginal a = new AngleFormOriginal();
+            a.ShowDialog();
+            MessageBox.Show(a.DialogResult.ToString());
         }
     }
 }
