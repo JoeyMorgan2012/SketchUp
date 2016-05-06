@@ -243,6 +243,8 @@ namespace SketchUp
             record = section.Record;
             dwelling = section.Dwelling;
             sectionLetter = section.SectionLetter;
+            ParentSection = section;
+            ParentParcel = section.ParentParcel;
         }
 
         #endregion Constructors
@@ -438,7 +440,10 @@ namespace SketchUp
         {
             get
             {
-                endPointDistanceFromComparisonPoint = Math.Round((decimal)SMGlobal.LineLength(ComparisonPoint, ScaledEndPoint),2);
+                if (ComparisonPoint==null)
+                {
+                    ComparisonPoint = ParentParcel.SketchOrigin;
+                }
                 return endPointDistanceFromComparisonPoint;
             }
 

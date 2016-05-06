@@ -28,9 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExpandoSketch));
             this.ExpandoSketchTools = new System.Windows.Forms.ToolStrip();
-            this.AddSectionContextMenu = new System.Windows.Forms.ContextMenuStrip();
+            this.AddSectionContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.jumpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.beginPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.endSectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();

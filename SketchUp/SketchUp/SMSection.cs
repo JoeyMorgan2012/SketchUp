@@ -22,13 +22,7 @@ namespace SketchUp
             return line;
         }
 
-        //TODO: Remove debugging code
-        private void listLineEnds()
-        {
-            foreach (SMLine l in Lines)
-            {
-            }
-        }
+       
 
         #endregion class methods
 
@@ -116,6 +110,10 @@ namespace SketchUp
         {
             get
             {
+                if (lines==null)
+                {
+                    lines = new List<SMLine>();
+                }
                 return lines;
             }
 
@@ -256,7 +254,7 @@ namespace SketchUp
         #endregion Constructors
 
         #region Fields
-
+        private bool sectionIsClosed;
         private decimal adjFactor;
         private SMLine anchorLine;
         private string attachedTo;
@@ -360,6 +358,38 @@ namespace SketchUp
             {
                 sectionLabel = value;
             }
+        }
+
+        public bool SectionIsClosed
+        {
+            get
+            {
+                sectionIsClosed = CalculateOpenOrClosed();
+                return sectionIsClosed;
+            }
+
+            set
+            {
+                sectionIsClosed = value;
+            }
+        }
+
+        private bool CalculateOpenOrClosed()
+        {
+            bool closed = false;
+            if (Lines!=null&&lines.Count>2)
+                //Cannot close a shape unless there are at least three lines!
+            {
+
+     SMLine firstLine = (from l in Lines orderby l.LineNumber select l).First();
+            SMLine lastLine= (from l in Lines orderby l.LineNumber select l).Last();
+                if (lastLine.EndX==firstLine.StartX&&lastLine.EndY==firstLine.StartY)
+                {
+                    closed = true;
+                }
+            }
+            return closed;
+       
         }
     }
 }

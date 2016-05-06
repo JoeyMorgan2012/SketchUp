@@ -1,11 +1,24 @@
 ﻿using System;
 using System.Drawing;
 using System.Text;
+using System.Windows.Forms;
 
 namespace SketchUp
 {
     public static class SMGlobal
     {
+        public enum MoveDirection
+        {
+            N,
+            NE,
+            E,
+            SE,
+            S,
+            SW,
+            W,
+            NW,
+            None
+        }
         public enum SnapshotState
         {
             OriginalMainImage,
@@ -196,6 +209,46 @@ namespace SketchUp
             var  dataY= (float)((screenY / scale) - (decimal)sketchOrigin.Y);
             PointF dbPoint = new PointF(dataX, dataY);
             return dbPoint;
+        }
+        public static MoveDirection GetDirectionOfKeyEntered(KeyEventArgs e)
+        {
+            SMGlobal.MoveDirection moveDir;
+            switch (e.KeyCode)
+            {
+                case Keys.Right:
+                case Keys.E:
+                case Keys.R:
+                    moveDir = MoveDirection.E;
+
+                    break;
+
+                case Keys.Left:
+                case Keys.L:
+                case Keys.W:
+                    moveDir = MoveDirection.W;
+
+                    break;
+
+                case Keys.Up:
+                case Keys.N:
+                case Keys.U:
+                    moveDir = MoveDirection.N;
+
+                    break;
+
+                case Keys.Down:
+                case Keys.D:
+                case Keys.S:
+                    moveDir = MoveDirection.S;
+
+                    break;
+
+                default:
+                    moveDir = MoveDirection.None;
+
+                    break;
+            }
+            return moveDir;
         }
     }
 }

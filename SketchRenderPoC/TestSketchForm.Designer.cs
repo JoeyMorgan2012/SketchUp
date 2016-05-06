@@ -27,7 +27,6 @@
             this.beginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.drawingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.runTest1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.runTest2 = new System.Windows.Forms.ToolStripMenuItem();
             this.runTest3 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -49,6 +48,7 @@
             this.sketchBox = new System.Windows.Forms.PictureBox();
             this.sketchUpGlobalsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.debugInfoLabel = new System.Windows.Forms.Label();
+            this.debugInfoStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.MainMenu.SuspendLayout();
             this.cmenuDrawing.SuspendLayout();
             this.StatusMain.SuspendLayout();
@@ -79,7 +79,6 @@
             // 
             this.drawingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.runTest1,
-            this.toolStripSeparator1,
             this.runTest2,
             this.runTest3,
             this.toolStripSeparator2,
@@ -98,20 +97,16 @@
             this.runTest1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D1)));
             this.runTest1.Size = new System.Drawing.Size(238, 26);
             this.runTest1.Text = "Test 1";
-            this.runTest1.ToolTipText = "Add a Building Section";
+            this.runTest1.ToolTipText = "Run the first test";
             this.runTest1.Click += new System.EventHandler(this.runTest1_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(235, 6);
             // 
             // runTest2
             // 
             this.runTest2.Name = "runTest2";
             this.runTest2.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D2)));
             this.runTest2.Size = new System.Drawing.Size(238, 26);
-            this.runTest2.Text = "Begin Drawing";
+            this.runTest2.Text = "Test 2";
+            this.runTest2.ToolTipText = "Run the second test";
             this.runTest2.Click += new System.EventHandler(this.tsmListParcelSnapshots_Click);
             // 
             // runTest3
@@ -119,7 +114,8 @@
             this.runTest3.Name = "runTest3";
             this.runTest3.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D3)));
             this.runTest3.Size = new System.Drawing.Size(238, 26);
-            this.runTest3.Text = "End Drawing";
+            this.runTest3.Text = "Test 3";
+            this.runTest3.ToolTipText = "Run the third test";
             this.runTest3.Click += new System.EventHandler(this.tsmAllTests_Click);
             // 
             // toolStripSeparator2
@@ -159,6 +155,9 @@
             this.distanceText.Name = "distanceText";
             this.distanceText.Size = new System.Drawing.Size(100, 27);
             this.distanceText.ToolTipText = "For an angle, enter the horizontal distance, a comma, and the vertical distance";
+            this.distanceText.KeyDown += new System.Windows.Forms.KeyEventHandler(this.distanceText_KeyDown);
+            this.distanceText.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.distanceText_KeyPress);
+            this.distanceText.KeyUp += new System.Windows.Forms.KeyEventHandler(this.distanceText_KeyUp);
             // 
             // wholeSketchToolStripMenuItem
             // 
@@ -215,7 +214,8 @@
             this.StatusMain.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.StatusMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mouseLocationLabel,
-            this.feedbackStatus});
+            this.feedbackStatus,
+            this.debugInfoStatusLabel});
             this.StatusMain.Location = new System.Drawing.Point(0, 702);
             this.StatusMain.Name = "StatusMain";
             this.StatusMain.Size = new System.Drawing.Size(1057, 25);
@@ -232,7 +232,7 @@
             // 
             this.feedbackStatus.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.feedbackStatus.Name = "feedbackStatus";
-            this.feedbackStatus.Size = new System.Drawing.Size(1042, 20);
+            this.feedbackStatus.Size = new System.Drawing.Size(951, 20);
             this.feedbackStatus.Spring = true;
             // 
             // sketchBox
@@ -246,6 +246,7 @@
             this.sketchBox.Size = new System.Drawing.Size(1057, 629);
             this.sketchBox.TabIndex = 6;
             this.sketchBox.TabStop = false;
+            this.sketchBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.sketchBox_MouseDown);
             this.sketchBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.sketchBox_MouseMove);
             // 
             // sketchUpGlobalsBindingSource
@@ -262,6 +263,12 @@
             this.debugInfoLabel.Size = new System.Drawing.Size(60, 17);
             this.debugInfoLabel.TabIndex = 7;
             this.debugInfoLabel.Text = "Status...";
+            // 
+            // debugInfoStatusLabel
+            // 
+            this.debugInfoStatusLabel.Name = "debugInfoStatusLabel";
+            this.debugInfoStatusLabel.Size = new System.Drawing.Size(91, 20);
+            this.debugInfoStatusLabel.Text = "Debug info: ";
             // 
             // TestSketchForm
             // 
@@ -310,7 +317,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem tsMenuExitForm;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem drawSketchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem runTest2;
         private System.Windows.Forms.BindingSource sketchUpGlobalsBindingSource;
@@ -318,6 +324,7 @@
         private System.Windows.Forms.ToolStripTextBox distanceText;
         private System.Windows.Forms.ToolStripStatusLabel feedbackStatus;
         private System.Windows.Forms.Label debugInfoLabel;
+        private System.Windows.Forms.ToolStripStatusLabel debugInfoStatusLabel;
     }
 }
 
