@@ -1,9 +1,9 @@
-﻿using System;
+﻿using SWallTech;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using SWallTech;
 
 namespace SketchUp
 {
@@ -15,7 +15,6 @@ namespace SketchUp
             {
                 return camraDbConn;
             }
-
             set
             {
                 camraDbConn = value;
@@ -28,7 +27,6 @@ namespace SketchUp
             {
                 return card;
             }
-
             set
             {
                 card = value;
@@ -41,7 +39,6 @@ namespace SketchUp
             {
                 return checker;
             }
-
             set
             {
                 checker = value;
@@ -54,7 +51,6 @@ namespace SketchUp
             {
                 return currentParcel;
             }
-
             set
             {
                 currentParcel = value;
@@ -67,23 +63,9 @@ namespace SketchUp
             {
                 return currentSketchImage;
             }
-
             set
             {
                 currentSketchImage = value;
-            }
-        }
-
-        public static SMParcel SMParcelFromData
-        {
-            get
-            {
-                return currentSMParcel;
-            }
-
-            set
-            {
-                currentSMParcel = value;
             }
         }
 
@@ -93,10 +75,21 @@ namespace SketchUp
             {
                 return dbAccessMgr;
             }
-
             set
             {
                 dbAccessMgr = value;
+            }
+        }
+
+        public static decimal DefaultScale
+        {
+            get
+            {
+                return defaultScale;
+            }
+            set
+            {
+                defaultScale = value;
             }
         }
 
@@ -106,7 +99,6 @@ namespace SketchUp
             {
                 return fcCard;
             }
-
             set
             {
                 fcCard = value;
@@ -119,7 +111,6 @@ namespace SketchUp
             {
                 return fcIpAddress;
             }
-
             set
             {
                 fcIpAddress = value;
@@ -132,7 +123,6 @@ namespace SketchUp
             {
                 return fcLib;
             }
-
             set
             {
                 fcLib = value;
@@ -145,7 +135,6 @@ namespace SketchUp
             {
                 return fcLocalityPrefix;
             }
-
             set
             {
                 fcLocalityPrefix = value;
@@ -158,7 +147,6 @@ namespace SketchUp
             {
                 return fcRecord;
             }
-
             set
             {
                 fcRecord = value;
@@ -171,7 +159,6 @@ namespace SketchUp
             {
                 return hasNewSketch;
             }
-
             set
             {
                 hasNewSketch = value;
@@ -184,7 +171,6 @@ namespace SketchUp
             {
                 return hasSketch;
             }
-
             set
             {
                 hasSketch = value;
@@ -197,7 +183,6 @@ namespace SketchUp
             {
                 return initalCard;
             }
-
             set
             {
                 initalCard = value;
@@ -210,7 +195,6 @@ namespace SketchUp
             {
                 return initalRecord;
             }
-
             set
             {
                 initalRecord = value;
@@ -223,7 +207,6 @@ namespace SketchUp
             {
                 return ipAddress;
             }
-
             set
             {
                 ipAddress = value;
@@ -236,7 +219,6 @@ namespace SketchUp
             {
                 return localityDescription;
             }
-
             set
             {
                 localityDescription = value;
@@ -249,7 +231,6 @@ namespace SketchUp
             {
                 return localityPreFix;
             }
-
             set
             {
                 localityPreFix = value;
@@ -262,7 +243,6 @@ namespace SketchUp
             {
                 return localLib;
             }
-
             set
             {
                 localLib = value;
@@ -275,7 +255,6 @@ namespace SketchUp
             {
                 return mainFormIsClosed;
             }
-
             set
             {
                 mainFormIsClosed = value;
@@ -288,7 +267,6 @@ namespace SketchUp
             {
                 return mainFormIsMinimized;
             }
-
             set
             {
                 mainFormIsMinimized = value;
@@ -301,7 +279,6 @@ namespace SketchUp
             {
                 return month;
             }
-
             set
             {
                 month = value;
@@ -326,7 +303,6 @@ namespace SketchUp
 
                 return parcelWorkingCopy;
             }
-
             set
             {
                 parcelWorkingCopy = value;
@@ -339,7 +315,6 @@ namespace SketchUp
             {
                 return record;
             }
-
             set
             {
                 record = value;
@@ -352,7 +327,6 @@ namespace SketchUp
             {
                 return reOpenSection;
             }
-
             set
             {
                 reOpenSection = value;
@@ -365,7 +339,6 @@ namespace SketchUp
             {
                 return sketchFolder;
             }
-
             set
             {
                 sketchFolder = value;
@@ -378,7 +351,6 @@ namespace SketchUp
             {
                 return sketchImage;
             }
-
             set
             {
                 sketchImage = value;
@@ -395,7 +367,6 @@ namespace SketchUp
                 }
                 return sketchMgrRepo;
             }
-
             set
             {
                 sketchMgrRepo = value;
@@ -412,10 +383,21 @@ namespace SketchUp
                 }
                 return sketchSnapshots;
             }
-
             set
             {
                 sketchSnapshots = value;
+            }
+        }
+
+        public static SMParcel SMParcelFromData
+        {
+            get
+            {
+                return currentSMParcel;
+            }
+            set
+            {
+                currentSMParcel = value;
             }
         }
 
@@ -425,7 +407,6 @@ namespace SketchUp
             {
                 return _subSections;
             }
-
             set
             {
                 _subSections = value;
@@ -438,7 +419,6 @@ namespace SketchUp
             {
                 return today;
             }
-
             set
             {
                 today = value;
@@ -451,7 +431,6 @@ namespace SketchUp
             {
                 return todayDayNumber;
             }
-
             set
             {
                 todayDayNumber = value;
@@ -464,12 +443,13 @@ namespace SketchUp
             {
                 return year;
             }
-
             set
             {
                 year = value;
             }
         }
+
+        
 
         private static CAMRA_Connection camraDbConn = null;
         private static int card = 0;
@@ -478,6 +458,7 @@ namespace SketchUp
         private static Image currentSketchImage;
         private static SMParcel currentSMParcel;
         private static DBAccessManager dbAccessMgr = null;
+        private static decimal defaultScale;
         private static int fcCard = 0;
         private static string fcIpAddress = String.Empty;
         private static string fcLib = String.Empty;
@@ -491,7 +472,6 @@ namespace SketchUp
         private static string localityDescription = string.Empty;
         private static string localityPreFix = String.Empty;
         private static string localLib = String.Empty;
-
         private static bool mainFormIsClosed = false;
         private static bool mainFormIsMinimized = false;
         private static int month;
@@ -502,7 +482,6 @@ namespace SketchUp
         private static Image sketchImage;
         private static SketchRepository sketchMgrRepo;
         private static List<SMParcel> sketchSnapshots;
-
         private static DateTime today;
         private static int todayDayNumber;
         private static int year;

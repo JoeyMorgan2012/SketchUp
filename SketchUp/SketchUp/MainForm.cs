@@ -262,7 +262,7 @@ namespace SketchUp
             if (doSketch)
             {
                 ExpandoSketch skexp = new ExpandoSketch(SketchUpGlobals.CurrentParcel, SketchUpGlobals.SketchFolder, SketchUpGlobals.CurrentParcel.mrecno.ToString(), SketchUpGlobals.CurrentParcel.mdwell.ToString(),
-                   SketchUpGlobals.FcLocalityPrefix, SketchUpGlobals.CamraDbConn, SketchUpGlobals.SubSections, SketchUpGlobals.HasSketch, SketchUpGlobals.SketchImage, SketchUpGlobals.HasNewSketch);
+                   SketchUpGlobals.FcLocalityPrefix, SketchUpGlobals.CamraDbConn, SketchUpGlobals.SubSections, SketchUpGlobals.HasSketch, SketchUpGlobals.HasNewSketch);
 
                 skexp.ShowDialog(this);
 

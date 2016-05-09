@@ -499,9 +499,8 @@ namespace SketchUp
                         storeyCheckOneOk = true;
                     }
 
-                    if (storeyCheckOneOk == true && sectionTypeSelected == true && storeyNumberChecksOk==true)
+                    if (storeyCheckOneOk == true && sectionTypeSelected == true)
                     {
-                       
                         this.Close();
                     }
                 }
@@ -605,6 +604,6 @@ namespace SketchUp
         private bool sectionTypeSelected = false;
         private List<string> sectTypeList = null;
         private bool storeyCheckOneOk = false;
-        private bool storeyNumberChecksOk = true;
+        private bool storeyNumberChecksOk = false;
     }
 }

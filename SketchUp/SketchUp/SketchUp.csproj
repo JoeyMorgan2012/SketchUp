@@ -49,6 +49,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -258,12 +259,6 @@
     <Compile Include="Rates.cs" />
     <Compile Include="SalesHistory.cs" />
     <Compile Include="SalesHistoryCollection.cs" />
-    <Compile Include="SectionAdditionDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SectionAdditionDialog.Designer.cs">
-      <DependentUpon>SectionAdditionDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="SectionData.cs" />
     <Compile Include="SectionDataCollection.cs" />
     <Compile Include="SelectSectionTypeDialog.cs">
@@ -355,9 +350,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="SectionAdditionDialog.resx">
-      <DependentUpon>SectionAdditionDialog.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="SelectSectionTypeDialog.resx">
       <DependentUpon>SelectSectionTypeDialog.cs</DependentUpon>
     </EmbeddedResource>

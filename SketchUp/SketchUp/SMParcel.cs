@@ -401,7 +401,7 @@ namespace SketchUp
             {
                 if (scale == 0M)
                 {
-                    scale = 1.0M;
+                    scale = SketchUpGlobals.DefaultScale;
                 }
                 return scale;
             }

@@ -45,15 +45,15 @@
             this.StatusMain = new System.Windows.Forms.StatusStrip();
             this.mouseLocationLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.feedbackStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.sketchBox = new System.Windows.Forms.PictureBox();
+            this.debugInfoStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.sketchUpGlobalsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.debugInfoLabel = new System.Windows.Forms.Label();
-            this.debugInfoStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.sketchBox = new System.Windows.Forms.PictureBox();
             this.MainMenu.SuspendLayout();
             this.cmenuDrawing.SuspendLayout();
             this.StatusMain.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.sketchBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sketchUpGlobalsBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sketchBox)).BeginInit();
             this.SuspendLayout();
             // 
             // MainMenu
@@ -235,19 +235,11 @@
             this.feedbackStatus.Size = new System.Drawing.Size(951, 20);
             this.feedbackStatus.Spring = true;
             // 
-            // sketchBox
+            // debugInfoStatusLabel
             // 
-            this.sketchBox.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.sketchBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.sketchBox.ContextMenuStrip = this.cmenuDrawing;
-            this.sketchBox.Dock = System.Windows.Forms.DockStyle.Top;
-            this.sketchBox.Location = new System.Drawing.Point(0, 31);
-            this.sketchBox.Name = "sketchBox";
-            this.sketchBox.Size = new System.Drawing.Size(1057, 629);
-            this.sketchBox.TabIndex = 6;
-            this.sketchBox.TabStop = false;
-            this.sketchBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.sketchBox_MouseDown);
-            this.sketchBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.sketchBox_MouseMove);
+            this.debugInfoStatusLabel.Name = "debugInfoStatusLabel";
+            this.debugInfoStatusLabel.Size = new System.Drawing.Size(91, 20);
+            this.debugInfoStatusLabel.Text = "Debug info: ";
             // 
             // sketchUpGlobalsBindingSource
             // 
@@ -264,11 +256,15 @@
             this.debugInfoLabel.TabIndex = 7;
             this.debugInfoLabel.Text = "Status...";
             // 
-            // debugInfoStatusLabel
+            // sketchBox
             // 
-            this.debugInfoStatusLabel.Name = "debugInfoStatusLabel";
-            this.debugInfoStatusLabel.Size = new System.Drawing.Size(91, 20);
-            this.debugInfoStatusLabel.Text = "Debug info: ";
+            this.sketchBox.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.sketchBox.Location = new System.Drawing.Point(0, 54);
+            this.sketchBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.sketchBox.Name = "sketchBox";
+            this.sketchBox.Size = new System.Drawing.Size(1014, 545);
+            this.sketchBox.TabIndex = 8;
+            this.sketchBox.TabStop = false;
             // 
             // TestSketchForm
             // 
@@ -276,8 +272,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.ClientSize = new System.Drawing.Size(1057, 727);
-            this.Controls.Add(this.debugInfoLabel);
             this.Controls.Add(this.sketchBox);
+            this.Controls.Add(this.debugInfoLabel);
             this.Controls.Add(this.StatusMain);
             this.Controls.Add(this.MainMenu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -290,8 +286,8 @@
             this.cmenuDrawing.ResumeLayout(false);
             this.StatusMain.ResumeLayout(false);
             this.StatusMain.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.sketchBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.sketchUpGlobalsBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sketchBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -320,11 +316,11 @@
         private System.Windows.Forms.ToolStripMenuItem drawSketchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem runTest2;
         private System.Windows.Forms.BindingSource sketchUpGlobalsBindingSource;
-        private System.Windows.Forms.PictureBox sketchBox;
         private System.Windows.Forms.ToolStripTextBox distanceText;
         private System.Windows.Forms.ToolStripStatusLabel feedbackStatus;
         private System.Windows.Forms.Label debugInfoLabel;
         private System.Windows.Forms.ToolStripStatusLabel debugInfoStatusLabel;
+        private System.Windows.Forms.PictureBox sketchBox;
     }
 }
 

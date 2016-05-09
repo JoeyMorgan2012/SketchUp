@@ -6,35 +6,19 @@ using System.Windows.Forms;
 
 namespace SketchUp
 {
-/*
-    The ExpandoSketch Form contains all of the sketch-rendering code.
-    The original file was over 8,000 lines long, so the class is broken into several physical files defining the logical class. The breakdown is:
+    /*
+        The ExpandoSketch Form contains all of the sketch-rendering code.
+        The original file was over 8,000 lines long, so the class is broken into two
+        physical files defining the logical class. The breakdown is:
 
-        ExpandoSketchFields.cs
-        This file contains fields, properties and enums for the ExpandoSketch Form class.
-     ExpandoSketchMovementMethods.cs
-        All of the methods involving moving along a cardinal direction or quarter.
-     ExpandoSketchRefactoredMethods.cs
-        A combination of Methods that replace the same named methods in the original and new methods refactored out from them for SOLID coding.
-     ExpandoSketchDrawingMethods.cs
-        Methods specific to working with graphics objects.
-     ExpandoSketchUtilites.cs
-        Non-static misc. methods for things like reversing a direction, rounding, etc. 
-        (More are in SMGlobal.cs, which is static.)
-*/
+            ExpandoSketch.cs - All methods not refactored into SketchRepository
+
+            ExpandoSketchFields.cs -  This file contains fields, properties and enums for the ExpandoSketch Form class.
+    */
     public partial class ExpandoSketch : Form
     {
         #region Enums
-        public enum MovementMode
-        {
-            Draw,
-            Erase,
-            Jump,
-            MoveDrawRed,
-            MoveNoLine,
-            NoMovement
-            
-        }
+
         public enum MoveDirections
         {
             N,
@@ -46,6 +30,17 @@ namespace SketchUp
             W,
             NW,
             None
+        }
+
+        public enum MovementMode
+        {
+            Draw,
+            Erase,
+            Jump,
+            MoveDrawRed,
+            MoveNoLine,
+            NoMovement
+            
         }
 
         public enum SketchDrawingState
@@ -71,9 +66,7 @@ namespace SketchUp
         #region Fields
 
         #region private fields
-       private MoveDirections directionOfMovement;
-       private int directionModifyerY = 1;
-       private int directionModifyerX = 1;
+
         private decimal adjNewSecX = 0;
         private decimal adjNewSecY = 0;
         private decimal adjOldSecX = 0;
@@ -110,9 +103,14 @@ namespace SketchUp
         private PointF dbMovementStartPoint;
         private decimal dbStartOfMovementX;
         private decimal dbStartOfMovementY;
+        private int directionModifyerX = 1;
+        private int directionModifyerY = 1;
+        private MoveDirections directionOfMovement;
         private DataTable displayDataTable = null;
+        private decimal distanceEntered;
         private float drawingScale = 1.0f;
         private DataTable DupAttPoints = null;
+        private PointF endOfCurrentLine;
         private PointF endOfJumpMovePoint;
         private float endOldSecX = 0;
         private float endOldSecY = 0;
@@ -142,10 +140,10 @@ namespace SketchUp
         private int midLine = 0;
         private string midSection = String.Empty;
         private decimal movementDistanceScaled;
-        private decimal distanceEntered;
         private byte[] ms = null;
         private DataTable MultiplePoints = null;
         private int mylineNo = 0;
+
         //private decimal Xadj1 = 0;
         //private decimal Yadj1 = 0;
         //public static bool _undoModeA = false;
@@ -191,7 +189,13 @@ namespace SketchUp
         private string SketchFolder = String.Empty;
         private Bitmap sketchImage;
         private Bitmap sketchImageBMP;
-        private SketchDrawingState sketchingState;
+        private static SketchDrawingState sketchingState;
+        private PointF sketchOrigin;
+        private string SketchRecord = String.Empty;
+        private DataTable sortDist = null;
+        private decimal splitLineDist = 0;
+        private int StandardDrawWidthAndHeight = 3;
+        private PointF startOfCurrentLine;
         /*
 		Refactored by renaming and providing for null values. Going to ensure that the
 		naming conventions are consistent for all properties. Any field that backs a property
@@ -199,11 +203,6 @@ namespace SketchUp
 		in Pascal case. (e.g. PascalCase).
 
 		*/
-        private PointF sketchOrigin;
-        private string SketchRecord = String.Empty;
-        private DataTable sortDist = null;
-        private decimal splitLineDist = 0;
-        private int StandardDrawWidthAndHeight = 3;
         private float StartX = 0;
         private float StartY = 0;
         private DataTable StrtPts = null;
@@ -501,6 +500,55 @@ namespace SketchUp
             }
         }
 
+        public int DirectionModifyerX
+        {
+            get
+            {
+                return directionModifyerX;
+            }
+            set
+            {
+                directionModifyerX = value;
+            }
+        }
+
+        public int DirectionModifyerY
+        {
+            get
+            {
+
+                return directionModifyerY;
+            }
+            set
+            {
+                directionModifyerY = value;
+            }
+        }
+
+        public MoveDirections DirectionOfMovement
+        {
+            get
+            {
+                return directionOfMovement;
+            }
+            set
+            {
+                directionOfMovement = value;
+            }
+        }
+
+        public decimal DistanceEntered
+        {
+            get
+            {
+                return distanceEntered;
+            }
+            set
+            {
+                distanceEntered = value;
+            }
+        }
+
         public float DrawingScale
         {
             get
@@ -510,6 +558,18 @@ namespace SketchUp
             set
             {
                 drawingScale = value;
+            }
+        }
+
+        public PointF EndOfCurrentLine
+        {
+            get
+            {
+                return endOfCurrentLine;
+            }
+            set
+            {
+                endOfCurrentLine = value;
             }
         }
 
@@ -842,7 +902,7 @@ namespace SketchUp
             }
         }
 
-        private SketchDrawingState SketchingState
+        private static SketchDrawingState SketchingState
         {
             get
             {
@@ -880,6 +940,18 @@ namespace SketchUp
             }
         }
 
+        public PointF StartOfCurrentLine
+        {
+            get
+            {
+                return startOfCurrentLine;
+            }
+            set
+            {
+                startOfCurrentLine = value;
+            }
+        }
+
         public bool UndoJump
         {
             get
@@ -892,59 +964,7 @@ namespace SketchUp
             }
         }
 
-        public MoveDirections DirectionOfMovement
-        {
-            get
-            {
-                return directionOfMovement;
-            }
-
-            set
-            {
-                directionOfMovement = value;
-            }
-        }
-
-        public int DirectionModifyerY
-        {
-            get
-            {
-
-                return directionModifyerY;
-            }
-
-            set
-            {
-                directionModifyerY = value;
-            }
-        }
-
-        public int DirectionModifyerX
-        {
-            get
-            {
-                return directionModifyerX;
-            }
-
-            set
-            {
-                directionModifyerX = value;
-            }
-        }
-
-        public decimal DistanceEntered
-        {
-            get
-            {
-                return distanceEntered;
-            }
-
-            set
-            {
-                distanceEntered = value;
-            }
-        }
-
         #endregion Properties
     }
 }
+

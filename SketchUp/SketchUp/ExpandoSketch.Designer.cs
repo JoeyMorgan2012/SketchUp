@@ -33,8 +33,6 @@
             this.ExpandoSketchTools = new System.Windows.Forms.ToolStrip();
             this.AddSectionContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.jumpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.beginPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.endSectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.BeginSectionBtn = new System.Windows.Forms.ToolStripButton();
             this.DistLbl = new System.Windows.Forms.ToolStripLabel();
             this.DistText = new System.Windows.Forms.ToolStripTextBox();
@@ -48,10 +46,13 @@
             this.dgSections = new System.Windows.Forms.DataGridView();
             this.fontDialog1 = new System.Windows.Forms.FontDialog();
             this.ExpSketchPBox = new System.Windows.Forms.PictureBox();
+            this.SketchStatusBar = new System.Windows.Forms.StatusStrip();
+            this.sketchStatusMain = new System.Windows.Forms.ToolStripStatusLabel();
             this.ExpandoSketchTools.SuspendLayout();
             this.AddSectionContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgSections)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ExpSketchPBox)).BeginInit();
+            this.SketchStatusBar.SuspendLayout();
             this.SuspendLayout();
             // 
             // ExpandoSketchTools
@@ -82,11 +83,9 @@
             this.AddSectionContextMenu.BackColor = System.Drawing.SystemColors.Control;
             this.AddSectionContextMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.AddSectionContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.jumpToolStripMenuItem,
-            this.beginPointToolStripMenuItem,
-            this.endSectionToolStripMenuItem});
+            this.jumpToolStripMenuItem});
             this.AddSectionContextMenu.Name = "contextMenuStrip1";
-            this.AddSectionContextMenu.Size = new System.Drawing.Size(236, 82);
+            this.AddSectionContextMenu.Size = new System.Drawing.Size(232, 30);
             this.AddSectionContextMenu.Click += new System.EventHandler(this.beginPointToolStripMenuItem_Click);
             // 
             // jumpToolStripMenuItem
@@ -96,34 +95,10 @@
             this.jumpToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("jumpToolStripMenuItem.Image")));
             this.jumpToolStripMenuItem.Name = "jumpToolStripMenuItem";
             this.jumpToolStripMenuItem.ShowShortcutKeys = false;
-            this.jumpToolStripMenuItem.Size = new System.Drawing.Size(235, 26);
+            this.jumpToolStripMenuItem.Size = new System.Drawing.Size(231, 26);
             this.jumpToolStripMenuItem.Text = "Jump to Nearest Corner";
             this.jumpToolStripMenuItem.ToolTipText = "Jump to Nearest Corner (Choose Section Type to Enable";
             this.jumpToolStripMenuItem.Click += new System.EventHandler(this.jumpToolStripMenuItem_Click);
-            // 
-            // beginPointToolStripMenuItem
-            // 
-            this.beginPointToolStripMenuItem.AutoToolTip = true;
-            this.beginPointToolStripMenuItem.Enabled = false;
-            this.beginPointToolStripMenuItem.Image = global::SketchUp.Properties.Resources.Edit_32xMD;
-            this.beginPointToolStripMenuItem.Name = "beginPointToolStripMenuItem";
-            this.beginPointToolStripMenuItem.Size = new System.Drawing.Size(235, 26);
-            this.beginPointToolStripMenuItem.Text = "Begin Drawing Section";
-            this.beginPointToolStripMenuItem.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
-            this.beginPointToolStripMenuItem.ToolTipText = "Set the point where the section will attach to the existing sketch.";
-            this.beginPointToolStripMenuItem.Click += new System.EventHandler(this.beginPointToolStripMenuItem_Click);
-            // 
-            // endSectionToolStripMenuItem
-            // 
-            this.endSectionToolStripMenuItem.AutoToolTip = true;
-            this.endSectionToolStripMenuItem.Enabled = false;
-            this.endSectionToolStripMenuItem.Image = global::SketchUp.Properties.Resources.GreenCheck;
-            this.endSectionToolStripMenuItem.Name = "endSectionToolStripMenuItem";
-            this.endSectionToolStripMenuItem.Size = new System.Drawing.Size(235, 26);
-            this.endSectionToolStripMenuItem.Text = "End Section Edit";
-            this.endSectionToolStripMenuItem.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
-            this.endSectionToolStripMenuItem.ToolTipText = "End drawing the section";
-            this.endSectionToolStripMenuItem.Click += new System.EventHandler(this.endSectionToolStripMenuItem_Click);
             // 
             // BeginSectionBtn
             // 
@@ -264,12 +239,28 @@
             this.ExpSketchPBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ExpSketchPbox_MouseMove);
             this.ExpSketchPBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ExpSketchPbox_MouseUp);
             // 
+            // SketchStatusBar
+            // 
+            this.SketchStatusBar.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.SketchStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.sketchStatusMain});
+            this.SketchStatusBar.Location = new System.Drawing.Point(0, 577);
+            this.SketchStatusBar.Name = "SketchStatusBar";
+            this.SketchStatusBar.Size = new System.Drawing.Size(1014, 22);
+            this.SketchStatusBar.TabIndex = 3;
+            // 
+            // sketchStatusMain
+            // 
+            this.sketchStatusMain.Name = "sketchStatusMain";
+            this.sketchStatusMain.Size = new System.Drawing.Size(0, 17);
+            // 
             // ExpandoSketch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
             this.ClientSize = new System.Drawing.Size(1014, 599);
+            this.Controls.Add(this.SketchStatusBar);
             this.Controls.Add(this.dgSections);
             this.Controls.Add(this.ExpSketchPBox);
             this.Controls.Add(this.ExpandoSketchTools);
@@ -285,6 +276,8 @@
             this.AddSectionContextMenu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgSections)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ExpSketchPBox)).EndInit();
+            this.SketchStatusBar.ResumeLayout(false);
+            this.SketchStatusBar.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -306,9 +299,9 @@
         private System.Windows.Forms.ToolStripButton DrawingDoneBtn;
         private System.Windows.Forms.PictureBox ExpSketchPBox;
         private System.Windows.Forms.DataGridView dgSections;
-        private System.Windows.Forms.ToolStripMenuItem beginPointToolStripMenuItem;
         private System.Windows.Forms.FontDialog fontDialog1;
-        private System.Windows.Forms.ToolStripMenuItem endSectionToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton tsbExitSketch;
+        private System.Windows.Forms.StatusStrip SketchStatusBar;
+        private System.Windows.Forms.ToolStripStatusLabel sketchStatusMain;
     }
 }

@@ -28,7 +28,11 @@ namespace SketchUp
         public void DeleteSketchData(SMParcel parcel)
         {
         }
+        #region CRUD methods refactored out of ExpandoSketch Class
+       
 
+        #endregion
+        #region Selects for SketchManager Classes
         public SMParcel SelectParcelWithSectionsAndLines(int recordNumber, int dwellingNumber)
         {
             string selectSql = string.Format("SELECT JMRECORD, JMDWELL, JMSKETCH, JMSTORY, JMSTORYEX, JMSCALE, JMTOTSQFT, JMESKETCH FROM {0} WHERE JMRECORD={1} AND JMDWELL={2}", SketchConnection.MasterTable, recordNumber, dwellingNumber);
@@ -57,7 +61,7 @@ namespace SketchUp
                         ExSketch = row["JMESKETCH"].ToString().Trim()
                     };
                     parcel.Sections = SelectParcelSections(parcel);
-                 
+
                     foreach (SMSection sms in parcel.Sections)
                     {
                         sms.Lines = SelectSectionLines(sms);
@@ -77,10 +81,10 @@ namespace SketchUp
                         TotalSqFt = 0,
                         ExSketch = string.Empty
                     };
-                   
+
                     return parcel;
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -89,7 +93,7 @@ namespace SketchUp
             }
         }
 
-        public List<SMSection> SelectParcelSections(SMParcel parcel)
+        private List<SMSection> SelectParcelSections(SMParcel parcel)
         {
             List<SMSection> sections = new List<SMSection>();
             string selectSql = string.Format("SELECT JSRECORD, JSDWELL, JSSECT, JSTYPE, JSSTORY, JSDESC, JSSKETCH, JSSQFT, JS0DEPR, JSCLASS, JSVALUE, JSFACTOR, JSDEPRC FROM {0} WHERE JSRECORD={1} AND JSDWELL={2}", SketchConnection.SectionTable, parcel.Record, parcel.Card);
@@ -110,7 +114,8 @@ namespace SketchUp
                         decimal.TryParse(row["JSVALUE"].ToString().Trim(), out value);
                         decimal.TryParse(row["JSFACTOR"].ToString().Trim(), out factor);
                         decimal.TryParse(row["JSDEPRC"].ToString().Trim(), out depreciation);
-                        SMSection thisSection=new SMSection(parcel) { 
+                        SMSection thisSection = new SMSection(parcel)
+                        {
                             Record = parcel.Record,
                             Dwelling = parcel.Card,
                             SectionLetter = row["JSSECT"].ToString().Trim(),
@@ -126,7 +131,7 @@ namespace SketchUp
                             Depreciation = depreciation,
                             RefreshSection = false,
                             ParentParcel = parcel
-                            
+
                         };
                         thisSection.Lines = SelectSectionLines(thisSection);
                         sections.Add(thisSection);
@@ -142,7 +147,7 @@ namespace SketchUp
             }
         }
 
-        public List<SMLine> SelectSectionLines(SMSection section)
+        private List<SMLine> SelectSectionLines(SMSection section)
 
         {
             List<SMLine> lines = new List<SMLine>();
@@ -198,7 +203,8 @@ namespace SketchUp
                 Console.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
                 throw;
             }
-        }
+        } 
+        #endregion
 
         #endregion DAL Methods
 
