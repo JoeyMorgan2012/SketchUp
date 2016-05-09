@@ -45,7 +45,7 @@ namespace SketchUp
             }
         }
 
-        public static ParcelData CurrentParcel
+        public static SketchUpParcelData CurrentParcel
         {
             get
             {
@@ -454,7 +454,7 @@ namespace SketchUp
         private static CAMRA_Connection camraDbConn = null;
         private static int card = 0;
         private static int checker = 0;
-        private static ParcelData currentParcel = null;
+        private static SketchUpParcelData currentParcel = null;
         private static Image currentSketchImage;
         private static SMParcel currentSMParcel;
         private static DBAccessManager dbAccessMgr = null;

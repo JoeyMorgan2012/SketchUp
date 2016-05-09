@@ -135,6 +135,7 @@
     <Compile Include="BuildingSketcher.cs" />
     <Compile Include="BuilldingSection.cs" />
     <Compile Include="CamraSupport\AllStructureSections.cs" />
+    <Compile Include="CamraSupport\CamraDataEnums.cs" />
     <Compile Include="CamraSupport\CamraSupport.cs" />
     <Compile Include="CamraSupport\AssessorCodes.cs" />
     <Compile Include="CamraSupport\AttachedSectionTypes.cs" />
@@ -183,7 +184,6 @@
     <Compile Include="CamraSupport\HomeSiteTypeD.cs" />
     <Compile Include="CommandLineArguments.cs" />
     <Compile Include="CommandLineArgumentsBase.cs" />
-    <Compile Include="ComparableSalesCollection.cs" />
     <Compile Include="CPBuildingSection.cs" />
     <Compile Include="CPBuildingSectionCollection.cs" />
     <Compile Include="DeleteReview.cs">
@@ -249,8 +249,8 @@
       <DependentUpon>MultiSectionSelection.cs</DependentUpon>
     </Compile>
     <Compile Include="ParcelChangedEventArgs.cs" />
-    <Compile Include="ParcelData.cs" />
-    <Compile Include="ParcelDataCollection.cs" />
+    <Compile Include="SketchUpParcelData.cs" />
+    <Compile Include="SketchUpParcelDataCollection.cs" />
     <Compile Include="ParcelNotes.cs" />
     <Compile Include="ParcelNotesCollection.cs" />
     <Compile Include="JumpPointLine.cs" />

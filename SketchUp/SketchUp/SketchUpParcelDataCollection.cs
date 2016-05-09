@@ -7,7 +7,7 @@ using SWallTech;
 
 namespace SketchUp
 {
-    public class ParcelDataCollection : List<ParcelData>
+    public class SketchUpParcelDataCollection : List<SketchUpParcelData>
     {
         private CAMRA_Connection _db = null;
 
@@ -38,7 +38,7 @@ namespace SketchUp
             get; set;
         }
 
-        private ParcelDataCollection()
+        private SketchUpParcelDataCollection()
         {
             RecordMaximum = 25;
         }
@@ -57,7 +57,7 @@ namespace SketchUp
             }
         }
 
-        public ParcelDataCollection(SWallTech.CAMRA_Connection db, int record, int cardnum)
+        public SketchUpParcelDataCollection(SWallTech.CAMRA_Connection db, int record, int cardnum)
             : this()
         {
             _db = db;
@@ -396,7 +396,7 @@ namespace SketchUp
 
             foreach (DataRow row in Parcel.Tables[0].Rows)
             {
-                var parcel = new ParcelData()
+                var parcel = new SketchUpParcelData()
                 {
                     mrecid = row["mrecid"].ToString().Trim(),
                     mrecno = Record,
@@ -871,9 +871,9 @@ namespace SketchUp
             }
         }
 
-        public ParcelData GetParcel(SWallTech.CAMRA_Connection _db, int recno, int card)
+        public SketchUpParcelData GetParcel(SWallTech.CAMRA_Connection _db, int recno, int card)
         {
-            ParcelData data = null;
+            SketchUpParcelData data = null;
 
             var q = from p in this
                     where p.Record == recno && p.Card == card
@@ -885,7 +885,7 @@ namespace SketchUp
             }
             else
             {
-                data = ParcelData.getParcel(_db,
+                data = SketchUpParcelData.getParcel(_db,
                     recno,
                     card);
 

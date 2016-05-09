@@ -16,7 +16,7 @@ namespace SketchUp
 
         #region Constructor
 
-        public SketchSection(ParcelData currentparcel, CAMRA_Connection _conn, SectionDataCollection currentSection)
+        public SketchSection(SketchUpParcelData currentparcel, CAMRA_Connection _conn, SectionDataCollection currentSection)
         {
             InitializeComponent();
 
@@ -82,6 +82,26 @@ namespace SketchUp
 
         #region Properties
 
+        public static string reOpenSecLtr
+        {
+            get; set;
+        }
+
+        public DataGridViewRow SelectSectionDataRow
+        {
+            get
+            {
+                if (SectDGView.SelectedRows.Count > 0)
+                {
+                    return SectDGView.SelectedRows[0];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
         public static List<string> Letters = new List<string>() { "A", "B", "C", "D", "F", "G", "H", "I", "J", "K", "L", "M" };
 
         public static string OriginalUnitType = String.Empty;
@@ -90,11 +110,9 @@ namespace SketchUp
 
         public static int sumBaseValue;
 
-        public static int sumFinalFullValue;
         public static int sumDepreciation;
-
         public static int sumFactoredValue;
-
+        public static int sumFinalFullValue;
         public static int sumFinalValue;
 
         public static decimal sumSize;
@@ -121,7 +139,7 @@ namespace SketchUp
 
         public string UGarType = String.Empty;
 
-        private ParcelData _currentParcel = null;
+        private SketchUpParcelData _currentParcel = null;
 
         private SectionDataCollection _currentSection = null;
 
@@ -131,8 +149,10 @@ namespace SketchUp
 
         private int _fullvalue = 0;
 
+        private bool _isLoading = false;
         private bool _isVacant = false;
 
+        private bool _isValid = false;
         private string _j0depr = String.Empty;
 
         private string _jclass = String.Empty;
@@ -149,9 +169,8 @@ namespace SketchUp
 
         private string _jstype = String.Empty;
 
+        private SectionData _sect = null;
         private int _value = 0;
-
-        private bool _isValid = false;
         private bool alowNoDep = false;
 
         private DataTable AttachPoints = null;
@@ -161,25 +180,17 @@ namespace SketchUp
         private DataTable AttPts = null;
 
         private int Card = 0;
-
-        private bool _isLoading = false;
         private bool commSection = false;
 
         private List<string> ComTypes = null;
 
-        private DBAccessManager fox = null;
         private CAMRA_Connection conn = null;
-
         private List<int> CPCodes = null;
-
         private List<String> CPTypes = null;
-
         private int currentRowIndex = 0;
-
         private List<string> cursectltr = null;
-
         private DataTable DupAttPoints = null;
-
+        private DBAccessManager fox = null;
         private List<int> GarCodes = null;
 
         private List<String> GarTypes = null;
@@ -209,8 +220,6 @@ namespace SketchUp
         private int RateD = 0;
 
         private decimal Ratepsf = 0;
-
-        private SectionData _sect = null;
         private int Record = 0;
 
         private bool resSection = false;
@@ -228,26 +237,6 @@ namespace SketchUp
         private string typDesc = String.Empty;
 
         private decimal UnitRate = 0;
-
-        public static string reOpenSecLtr
-        {
-            get; set;
-        }
-
-        public DataGridViewRow SelectSectionDataRow
-        {
-            get
-            {
-                if (SectDGView.SelectedRows.Count > 0)
-                {
-                    return SectDGView.SelectedRows[0];
-                }
-                else
-                {
-                    return null;
-                }
-            }
-        }
 
         #endregion Properties
 
@@ -707,75 +696,40 @@ namespace SketchUp
             }
         }
 
-        private void _getDefaultDepr(decimal secDepr, string NoDepr)
+        private void _getDefaultDepr(decimal newDeprec, string js0depr)
         {
-            if (secDepr == 0 && NoDepr != "Y")
-            {
-                int baseAge = 0;
-                if (_currentParcel.meffag == 0)
-                {
-                    baseAge = _currentParcel.mage;
-                }
-                if (_currentParcel.meffag != 0)
-                {
-                    baseAge = _currentParcel.meffag;
-                }
-                if (_currentParcel.mcond == "G")
-                {
-                    _defDepr = Decimal.Round((Convert.ToDecimal(baseAge) * CamraSupport.DefDepCondG), 2);
-                }
-                if (_currentParcel.mcond == "A")
-                {
-                    _defDepr = Decimal.Round((Convert.ToDecimal(baseAge) * CamraSupport.DefDepCondA), 2);
-                }
-                if (_currentParcel.mcond == "F")
-                {
-                    _defDepr = Decimal.Round((Convert.ToDecimal(baseAge) * CamraSupport.DefDepCondF), 2);
-                }
-                if (_currentParcel.mcond == "P")
-                {
-                    _defDepr = Decimal.Round((Convert.ToDecimal(baseAge) * CamraSupport.DefDepCondP), 2);
-                }
-            }
-            if (secDepr == 0 && NoDepr == "Y")
-            {
-                _defDepr = 0;
-            }
+            string message = string.Format("MAY need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
 
-            if (_defDepr > 0.65m)
-            {
-                _defDepr = 0.65m;
-            }
+#if DEBUG
+            MessageBox.Show(message);
+#else
+            Console.WriteLine(message);
+            throw new NotImplementedException();
+#endif
         }
 
-        private void _getUnitRate(string type, string _class)
+        private void _getUnitRate(string jstype, string jsclass)
         {
-            if (rowselected == true)
-            {
-                currentRowIndex = SectDGView.CurrentRow.Index;
+            string message = string.Format("MAY need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
 
-                OriginalUnitRate = Convert.ToDecimal(SectDGView.CurrentRow.Cells["Rate"].Value.ToString());
-            }
-
-            GetRatesFromTables(type);
-
-            SetResOrCommValues(type);
-
-            ApplyRates(_class);
+#if DEBUG
+            MessageBox.Show(message);
+#else
+            Console.WriteLine(message);
+            throw new NotImplementedException();
+#endif
         }
 
-        private void _getUnitValue(string NoDepr, decimal _size, decimal _factor, decimal _deprc)
+        private void _getUnitValue(string js0depr, decimal jssqft, decimal newFactor, decimal jsdeprc)
         {
-            if (NoDepr == "Y")
-            {
-                _value = Convert.ToInt32((_size * UnitRate) * (1 + _factor));
-                _fullvalue = _value;
-            }
-            else
-            {
-                _value = Convert.ToInt32((_size * UnitRate) * (1 + _factor) * (1 - _deprc));
-                _fullvalue = Convert.ToInt32((_size * UnitRate) * (1 + _factor));
-            }
+            string message = string.Format("MAY need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
+
+#if DEBUG
+            MessageBox.Show(message);
+#else
+            Console.WriteLine(message);
+            throw new NotImplementedException();
+#endif
         }
 
         private void AddAttachmentPoints()
@@ -797,60 +751,47 @@ namespace SketchUp
             }
         }
 
-        private void AddNewTypeToCommercialTypes(string newType, out string newDesc, out int thisSect, string curSect, out int commercialNewTypeIndex)
-        {
-            commercialNewTypeIndex = ComTypes.IndexOf(newType);
-
-            thisSect = ComTypes.IndexOf(curSect.Trim());
-
-            CommercialSectionCbox.SelectedIndex = thisSect + 1;
-
-            newDesc = CamraSupport.CommercialSectionTypeCollection[commercialNewTypeIndex]._commSectionDescription.ToString().Trim();
-        }
-
-        private void AddNewTypeToResidentialTypes(string newType, out string newDesc, out int thisSect, string curSect, out int residentialNewTypeIndex)
-        {
-            residentialNewTypeIndex = ResTypes.IndexOf(newType);
-
-            thisSect = ResTypes.IndexOf(curSect.Trim());
-
-            ResidentialSectionCbox.SelectedIndex = thisSect + 1;
-
-            newDesc = CamraSupport.ResidentialSectionTypeCollection[residentialNewTypeIndex]._resSectionDescription.ToString().Trim();
-        }
-
         private void AddRowsToSections(SectionDataCollection currentSection)
         {
-            for (int i = 0; i < currentSection.Count; i++)
-            {
-                string getDesc = string.Format("select rclar,rclbr,rclcr,rcldr,rrpsf,rdesc from {0}.{1}rat1 where rid in ( 'C','P') and rsecto = '{2}' ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, currentSection[i].jstype.ToString().Trim());
+            //for (int i = 0; i < currentSection.Count; i++)
+            //{
+            //    string getDesc = string.Format("select rclar,rclbr,rclcr,rcldr,rrpsf,rdesc from {0}.{1}rat1 where rid in ( 'C','P') and rsecto = '{2}' ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, currentSection[i].jstype.ToString().Trim());
 
-                DataSet rates = conn.DBConnection.RunSelectStatement(getDesc);
-                _getUnitRate(currentSection[i].jstype, currentSection[i].jsclass);
+            //    DataSet rates = conn.DBConnection.RunSelectStatement(getDesc);
+            //    _getUnitRate(currentSection[i].jstype, currentSection[i].jsclass);
 
-                DataRow row = Sections.NewRow();
-                row["Section"] = currentSection[i].jssect.ToString();
-                row["Type"] = currentSection[i].jstype.ToString();
-                row["Desc"] = typDesc.Trim();
-                row["Story"] = Convert.ToDecimal(currentSection[i].jsstory.ToString());
-                row["Size"] = Convert.ToDecimal(currentSection[i].jssqft.ToString());
-                row["0Depr"] = currentSection[i].js0depr.ToString();
-                row["Class"] = currentSection[i].jsclass.ToString();
-                row["Factor"] = Convert.ToDecimal(currentSection[i].jsfactor.ToString());
-                row["Deprec"] = Convert.ToDecimal(currentSection[i].jsdeprc.ToString());
-                row["Rate"] = UnitRate;
+            //    DataRow row = Sections.NewRow();
+            //    row["Section"] = currentSection[i].jssect.ToString();
+            //    row["Type"] = currentSection[i].jstype.ToString();
+            //    row["Desc"] = typDesc.Trim();
+            //    row["Story"] = Convert.ToDecimal(currentSection[i].jsstory.ToString());
+            //    row["Size"] = Convert.ToDecimal(currentSection[i].jssqft.ToString());
+            //    row["0Depr"] = currentSection[i].js0depr.ToString();
+            //    row["Class"] = currentSection[i].jsclass.ToString();
+            //    row["Factor"] = Convert.ToDecimal(currentSection[i].jsfactor.ToString());
+            //    row["Deprec"] = Convert.ToDecimal(currentSection[i].jsdeprc.ToString());
+            //    row["Rate"] = UnitRate;
 
-                _getUnitValue(currentSection[i].js0depr, currentSection[i].jssqft, currentSection[i].jsfactor, currentSection[i].jsdeprc);
+            //    _getUnitValue(currentSection[i].js0depr, currentSection[i].jssqft, currentSection[i].jsfactor, currentSection[i].jsdeprc);
 
-                row["Value"] = _value;
-                row["NewValue"] = _fullvalue;
+            //    row["Value"] = _value;
+            //    row["NewValue"] = _fullvalue;
 
-                Sections.Rows.Add(row);
-            }
+            //    Sections.Rows.Add(row);
+            //}
+            string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
+
+#if DEBUG
+            MessageBox.Show(message);
+#else
+            Console.WriteLine(message);
+            throw new NotImplementedException();
+#endif
         }
 
         private void AdjustAttachments()
         {
+            //TODO: Refactor into SketchManager
             StringBuilder delAttachmentPointsSql = new StringBuilder();
             delAttachmentPointsSql.Append(String.Format("update {0}.{1}line set jlattach = ' ' where jlrecord = {2} and jldwell = {3} ",
                             SketchUpGlobals.FcLib,
@@ -1450,7 +1391,7 @@ namespace SketchUp
             conn.DBConnection.ExecuteNonSelectStatement(addcp);
 
             //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "addcp", addcp);
-            ParcelData.getParcel(conn, _currentParcel.mrecno, _currentParcel.mdwell);
+            SketchUpParcelData.getParcel(conn, _currentParcel.mrecno, _currentParcel.mdwell);
         }
 
         private void GetMissingFirstGarageData()
@@ -1472,7 +1413,7 @@ namespace SketchUp
                 conn.DBConnection.ExecuteNonSelectStatement(fixCp);
 
                 //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "fixCp", fixCp);
-                ParcelData.getParcel(conn, _currentParcel.mrecno, _currentParcel.mdwell);
+                SketchUpParcelData.getParcel(conn, _currentParcel.mrecno, _currentParcel.mdwell);
             }
         }
 
@@ -1502,7 +1443,7 @@ namespace SketchUp
             }
         }
 
-        private void InitializeComboBoxes(ParcelData currentparcel)
+        private void InitializeComboBoxes(SketchUpParcelData currentparcel)
         {
             ResTypes = new List<string>();
             ComTypes = new List<string>();
@@ -1592,359 +1533,387 @@ namespace SketchUp
 
         private void ProcessChangedSectDGViewCell(DataGridViewCellEventArgs e)
         {
-            if (SectDGView.Columns[e.ColumnIndex].Name == "Rate")
-            {
-                if (CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
-                {
-                    ProcessTypeChangeRequestResidential();
-                }
-            }
+            string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
 
-            if (SectDGView.Columns[e.ColumnIndex].Name == "Type")
-            {
-                currentRowIndex = SectDGView.CurrentRow.Index;
+#if DEBUG
+            MessageBox.Show(message);
+#else
+            Console.WriteLine(message);
+            throw new NotImplementedException();
+#endif
 
-                string newType = String.Empty;
-                string newDesc = String.Empty;
-                newType = SectDGView.CurrentRow.Cells["Type"].Value.ToString().ToUpper().Trim();
-                _jsect = SectDGView.CurrentRow.Cells["Section"].Value.ToString().ToUpper().Trim();
+            //if (SectDGView.Columns[e.ColumnIndex].Name == "Rate")
+            //{
+            //    if (CamraSupport.ResidentialOccupancyCodes.Contains(_currentParcel.moccup))
+            //    {
+            //        ProcessTypeChangeRequestResidential();
+            //    }
+            //}
 
-                int thisSect = 0;
+            //if (SectDGView.Columns[e.ColumnIndex].Name == "Type")
+            //{
+            //    currentRowIndex = SectDGView.CurrentRow.Index;
 
-                if (CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup) || CamraSupport.CommercialOccupancies.Contains(_currentParcel.moccup))
-                {
-                    string curSect = SectDGView.CurrentRow.Cells[1].Value.ToString().PadRight(4).Substring(0, 4).ToUpper();
+            //    string newType = String.Empty;
+            //    string newDesc = String.Empty;
+            //    newType = SectDGView.CurrentRow.Cells["Type"].Value.ToString().ToUpper().Trim();
+            //    _jsect = SectDGView.CurrentRow.Cells["Section"].Value.ToString().ToUpper().Trim();
 
-                    SectDGView.CurrentRow.Cells[1].Value = newType;
+            //    int thisSect = 0;
 
-                    _currentSection[currentRowIndex].jstype = newType;
+            //    if (CamraSupport.ResidentialOccupancyCodes.Contains(_currentParcel.moccup) || CamraSupport.CommercialOccupancies.Contains(_currentParcel.moccup))
+            //    {
+            //        string curSect = SectDGView.CurrentRow.Cells[1].Value.ToString().PadRight(4).Substring(0, 4).ToUpper();
 
-                    int rx = 0;
-                    if (ResTypes.Contains(newType))
-                    {
-                        AddNewTypeToResidentialTypes(newType, out newDesc, out thisSect, curSect, out rx);
-                    }
+            //        SectDGView.CurrentRow.Cells[1].Value = newType;
 
-                    int cx = 0;
-                    if (ComTypes.Contains(newType))
-                    {
-                        AddNewTypeToCommercialTypes(newType, out newDesc, out thisSect, curSect, out cx);
-                    }
+            //        _currentSection[currentRowIndex].jstype = newType;
 
-                    _getUnitRate(_currentSection[currentRowIndex].jstype, _currentSection[currentRowIndex].jsclass);
-                    _getUnitValue(_currentSection[currentRowIndex].js0depr, _currentSection[currentRowIndex].jssqft, _currentSection[currentRowIndex].jsfactor, _currentSection[currentRowIndex].jsdeprc);
+            //        int rx = 0;
+            //        if (ResTypes.Contains(newType))
+            //        {
+            //            AddNewTypeToResidentialTypes(newType, out newDesc, out thisSect, curSect, out rx);
+            //        }
 
-                    _currentSection[currentRowIndex].jsdesc = newDesc;
+            //        int cx = 0;
+            //        if (ComTypes.Contains(newType))
+            //        {
+            //            AddNewTypeToCommercialTypes(newType, out newDesc, out thisSect, curSect, out cx);
+            //        }
 
-                    SectDGView.CurrentRow.Cells["Rate"].Value = UnitRate;
-                    SectDGView.CurrentRow.Cells["Value"].Value = _value;
+            //        _getUnitRate(_currentSection[currentRowIndex].jstype, _currentSection[currentRowIndex].jsclass);
+            //        _getUnitValue(_currentSection[currentRowIndex].js0depr, _currentSection[currentRowIndex].jssqft, _currentSection[currentRowIndex].jsfactor, _currentSection[currentRowIndex].jsdeprc);
 
-                    SectDGView.CurrentRow.Cells["Desc"].Value = newDesc;
+            //        _currentSection[currentRowIndex].jsdesc = newDesc;
 
-                    if (_currentSection[currentRowIndex].orig_jstype != _currentSection[currentRowIndex].jstype)
-                    {
-                        SectDGView.CurrentRow.Cells["Type"].Style.BackColor = Color.PaleGreen;
-                        SectDGView.CurrentRow.Cells["Desc"].Style.BackColor = Color.PaleGreen;
-                        SectDGView.CurrentRow.Cells["Rate"].Style.BackColor = Color.PaleGreen;
-                        SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.PaleGreen;
-                    }
-                    if (_currentSection[currentRowIndex].orig_jstype == _currentSection[currentRowIndex].jstype)
-                    {
-                        SectDGView.CurrentRow.Cells["Type"].Style.BackColor = Color.White;
-                        SectDGView.CurrentRow.Cells["Desc"].Style.BackColor = Color.White;
-                        SectDGView.CurrentRow.Cells["Rate"].Style.BackColor = Color.White;
-                        SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.White;
-                    }
-                }
-            }
+            //        SectDGView.CurrentRow.Cells["Rate"].Value = UnitRate;
+            //        SectDGView.CurrentRow.Cells["Value"].Value = _value;
 
-            if (SectDGView.Columns[e.ColumnIndex].Name == "Story")
-            {
-                ProcessNewStory();
-            }
+            //        SectDGView.CurrentRow.Cells["Desc"].Value = newDesc;
 
-            if (SectDGView.Columns[e.ColumnIndex].Name == "0Depr")
-            {
-                if (!CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
-                {
-                    ProcessZeroDepr();
-                }
-                if (CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
-                {
-                    PreventResidentialChangeZeroDepr();
-                }
-            }
+            //        if (_currentSection[currentRowIndex].orig_jstype != _currentSection[currentRowIndex].jstype)
+            //        {
+            //            SectDGView.CurrentRow.Cells["Type"].Style.BackColor = Color.PaleGreen;
+            //            SectDGView.CurrentRow.Cells["Desc"].Style.BackColor = Color.PaleGreen;
+            //            SectDGView.CurrentRow.Cells["Rate"].Style.BackColor = Color.PaleGreen;
+            //            SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.PaleGreen;
+            //        }
+            //        if (_currentSection[currentRowIndex].orig_jstype == _currentSection[currentRowIndex].jstype)
+            //        {
+            //            SectDGView.CurrentRow.Cells["Type"].Style.BackColor = Color.White;
+            //            SectDGView.CurrentRow.Cells["Desc"].Style.BackColor = Color.White;
+            //            SectDGView.CurrentRow.Cells["Rate"].Style.BackColor = Color.White;
+            //            SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.White;
+            //        }
+            //    }
+            //}
 
-            if (SectDGView.Columns[e.ColumnIndex].Name == "Class")
-            {
-                if (!CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
-                {
-                    ProcessNewClass();
-                }
-                if (CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
-                {
-                    PreventResidentialChangeNewCommercialClass();
-                }
-            }
+            //if (SectDGView.Columns[e.ColumnIndex].Name == "Story")
+            //{
+            //    ProcessNewStory();
+            //}
 
-            if (SectDGView.Columns[e.ColumnIndex].Name == "Factor")
-            {
-                if (!CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
-                {
-                    currentRowIndex = SectDGView.CurrentRow.Index;
+            //if (SectDGView.Columns[e.ColumnIndex].Name == "0Depr")
+            //{
+            //    if (!CamraSupport.ResidentialOccupancyCodes.Contains(_currentParcel.moccup))
+            //    {
+            //        ProcessZeroDepr();
+            //    }
+            //    if (CamraSupport.ResidentialOccupancyCodes.Contains(_currentParcel.moccup))
+            //    {
+            //        PreventResidentialChangeZeroDepr();
+            //    }
+            //}
 
-                    newFactor = Convert.ToDecimal(SectDGView.CurrentRow.Cells["Factor"].Value.ToString());
-                    _jfactor = _currentSection[currentRowIndex].orig_jsfactor;
+            //if (SectDGView.Columns[e.ColumnIndex].Name == "Class")
+            //{
+            //    if (!CamraSupport.ResidentialOccupancyCodes.Contains(_currentParcel.moccup))
+            //    {
+            //        ProcessNewClass();
+            //    }
+            //    if (CamraSupport.ResidentialOccupancyCodes.Contains(_currentParcel.moccup))
+            //    {
+            //        PreventResidentialChangeNewCommercialClass();
+            //    }
+            //}
 
-                    if (newFactor >= 1m)
-                    {
-                        tempFactor = Math.Round((newFactor / 100), 2);
-                        newFactor = tempFactor;
-                    }
+            //if (SectDGView.Columns[e.ColumnIndex].Name == "Factor")
+            //{
+            //    if (!CamraSupport.ResidentialOccupancyCodes.Contains(_currentParcel.moccup))
+            //    {
+            //        currentRowIndex = SectDGView.CurrentRow.Index;
 
-                    SectDGView.CurrentRow.Cells["Factor"].Value = newFactor;
+            //        newFactor = Convert.ToDecimal(SectDGView.CurrentRow.Cells["Factor"].Value.ToString());
+            //        _jfactor = _currentSection[currentRowIndex].orig_jsfactor;
 
-                    _getUnitRate(_currentSection[currentRowIndex].jstype, _currentSection[currentRowIndex].jsclass);
-                    _getUnitValue(_currentSection[currentRowIndex].js0depr, _currentSection[currentRowIndex].jssqft, newFactor, _currentSection[currentRowIndex].jsdeprc);
+            //        if (newFactor >= 1m)
+            //        {
+            //            tempFactor = Math.Round((newFactor / 100), 2);
+            //            newFactor = tempFactor;
+            //        }
 
-                    SectDGView.CurrentRow.Cells["Value"].Value = _value;
+            //        SectDGView.CurrentRow.Cells["Factor"].Value = newFactor;
 
-                    _currentSection[currentRowIndex].jsvalue = _value;
-                    _currentSection[currentRowIndex].jsfactor = newFactor;
+            //        _getUnitRate(_currentSection[currentRowIndex].jstype, _currentSection[currentRowIndex].jsclass);
+            //        _getUnitValue(_currentSection[currentRowIndex].js0depr, _currentSection[currentRowIndex].jssqft, newFactor, _currentSection[currentRowIndex].jsdeprc);
 
-                    if (newFactor != _jfactor)
-                    {
-                        SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.PaleGreen;
-                        SectDGView.CurrentRow.Cells["Factor"].Style.BackColor = Color.PaleGreen;
-                    }
-                    if (newFactor == _jfactor)
-                    {
-                        SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.White;
-                        SectDGView.CurrentRow.Cells["Factor"].Style.BackColor = Color.White;
-                    }
-                }
+            //        SectDGView.CurrentRow.Cells["Value"].Value = _value;
 
-                if (CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
-                {
-                    MessageBox.Show("Residential Change not Allowed");
+            //        _currentSection[currentRowIndex].jsvalue = _value;
+            //        _currentSection[currentRowIndex].jsfactor = newFactor;
 
-                    currentRowIndex = SectDGView.CurrentRow.Index;
-                    SectDGView.CurrentRow.Cells["Factor"].Style.BackColor = Color.White;
-                    SectDGView.CurrentRow.Cells["Facotr"].Value = _currentSection[currentRowIndex].orig_jsfactor;
-                    SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.White;
-                }
-            }
+            //        if (newFactor != _jfactor)
+            //        {
+            //            SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.PaleGreen;
+            //            SectDGView.CurrentRow.Cells["Factor"].Style.BackColor = Color.PaleGreen;
+            //        }
+            //        if (newFactor == _jfactor)
+            //        {
+            //            SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.White;
+            //            SectDGView.CurrentRow.Cells["Factor"].Style.BackColor = Color.White;
+            //        }
+            //    }
 
-            if (SectDGView.Columns[e.ColumnIndex].Name == "Deprec")
-            {
-                if (!CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
-                {
-                    currentRowIndex = SectDGView.CurrentRow.Index;
-                    newDeprec = 0;
-                    alowNoDep = false;
+            //    if (CamraSupport.ResidentialOccupancyCodes.Contains(_currentParcel.moccup))
+            //    {
+            //        MessageBox.Show("Residential Change not Allowed");
 
-                    newDeprec = Convert.ToDecimal(SectDGView.CurrentRow.Cells["Deprec"].Value);
-                    _jdeprec = _currentSection[currentRowIndex].orig_jsdeprc;
+            //        currentRowIndex = SectDGView.CurrentRow.Index;
+            //        SectDGView.CurrentRow.Cells["Factor"].Style.BackColor = Color.White;
+            //        SectDGView.CurrentRow.Cells["Facotr"].Value = _currentSection[currentRowIndex].orig_jsfactor;
+            //        SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.White;
+            //    }
+            //}
 
-                    if (NewZeroDep == "Y" && newDeprec > 0)
-                    {
-                        SectDGView.CurrentRow.Cells["0Depr"].Value = String.Empty;
-                        _currentSection[currentRowIndex].js0depr = String.Empty;
-                        NewZeroDep = String.Empty;
-                    }
-                    if (NewZeroDep == "Y" && newDeprec == 0)
-                    {
-                        newDeprec = 0;
+            //if (SectDGView.Columns[e.ColumnIndex].Name == "Deprec")
+            //{
+            //    if (!CamraSupport.ResidentialOccupancyCodes.Contains(_currentParcel.moccup))
+            //    {
+            //        currentRowIndex = SectDGView.CurrentRow.Index;
+            //        newDeprec = 0;
+            //        alowNoDep = false;
 
-                        //SectDGView.CurrentRow.Cells["Deprec"].Value = 0;
-                        _currentSection[currentRowIndex].jsdeprc = 0;
-                    }
+            //        newDeprec = Convert.ToDecimal(SectDGView.CurrentRow.Cells["Deprec"].Value);
+            //        _jdeprec = _currentSection[currentRowIndex].orig_jsdeprc;
 
-                    if (newDeprec >= 1)
-                    {
-                        newDeprec = (newDeprec / 100m);
-                        _currentSection[currentRowIndex].jsdeprc = newDeprec;
-                        SectDGView.CurrentRow.Cells["Deprec"].Value = newDeprec;
-                    }
+            //        if (NewZeroDep == "Y" && newDeprec > 0)
+            //        {
+            //            SectDGView.CurrentRow.Cells["0Depr"].Value = String.Empty;
+            //            _currentSection[currentRowIndex].js0depr = String.Empty;
+            //            NewZeroDep = String.Empty;
+            //        }
+            //        if (NewZeroDep == "Y" && newDeprec == 0)
+            //        {
+            //            newDeprec = 0;
 
-                    if (newDeprec == 0 && alowNoDep == false && NewZeroDep.ToUpper() != "Y")
-                    {
-                        DialogResult OKNoDep;
-                        OKNoDep = (MessageBox.Show("Change to 'Y' 'N' for Defalut ", "Change No Depreciation",
-                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question));
+            //            //SectDGView.CurrentRow.Cells["Deprec"].Value = 0;
+            //            _currentSection[currentRowIndex].jsdeprc = 0;
+            //        }
 
-                        if (OKNoDep == DialogResult.Yes)
-                        {
-                            alowNoDep = true;
-                            _currentSection[currentRowIndex].js0depr = "Y";
-                            SectDGView.CurrentRow.Cells["0Depr"].Value = "Y";
+            //        if (newDeprec >= 1)
+            //        {
+            //            newDeprec = (newDeprec / 100m);
+            //            _currentSection[currentRowIndex].jsdeprc = newDeprec;
+            //            SectDGView.CurrentRow.Cells["Deprec"].Value = newDeprec;
+            //        }
 
-                            //SectDGView.CurrentRow.Cells["Deprec"].Value = newDeprec;
-                        }
-                        if (OKNoDep == DialogResult.No)
-                        {
-                        }
-                    }
+            //        if (newDeprec == 0 && alowNoDep == false && NewZeroDep.ToUpper() != "Y")
+            //        {
+            //            DialogResult OKNoDep;
+            //            OKNoDep = (MessageBox.Show("Change to 'Y' 'N' for Defalut ", "Change No Depreciation",
+            //                        MessageBoxButtons.YesNo, MessageBoxIcon.Question));
 
-                    if (newDeprec == 0 && _currentSection[currentRowIndex].js0depr != "Y")
-                    {
-                        _getDefaultDepr(newDeprec, _currentSection[currentRowIndex].js0depr);
+            //            if (OKNoDep == DialogResult.Yes)
+            //            {
+            //                alowNoDep = true;
+            //                _currentSection[currentRowIndex].js0depr = "Y";
+            //                SectDGView.CurrentRow.Cells["0Depr"].Value = "Y";
 
-                        newDeprec = _defDepr;
+            //                //SectDGView.CurrentRow.Cells["Deprec"].Value = newDeprec;
+            //            }
+            //            if (OKNoDep == DialogResult.No)
+            //            {
+            //            }
+            //        }
 
-                        SectDGView.CurrentRow.Cells["Deprec"].Value = newDeprec;
-                    }
+            //        if (newDeprec == 0 && _currentSection[currentRowIndex].js0depr != "Y")
+            //        {
+            //            _getDefaultDepr(newDeprec, _currentSection[currentRowIndex].js0depr);
 
-                    if (newDeprec == 0 && _currentSection[currentRowIndex].js0depr == "Y")
-                    {
-                        _getDefaultDepr(newDeprec, _currentSection[currentRowIndex].js0depr);
+            //            newDeprec = _defDepr;
 
-                        newDeprec = _defDepr;
+            //            SectDGView.CurrentRow.Cells["Deprec"].Value = newDeprec;
+            //        }
 
-                        SectDGView.CurrentRow.Cells["Deprec"].Value = newDeprec;
-                    }
+            //        if (newDeprec == 0 && _currentSection[currentRowIndex].js0depr == "Y")
+            //        {
+            //            _getDefaultDepr(newDeprec, _currentSection[currentRowIndex].js0depr);
 
-                    _getUnitRate(_currentSection[currentRowIndex].jstype, _currentSection[currentRowIndex].jsclass);
-                    _getUnitValue(_currentSection[currentRowIndex].js0depr, _currentSection[currentRowIndex].jssqft, _currentSection[currentRowIndex].jsfactor, newDeprec);
+            //            newDeprec = _defDepr;
 
-                    SectDGView.CurrentRow.Cells["Value"].Value = _value;
+            //            SectDGView.CurrentRow.Cells["Deprec"].Value = newDeprec;
+            //        }
 
-                    //SectDGView.CurrentRow.Cells["Deprec"].Value = newDeprec;
-                    _currentSection[currentRowIndex].jsdeprc = newDeprec;
+            //        _getUnitRate(_currentSection[currentRowIndex].jstype, _currentSection[currentRowIndex].jsclass);
+            //        _getUnitValue(_currentSection[currentRowIndex].js0depr, _currentSection[currentRowIndex].jssqft, _currentSection[currentRowIndex].jsfactor, newDeprec);
 
-                    if (newDeprec != _jdeprec)
-                    {
-                        SectDGView.CurrentRow.Cells["Deprec"].Style.BackColor = Color.PaleGreen;
-                        SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.PaleGreen;
-                    }
-                    if (newDeprec == _jdeprec)
-                    {
-                        SectDGView.CurrentRow.Cells["Deprec"].Style.BackColor = Color.White;
-                        SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.White;
-                    }
-                }
-                if (CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
-                {
-                    MessageBox.Show("Residential Change not Allowed");
+            //        SectDGView.CurrentRow.Cells["Value"].Value = _value;
 
-                    currentRowIndex = SectDGView.CurrentRow.Index;
-                    SectDGView.CurrentRow.Cells["Deprec"].Style.BackColor = Color.White;
-                    SectDGView.CurrentRow.Cells["Deprec"].Value = _currentSection[currentRowIndex].orig_jsdeprc;
-                    SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.White;
-                }
-            }
+            //        //SectDGView.CurrentRow.Cells["Deprec"].Value = newDeprec;
+            //        _currentSection[currentRowIndex].jsdeprc = newDeprec;
 
-            SumSectionValues();
-            SumSectionArea();
+            //        if (newDeprec != _jdeprec)
+            //        {
+            //            SectDGView.CurrentRow.Cells["Deprec"].Style.BackColor = Color.PaleGreen;
+            //            SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.PaleGreen;
+            //        }
+            //        if (newDeprec == _jdeprec)
+            //        {
+            //            SectDGView.CurrentRow.Cells["Deprec"].Style.BackColor = Color.White;
+            //            SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.White;
+            //        }
+            //    }
+            //    if (CamraSupport.ResidentialOccupancyCodes.Contains(_currentParcel.moccup))
+            //    {
+            //        MessageBox.Show("Residential Change not Allowed");
 
-            decimal test3 = sumSize;
+            //        currentRowIndex = SectDGView.CurrentRow.Index;
+            //        SectDGView.CurrentRow.Cells["Deprec"].Style.BackColor = Color.White;
+            //        SectDGView.CurrentRow.Cells["Deprec"].Value = _currentSection[currentRowIndex].orig_jsdeprc;
+            //        SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.White;
+            //    }
+            //
+            // }
+
+            //SumSectionValues();
+            //SumSectionArea();
+
+            //decimal test3 = sumSize;
         }
 
         private void ProcessNewClass()
         {
-            currentRowIndex = SectDGView.CurrentRow.Index;
-            newClass = String.Empty;
+            string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
 
-            List<string> clsList = new List<string>();
-            clsList.Add("A");
-            clsList.Add("B");
-            clsList.Add("C");
-            clsList.Add("D");
-            clsList.Add("E");
-            clsList.Add("M");
+#if DEBUG
+            MessageBox.Show(message);
+#else
+            Console.WriteLine(message);
+            throw new NotImplementedException();
+#endif
 
-            newClass = SectDGView.CurrentRow.Cells["Class"].Value.ToString().ToUpper().Substring(0, 1).Trim();
-            _jclass = _currentSection[currentRowIndex].orig_jsclass;
+            //currentRowIndex = SectDGView.CurrentRow.Index;
+            //newClass = String.Empty;
 
-            if (!clsList.Contains(newClass))
-            {
-                DialogResult redo;
-                redo = MessageBox.Show("Incorrect Class - Please Re-Enter", "Class Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //List<string> clsList = new List<string>();
+            //clsList.Add("A");
+            //clsList.Add("B");
+            //clsList.Add("C");
+            //clsList.Add("D");
+            //clsList.Add("E");
+            //clsList.Add("M");
 
-                if (redo == DialogResult.OK)
-                {
-                    int colIndex = SectDGView.CurrentRow.Cells["Class"].ColumnIndex;
-                    SectDGView.CurrentRow.Cells["Class"].Value = _jclass.ToUpper();
-                    _currentSection[currentRowIndex].jsclass = _jclass;
-                }
-            }
+            //newClass = SectDGView.CurrentRow.Cells["Class"].Value.ToString().ToUpper().Substring(0, 1).Trim();
+            //_jclass = _currentSection[currentRowIndex].orig_jsclass;
 
-            if (clsList.Contains(newClass))
-            {
-                SectDGView.CurrentRow.Cells["Class"].Value = newClass.ToUpper();
-                _currentSection[currentRowIndex].jsclass = newClass;
+            //if (!clsList.Contains(newClass))
+            //{
+            //    DialogResult redo;
+            //    redo = MessageBox.Show("Incorrect Class - Please Re-Enter", "Class Error",
+            //        MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
-                if (newClass != _jclass)
-                {
-                    SectDGView.CurrentRow.Cells["Class"].Style.BackColor = Color.PaleGreen;
-                }
-                if (newClass == _jclass)
-                {
-                    SectDGView.CurrentRow.Cells["Class"].Style.BackColor = Color.White;
-                }
-            }
+            //    if (redo == DialogResult.OK)
+            //    {
+            //        int colIndex = SectDGView.CurrentRow.Cells["Class"].ColumnIndex;
+            //        SectDGView.CurrentRow.Cells["Class"].Value = _jclass.ToUpper();
+            //        _currentSection[currentRowIndex].jsclass = _jclass;
+            //    }
+            //}
 
-            _getUnitRate(_currentSection[currentRowIndex].jstype, newClass);
-            _getUnitValue(_currentSection[currentRowIndex].js0depr, _currentSection[currentRowIndex].jssqft, _currentSection[currentRowIndex].jsfactor, _currentSection[currentRowIndex].jsdeprc);
+            //if (clsList.Contains(newClass))
+            //{
+            //    SectDGView.CurrentRow.Cells["Class"].Value = newClass.ToUpper();
+            //    _currentSection[currentRowIndex].jsclass = newClass;
 
-            SectDGView.CurrentRow.Cells["Value"].Value = _value;
-            SectDGView.CurrentRow.Cells["Rate"].Value = UnitRate;
+            //    if (newClass != _jclass)
+            //    {
+            //        SectDGView.CurrentRow.Cells["Class"].Style.BackColor = Color.PaleGreen;
+            //    }
+            //    if (newClass == _jclass)
+            //    {
+            //        SectDGView.CurrentRow.Cells["Class"].Style.BackColor = Color.White;
+            //    }
+            //}
 
-            if (newClass != _jclass)
-            {
-                SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.PaleGreen;
-                SectDGView.CurrentRow.Cells["Rate"].Style.BackColor = Color.PaleGreen;
-            }
-            if (newClass == _jclass)
-            {
-                SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.White;
-                SectDGView.CurrentRow.Cells["Rate"].Style.BackColor = Color.White;
-            }
+            //_getUnitRate(_currentSection[currentRowIndex].jstype, newClass);
+            //_getUnitValue(_currentSection[currentRowIndex].js0depr, _currentSection[currentRowIndex].jssqft, _currentSection[currentRowIndex].jsfactor, _currentSection[currentRowIndex].jsdeprc);
+
+            //SectDGView.CurrentRow.Cells["Value"].Value = _value;
+            //SectDGView.CurrentRow.Cells["Rate"].Value = UnitRate;
+
+            //if (newClass != _jclass)
+            //{
+            //    SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.PaleGreen;
+            //    SectDGView.CurrentRow.Cells["Rate"].Style.BackColor = Color.PaleGreen;
+            //}
+            //if (newClass == _jclass)
+            //{
+            //    SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.White;
+            //    SectDGView.CurrentRow.Cells["Rate"].Style.BackColor = Color.White;
+            //}
         }
 
         private void ProcessNewStory()
         {
-            currentRowIndex = SectDGView.CurrentRow.Index;
+            string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
 
-            decimal newStory = 0;
+#if DEBUG
+            MessageBox.Show(message);
+#else
+            Console.WriteLine(message);
+            throw new NotImplementedException();
+#endif
 
-            newStory = Convert.ToDecimal(SectDGView.CurrentRow.Cells["Story"].Value.ToString().ToUpper().Trim());
-            _jstory = _currentSection[currentRowIndex].orig_jsstory;
+            //currentRowIndex = SectDGView.CurrentRow.Index;
 
-            _jssqft = _currentSection[currentRowIndex].orig_jssqft;
+            //decimal newStory = 0;
 
-            if (_jstory == 0)
-            {
-                _jstory = 1;
-                _currentSection[currentRowIndex].orig_jsstory = 1;
-            }
+            //newStory = Convert.ToDecimal(SectDGView.CurrentRow.Cells["Story"].Value.ToString().ToUpper().Trim());
+            //_jstory = _currentSection[currentRowIndex].orig_jsstory;
 
-            decimal tststory = (newStory / _jstory);
+            //_jssqft = _currentSection[currentRowIndex].orig_jssqft;
 
-            _currentSection[currentRowIndex].jsstory = newStory;
+            //if (_jstory == 0)
+            //{
+            //    _jstory = 1;
+            //    _currentSection[currentRowIndex].orig_jsstory = 1;
+            //}
 
-            _jssqft = Convert.ToDecimal(Math.Round(Convert.ToDecimal(_currentSection[currentRowIndex].orig_jssqft * tststory), 1));
-            _currentSection[currentRowIndex].jssqft = _jssqft;
+            //decimal tststory = (newStory / _jstory);
 
-            _getUnitRate(_currentSection[currentRowIndex].jstype, _currentSection[currentRowIndex].jsclass);
-            _getUnitValue(_currentSection[currentRowIndex].js0depr, _currentSection[currentRowIndex].jssqft, _currentSection[currentRowIndex].jsfactor, _currentSection[currentRowIndex].jsdeprc);
+            //_currentSection[currentRowIndex].jsstory = newStory;
 
-            SectDGView.CurrentRow.Cells["Value"].Value = _value;
-            SectDGView.CurrentRow.Cells["Size"].Value = _jssqft.ToString();
+            //_jssqft = Convert.ToDecimal(Math.Round(Convert.ToDecimal(_currentSection[currentRowIndex].orig_jssqft * tststory), 1));
+            //_currentSection[currentRowIndex].jssqft = _jssqft;
 
-            if (newStory != _jstory)
-            {
-                SectDGView.CurrentRow.Cells["Story"].Style.BackColor = Color.PaleGreen;
-                SectDGView.CurrentRow.Cells["Size"].Style.BackColor = Color.PaleGreen;
-                SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.PaleGreen;
-            }
-            if (newStory == _jstory)
-            {
-                SectDGView.CurrentRow.Cells["Story"].Style.BackColor = Color.White;
-                SectDGView.CurrentRow.Cells["Size"].Style.BackColor = Color.White;
-                SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.White;
-            }
+            //_getUnitRate(_currentSection[currentRowIndex].jstype, _currentSection[currentRowIndex].jsclass);
+            //_getUnitValue(_currentSection[currentRowIndex].js0depr, _currentSection[currentRowIndex].jssqft, _currentSection[currentRowIndex].jsfactor, _currentSection[currentRowIndex].jsdeprc);
+
+            //SectDGView.CurrentRow.Cells["Value"].Value = _value;
+            //SectDGView.CurrentRow.Cells["Size"].Value = _jssqft.ToString();
+
+            //if (newStory != _jstory)
+            //{
+            //    SectDGView.CurrentRow.Cells["Story"].Style.BackColor = Color.PaleGreen;
+            //    SectDGView.CurrentRow.Cells["Size"].Style.BackColor = Color.PaleGreen;
+            //    SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.PaleGreen;
+            //}
+            //if (newStory == _jstory)
+            //{
+            //    SectDGView.CurrentRow.Cells["Story"].Style.BackColor = Color.White;
+            //    SectDGView.CurrentRow.Cells["Size"].Style.BackColor = Color.White;
+            //    SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.White;
+            //}
         }
 
         private void ProcessTypeChangeRequestResidential()
@@ -1969,103 +1938,111 @@ namespace SketchUp
 
         private void ProcessZeroDepr()
         {
-            currentRowIndex = SectDGView.CurrentRow.Index;
-            NewZeroDep = String.Empty;
+            //currentRowIndex = SectDGView.CurrentRow.Index;
+            //NewZeroDep = String.Empty;
 
-            NewZeroDep = SectDGView.CurrentRow.Cells["0Depr"].Value.ToString().ToUpper().Trim();
-            _j0depr = _currentSection[currentRowIndex].orig_js0depr;
+            //NewZeroDep = SectDGView.CurrentRow.Cells["0Depr"].Value.ToString().ToUpper().Trim();
+            //_j0depr = _currentSection[currentRowIndex].orig_js0depr;
 
-            if (NewZeroDep.ToUpper().Trim() != "Y" && NewZeroDep.ToUpper().Trim() != String.Empty)
-            {
-                DialogResult noDep;
-                noDep = (MessageBox.Show("Must use 'Y' or 'Blank' for No Depreciation ", "No Depreciation Warning",
-                    MessageBoxButtons.OKCancel, MessageBoxIcon.Warning));
+            //if (NewZeroDep.ToUpper().Trim() != "Y" && NewZeroDep.ToUpper().Trim() != String.Empty)
+            //{
+            //    DialogResult noDep;
+            //    noDep = (MessageBox.Show("Must use 'Y' or 'Blank' for No Depreciation ", "No Depreciation Warning",
+            //        MessageBoxButtons.OKCancel, MessageBoxIcon.Warning));
 
-                if (noDep == DialogResult.OK)
-                {
-                    DialogResult noDep2;
-                    noDep2 = (MessageBox.Show("Change to 'Y' ", "Change No Depreciation",
-                        MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question));
+            //    if (noDep == DialogResult.OK)
+            //    {
+            //        DialogResult noDep2;
+            //        noDep2 = (MessageBox.Show("Change to 'Y' ", "Change No Depreciation",
+            //            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question));
 
-                    if (noDep2 == DialogResult.Yes)
-                    {
-                        SectDGView.CurrentRow.Cells["0Depr"].Value = "Y";
-                        NewZeroDep = "Y";
-                        _currentSection[currentRowIndex].js0depr = NewZeroDep;
-                    }
+            //        if (noDep2 == DialogResult.Yes)
+            //        {
+            //            SectDGView.CurrentRow.Cells["0Depr"].Value = "Y";
+            //            NewZeroDep = "Y";
+            //            _currentSection[currentRowIndex].js0depr = NewZeroDep;
+            //        }
 
-                    if (noDep2 == DialogResult.No || noDep2 == DialogResult.Cancel)
-                    {
-                        SectDGView.CurrentRow.Cells["0Depr"].Value = String.Empty;
-                        NewZeroDep = String.Empty;
-                        _currentSection[currentRowIndex].js0depr = String.Empty;
-                    }
-                }
-            }
-            if (NewZeroDep.ToUpper().Trim() == "Y" && _currentSection[currentRowIndex].jsdeprc != 0)
-            {
-                DialogResult useDefault;
-                useDefault = MessageBox.Show("Want No Depreciation", "Zero Depreciation Warning",
-                    MessageBoxButtons.OK, MessageBoxIcon.Question);
+            //        if (noDep2 == DialogResult.No || noDep2 == DialogResult.Cancel)
+            //        {
+            //            SectDGView.CurrentRow.Cells["0Depr"].Value = String.Empty;
+            //            NewZeroDep = String.Empty;
+            //            _currentSection[currentRowIndex].js0depr = String.Empty;
+            //        }
+            //    }
+            //}
+            //if (NewZeroDep.ToUpper().Trim() == "Y" && _currentSection[currentRowIndex].jsdeprc != 0)
+            //{
+            //    DialogResult useDefault;
+            //    useDefault = MessageBox.Show("Want No Depreciation", "Zero Depreciation Warning",
+            //        MessageBoxButtons.OK, MessageBoxIcon.Question);
 
-                if (useDefault == DialogResult.OK)
-                {
-                    SectDGView.CurrentRow.Cells["0Depr"].Value = NewZeroDep;
-                    _currentSection[currentRowIndex].js0depr = "Y";
-                    SectDGView.CurrentRow.Cells["Deprec"].Value = 0;
-                    _currentSection[currentRowIndex].jsdeprc = 0;
-                }
-            }
+            //    if (useDefault == DialogResult.OK)
+            //    {
+            //        SectDGView.CurrentRow.Cells["0Depr"].Value = NewZeroDep;
+            //        _currentSection[currentRowIndex].js0depr = "Y";
+            //        SectDGView.CurrentRow.Cells["Deprec"].Value = 0;
+            //        _currentSection[currentRowIndex].jsdeprc = 0;
+            //    }
+            //}
 
-            if (NewZeroDep.ToUpper().Trim() == "Y")
-            {
-                _getUnitRate(_currentSection[currentRowIndex].jstype, _currentSection[currentRowIndex].jsclass);
-                _getUnitValue(NewZeroDep, _currentSection[currentRowIndex].jssqft, _currentSection[currentRowIndex].jsfactor, _currentSection[currentRowIndex].jsdeprc);
+            //if (NewZeroDep.ToUpper().Trim() == "Y")
+            //{
+            //    _getUnitRate(_currentSection[currentRowIndex].jstype, _currentSection[currentRowIndex].jsclass);
+            //    _getUnitValue(NewZeroDep, _currentSection[currentRowIndex].jssqft, _currentSection[currentRowIndex].jsfactor, _currentSection[currentRowIndex].jsdeprc);
 
-                SectDGView.CurrentRow.Cells["Deprec"].Value = 0;
-                _currentSection[currentRowIndex].jsdeprc = 0;
+            //    SectDGView.CurrentRow.Cells["Deprec"].Value = 0;
+            //    _currentSection[currentRowIndex].jsdeprc = 0;
 
-                SectDGView.CurrentRow.Cells["Deprec"].Style.BackColor = Color.PaleGreen;
-                SectDGView.CurrentRow.Cells["Value"].Value = _value;
-                _currentSection[currentRowIndex].jsvalue = _value;
-            }
-            if (NewZeroDep.Trim() == String.Empty)
-            {
-                _getUnitRate(_currentSection[currentRowIndex].jstype, _currentSection[currentRowIndex].jsclass);
-                _getUnitValue(NewZeroDep, _currentSection[currentRowIndex].jssqft, _currentSection[currentRowIndex].jsfactor, _currentSection[currentRowIndex].jsdeprc);
+            //    SectDGView.CurrentRow.Cells["Deprec"].Style.BackColor = Color.PaleGreen;
+            //    SectDGView.CurrentRow.Cells["Value"].Value = _value;
+            //    _currentSection[currentRowIndex].jsvalue = _value;
+            //}
+            //if (NewZeroDep.Trim() == String.Empty)
+            //{
+            //    _getUnitRate(_currentSection[currentRowIndex].jstype, _currentSection[currentRowIndex].jsclass);
+            //    _getUnitValue(NewZeroDep, _currentSection[currentRowIndex].jssqft, _currentSection[currentRowIndex].jsfactor, _currentSection[currentRowIndex].jsdeprc);
 
-                SectDGView.CurrentRow.Cells["Value"].Value = _value;
-                _currentSection[currentRowIndex].jsvalue = _value;
-            }
+            //    SectDGView.CurrentRow.Cells["Value"].Value = _value;
+            //    _currentSection[currentRowIndex].jsvalue = _value;
+            //}
 
-            if (NewZeroDep.Trim() == String.Empty && _currentSection[currentRowIndex].jsdeprc == 0)
-            {
-                _getDefaultDepr(_currentSection[currentRowIndex].jsdeprc, NewZeroDep.Trim());
+            //if (NewZeroDep.Trim() == String.Empty && _currentSection[currentRowIndex].jsdeprc == 0)
+            //{
+            //    _getDefaultDepr(_currentSection[currentRowIndex].jsdeprc, NewZeroDep.Trim());
 
-                newDeprec = _defDepr;
+            //    newDeprec = _defDepr;
 
-                SectDGView.CurrentRow.Cells["Deprec"].Value = newDeprec;
-            }
+            //    SectDGView.CurrentRow.Cells["Deprec"].Value = newDeprec;
+            //}
 
-            SectDGView.CurrentRow.Cells["0Depr"].Value = NewZeroDep;
-            _currentSection[currentRowIndex].js0depr = NewZeroDep.Trim();
+            //SectDGView.CurrentRow.Cells["0Depr"].Value = NewZeroDep;
+            //_currentSection[currentRowIndex].js0depr = NewZeroDep.Trim();
 
-            if (NewZeroDep != _j0depr)
-            {
-                SectDGView.CurrentRow.Cells["0Depr"].Style.BackColor = Color.PaleGreen;
-            }
-            if (NewZeroDep == _j0depr)
-            {
-                SectDGView.CurrentRow.Cells["0Depr"].Style.BackColor = Color.White;
-            }
-            if (_currentSection[currentRowIndex].jsvalue != _currentSection[currentRowIndex].orig_jsvalue)
-            {
-                SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.PaleGreen;
-            }
-            if (_currentSection[currentRowIndex].jsvalue == _currentSection[currentRowIndex].orig_jsvalue)
-            {
-                SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.White;
-            }
+            //if (NewZeroDep != _j0depr)
+            //{
+            //    SectDGView.CurrentRow.Cells["0Depr"].Style.BackColor = Color.PaleGreen;
+            //}
+            //if (NewZeroDep == _j0depr)
+            //{
+            //    SectDGView.CurrentRow.Cells["0Depr"].Style.BackColor = Color.White;
+            //}
+            //if (_currentSection[currentRowIndex].jsvalue != _currentSection[currentRowIndex].orig_jsvalue)
+            //{
+            //    SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.PaleGreen;
+            //}
+            //if (_currentSection[currentRowIndex].jsvalue == _currentSection[currentRowIndex].orig_jsvalue)
+            //{
+            //    SectDGView.CurrentRow.Cells["Value"].Style.BackColor = Color.White;
+            //}
+            string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
+
+#if DEBUG
+            MessageBox.Show(message);
+#else
+            Console.WriteLine(message);
+            throw new NotImplementedException();
+#endif
         }
 
         private void Reorder()
@@ -2134,7 +2111,7 @@ namespace SketchUp
 
             if (CPcnt > 0)
             {
-                UodateCarports();
+                UpdateCarports();
 
                 FixSections(ds);
 
@@ -2144,7 +2121,7 @@ namespace SketchUp
                 setAttPnts();
 
                 //Moved to a single call to getParcel after all other updates have run.
-                ParcelData.getParcel(conn, _currentParcel.mrecno, _currentParcel.mdwell);
+                SketchUpParcelData.getParcel(conn, _currentParcel.mrecno, _currentParcel.mdwell);
             }
         }
 
@@ -2365,7 +2342,7 @@ namespace SketchUp
             SumSectionValues();
         }
 
-        private void UodateCarports()
+        private void UpdateCarports()
         {
             if (CPcnt > 0 && _currentParcel.mcarpt == 0 || CPcnt > 0 && _currentParcel.mcarpt == 67)
             {

@@ -98,7 +98,7 @@ namespace SketchUp
 
         private void MockGettingCamraData()
         {
-            ParcelDataCollection pdc = new ParcelDataCollection(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
+            SketchUpParcelDataCollection pdc = new SketchUpParcelDataCollection(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
             SketchUpGlobals.CurrentParcel = pdc.GetParcel(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
         }
 

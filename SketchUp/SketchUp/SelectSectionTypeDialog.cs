@@ -12,7 +12,7 @@ namespace SketchUp
     {
      
 
-        public SelectSectionTypeDialog(SWallTech.CAMRA_Connection conn, ParcelData data, bool addSection, int lineCount, bool newSketch)
+        public SelectSectionTypeDialog(SWallTech.CAMRA_Connection conn, SketchUpParcelData data, bool addSection, int lineCount, bool newSketch)
         {
             _conn = conn;
             _currentParcel = data;
@@ -511,7 +511,7 @@ namespace SketchUp
         SMParcel parcelWorkingCopy;
         // TODO: Remove if not needed:	DBAccessManager _fox = null;
         private SWallTech.CAMRA_Connection _conn = null;
-        private ParcelData _currentParcel = null;
+        private SketchUpParcelData _currentParcel = null;
         public static bool _isnewSketch = false;
     }
 }

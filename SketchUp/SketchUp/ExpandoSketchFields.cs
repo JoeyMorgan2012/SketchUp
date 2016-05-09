@@ -219,7 +219,7 @@ namespace SketchUp
         private Image _baseImage;
         private SWallTech.CAMRA_Connection _conn = null;
         private int _curLineCnt = 0;
-        private ParcelData _currentParcel = null;
+        private SketchUpParcelData _currentParcel = null;
         private float _currentScale = 0;
         private SectionDataCollection _currentSection = null;
         private bool _isAngle = false;

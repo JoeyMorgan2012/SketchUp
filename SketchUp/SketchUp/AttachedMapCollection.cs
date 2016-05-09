@@ -11,7 +11,7 @@ namespace SketchUp
         {
         }
 
-        public static AttachedMapCollection Factory(ParcelData parcel)
+        public static AttachedMapCollection Factory(SketchUpParcelData parcel)
         {
             AttachedMapCollection attachedMap = new AttachedMapCollection();
 

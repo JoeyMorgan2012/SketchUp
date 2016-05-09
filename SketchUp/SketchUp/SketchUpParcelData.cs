@@ -7,11 +7,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Windows.Forms;
 using SWallTech;
 
 namespace SketchUp
 {
-	public class ParcelData
+	public class SketchUpParcelData
 	{
 		#region public fields (properties)
 
@@ -597,7 +598,7 @@ namespace SketchUp
 		//    }
 		//}
 
-		public ParcelData()
+		public SketchUpParcelData()
 		{
 
 		}
@@ -614,41 +615,7 @@ namespace SketchUp
 			}
 		}
 
-		public decimal BasementArea
-		{
-			get
-			{
-				return _basementArea;
-			}
-
-			set
-			{
-				_basementArea = value;
-				if (_basementArea == 0)
-				{
-					CalculateParcel();
-				}
-				FireChangedEvent("BasementArea");
-			}
-		}
-
-		public decimal BasementPercentage
-		{
-			get
-			{
-				return _basementPercent;
-			}
-
-			set
-			{
-				_basementPercent = value;
-				if (_basementPercent == 0)
-				{
-					CalculateParcel();
-				}
-				FireChangedEvent("BasementPercentage");
-			}
-		}
+	
 
 		public int carportA
 		{
@@ -683,7 +650,12 @@ namespace SketchUp
 			}
 		}
 
-		public string conditionType
+        private void CalculateParcel()
+        {
+            //TODO: Replace the valuation calculations with the minimal calcs needed for sketches.
+        }
+
+        public string conditionType
 		{
 			get
 			{
@@ -1243,458 +1215,7 @@ namespace SketchUp
 			this.SectRecords = section;
 		}
 
-		public void CalculateParcel()
-		{
-			if (CamraSupport.ResidentialOccupancies.Contains(this.moccup))
-			{
-				if (!_isCalculating)
-				{
-					if (IsInCalculateMode)
-					{
-						_isCalculating = true;
-						TotalPropertyValue = 0;
-						TotalImprovementValue = 0;
-						totalBldgValue = 0;
-						depreciatonValue = 0;
-						funcDeprValue = 0;
-						econDeprValue = 0;
-						factoredValue = 0;
-						computedFactor = 0;
-						PercentChange = 0;
-						CurrentValue = 0;
-						SalesRatio = 0;
-						PrevSalesRatio = 0;
-						BaseChange = 0;
-						NbrHdAdjValue = 0;
-						percentCompValue = 0;
-						FunctionalDeprc = this.mfuncd;
-
-						if (macpct != 0 && macsf == 0)
-						{
-							macsf = Convert.ToInt32(macpct * mtota);
-						}
-						if (macpct == 0 && macsf > 0)
-						{
-							macpct = Convert.ToDecimal(macsf / mtota);
-						}
-
-						if (this.moccup == 16)
-						{
-							computedFactor = 0;
-							factoredValue = 0;
-							depreciatonValue = 0;
-							funcDeprValue = 0;
-							econDeprValue = 0;
-							totalBldgValue = this.mfairv;
-							percentCompValue = 0;
-							NbrHdAdjValue = 0;
-							TotalImprovementValue = Decimal.Round((totalBldgValue + this.mtotoi), 0);
-							TotalPropertyValue = Decimal.Round((TotalImprovementValue + this.mtotld), 0);
-						}
-
-						if (this.moccup == 26)
-						{
-							computedFactor = 0;
-							factoredValue = 0;
-							depreciatonValue = 0;
-							funcDeprValue = 0;
-							econDeprValue = 0;
-							totalBldgValue = this.mfairv;
-							percentCompValue = 0;
-							NbrHdAdjValue = 0;
-							TotalImprovementValue = Decimal.Round((totalBldgValue + this.mtotoi), 0);
-							TotalPropertyValue = Decimal.Round((TotalImprovementValue + this.mtotld), 0);
-						}
-
-						if (this.moccup != 16)
-						{
-							{
-								computedFactor = Decimal.Round((GetClassValue(this.mclass) + this.mfactr), 2);
-								orig_computedFactor = computedFactor;
-
-								////   need the adjusted mtsubt here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-								calcsubt = Convert.ToInt32((mtota * mpsf) + mtbas + mtfbas + mtplum + mtheat + mtac + mtfp + mtfl + mtbimp + mtbi + mswl + mttadd + (mekit * Rates.ExtraKitRate));
-
-								orig_calcsubt = calcsubt;
-
-								if (orig_mtsubt != calcsubt)
-								{
-									mtsubt = calcsubt;
-								}
-
-								factoredValue = Decimal.Round((this.mtsubt * computedFactor), 0);
-
-								//physDeprRate = 0;
-								decimal physDepr = 0;
-
-								if (this.m0depr == "Y")
-								{
-									physDepr = 0;
-									depreciatonValue = 0;
-								}
-								if (this.mdeprc > 0)  //   mdeprc was Deprc
-								{
-									physDepr = (this.factoredValue * this.mdeprc).ReverseAndRoundToZero();
-									depreciatonValue = (this.mdeprc * factoredValue).ReverseAndRoundToZero();
-
-									if (this.mcond == "G")
-									{
-										physDeprRate = Decimal.Round((Convert.ToDecimal(this.mage) * CamraSupport.DefDepCondG), 2);
-									}
-									if (this.mcond == "A")
-									{
-										physDeprRate = Decimal.Round((Convert.ToDecimal(this.mage) * CamraSupport.DefDepCondA), 2);
-									}
-									if (this.mcond == "F")
-									{
-										physDeprRate = Decimal.Round((Convert.ToDecimal(this.mage) * CamraSupport.DefDepCondF), 2);
-									}
-									if (this.mcond == "P")
-									{
-										physDeprRate = Decimal.Round((Convert.ToDecimal(this.mage) * CamraSupport.DefDepCondP), 2);
-									}
-
-									if (physDeprRate > 0.65m)
-									{
-										physDeprRate = 0.65m;
-									}
-
-									orig_physDeprRate = physDeprRate;
-								}
-								if (this.mdeprc == 0 && this.m0depr != "Y")
-								{
-									if (mage == 997)
-									{
-										mage = 1;
-									}
-									if (mage == 998)
-									{
-										mage = 45;
-									}
-									if (mage == 999 || mage == 900)
-									{
-										mage = 60;
-									}
-
-									if (this.mcond == "G")
-									{
-										physDeprRate = Decimal.Round((Convert.ToDecimal(this.mage) * CamraSupport.DefDepCondG), 2);
-									}
-									if (this.mcond == "A")
-									{
-										physDeprRate = Decimal.Round((Convert.ToDecimal(this.mage) * CamraSupport.DefDepCondA), 2);
-									}
-									if (this.mcond == "F")
-									{
-										physDeprRate = Decimal.Round((Convert.ToDecimal(this.mage) * CamraSupport.DefDepCondF), 2);
-									}
-									if (this.mcond == "P")
-									{
-										physDeprRate = Decimal.Round((Convert.ToDecimal(this.mage) * CamraSupport.DefDepCondP), 2);
-									}
-
-									if (physDeprRate > 0.65m)
-									{
-										physDeprRate = 0.65m;
-									}
-
-									physDepr = (this.factoredValue * physDeprRate).ReverseAndRoundToZero();
-
-									depreciatonValue = (physDeprRate * factoredValue).ReverseAndRoundToZero();
-
-									orig_physDeprRate = physDeprRate;
-								}
-
-								funcDeprValue = ((factoredValue + depreciatonValue) * this.mfuncd).ReverseAndRoundToZero();
-								econDeprValue = ((factoredValue + depreciatonValue + funcDeprValue) * this.mecond).ReverseAndRoundToZero();
-
-								totalBldgValue = Decimal.Round((factoredValue + depreciatonValue + funcDeprValue + econDeprValue), 0);
-
-								decimal tbv3 = (Math.Round(Convert.ToDecimal(totalBldgValue) / 100, 0, MidpointRounding.AwayFromZero) * 100);
-
-								totalBldgValue = tbv3;
-
-								if (this.NeighborhoodAdj != 0)
-								{
-									NbrHdAdjValue = Decimal.Round((totalBldgValue * NeighborhoodAdj), 0);
-								}
-								else if (this.NbrHdAdjValue == 0)
-								{
-									NbrHdAdjValue = 0;
-								}
-
-								if (this.mpcomp != 0)
-								{
-									//percentCompValue = ((totalBldgValue + NbrHdAdjValue) * (1 - this.PercentComp)).ReverseAndRoundToZero();
-
-									decimal pcval = ((totalBldgValue + NbrHdAdjValue) * (this.mpcomp)).ReverseAndRoundToZero();
-
-									percentCompValue = ((totalBldgValue + NbrHdAdjValue) + pcval);
-								}
-								else
-								{
-									percentCompValue = 0;
-								}
-
-								//TotalImprovementValue = Decimal.Round((((totalBldgValue + NbrHdAdjValue )* (1 - this.PercentComp)) + mtotoi + mimadj), 0);
-								//TotalImprovementValue = Decimal.Round((((totalBldgValue + NbrHdAdjValue) * (1-this.mpcomp)) + mtotoi + mimadj), 0);
-
-								TotalImprovementValue = Decimal.Round((((totalBldgValue + NbrHdAdjValue) - percentCompValue) + mtotoi + mimadj), 0);
-
-								TotalPropertyValue = Decimal.Round((TotalImprovementValue + mtotld), 0);
-							}
-
-							CurrentValue = Convert.ToInt32(massb + massl);
-							if (CurrentValue > 0 && mdwell == 1)
-							{
-								decimal currentLandDec = Convert.ToDecimal(massl);
-								decimal currentBldgDec = Convert.ToDecimal(massb);
-								decimal newLandDec = Convert.ToDecimal(mtotld);
-								decimal newBldgDec = Convert.ToDecimal(mimprv);
-								decimal currentValueDec = Convert.ToDecimal(CurrentValue);
-								if (currentLandDec == 0)
-								{
-									currentLandDec = 1;
-								}
-								if (currentBldgDec == 0)
-								{
-									currentBldgDec = 1;
-								}
-
-								PercentChange = Decimal.Round((TotalPropertyValue - currentValueDec) / currentValueDec, 2);
-								PercentChgLand = Decimal.Round((newLandDec - currentLandDec) / currentLandDec, 2);
-								PercentChgBldg = Decimal.Round((newBldgDec - currentBldgDec) / currentBldgDec, 2);
-								BaseChange = Decimal.Round((mtotpr - currentValueDec) / currentValueDec, 2);
-							}
-
-							try
-							{
-								if (this.mtbas > 0)
-								{
-									if (_basementArea != orig_BasementArea)
-									{
-										_basementPercent = (BasementArea / mbasa);
-										if (orig_BasementPercentage == 1)
-										{
-											_basementPercent = orig_BasementPercentage;
-										}
-
-										mtbas = Convert.ToInt32(_basementArea * (Rates.BasementRate));
-									}
-									if (_basementArea == orig_BasementArea)
-									{
-										_basementArea = orig_BasementArea;
-										_basementPercent = orig_BasementPercentage;
-									}
-								}
-
-								if (mtfbas > 0 && mbrate > 0 && msbfin <= 0)
-								{
-									_finishedBsmtArea = Decimal.Round((Convert.ToDecimal(mtfbas / mbrate)), 0);
-									_finishedBsmtPercent = (_finishedBsmtArea / BasementArea);
-									orig_FinBasementRate = mbrate;
-								}
-								if (mtfbas > 0 && mbrate > 0 && msbfin > 0)
-								{
-									_finishedBsmtArea = msbfin;
-									_finishedBsmtPercent = (_finishedBsmtArea / BasementArea);
-									orig_FinBasementRate = mbrate;
-								}
-								else if (mbrate == 0)
-								{
-									_finishedBsmtArea = 0;
-									_finishedBsmtPercent = 0;
-								}
-							}
-							catch (DivideByZeroException divex)
-							{
-								Console.WriteLine(string.Format("{0}", divex.Message));
-							}
-
-							if (myrsld >= CamraSupport.SaleYearCutOff && msellp > 0)
-							{
-								decimal _saleRatio = (Convert.ToDecimal(mtotpr) / Convert.ToDecimal(msellp));
-								decimal _prevRatio = (Convert.ToDecimal(massl + massb) / Convert.ToDecimal(msellp));
-
-								SalesRatio = Decimal.Round(_saleRatio, 3);
-								PrevSalesRatio = Decimal.Round(_prevRatio, 3);
-								ValidSale = true;
-							}
-							else
-							{
-								SalesRatio = 0;
-								PrevSalesRatio = 0;
-								ValidSale = false;
-							}
-
-							_isCalculating = false;
-						}
-					}
-				}
-			}
-
-			if (CamraSupport.CommercialOccupancies.Contains(this.moccup))
-			{
-				if (!_isCalculating)
-				{
-					if (IsInCalculateMode)
-					{
-						_isCalculating = true;
-						TotalPropertyValue = 0;
-						TotalImprovementValue = 0;
-						totalBldgValue = 0;
-						depreciatonValue = 0;
-						funcDeprValue = 0;
-						econDeprValue = 0;
-						factoredValue = 0;
-						computedFactor = 0;
-						PercentChange = 0;
-						CurrentValue = 0;
-						PrevSalesRatio = 0;
-						SalesRatio = 0;
-						BaseChange = 0;
-						NbrHdAdjValue = 0;
-						percentCompValue = 0;
-
-						if (this.mtsubt == 0)
-						{
-							factoredValue = 1;
-							this.mtsubt = 1;
-						}
-
-						int tempRec = mrecno;
-						int tempCard = mdwell;
-
-						factoredValue = Convert.ToInt32(this.mtsubt + Sketch.BuildingSections.TotalFactorValue);
-						computedFactor = Decimal.Round((factoredValue / this.mtsubt), 2);
-
-						funcDeprValue = Convert.ToInt32(((factoredValue - Sketch.BuildingSections.TotalDepreciationValue) * this.mfuncd) * -1);
-						econDeprValue = Convert.ToInt32(((factoredValue - Sketch.BuildingSections.TotalDepreciationValue + funcDeprValue) * this.mecond) * -1);
-
-						totalBldgValue = Convert.ToInt32(factoredValue - Sketch.BuildingSections.TotalDepreciationValue + funcDeprValue + econDeprValue);
-
-						decimal tbv1 = (Math.Round(Convert.ToDecimal(totalBldgValue) / 100, 0, MidpointRounding.AwayFromZero) * 100);
-
-						totalBldgValue = tbv1;
-					}
-				}
-			}
-
-			if (CamraSupport.TaxExemptOccupancies.Contains(this.moccup))
-			{
-				if (!_isCalculating)
-				{
-					if (IsInCalculateMode)
-					{
-						_isCalculating = true;
-						TotalPropertyValue = 0;
-						TotalImprovementValue = 0;
-						totalBldgValue = 0;
-						depreciatonValue = 0;
-						funcDeprValue = 0;
-						econDeprValue = 0;
-						factoredValue = 0;
-						computedFactor = 0;
-						PercentChange = 0;
-						CurrentValue = 0;
-						PrevSalesRatio = 0;
-						SalesRatio = 0;
-						BaseChange = 0;
-						NbrHdAdjValue = 0;
-						percentCompValue = 0;
-
-						factoredValue = Convert.ToInt32(this.mtsubt + Sketch.BuildingSections.TotalFactorValue);
-						computedFactor = Decimal.Round((factoredValue / this.mtsubt), 2);
-						orig_computedFactor = computedFactor;
-						funcDeprValue = Convert.ToInt32(((factoredValue - Sketch.BuildingSections.TotalDepreciationValue) * this.mfuncd) * -1);
-						econDeprValue = Convert.ToInt32(((factoredValue - Sketch.BuildingSections.TotalDepreciationValue + funcDeprValue) * this.mecond) * -1);
-
-						totalBldgValue = Convert.ToInt32(factoredValue - Sketch.BuildingSections.TotalDepreciationValue + funcDeprValue + econDeprValue);
-
-						decimal tbv2 = (Math.Round(Convert.ToDecimal(totalBldgValue) / 100, 0, MidpointRounding.AwayFromZero) * 100);
-
-						totalBldgValue = tbv2;
-					}
-				}
-			}
-
-			decimal neighborhoodAdjValue = 0;
-			if (this.NeighborhoodAdj == 0)
-			{
-				NbrHdAdjValue = 0;
-			}
-			else if (this.NeighborhoodAdj != 0)
-			{
-				neighborhoodAdjValue = ((Convert.ToDecimal(totalBldgValue)) * (1 + this.mnbadj));
-				NbrHdAdjValue = (totalBldgValue - neighborhoodAdjValue).ReverseAndRoundToZero();
-			}
-
-			if (this.mpcomp != 0)
-			{
-				percentCompValue = ((totalBldgValue + NbrHdAdjValue) * (1 - this.mpcomp)).ReverseAndRoundToZero();
-
-				//percentCompValue = ((totalBldgValue + NbrHdAdjValue) * (1 - this.mpcomp)).ReverseAndRoundToZero();
-			}
-			else if (this.mpcomp == 0)
-			{
-				percentCompValue = 0;
-			}
-
-			if (this.mpcomp == 0 && this.mnbadj == 0)
-			{
-				TotalImprovementValue = Decimal.Round((this.totalBldgValue + this.mtotoi + this.mimadj), 0);
-			}
-			if (this.mpcomp != 0 && this.mnbadj == 0)
-			{
-				TotalImprovementValue = Decimal.Round(((totalBldgValue * this.mpcomp) + this.mtotoi + this.mimadj), 0);
-			}
-			if (this.mpcomp != 0 && this.mnbadj != 0)
-			{
-				TotalImprovementValue = Decimal.Round((((totalBldgValue + NbrHdAdjValue) * this.mpcomp) + this.mtotoi + this.mimadj), 0);
-			}
-
-			TotalPropertyValue = Decimal.Round((TotalImprovementValue + this.mtotld), 0);
-
-			CurrentValue = Convert.ToInt32(massb + massl);
-			if (CurrentValue > 0 && mdwell == 1)
-			{
-				decimal currentLandDec = Convert.ToDecimal(massl);
-				decimal currentBldgDec = Convert.ToDecimal(massb);
-				decimal newLandDec = Convert.ToDecimal(mtotld);
-				decimal newBldgDec = Convert.ToDecimal(mimprv);
-				decimal currentValueDec = Convert.ToDecimal(CurrentValue);
-				if (currentLandDec == 0)
-				{
-					currentLandDec = 1;
-				}
-				if (currentBldgDec == 0)
-				{
-					currentBldgDec = 1;
-				}
-
-				PercentChange = Decimal.Round((TotalPropertyValue - currentValueDec) / currentValueDec, 3);
-				PercentChgLand = Decimal.Round((newLandDec - currentLandDec) / currentLandDec, 3);
-				PercentChgBldg = Decimal.Round((newBldgDec - currentBldgDec) / currentBldgDec, 3);
-				BaseChange = Decimal.Round((mtotpr - currentValueDec) / currentValueDec, 3);
-			}
-
-			if (myrsld >= CamraSupport.SaleYearCutOff && msellp > 0)
-			{
-				decimal _saleRatio = (Convert.ToDecimal(mtotpr) / Convert.ToDecimal(msellp));
-				decimal _prevRatio = (Convert.ToDecimal(massl + massb) / Convert.ToDecimal(msellp));
-
-				SalesRatio = Decimal.Round(_saleRatio, 3);
-				PrevSalesRatio = Decimal.Round(_prevRatio, 3);
-				ValidSale = true;
-			}
-			else
-			{
-				SalesRatio = 0;
-				PrevSalesRatio = 0;
-				ValidSale = false;
-			}
-		}
+	
 
 		private void FireChangedEvent(string property)
 		{
@@ -1722,9 +1243,9 @@ namespace SketchUp
 		}
 
        
-        public static ParcelData getParcel(SWallTech.CAMRA_Connection _fox, int record, int card)
+        public static SketchUpParcelData getParcel(SWallTech.CAMRA_Connection _fox, int record, int card)
 		{
-			ParcelData _parcel = null;
+			SketchUpParcelData _parcel = null;
  // TODO: Need to omit any fields not needed for SketchUp. JMM 5-9-2016
 			StringBuilder getParcelSql = new StringBuilder();
 			getParcelSql.Append(" select mrecid,mrecno,mdwell,mmap,mlnam,mfnam,madd1,madd2,mcity,mstate,mzip5,mzip4,macre,mzone,mluse,moccup,mstory,mage,mcond,mclass,mfactr, ");
@@ -1748,7 +1269,7 @@ namespace SketchUp
 			{
 				DataRow row = Parcel.Tables[0].Rows[0];
 
-				_parcel = new ParcelData()
+				_parcel = new SketchUpParcelData()
 				{
 					Record = record,
 					Card = card,
@@ -2338,154 +1859,161 @@ namespace SketchUp
 
 		private void SetOriginalValues()
 		{
-			if (this.m1um.Trim() == String.Empty)
-			{
-				this.orig_curVal1 = 0;
-			}
-			if (this.m1um == "F")
-			{
-				this.orig_curVal1 = Convert.ToInt32(Convert.ToInt32((((this.m1frnt * this.m1rate) * this.m1dfac) * (1 + this.m1adj))).RoundHundredsToString().Replace(",", ""));
-			}
-			if (this.m1um == "S")
-			{
-				int chkArea1 = 0;
-				if (this.m1area > 0 && this.m1frnt == 0 && this.m1dpth == 0)
-				{
-					chkArea1 = this.m1area;
-					this.curVal1 = Convert.ToInt32((chkArea1 * this.m1rate) * (1 + this.m1adj));
-				}
+                        string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
 
-				if (chkArea1 == 0)
-				{
-					chkArea1 = Convert.ToInt32(this.m1frnt * this.m1dpth);
-					if (this.m1area != chkArea1 && this.m1area > 0)
-					{
-						this.m1area = chkArea1;
-						this.curVal1 = Convert.ToInt32((chkArea1 * this.m1rate) * (1 + this.m1adj));
-					}
-				}
+#if DEBUG
+            MessageBox.Show(message);
+#else
+            Console.WriteLine(message);
+            throw new NotImplementedException();
+#endif
 
-				if (chkArea1 > 0)
-				{
-					this.curVal1 = Convert.ToInt32((chkArea1 * this.m1rate) * (1 + this.m1adj));
-				}
-			}
-			if (this.m2um.Trim() == String.Empty)
-			{
-				this.orig_curVal2 = 0;
-			}
-			if (this.m2um == "L")
-			{
-				this.orig_curVal2 = Convert.ToInt32(this.m2rate * (1 + this.m2adj));
-			}
+			//if (this.m1um.Trim() == String.Empty)
+			//{
+			//	this.orig_curVal1 = 0;
+			//}
+			//if (this.m1um == "F")
+			//{
+			//	this.orig_curVal1 = Convert.ToInt32(Convert.ToInt32((((this.m1frnt * this.m1rate) * this.m1dfac) * (1 + this.m1adj))).RoundHundredsToString().Replace(",", ""));
+			//}
+			//if (this.m1um == "S")
+			//{
+			//	int chkArea1 = 0;
+			//	if (this.m1area > 0 && this.m1frnt == 0 && this.m1dpth == 0)
+			//	{
+			//		chkArea1 = this.m1area;
+			//		this.curVal1 = Convert.ToInt32((chkArea1 * this.m1rate) * (1 + this.m1adj));
+			//	}
 
-			if (this.m2um == "F")
-			{
-				this.orig_curVal2 = Convert.ToInt32(Convert.ToInt32((((this.m2frnt * this.m2rate) * this.m2dfac) * (1 + this.m2adj))).RoundHundredsToString().Replace(",", ""));
-			}
-			if (this.m2um == "S")
-			{
-				int chkArea2 = 0;
-				if (this.m2area > 0 && this.m2frnt == 0 && this.m2dpth == 0)
-				{
-					chkArea2 = this.m2area;
-					this.curVal2 = Convert.ToInt32((chkArea2 * this.m2rate) * (1 + this.m2adj));
-				}
+			//	if (chkArea1 == 0)
+			//	{
+			//		chkArea1 = Convert.ToInt32(this.m1frnt * this.m1dpth);
+			//		if (this.m1area != chkArea1 && this.m1area > 0)
+			//		{
+			//			this.m1area = chkArea1;
+			//			this.curVal1 = Convert.ToInt32((chkArea1 * this.m1rate) * (1 + this.m1adj));
+			//		}
+			//	}
 
-				if (chkArea2 == 0)
-				{
-					chkArea2 = Convert.ToInt32(this.m2frnt * this.m2dpth);
-					if (this.m2area != chkArea2 && this.m2area > 0)
-					{
-						this.m2area = chkArea2;
-						this.curVal2 = Convert.ToInt32((chkArea2 * this.m2rate) * (1 + this.m2adj));
-					}
-				}
+			//	if (chkArea1 > 0)
+			//	{
+			//		this.curVal1 = Convert.ToInt32((chkArea1 * this.m1rate) * (1 + this.m1adj));
+			//	}
+			//}
+			//if (this.m2um.Trim() == String.Empty)
+			//{
+			//	this.orig_curVal2 = 0;
+			//}
+			//if (this.m2um == "L")
+			//{
+			//	this.orig_curVal2 = Convert.ToInt32(this.m2rate * (1 + this.m2adj));
+			//}
 
-				if (chkArea2 > 0)
-				{
-					this.curVal2 = Convert.ToInt32((chkArea2 * this.m2rate) * (1 + this.m2adj));
-				}
-			}
-			if (this.m2um == "L")
-			{
-				this.orig_curVal2 = Convert.ToInt32(this.m2rate * (1 + this.m2adj));
-			}
+			//if (this.m2um == "F")
+			//{
+			//	this.orig_curVal2 = Convert.ToInt32(Convert.ToInt32((((this.m2frnt * this.m2rate) * this.m2dfac) * (1 + this.m2adj))).RoundHundredsToString().Replace(",", ""));
+			//}
+			//if (this.m2um == "S")
+			//{
+			//	int chkArea2 = 0;
+			//	if (this.m2area > 0 && this.m2frnt == 0 && this.m2dpth == 0)
+			//	{
+			//		chkArea2 = this.m2area;
+			//		this.curVal2 = Convert.ToInt32((chkArea2 * this.m2rate) * (1 + this.m2adj));
+			//	}
 
-			if (CamraSupport.ResidentialOccupancies.Contains(this.moccup) && this.moccup != 16)
-			{
-				computedFactor = Decimal.Round((GetClassValue(this.Class) + this.Factor), 2);
-				orig_computedFactor = Decimal.Round((GetClassValue(this.Class) + this.Factor), 2);
-			}
+			//	if (chkArea2 == 0)
+			//	{
+			//		chkArea2 = Convert.ToInt32(this.m2frnt * this.m2dpth);
+			//		if (this.m2area != chkArea2 && this.m2area > 0)
+			//		{
+			//			this.m2area = chkArea2;
+			//			this.curVal2 = Convert.ToInt32((chkArea2 * this.m2rate) * (1 + this.m2adj));
+			//		}
+			//	}
 
-			if (CamraSupport.CommercialOccupancies.Contains(this.moccup) && this.moccup != 26)
-			{
-				computedFactor = 0;
-				orig_computedFactor = 0;
-			}
-			if (CamraSupport.TaxExemptOccupancies.Contains(this.moccup))
-			{
-				computedFactor = 0;
-				orig_computedFactor = 0;
-			}
+			//	if (chkArea2 > 0)
+			//	{
+			//		this.curVal2 = Convert.ToInt32((chkArea2 * this.m2rate) * (1 + this.m2adj));
+			//	}
+			//}
+			//if (this.m2um == "L")
+			//{
+			//	this.orig_curVal2 = Convert.ToInt32(this.m2rate * (1 + this.m2adj));
+			//}
 
-			if (this.moccup == 16 || this.moccup == 26)
-			{
-				computedFactor = 0;
-				orig_computedFactor = 0;
-			}
+			//if (CamraSupport.ResidentialOccupancyCodes.Contains(this.moccup) && this.moccup != 16)
+			//{
+			//	computedFactor = Decimal.Round((GetClassValue(this.Class) + this.Factor), 2);
+			//	orig_computedFactor = Decimal.Round((GetClassValue(this.Class) + this.Factor), 2);
+			//}
 
-			if (macpct != 0 && macsf == 0)
-			{
-				macsf = Convert.ToInt32(macpct * mtota);
-			}
+			//if (CamraSupport.CommercialOccupancyCodes.Contains(this.moccup) && this.moccup != 26)
+			//{
+			//	computedFactor = 0;
+			//	orig_computedFactor = 0;
+			//}
+			//if (CamraSupport.TaxExemptOccupancies.Contains(this.moccup))
+			//{
+			//	computedFactor = 0;
+			//	orig_computedFactor = 0;
+			//}
 
-			if (macpct == 0 && macsf > 0)
-			{
-				macpct = Convert.ToDecimal(macsf / mtota);
-			}
+			//if (this.moccup == 16 || this.moccup == 26)
+			//{
+			//	computedFactor = 0;
+			//	orig_computedFactor = 0;
+			//}
 
-			if (CamraSupport.ResidentialOccupancies.Contains(this.moccup))
-			{
-				if (mtbas != 0)
-				{
-					//orig_BasementArea = (mtbas / CamraSupport.BasementRate);
-					orig_BasementArea = mbasa;
-					if (mpbtot == 0)
-					{
-						orig_BasementPercentage = Math.Round((msbtot / mbasa), 2);
-					}
+			//if (macpct != 0 && macsf == 0)
+			//{
+			//	macsf = Convert.ToInt32(macpct * mtota);
+			//}
 
-					//if (mbasa == 0)
-					//{
-					//    orig_BasementPercentage = orig_BasementArea / orig_BasementArea;
-					//}
-					BasementArea = orig_BasementArea;
-					BasementPercentage = orig_BasementPercentage;
-				}
-				else
-				{
-					orig_BasementArea = 0;
-					orig_BasementPercentage = 0;
-					BasementArea = 0;
-					BasementPercentage = 0;
-				}
-			}
-			else
-			{
-				orig_BasementArea = 0;
-				orig_BasementPercentage = 0;
-				BasementArea = 0;
-				BasementPercentage = 0;
-			}
+			//if (macpct == 0 && macsf > 0)
+			//{
+			//	macpct = Convert.ToDecimal(macsf / mtota);
+			//}
 
-			if (mtfbas != 0 && orig_BasementArea != 0)
-			{
-				orig_FinBasementArea = (mtfbas / mbrate);
-				orig_FinBasementPercentage = orig_FinBasementArea / orig_BasementArea;
-			}
+			//if (CamraSupport.ResidentialOccupancyCodes.Contains(this.moccup))
+			//{
+			//	if (mtbas != 0)
+			//	{
+			//		//orig_BasementArea = (mtbas / CamraSupport.BasementRate);
+			//		orig_BasementArea = mbasa;
+			//		if (mpbtot == 0)
+			//		{
+			//			orig_BasementPercentage = Math.Round((msbtot / mbasa), 2);
+			//		}
 
-			_isDirtyCheckingOn = true;
+			//		//if (mbasa == 0)
+			//		//{
+			//		//    orig_BasementPercentage = orig_BasementArea / orig_BasementArea;
+				
+			//	}
+			//	else
+			//	{
+			//		orig_BasementArea = 0;
+			//		orig_BasementPercentage = 0;
+			//		BasementArea = 0;
+			//		BasementPercentage = 0;
+			//	}
+			//}
+			//else
+			//{
+			//	orig_BasementArea = 0;
+			//	orig_BasementPercentage = 0;
+			//	BasementArea = 0;
+			//	BasementPercentage = 0;
+			//}
+
+			//if (mtfbas != 0 && orig_BasementArea != 0)
+			//{
+			//	orig_FinBasementArea = (mtfbas / mbrate);
+			//	orig_FinBasementPercentage = orig_FinBasementArea / orig_BasementArea;
+			//}
+
+			//_isDirtyCheckingOn = true;
 		}
 	}
 }

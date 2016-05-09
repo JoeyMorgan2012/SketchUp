@@ -8,7 +8,7 @@ namespace SketchUp
 {
     public class LandDataCollection : List<LandData>
     {
-        private ParcelData _currentParcel = null;
+        private SketchUpParcelData _currentParcel = null;
 
         public SWallTech.CAMRA_Connection _fox
         {
@@ -41,7 +41,7 @@ namespace SketchUp
         {
         }
 
-        public LandDataCollection(ParcelData data, SWallTech.CAMRA_Connection fox)
+        public LandDataCollection(SketchUpParcelData data, SWallTech.CAMRA_Connection fox)
         {
             _currentParcel = data;
             _fox = fox;

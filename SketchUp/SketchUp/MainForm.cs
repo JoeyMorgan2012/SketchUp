@@ -368,7 +368,7 @@ namespace SketchUp
 
         public void LoadInitialSketch()
         {
-            SketchUpGlobals.CurrentParcel = ParcelData.getParcel(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
+            SketchUpGlobals.CurrentParcel = SketchUpParcelData.getParcel(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
 
             SketchUpGlobals.SubSections = new SectionDataCollection(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
             FixLength(SketchUpGlobals.Record, SketchUpGlobals.Card);
@@ -518,7 +518,7 @@ namespace SketchUp
 
         private void AddSketchToParcel()
         {
-            SketchUpGlobals.CurrentParcel = ParcelData.getParcel(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
+            SketchUpGlobals.CurrentParcel = SketchUpParcelData.getParcel(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
 
             SketchUpGlobals.SubSections = new SectionDataCollection(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
 
@@ -561,7 +561,7 @@ namespace SketchUp
 
             if (SketchUpGlobals.Checker == 0)
             {
-                MessageBox.Show("Invalid Master Record --- Please ReEnter");
+                MessageBox.Show("Invalid Master Record --- Please Re-enter","Invalid Record Number");
 
                 RecordTxt.Text = String.Empty;
                 CardTxt.Text = String.Empty;
@@ -805,6 +805,9 @@ namespace SketchUp
                 PreFixTxt.Text = SketchUpGlobals.LocalityPreFix;
 
                 CheckGoodRecord(SketchUpGlobals.Record, SketchUpGlobals.Card);
+                // This is where I am intercepting the legacy code with the
+                // new version that does not load anything not needed.
+
                 CamraSupport.Init(SketchUpGlobals.CamraDbConn);
                 Application.DoEvents();
                 if (SketchUpGlobals.Checker > 0)

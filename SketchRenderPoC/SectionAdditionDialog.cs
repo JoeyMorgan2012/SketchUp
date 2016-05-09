@@ -10,7 +10,7 @@ namespace SketchUp
 {
     public partial class SectionAdditionDialog : Form
     {
-        public SectionAdditionDialog(SWallTech.CAMRA_Connection conn, ParcelData data, bool addSection, int lineCount, bool newSketch)
+        public SectionAdditionDialog(CAMRA_Connection conn, SketchUpParcelData data, bool addSection, int lineCount, bool newSketch)
         {
             //_conn = conn;
             //_currentParcel = data;
@@ -595,7 +595,7 @@ namespace SketchUp
         // TODO: Remove if not needed:	DBAccessManager _fox = null;
         private SWallTech.CAMRA_Connection _conn = null;
 
-        private ParcelData _currentParcel = SketchUpGlobals.CurrentParcel;
+        private SketchUpParcelData _currentParcel = SketchUpGlobals.CurrentParcel;
         private SMParcel parcelSnapshot;
         private AdditionType additionType = AdditionType.NewSection;
         private int Card = 0;

@@ -13,7 +13,7 @@ namespace SketchUp
         //private DBAccessManager _fox = null;
         private CAMRA_Connection _conn = null;
 
-        private ParcelData _currentParcel = null;
+        private SketchUpParcelData _currentParcel = null;
 
         private decimal NewArea = 0;
 
@@ -37,7 +37,7 @@ namespace SketchUp
             get; set;
         }
 
-        public MissingGarageData(SWallTech.CAMRA_Connection conn, ParcelData data, decimal newSectArea, string Type)
+        public MissingGarageData(SWallTech.CAMRA_Connection conn, SketchUpParcelData data, decimal newSectArea, string Type)
         {
             _conn = conn;
             _currentParcel = data;

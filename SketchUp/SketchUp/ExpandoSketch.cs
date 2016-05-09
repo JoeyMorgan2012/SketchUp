@@ -23,7 +23,7 @@ namespace SketchUp
    */
     public partial class ExpandoSketch : Form
     {
-        public ExpandoSketch(ParcelData currentParcel, string sketchFolder,
+        public ExpandoSketch(SketchUpParcelData currentParcel, string sketchFolder,
       string sketchRecord, string sketchCard, string _locality, SWallTech.CAMRA_Connection _fox,
       SectionDataCollection currentSection, bool hasSketch, bool hasNewSketch)
         {
@@ -5053,7 +5053,7 @@ namespace SketchUp
             return dh.ToArray();
         }
 
-        private void InitializeDataTablesAndVariables(ParcelData currentParcel, string sketchFolder, string sketchRecord, string sketchCard, string _locality, CAMRA_Connection _fox, SectionDataCollection currentSection, bool hasSketch, bool hasNewSketch)
+        private void InitializeDataTablesAndVariables(SketchUpParcelData currentParcel, string sketchFolder, string sketchRecord, string sketchCard, string _locality, CAMRA_Connection _fox, SectionDataCollection currentSection, bool hasSketch, bool hasNewSketch)
         {
             checkDirection = false;
             _currentParcel = currentParcel;
@@ -5957,7 +5957,7 @@ namespace SketchUp
 
                 dbConn.DBConnection.ExecuteNonSelectStatement(zeroGarageSql.ToString());
 
-                ParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
+                SketchUpParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
             }
             if (carportCount == 0)
             {
@@ -5970,7 +5970,7 @@ namespace SketchUp
 
                 dbConn.DBConnection.ExecuteNonSelectStatement(zerocp.ToString());
 
-                ParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
+                SketchUpParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
             }
 
             if (Garcnt > 0)
@@ -5995,7 +5995,7 @@ namespace SketchUp
 
                         dbConn.DBConnection.ExecuteNonSelectStatement(fixCp.ToString());
 
-                        ParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
+                        SketchUpParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
                     }
                 }
                 if (Garcnt > 1 && _currentParcel.mgart2 == 0)
@@ -6018,7 +6018,7 @@ namespace SketchUp
 
                         dbConn.DBConnection.ExecuteNonSelectStatement(fixCp.ToString());
 
-                        ParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
+                        SketchUpParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
                     }
                 }
                 if (Garcnt > 2)
@@ -6038,7 +6038,7 @@ namespace SketchUp
 
                     dbConn.DBConnection.ExecuteNonSelectStatement(addcp.ToString());
 
-                    ParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
+                    SketchUpParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
                 }
             }
             if (carportCount > 0)
@@ -6063,7 +6063,7 @@ namespace SketchUp
 
                         dbConn.DBConnection.ExecuteNonSelectStatement(fixCp.ToString());
 
-                        ParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
+                        SketchUpParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
                     }
                 }
 
@@ -6084,7 +6084,7 @@ namespace SketchUp
 
                     dbConn.DBConnection.ExecuteNonSelectStatement(addcp.ToString());
 
-                    ParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
+                    SketchUpParcelData.getParcel(dbConn, _currentParcel.mrecno, _currentParcel.mdwell);
                 }
             }
 
@@ -6398,7 +6398,7 @@ namespace SketchUp
             MessageBox.Show(s);
         }
 
-        private void ShowWorkingCopySketch(ParcelData currentParcel, string sketchFolder, string sketchRecord, string sketchCard, string _locality, CAMRA_Connection _fox, SectionDataCollection currentSection, bool hasSketch, bool hasNewSketch)
+        private void ShowWorkingCopySketch(SketchUpParcelData currentParcel, string sketchFolder, string sketchRecord, string sketchCard, string _locality, CAMRA_Connection _fox, SectionDataCollection currentSection, bool hasSketch, bool hasNewSketch)
         {
             try
             {

@@ -9,13 +9,13 @@ namespace SketchUp
 {
     public class CPBuildingSectionCollection : List<CPBuildingSection>
     {
-        public CPBuildingSectionCollection(ParcelData data, SWallTech.CAMRA_Connection fox)
+        public CPBuildingSectionCollection(SketchUpParcelData data, SWallTech.CAMRA_Connection fox)
         {
             _currentParcel = data;
             _fox = fox;
         }
 
-        public CPBuildingSectionCollection(SWallTech.CAMRA_Connection fox, ParcelData _parent)
+        public CPBuildingSectionCollection(SWallTech.CAMRA_Connection fox, SketchUpParcelData _parent)
         {
             _parentParcel = _parent;
 
@@ -323,11 +323,11 @@ namespace SketchUp
             return q;
         }
 
-        private ParcelData _currentParcel = null;
+        private SketchUpParcelData _currentParcel = null;
         private SWallTech.CAMRA_Connection _fox = null;
         private DataTable _BSTable = new DataTable("BuildingSectionTable");
 
-        private ParcelData _parentParcel = null;
+        private SketchUpParcelData _parentParcel = null;
 
         private CPBuildingSectionCollection()
         {
