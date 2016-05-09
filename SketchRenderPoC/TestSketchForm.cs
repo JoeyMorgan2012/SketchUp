@@ -46,7 +46,7 @@ namespace SketchUp
 
         private SMParcel GetOriginalParcelFromDb(int record, int dwelling, SketchRepository sr)
         {
-            SMParcel parcel = sr.SelectParcelAll(record, dwelling);
+            SMParcel parcel = sr.SelectParcelWithSectionsAndLines(record, dwelling);
             parcel.Sections = sr.SelectParcelSections(parcel);
             foreach (SMSection sms in parcel.Sections)
             {

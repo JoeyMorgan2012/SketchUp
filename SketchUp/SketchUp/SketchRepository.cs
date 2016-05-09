@@ -29,7 +29,7 @@ namespace SketchUp
         {
         }
 
-        public SMParcel SelectParcelAll(int recordNumber, int dwellingNumber)
+        public SMParcel SelectParcelWithSectionsAndLines(int recordNumber, int dwellingNumber)
         {
             string selectSql = string.Format("SELECT JMRECORD, JMDWELL, JMSKETCH, JMSTORY, JMSTORYEX, JMSCALE, JMTOTSQFT, JMESKETCH FROM {0} WHERE JMRECORD={1} AND JMDWELL={2}", SketchConnection.MasterTable, recordNumber, dwellingNumber);
             decimal storeys = 0.00M;
@@ -57,7 +57,11 @@ namespace SketchUp
                         ExSketch = row["JMESKETCH"].ToString().Trim()
                     };
                     parcel.Sections = SelectParcelSections(parcel);
-
+                 
+                    foreach (SMSection sms in parcel.Sections)
+                    {
+                        sms.Lines = SelectSectionLines(sms);
+                    }
                     return parcel;
                 }
                 else
@@ -73,7 +77,7 @@ namespace SketchUp
                         TotalSqFt = 0,
                         ExSketch = string.Empty
                     };
-                    parcel.Sections = SelectParcelSections(parcel);
+                   
                     return parcel;
                 }
                 

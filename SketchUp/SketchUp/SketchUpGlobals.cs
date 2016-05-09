@@ -319,7 +319,7 @@ namespace SketchUp
                 }
                 else
                 {
-                    parcelWorkingCopy = SketchMgrRepo.SelectParcelAll(Record, Card);
+                    parcelWorkingCopy = SketchMgrRepo.SelectParcelWithSectionsAndLines(Record, Card);
                     parcelWorkingCopy.SnapShotIndex = 0;
                     SketchSnapshots.Add(parcelWorkingCopy);
                 }

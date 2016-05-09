@@ -350,7 +350,7 @@ namespace SketchUp
 
         private void GetNewSMParcel(int record, int card)
         {
-            MainFormParcel=SketchRepo.SelectParcelAll(record, card);
+            MainFormParcel=SketchRepo.SelectParcelWithSectionsAndLines(record, card);
             SketchUpGlobals.SketchSnapshots.Clear();
             MainFormParcel.SnapShotIndex = 0;
             SketchUpGlobals.SketchSnapshots.Add(MainFormParcel);
@@ -941,17 +941,7 @@ namespace SketchUp
 
         #region SMParcel Initializations
 
-        private SMParcel GetParcelFromDatabase(int record, int dwelling, SketchRepository sr)
-        {
-            SMParcel parcel = sr.SelectParcelAll(record, dwelling);
-            parcel.Sections = sr.SelectParcelSections(parcel);
-            foreach (SMSection sms in parcel.Sections)
-            {
-                sms.Lines = sr.SelectSectionLines(sms);
-            }
-            parcel.IdentifyAttachedToSections();
-            return parcel;
-        }
+       
 
         private SketchRepository GetSketchRepository()
         {
@@ -973,12 +963,7 @@ namespace SketchUp
 
         private SMParcel StoredSMParcel(int record, int dwelling, SketchRepository sr)
         {
-            SMParcel parcel = sr.SelectParcelAll(record, dwelling);
-            parcel.Sections = sr.SelectParcelSections(parcel);
-            foreach (SMSection sms in parcel.Sections)
-            {
-                sms.Lines = sr.SelectSectionLines(sms);
-            }
+            SMParcel parcel = sr.SelectParcelWithSectionsAndLines(record, dwelling);
             parcel.IdentifyAttachedToSections();
             return parcel;
         }

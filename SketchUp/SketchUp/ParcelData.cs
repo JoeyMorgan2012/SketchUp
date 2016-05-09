@@ -1721,27 +1721,28 @@ namespace SketchUp
 			return retValue;
 		}
 
-		public static ParcelData getParcel(SWallTech.CAMRA_Connection _fox, int record, int card)
+       
+        public static ParcelData getParcel(SWallTech.CAMRA_Connection _fox, int record, int card)
 		{
 			ParcelData _parcel = null;
+ // TODO: Need to omit any fields not needed for SketchUp. JMM 5-9-2016
+			StringBuilder getParcelSql = new StringBuilder();
+			getParcelSql.Append(" select mrecid,mrecno,mdwell,mmap,mlnam,mfnam,madd1,madd2,mcity,mstate,mzip5,mzip4,macre,mzone,mluse,moccup,mstory,mage,mcond,mclass,mfactr, ");
+			getParcelSql.Append(" mdeprc,mfound,mexwll,mrooft,mroofg,m#dunt,m#room,m#br,m#fbth,m#hbth,mfp2,mltrcd,mheat,mfuel,mac,mfp1,mcdr,mekit,mbastp,mpbtot,msbtot, ");
+			getParcelSql.Append(" mpbfin,msbfin,mbrate,m#flue,mflutp,mgart,mgar#c,mcarpt,mcar#c,mbi#c,mrow,mease,mwater,msewer,mgas,melec,mterrn,mchar,motdes,mgart2,mgar#2, ");
+			getParcelSql.Append(" mdatlg,mdatpr,mintyp,mintyr,minno#,minno2,mdsufx,mwsufx,mpsufx,mimprv,mtotld,mtotoi,mtotpr,massb,macpct,m1frnt,m1dpth,m1area,mmcode,m0depr, ");
+			getParcelSql.Append(" m1um,m2frnt,m2dpth,m2area,mzipbr,mdelay,m2um,mstrt,mdirct,mhse#,mcdmo,mcdda,mcdyr,m1dfac,mrem1,mrem2,mmagcd,mathom,mdesc1,mdesc2,mdesc3,mdesc4, ");
+			getParcelSql.Append(" mfairv,mlgity,mlgiyr,mlgno#,mlgno2,msubdv,msellp,m2dfac,minit,minspd,mswl,mtutil,mnbadj,massl,macsf,mcomm1,mcomm2,mcomm3,macct,mexwl2,mcalc, ");
+			getParcelSql.Append(" mfill4,mtbv,mtbas,mtfbas,mtplum,mtheat,mtac,mtfp,mtfl,mtbi,mttadd,mtsubt,mtotbv,musrid,mbasa,mtota,mpsf,minwll,mfloor,myrblt,mcnst1,mcnst2,masslu, ");
+			getParcelSql.Append(" mmosld,mdasld,myrsld,mtime,mhse#2,m1adj,m2adj,mlgbkc,mlgbk#,mlgpg#,meffag,mpcomp,msttyp,msdirs,m1rate,m2rate,mfuncd,mecond,mnbrhd,muser1,muser2, ");
+			getParcelSql.Append(" mdbook,mdpage,mwbook,mwpage,mdcode,mwcode,mmortc,mfill7,macre#,mgispn,muser3,muser4,mimadj,mcdrdt,mmnud,mmnnud,mss1,mpcode,mpbook,mppage,mss2,massm, ");
+			getParcelSql.Append(" mfill9,mgrntr,mcvmo,mcvda,mcvyr,mprout,mperr,mtbimp,mpuse,mcvexp,metxyr,mqapch,mqafil,mpict,meacre,mprcit,mprsta,mprzp1,mprzp4,mfp#,msfp#,mfl#, ");
+			getParcelSql.Append(" msfl#,mmfl#,miofp#,mstor#,mascom,mhrph#,mhrdat,mhrtim,mhrnam,mhrses,mhidpc,mhidnm,mcamo,mcada,mcayr,moldoc,substring(minwll,1,2) as walls, substring(minwll,3,2) as wall2, ");
+			getParcelSql.Append(" substring(minwll,5,2) as wall3, substring(minwll,7,2) as wall4, substring(mfloor,1,2) as floors, substring(mfloor,3,2) as floor2, substring(mfloor,5,2) as floor3, substring(mfloor,7,2) as floor4 ");
+			getParcelSql.Append(String.Format("from {0}.{1}mast ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
+			getParcelSql.Append(String.Format("  where mrecno = {0} and mdwell = {1} and moccup < 30 ", record, card));
 
-			StringBuilder subParcel = new StringBuilder();
-			subParcel.Append(" select mrecid,mrecno,mdwell,mmap,mlnam,mfnam,madd1,madd2,mcity,mstate,mzip5,mzip4,macre,mzone,mluse,moccup,mstory,mage,mcond,mclass,mfactr, ");
-			subParcel.Append(" mdeprc,mfound,mexwll,mrooft,mroofg,m#dunt,m#room,m#br,m#fbth,m#hbth,mfp2,mltrcd,mheat,mfuel,mac,mfp1,mcdr,mekit,mbastp,mpbtot,msbtot, ");
-			subParcel.Append(" mpbfin,msbfin,mbrate,m#flue,mflutp,mgart,mgar#c,mcarpt,mcar#c,mbi#c,mrow,mease,mwater,msewer,mgas,melec,mterrn,mchar,motdes,mgart2,mgar#2, ");
-			subParcel.Append(" mdatlg,mdatpr,mintyp,mintyr,minno#,minno2,mdsufx,mwsufx,mpsufx,mimprv,mtotld,mtotoi,mtotpr,massb,macpct,m1frnt,m1dpth,m1area,mmcode,m0depr, ");
-			subParcel.Append(" m1um,m2frnt,m2dpth,m2area,mzipbr,mdelay,m2um,mstrt,mdirct,mhse#,mcdmo,mcdda,mcdyr,m1dfac,mrem1,mrem2,mmagcd,mathom,mdesc1,mdesc2,mdesc3,mdesc4, ");
-			subParcel.Append(" mfairv,mlgity,mlgiyr,mlgno#,mlgno2,msubdv,msellp,m2dfac,minit,minspd,mswl,mtutil,mnbadj,massl,macsf,mcomm1,mcomm2,mcomm3,macct,mexwl2,mcalc, ");
-			subParcel.Append(" mfill4,mtbv,mtbas,mtfbas,mtplum,mtheat,mtac,mtfp,mtfl,mtbi,mttadd,mtsubt,mtotbv,musrid,mbasa,mtota,mpsf,minwll,mfloor,myrblt,mcnst1,mcnst2,masslu, ");
-			subParcel.Append(" mmosld,mdasld,myrsld,mtime,mhse#2,m1adj,m2adj,mlgbkc,mlgbk#,mlgpg#,meffag,mpcomp,msttyp,msdirs,m1rate,m2rate,mfuncd,mecond,mnbrhd,muser1,muser2, ");
-			subParcel.Append(" mdbook,mdpage,mwbook,mwpage,mdcode,mwcode,mmortc,mfill7,macre#,mgispn,muser3,muser4,mimadj,mcdrdt,mmnud,mmnnud,mss1,mpcode,mpbook,mppage,mss2,massm, ");
-			subParcel.Append(" mfill9,mgrntr,mcvmo,mcvda,mcvyr,mprout,mperr,mtbimp,mpuse,mcvexp,metxyr,mqapch,mqafil,mpict,meacre,mprcit,mprsta,mprzp1,mprzp4,mfp#,msfp#,mfl#, ");
-			subParcel.Append(" msfl#,mmfl#,miofp#,mstor#,mascom,mhrph#,mhrdat,mhrtim,mhrnam,mhrses,mhidpc,mhidnm,mcamo,mcada,mcayr,moldoc,substring(minwll,1,2) as walls, substring(minwll,3,2) as wall2, ");
-			subParcel.Append(" substring(minwll,5,2) as wall3, substring(minwll,7,2) as wall4, substring(mfloor,1,2) as floors, substring(mfloor,3,2) as floor2, substring(mfloor,5,2) as floor3, substring(mfloor,7,2) as floor4 ");
-			subParcel.Append(String.Format("from {0}.{1}mast ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
-			subParcel.Append(String.Format("  where mrecno = {0} and mdwell = {1} and moccup < 30 ", record, card));
-
-			DataSet Parcel = _fox.DBConnection.RunSelectStatement(subParcel.ToString());
+			DataSet Parcel = _fox.DBConnection.RunSelectStatement(getParcelSql.ToString());
 
 			if (Parcel.Tables[0].Rows.Count > 0)
 			{
