@@ -85,7 +85,7 @@
             this.AddSectionContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.jumpToolStripMenuItem});
             this.AddSectionContextMenu.Name = "contextMenuStrip1";
-            this.AddSectionContextMenu.Size = new System.Drawing.Size(232, 30);
+            this.AddSectionContextMenu.Size = new System.Drawing.Size(230, 30);
             this.AddSectionContextMenu.Click += new System.EventHandler(this.beginPointToolStripMenuItem_Click);
             // 
             // jumpToolStripMenuItem
@@ -95,7 +95,7 @@
             this.jumpToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("jumpToolStripMenuItem.Image")));
             this.jumpToolStripMenuItem.Name = "jumpToolStripMenuItem";
             this.jumpToolStripMenuItem.ShowShortcutKeys = false;
-            this.jumpToolStripMenuItem.Size = new System.Drawing.Size(231, 26);
+            this.jumpToolStripMenuItem.Size = new System.Drawing.Size(229, 26);
             this.jumpToolStripMenuItem.Text = "Jump to Nearest Corner";
             this.jumpToolStripMenuItem.ToolTipText = "Jump to Nearest Corner (Choose Section Type to Enable";
             this.jumpToolStripMenuItem.Click += new System.EventHandler(this.jumpToolStripMenuItem_Click);

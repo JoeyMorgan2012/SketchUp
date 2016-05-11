@@ -184,6 +184,20 @@ namespace SketchUp
             }
         }
 
+        public string MastTable
+        {
+            get
+            {
+                mastTable =string.Format("{0}.{1}MAST", Library, Locality);
+                return mastTable;
+            }
+
+            set
+            {
+                mastTable = value;
+            }
+        }
+
         private string dataSource = string.Empty;
         private CAMRA_Connection dbConn;
 
@@ -191,6 +205,7 @@ namespace SketchUp
         private string lineTable = string.Empty;
         private string locality = string.Empty;
         private string masterTable = string.Empty;
+        private string mastTable = string.Empty;
         private string password = string.Empty;
         private string sectionTable = string.Empty;
         private string userName = string.Empty;

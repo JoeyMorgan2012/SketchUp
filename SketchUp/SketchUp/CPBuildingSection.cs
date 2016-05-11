@@ -138,9 +138,9 @@ namespace SketchUp
             int sectionDepreciationValue = 0;
             int sectionFactorValue = 0;
 
-            var residentialTypes = (from t in CamraSupport.ResidentialSectionTypeCollection
+            var residentialTypes = (from t in SketchUpCamraSupport.ResidentialSectionTypeCollection
                                     select t._resSectionType).ToList();
-            var commercialTypes = (from t in CamraSupport.CommercialSectionTypeCollection
+            var commercialTypes = (from t in SketchUpCamraSupport.CommercialSectionTypeCollection
                                    select t._commSectionType).ToList();
 
             foreach (DataRow bsreader in ds.Tables[0].Rows)
@@ -148,17 +148,17 @@ namespace SketchUp
                 sectionType = Convert.ToString(bsreader["jstype"].ToString().Trim());
                 if (residentialTypes.Contains(sectionType))
                 {
-                    sectionRate = CamraSupport.ResidentialSectionTypeCollection.ResidentialSectionRate(sectionType);
-                    sectionDescription = CamraSupport.ResidentialSectionTypeCollection.ResidentialSectionTypeDescription(sectionType);
+                    sectionRate = SketchUpCamraSupport.ResidentialSectionTypeCollection.ResidentialSectionRate(sectionType);
+                    sectionDescription = SketchUpCamraSupport.ResidentialSectionTypeCollection.ResidentialSectionTypeDescription(sectionType);
                 }
                 else if (commercialTypes.Contains(sectionType))
                 {
-                    var comm = (from c in CamraSupport.CommercialSectionTypeCollection
+                    var comm = (from c in SketchUpCamraSupport.CommercialSectionTypeCollection
                                 where c._commSectionType == sectionType
                                 select c).SingleOrDefault();
 
                     sectionClass = Convert.ToString(bsreader["jsclass"].ToString().Trim());
-                    sectionDescription = CamraSupport.CommercialSectionTypeCollection.CommercialSectionTypeDescription(sectionType);
+                    sectionDescription = SketchUpCamraSupport.CommercialSectionTypeCollection.CommercialSectionTypeDescription(sectionType);
                     switch (sectionClass)
                     {
                         case "A":
@@ -199,11 +199,11 @@ namespace SketchUp
                 decimal sectionFactor = Convert.ToDecimal(bsreader["jsfactor"]);
                 decimal sectionDepreciation = Convert.ToDecimal(bsreader["jsdeprc"]);
 
-                if (CamraSupport.ResidentialOccupancies.Contains(occupancy))
+                if (SketchUpCamraSupport.ResidentialOccupancies.Contains(occupancy))
                 {
                     sectionValue = Convert.ToInt32(sectionRate * sectionSqft);
                 }
-                if (CamraSupport.CommercialOccupancies.Contains(occupancy))
+                if (SketchUpCamraSupport.CommercialOccupancies.Contains(occupancy))
                 {
                     if (bsreader["js0depr"].ToString() != "Y")
                     {
@@ -221,7 +221,7 @@ namespace SketchUp
                         sectionValue = Convert.ToInt32(sectionSqft * sectionRate * (1 + sectionFactor));
                     }
                 }
-                if (CamraSupport.TaxExemptOccupancies.Contains(occupancy))
+                if (SketchUpCamraSupport.TaxExemptOccupancies.Contains(occupancy))
                 {
                     if (bsreader["js0depr"].ToString() != "Y")
                     {
@@ -253,7 +253,7 @@ namespace SketchUp
                     SectionFactor = Convert.ToDecimal(bsreader["jsfactor"].ToString()),
                     SectionDepreciation = Convert.ToDecimal(bsreader["jsdeprc"].ToString()),
                     SectionNoDepreciation = bsreader["js0depr"].ToString(),
-                    SectionRate = CamraSupport.ResidentialSectionTypeCollection.ResidentialSectionRate(bsreader["jstype"].ToString().Trim()),
+                    SectionRate = SketchUpCamraSupport.ResidentialSectionTypeCollection.ResidentialSectionRate(bsreader["jstype"].ToString().Trim()),
                     SectionValue = sectionValue,
                     SectionDepreciationValue = sectionDepreciationValue,
                     SectionFactorValue = sectionFactorValue,

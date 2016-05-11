@@ -166,7 +166,7 @@ namespace SketchUp
                 }
                 if (Convert.ToString(lreader["lhs"]) != "H")
                 {
-                    landType = CamraSupport.LandTypeCollection.LandDescription(Convert.ToInt32(lreader["laccod"]));
+                    landType = SketchUpCamraSupport.LandTypeCollection.LandDescription(Convert.ToInt32(lreader["laccod"]));
                 }
 
                 LandData ldata = LandData.getLand(fox, record, card, seqno);

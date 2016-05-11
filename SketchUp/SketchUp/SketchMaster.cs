@@ -188,19 +188,19 @@ namespace SketchUp
             switch (sectionResCommType)
             {
                 case SectionResCommType.Residential:
-                    section.Rate = CamraSupport.ResidentialSectionTypeCollection.ResidentialSectionRate(section.SectionType);
-                    section.Description = CamraSupport.ResidentialSectionTypeCollection.ResidentialSectionTypeDescription(section.SectionType);
+                    section.Rate = SketchUpCamraSupport.ResidentialSectionTypeCollection.ResidentialSectionRate(section.SectionType);
+                    section.Description = SketchUpCamraSupport.ResidentialSectionTypeCollection.ResidentialSectionTypeDescription(section.SectionType);
                     break;
 
                 case SectionResCommType.Commercial:
                     string stx = section.SectionType;
 
-                    var comm = (from c in CamraSupport.CommercialSectionTypeCollection
+                    var comm = (from c in SketchUpCamraSupport.CommercialSectionTypeCollection
                                 where c._commSectionType == stx
                                 select c).SingleOrDefault();
 
                     section.Class = Convert.ToString(row["jsclass"].ToString().Trim());
-                    section.Description = CamraSupport.CommercialSectionTypeCollection.CommercialSectionTypeDescription(section.SectionType);
+                    section.Description = SketchUpCamraSupport.CommercialSectionTypeCollection.CommercialSectionTypeDescription(section.SectionType);
                     switch (section.Class)
                     {
                         case "A":
@@ -279,10 +279,10 @@ namespace SketchUp
         private BuildingSectionCollection ReadDataSetIntoBuildingSectionsCollection(DataSet dsSections, int record, int card)
         {
             BuildingSectionCollection buildingSections = new BuildingSectionCollection(record, card);
-            List<string> residentialTypes = (from t in CamraSupport.ResidentialSectionTypeCollection
+            List<string> residentialTypes = (from t in SketchUpCamraSupport.ResidentialSectionTypeCollection
                                              select t._resSectionType).ToList();
 
-            List<string> commercialTypes = (from t in CamraSupport.CommercialSectionTypeCollection
+            List<string> commercialTypes = (from t in SketchUpCamraSupport.CommercialSectionTypeCollection
                                             select t._commSectionType).ToList();
 
             foreach (DataRow row in dsSections.Tables[0].Rows)
@@ -305,15 +305,15 @@ namespace SketchUp
         private void SetValueByOccupancyType(DataRow row, BuildingSection section)
         {
             SectionOccResCommType sectionOccupancyType = SectionOccResCommType.NotFound;
-            if (CamraSupport.ResidentialOccupancies.Contains(Occupancy))
+            if (SketchUpCamraSupport.ResidentialOccupancies.Contains(Occupancy))
             {
                 sectionOccupancyType = SectionOccResCommType.Residential;
             }
-            else if (CamraSupport.TaxExemptOccupancies.Contains(Occupancy))
+            else if (SketchUpCamraSupport.TaxExemptOccupancies.Contains(Occupancy))
             {
                 sectionOccupancyType = SectionOccResCommType.TaxExempt;
             }
-            else if (CamraSupport.CommercialOccupancies.Contains(Occupancy))
+            else if (SketchUpCamraSupport.CommercialOccupancies.Contains(Occupancy))
             {
                 sectionOccupancyType = SectionOccResCommType.Commercial;
             }

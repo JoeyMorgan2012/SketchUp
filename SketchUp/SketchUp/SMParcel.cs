@@ -1,28 +1,17 @@
-﻿using System;
+﻿using SWallTech;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using SWallTech;
 
 namespace SketchUp
 {
     public class SMParcel
     {
-        #region Public Methods
-        public void SetScaleAndOriginForParcel(PictureBox targetContainer)
-        {
-            SetSketchScale(targetContainer);
-            SetSketchOrigin(targetContainer);
-            SetScaledStartPoints();
-        }
-        public void SetScaleAndOriginForParcel(int width, int height, PointF containerCorner)
-        {
-            SetSketchScale(width,height);
-            SetSketchOrigin(width,height,containerCorner);
-            SetScaledStartPoints();
-        }
+#region "Public Methods"
+
         public void IdentifyAttachedToSections()
         {
             if (AllSectionLines != null)
@@ -59,9 +48,23 @@ namespace SketchUp
             return selectedSection;
         }
 
-        #endregion Public Methods
+        public void SetScaleAndOriginForParcel(int width, int height, PointF containerCorner)
+        {
+            SetSketchScale(width,height);
+            SetSketchOrigin(width,height,containerCorner);
+            SetScaledStartPoints();
+        }
 
-        #region Private Methods
+        public void SetScaleAndOriginForParcel(PictureBox targetContainer)
+        {
+            SetSketchScale(targetContainer);
+            SetSketchOrigin(targetContainer);
+            SetScaledStartPoints();
+        }
+
+#endregion
+
+#region "Private methods"
 
         private List<PointF> AllCorners()
         {
@@ -89,6 +92,16 @@ namespace SketchUp
             decimal minX = xList.Min();
             decimal maxX = xList.Max();
             return Math.Abs(maxX - minX);
+        }
+
+        private bool checkAllSectionsAreClosed()
+        {
+            bool sectionClosed = true;
+            foreach (SMSection s in Sections)
+            {
+                sectionClosed &= s.SectionIsClosed;
+            }
+            return sectionClosed;
         }
 
         private string GetLastSectionLetter(List<SMSection> sections)
@@ -141,22 +154,6 @@ namespace SketchUp
             }
         }
 
-        private void SetSketchOrigin(PictureBox targetContainer)
-        {
-            //Using the scale and the offsets, determine the point to be considered as "0,0" for the sketch;
-            var sketchAreaWidth = targetContainer.Width - 20;
-            var sketchAreaHeight = targetContainer.Height - 20;
-            PointF pictureBoxCorner = targetContainer.Location;
-            var extraWidth = (targetContainer.Width - 20) - (Scale * SketchXSize);
-            var extraHeight = (targetContainer.Height - 20) - (Scale * SketchYSize);
-            var paddingX = (extraWidth / 2) + 10;
-            var paddingY = (extraHeight / 2) + 10;
-            var xLocation = (OffsetX * Scale) + paddingX;
-            var yLocation = (OffsetY * Scale) + paddingY;
-
-            SketchOrigin = new PointF((float)xLocation, (float)yLocation);
-        }
-
         private void SetSketchOrigin(int width, int height, PointF cornerLocation)
         {
             //Using the scale and the offsets, determine the point to be considered as "0,0" for the sketch;
@@ -166,6 +163,22 @@ namespace SketchUp
             PointF pictureBoxCorner = cornerLocation;
             var extraWidth = (width - 20) - (Scale * SketchXSize);
             var extraHeight = (height - 20) - (Scale * SketchYSize);
+            var paddingX = (extraWidth / 2) + 10;
+            var paddingY = (extraHeight / 2) + 10;
+            var xLocation = (OffsetX * Scale) + paddingX;
+            var yLocation = (OffsetY * Scale) + paddingY;
+
+            SketchOrigin = new PointF((float)xLocation, (float)yLocation);
+        }
+
+        private void SetSketchOrigin(PictureBox targetContainer)
+        {
+            //Using the scale and the offsets, determine the point to be considered as "0,0" for the sketch;
+            var sketchAreaWidth = targetContainer.Width - 20;
+            var sketchAreaHeight = targetContainer.Height - 20;
+            PointF pictureBoxCorner = targetContainer.Location;
+            var extraWidth = (targetContainer.Width - 20) - (Scale * SketchXSize);
+            var extraHeight = (targetContainer.Height - 20) - (Scale * SketchYSize);
             var paddingX = (extraWidth / 2) + 10;
             var paddingY = (extraHeight / 2) + 10;
             var xLocation = (OffsetX * Scale) + paddingX;
@@ -194,19 +207,7 @@ namespace SketchUp
             Scale = SMGlobal.SmallerDouble(xScale, yScale) * 0.85M;
         }
 
-        #endregion Private Methods
-
-        #region Properties
-
-        private bool checkAllSectionsAreClosed()
-        {
-            bool sectionClosed = true;
-            foreach (SMSection s in Sections)
-            {
-                sectionClosed &= s.SectionIsClosed;
-            }
-            return sectionClosed;
-        }
+#endregion
 
         public List<SMLine> AllSectionLines
         {
@@ -216,13 +217,13 @@ namespace SketchUp
 
                 return allSectionLines;
             }
-
             set
             {
                 allSectionLines = value;
             }
         }
 
+        #region Properties
         public bool AllSectionsClosed
         {
             get
@@ -230,7 +231,6 @@ namespace SketchUp
                 allSectionsClosed = checkAllSectionsAreClosed();
                 return allSectionsClosed;
             }
-
             set
             {
                 allSectionsClosed = value;
@@ -243,12 +243,11 @@ namespace SketchUp
             {
                 return card;
             }
-
             set
             {
                 card = value;
             }
-        }
+        }   
 
         public List<PointF> CornerPoints
         {
@@ -261,7 +260,6 @@ namespace SketchUp
 
                 return cornerPoints;
             }
-
             set
             {
                 cornerPoints = value;
@@ -274,7 +272,6 @@ namespace SketchUp
             {
                 return exSketch;
             }
-
             set
             {
                 exSketch = value;
@@ -287,7 +284,6 @@ namespace SketchUp
             {
                 return hasSketch;
             }
-
             set
             {
                 hasSketch = value;
@@ -300,7 +296,6 @@ namespace SketchUp
             {
                 return jumpMouseLocation;
             }
-
             set
             {
                 jumpMouseLocation = value;
@@ -318,7 +313,6 @@ namespace SketchUp
                 lastSectionLetter = GetLastSectionLetter(Sections);
                 return lastSectionLetter;
             }
-
             set
             {
                 lastSectionLetter = value;
@@ -332,7 +326,6 @@ namespace SketchUp
                 nextSectionLetter = SketchUp.UtilityMethods.NextLetter(LastSectionLetter);
                 return nextSectionLetter;
             }
-
             set
             {
                 nextSectionLetter = value;
@@ -347,7 +340,6 @@ namespace SketchUp
                 offsetX = Math.Abs(minX);
                 return offsetX;
             }
-
             set
             {
                 offsetX = value;
@@ -362,10 +354,21 @@ namespace SketchUp
                 offsetY = Math.Abs(minY);
                 return offsetY;
             }
-
             set
             {
                 offsetY = value;
+            }
+        }
+
+        public virtual SMParcelMast ParcelMast
+        {
+            get
+            {
+                return parcelMast;
+            }
+            set
+            {
+                parcelMast = value;
             }
         }
 
@@ -375,7 +378,6 @@ namespace SketchUp
             {
                 return record;
             }
-
             set
             {
                 record = value;
@@ -388,7 +390,6 @@ namespace SketchUp
             {
                 return refreshParcel;
             }
-
             set
             {
                 refreshParcel = value;
@@ -405,7 +406,6 @@ namespace SketchUp
                 }
                 return scale;
             }
-
             set
             {
                 scale = value;
@@ -423,7 +423,6 @@ namespace SketchUp
                 }
                 return sections;
             }
-
             set
             {
                 sections = value;
@@ -436,7 +435,6 @@ namespace SketchUp
             {
                 return sketchImage;
             }
-
             set
             {
                 sketchImage = value;
@@ -453,7 +451,6 @@ namespace SketchUp
                 }
                 return sketchOrigin;
             }
-
             set
             {
                 sketchOrigin = value;
@@ -468,7 +465,6 @@ namespace SketchUp
 
                 return sketchXSize;
             }
-
             set
             {
                 sketchXSize = value;
@@ -482,7 +478,6 @@ namespace SketchUp
                 sketchYSize = CalculateYSize();
                 return sketchYSize;
             }
-
             set
             {
                 sketchYSize = value;
@@ -495,7 +490,6 @@ namespace SketchUp
             {
                 return snapShotIndex;
             }
-
             set
             {
                 snapShotIndex = value;
@@ -508,7 +502,6 @@ namespace SketchUp
             {
                 return storeyEx;
             }
-
             set
             {
                 storeyEx = value;
@@ -521,7 +514,6 @@ namespace SketchUp
             {
                 return storeys;
             }
-
             set
             {
                 storeys = value;
@@ -534,19 +526,13 @@ namespace SketchUp
             {
                 return totalSqFt;
             }
-
             set
             {
                 totalSqFt = value;
             }
         }
 
-        private PointF sketchOrigin;
-
-        #endregion Properties
-
-        #region Fields
-
+        #endregion
         private List<SMLine> allSectionLines;
         private bool allSectionsClosed;
         private int card;
@@ -558,19 +544,18 @@ namespace SketchUp
         private string nextSectionLetter;
         private decimal offsetX;
         private decimal offsetY;
-
+        private SMParcelMast parcelMast;
         private int record;
         private bool refreshParcel = true;
         private decimal scale;
         private List<SMSection> sections;
         private Image sketchImage;
+        private PointF sketchOrigin;
         private decimal sketchXSize;
         private decimal sketchYSize;
         private int snapShotIndex;
         private string storeyEx;
         private decimal storeys;
         private decimal totalSqFt;
-
-        #endregion Fields
     }
 }

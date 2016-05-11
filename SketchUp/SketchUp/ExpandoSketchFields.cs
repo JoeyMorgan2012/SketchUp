@@ -178,7 +178,6 @@ namespace SketchUp
         private float SecBeginX = 0;
         private float SecBeginY = 0;
         private List<String> SecLetters = null;
-        private BuildingSection section;
         private PointF sectionAttachPoint;
         private DataTable SectionLtrs = null;
         private DataTable SectionTable = null;
@@ -219,9 +218,8 @@ namespace SketchUp
         private Image _baseImage;
         private SWallTech.CAMRA_Connection _conn = null;
         private int _curLineCnt = 0;
-        private SketchUpParcelData _currentParcel = null;
+        private SMParcelMast parcelMast;
         private float _currentScale = 0;
-        private SectionDataCollection _currentSection = null;
         private bool _isAngle = false;
         private bool _isclosing = false;
         private bool _isJumpMode = false;
@@ -926,20 +924,6 @@ namespace SketchUp
             }
         }
 
-        public BuildingSection SketchSection
-        {
-            get
-            {
-                return this.section;
-            }
-            set
-            {
-                this.section = value;
-                this.unadj_pts = this.section.SectionPoints;
-                this.LoadSection();
-            }
-        }
-
         public PointF StartOfCurrentLine
         {
             get
@@ -961,6 +945,19 @@ namespace SketchUp
             set
             {
                 undoJump = value;
+            }
+        }
+
+        public SMParcelMast ParcelMast
+        {
+            get
+            {
+                return parcelMast;
+            }
+
+            set
+            {
+                parcelMast = value;
             }
         }
 

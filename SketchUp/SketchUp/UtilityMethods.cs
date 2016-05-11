@@ -9,7 +9,7 @@ using SWallTech;
 
 namespace SketchUp
 {
-    [SkipMZToolsDeadCodeReview]
+  
     public static class UtilityMethods
     {
         #region Logging Utilities

@@ -7,7 +7,62 @@ namespace SketchUp
 {
     public static class CamraDataEnums
     {
-        #region Enums to replace hard-coded arrays and "magic numbers"
+#region "Public Methods"
+
+        public static List<string> GetEnumStrings(Type enumType)
+        {
+            var enumStrings = Enum.GetNames(enumType);
+            List<string> stringValues = new List<string>();
+            foreach (string n in enumStrings)
+            {
+                stringValues.Add(n);
+            }
+            stringValues.Sort();
+            return stringValues;
+        }
+
+        public static List<int> GetEnumValues(Type enumType)
+        {
+            var enumValues = Enum.GetValues(enumType);
+            List<int> values = new List<int>();
+            foreach (int n in enumValues)
+            {
+                values.Add(n);
+            }
+            values.Sort();
+            return values;
+        } 
+
+#endregion
+
+        /*
+         public static List<string> AuxAreaTypes = new List<string>() { "BEGR", "EGAR", "FEGR", "RMAD", "SUNR", "RMAF", "RMAP", "RMTS" };
+        */
+        public enum AuxAreaTypes
+        {
+            BEGR,
+            EGAR,
+            FEGR,
+            RMAD,
+            SUNR,
+            RMAF,
+            RMAP,
+            RMTS
+        }
+        //public static List<string> CarPortTypes = new List<string>() { "CP", "BCP", "WCP", "BWCP", "UCP", "CPB", "CPU", "CPW", "CPWB" };
+        public enum CarPortTypes
+        {
+            BCP,
+            BWCP,
+            CP,
+            CPB,
+            CPU,
+            CPW,
+            CPWB,
+            UCP,
+            WCP
+        }
+
         //public static List<int> CommercialOccupancies = new List<int>() { 11, 13, 14, 26 };
         public enum CommercialOccupancyCodes
         {
@@ -17,8 +72,22 @@ namespace SketchUp
             FairValueCommercial = 26
         }
 
+        //public static List<string> EnclPorchTypes = new List<string>() { "EPOR", "EPR", "JPOR", "POEB", "POEF", "PORJ" };
+        public enum EnclPorchTypes
+        {
+            BPAT,
+            CPAT,
+            PABK,
+            PACN,
+            PACV,
+            PAT,
+            PATO,
+            PATW,
+            WPAT
+        }
+
         // public static List<string> GarageTypes = new List<string>() 
-        // { "GAR", "BGAR", "FGAR", "UGAR", "GARL","GARB","GARF","GABK","GACB","GCEB","GAFV","GACB","GALF","GAUB","GAUF","GCEF" };
+        // { "GAR", "BGAR", "FGAR", "UGAR", "GARL","GARB","GARF","GABK","GCEB","GAFV","GACB","GALF","GAUB","GAUF","GCEF" };
         public enum GarageTypes
         {
             BGAR,
@@ -46,20 +115,30 @@ namespace SketchUp
             Industrical = 14
         }
 
-        /*
-         public static List<string> AuxAreaTypes = new List<string>() { "BEGR", "EGAR", "FEGR", "RMAD", "SUNR", "RMAF", "RMAP", "RMTS" };
-        */
-        public enum AuxAreaTypes
+        //public static List<string> InvalidCommercialSection = new List<string>() { "BASE", "ADD", "NBAD", "LAG", "OH" };
+        public enum InvalidCommercialSection
         {
-            BEGR,
-            EGAR,
-            FEGR,
-            RMAD,
-            SUNR,
-            RMAF,
-            RMAP,
-            RMTS
+            BASE,
+            ADD,
+            NBAD,
+            LAG,
+            OH
         }
+
+        //public static List<string> PatioTypes = new List<string>() { "PAT", "BPAT", "CPAT", "WPAT", "PATO", "PABK", "PACN", "PACV", "PATW" };
+        public enum PatioTypes
+        {
+            BPAT,
+            CPAT,
+            PABK,
+            PACN,
+            PACV,
+            PAT,
+            PATO,
+            PATW,
+            WPAT
+        }
+
         //  public static List<string> ResidentialLandUseTypes = new List<string>() { "1", "2", "3", "5", "6" };
 
         //public static List<int> ResidentialOccupancies = new List<int>() { 10, 12, 16, 20, 21, 22, 24 };
@@ -74,30 +153,5 @@ namespace SketchUp
             TripleWideMobileHome = 24
 
         }
-        #endregion
-        #region Helper Methods to replace static arrays
-        public static List<string> GetEnumStrings(Type enumType)
-        {
-            var enumStrings = Enum.GetNames(enumType);
-            List<string> stringValues = new List<string>();
-            foreach (string n in enumStrings)
-            {
-                stringValues.Add(n);
-            }
-            stringValues.Sort();
-            return stringValues;
-        }
-        public static List<int> GetEnumValues(Type enumType)
-        {
-            var enumValues = Enum.GetValues(enumType);
-            List<int> values = new List<int>();
-            foreach (int n in enumValues)
-            {
-                values.Add(n);
-            }
-            values.Sort();
-            return values;
-        } 
-        #endregion
     }
 }

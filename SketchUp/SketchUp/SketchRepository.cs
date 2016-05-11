@@ -4,6 +4,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
+using System.Windows.Forms;
 
 namespace SketchUp
 {
@@ -28,12 +29,133 @@ namespace SketchUp
         public void DeleteSketchData(SMParcel parcel)
         {
         }
-        #region CRUD methods refactored out of ExpandoSketch Class
-       
 
-        #endregion
+        #region CRUD methods refactored out of ExpandoSketch Class
+
+        #endregion CRUD methods refactored out of ExpandoSketch Class
+
         #region Selects for SketchManager Classes
-        public SMParcel SelectParcelWithSectionsAndLines(int recordNumber, int dwellingNumber)
+
+        public SMParcelMast SelectParcelMasterWithParcel(int recordNumber, int dwellingNumber)
+        {
+            SMParcelMast parcelMast = new SMParcelMast();
+            string selectSql = string.Format("SELECT MRECNO AS RECORD, MDWELL AS DWELLING, MOCCUP AS OCCUPANCYCODE,MCLASS  AS PROPERTYCLASS, MGART  AS GARAGE1TYPE, MGAR#C AS GARAGE1NUMCARS, MCARPT AS CARPORTTYPECODE, MCAR#C AS CARPORTNUMCARS, MGART2 AS GARAGE2TYPECODE, MGAR#2 AS GARAGE2NUMCARS,MBI#C AS NUMCARSBUILTINCODE,MSTOR#  AS MASTERPARCELSTOREYS FROM {0} WHERE MRECNO={1} AND MDWELL={2}", SketchConnection.MastTable, recordNumber, dwellingNumber);
+            DataSet parcelMastData = SketchConnection.DbConn.DBConnection.RunSelectStatement(selectSql);
+
+            try
+            {
+                int carportTypeCode = 0;
+                int carportNumCars = 0;
+                int garage1NumCars = 0;
+                int garage1TypeCode = 0;
+                int garage2NumCars = 0;
+                int garage2TypeCode = 0;
+                int numCarsBuiltInCode = 0;
+                int occupancyCode = 0;
+                int propertyClass = 0;
+                decimal masterParcelStoreys;
+                if (parcelMastData.Tables[0].Rows.Count > 0)
+                {
+                    foreach (DataRow row in parcelMastData.Tables[0].Rows)
+                    {
+                        //Get numeric values from strings
+                        int.TryParse(row["OCCUPANCYCODE"].ToString().Trim(), out occupancyCode);
+                        int.TryParse(row["PROPERTYCLASS"].ToString().Trim(), out propertyClass);
+                        int.TryParse(row["GARAGE1TYPE"].ToString().Trim(), out garage1TypeCode);
+                        Int32.TryParse(row["GARAGE1NUMCARS"].ToString().Trim(), out garage1NumCars);
+                        Int32.TryParse(row["CARPORTTYPECODE"].ToString().Trim(), out carportTypeCode);
+
+                        Int32.TryParse(row["CARPORTNUMCARS"].ToString().Trim(), out carportNumCars);
+                        Int32.TryParse(row["GARAGE2TYPECODE"].ToString().Trim(), out garage2TypeCode);
+                        Int32.TryParse(row["GARAGE2NUMCARS"].ToString().Trim(), out garage2NumCars);
+                        Int32.TryParse(row["NUMCARSBUILTINCODE"].ToString().Trim(), out numCarsBuiltInCode);
+                        decimal.TryParse(row["MASTERPARCELSTOREYS"].ToString().Trim(), out masterParcelStoreys);
+                        parcelMast.Record = recordNumber;
+                        parcelMast.Card = dwellingNumber;
+                        parcelMast.OccupancyCode = occupancyCode;
+                        parcelMast.CarportNumCars = carportNumCars;
+                        parcelMast.CarportTypeCode = carportTypeCode;
+                        parcelMast.Garage1NumCars = garage1NumCars;
+                        parcelMast.Garage1TypeCode = garage1TypeCode;
+                        parcelMast.Garage2NumCars = garage2NumCars;
+                        parcelMast.Garage2TypeCode = garage2TypeCode;
+                        parcelMast.PropertyClass = propertyClass;
+                        parcelMast.MasterParcelStoreys = masterParcelStoreys;
+                        WorkingCopyOfParcel = SelectParcelWithSectionsAndLines(recordNumber, dwellingNumber);
+                        WorkingCopyOfParcel.ParcelMast = parcelMast;
+                        parcelMast.Parcel = WorkingCopyOfParcel;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+                Trace.WriteLine(errMessage);
+                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+#if DEBUG
+
+                MessageBox.Show(errMessage);
+#endif
+
+                throw;
+            }
+            return parcelMast;
+        }
+
+        private List<SMSection> SelectParcelSections(SMParcel parcel)
+        {
+            List<SMSection> sections = new List<SMSection>();
+            string selectSql = string.Format("SELECT JSRECORD, JSDWELL, JSSECT, JSTYPE, JSSTORY, JSDESC, JSSKETCH, JSSQFT, JS0DEPR, JSCLASS, JSVALUE, JSFACTOR, JSDEPRC FROM {0} WHERE JSRECORD={1} AND JSDWELL={2}", SketchConnection.SectionTable, parcel.Record, parcel.Card);
+            try
+            {
+                decimal storeys = 0.00M;
+                decimal value = 0.00M;
+                decimal factor = 0.00M;
+                decimal squareFeet = 0.00M;
+                decimal depreciation = 0.00M;
+                DataSet sectionsDs = SketchConnection.DbConn.DBConnection.RunSelectStatement(selectSql);
+                if (sectionsDs.Tables[0].Rows.Count > 0)
+                {
+                    foreach (DataRow row in sectionsDs.Tables[0].Rows)
+                    {
+                        decimal.TryParse(row["JSSTORY"].ToString().Trim(), out storeys);
+                        decimal.TryParse(row["JSSQFT"].ToString().Trim(), out squareFeet);
+                        decimal.TryParse(row["JSVALUE"].ToString().Trim(), out value);
+                        decimal.TryParse(row["JSFACTOR"].ToString().Trim(), out factor);
+                        decimal.TryParse(row["JSDEPRC"].ToString().Trim(), out depreciation);
+                        SMSection thisSection = new SMSection(parcel)
+                        {
+                            Record = parcel.Record,
+                            Dwelling = parcel.Card,
+                            SectionLetter = row["JSSECT"].ToString().Trim(),
+                            SectionType = row["JSTYPE"].ToString().Trim(),
+                            Storeys = storeys,
+                            Description = row["JSDESC"].ToString().Trim(),
+                            HasSketch = row["JSSKETCH"].ToString().Trim().ToUpper() == "Y" ? true : false,
+                            SqFt = squareFeet,
+                            ZeroDepr = row["JS0DEPR"].ToString().Trim(),
+                            SectionClass = row["JSCLASS"].ToString().Trim(),
+                            SectionValue = value,
+                            AdjFactor = factor,
+                            Depreciation = depreciation,
+                            RefreshSection = false,
+                            ParentParcel = parcel
+                        };
+                        thisSection.Lines = SelectSectionLines(thisSection);
+                        sections.Add(thisSection);
+                    }
+                }
+
+                return sections;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+                throw;
+            }
+        }
+
+        private SMParcel SelectParcelWithSectionsAndLines(int recordNumber, int dwellingNumber)
         {
             string selectSql = string.Format("SELECT JMRECORD, JMDWELL, JMSKETCH, JMSTORY, JMSTORYEX, JMSCALE, JMTOTSQFT, JMESKETCH FROM {0} WHERE JMRECORD={1} AND JMDWELL={2}", SketchConnection.MasterTable, recordNumber, dwellingNumber);
             decimal storeys = 0.00M;
@@ -84,61 +206,6 @@ namespace SketchUp
 
                     return parcel;
                 }
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
-                throw;
-            }
-        }
-
-        private List<SMSection> SelectParcelSections(SMParcel parcel)
-        {
-            List<SMSection> sections = new List<SMSection>();
-            string selectSql = string.Format("SELECT JSRECORD, JSDWELL, JSSECT, JSTYPE, JSSTORY, JSDESC, JSSKETCH, JSSQFT, JS0DEPR, JSCLASS, JSVALUE, JSFACTOR, JSDEPRC FROM {0} WHERE JSRECORD={1} AND JSDWELL={2}", SketchConnection.SectionTable, parcel.Record, parcel.Card);
-            try
-            {
-                decimal storeys = 0.00M;
-                decimal value = 0.00M;
-                decimal factor = 0.00M;
-                decimal squareFeet = 0.00M;
-                decimal depreciation = 0.00M;
-                DataSet sectionsDs = SketchConnection.DbConn.DBConnection.RunSelectStatement(selectSql);
-                if (sectionsDs.Tables[0].Rows.Count > 0)
-                {
-                    foreach (DataRow row in sectionsDs.Tables[0].Rows)
-                    {
-                        decimal.TryParse(row["JSSTORY"].ToString().Trim(), out storeys);
-                        decimal.TryParse(row["JSSQFT"].ToString().Trim(), out squareFeet);
-                        decimal.TryParse(row["JSVALUE"].ToString().Trim(), out value);
-                        decimal.TryParse(row["JSFACTOR"].ToString().Trim(), out factor);
-                        decimal.TryParse(row["JSDEPRC"].ToString().Trim(), out depreciation);
-                        SMSection thisSection = new SMSection(parcel)
-                        {
-                            Record = parcel.Record,
-                            Dwelling = parcel.Card,
-                            SectionLetter = row["JSSECT"].ToString().Trim(),
-                            SectionType = row["JSTYPE"].ToString().Trim(),
-                            Storeys = storeys,
-                            Description = row["JSDESC"].ToString().Trim(),
-                            HasSketch = row["JSSKETCH"].ToString().Trim().ToUpper() == "Y" ? true : false,
-                            SqFt = squareFeet,
-                            ZeroDepr = row["JS0DEPR"].ToString().Trim(),
-                            SectionClass = row["JSCLASS"].ToString().Trim(),
-                            SectionValue = value,
-                            AdjFactor = factor,
-                            Depreciation = depreciation,
-                            RefreshSection = false,
-                            ParentParcel = parcel
-
-                        };
-                        thisSection.Lines = SelectSectionLines(thisSection);
-                        sections.Add(thisSection);
-                    }
-                }
-
-                return sections;
             }
             catch (Exception ex)
             {
@@ -169,7 +236,7 @@ namespace SketchUp
                 {
                     foreach (DataRow row in linesDs.Tables[0].Rows)
                     {
-                        Int32.TryParse(row["JLLINE#"].ToString().Trim(), out lineNumber);
+                        int.TryParse(row["JLLINE#"].ToString().Trim(), out lineNumber);
                         decimal.TryParse(row["JLXLEN"].ToString().Trim(), out xLen);
                         decimal.TryParse(row["JLYLEN"].ToString().Trim(), out yLen);
                         decimal.TryParse(row["JLANGLE"].ToString().Trim(), out angle);
@@ -203,144 +270,28 @@ namespace SketchUp
                 Console.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
                 throw;
             }
-        } 
-        #endregion
+        }
+
+        #endregion Selects for SketchManager Classes
 
         #endregion DAL Methods
 
         #region Fields
-        private SMConnection sketchConnection;
+
         private string dataSource;
         private string lineRecordTable;
         private string locality;
         private string masterRecordTable;
+        private string mastRecordTable;
         private string password;
         private string sectionRecordTable;
+        private SMConnection sketchConnection;
         private string userName;
         private SMParcel workingCopyOfParcel;
 
         #endregion Fields
-        
+
         #region Properties
-
-        public string DataSource
-        {
-            get
-            {
-                return dataSource;
-            }
-
-            set
-            {
-                dataSource = value;
-            }
-        }
-
-        public string LineRecordTable
-        {
-            get
-            {
-                return lineRecordTable;
-            }
-
-            set
-            {
-                lineRecordTable = value;
-            }
-        }
-
-        public string Locality
-        {
-            get
-            {
-                return locality;
-            }
-
-            set
-            {
-                locality = value;
-            }
-        }
-
-        public string MasterRecordTable
-        {
-            get
-            {
-                return masterRecordTable;
-            }
-
-            set
-            {
-                masterRecordTable = value;
-            }
-        }
-
-        public string Password
-        {
-            get
-            {
-                return password;
-            }
-
-            set
-            {
-                password = value;
-            }
-        }
-
-        public string SectionRecordTable
-        {
-            get
-            {
-                return sectionRecordTable;
-            }
-
-            set
-            {
-                sectionRecordTable = value;
-            }
-        }
-
-       
-
-        public string UserName
-        {
-            get
-            {
-                return userName;
-            }
-
-            set
-            {
-                userName = value;
-            }
-        }
-
-        public SMParcel WorkingCopyOfParcel
-        {
-            get
-            {
-                return workingCopyOfParcel;
-            }
-
-            set
-            {
-                workingCopyOfParcel = value;
-            }
-        }
-
-        public SMConnection SketchConnection
-        {
-            get
-            {
-                return sketchConnection;
-            }
-
-            set
-            {
-                sketchConnection = value;
-            }
-        }
 
         public static string NextLetter(string lastLetter = "A")
         {
@@ -469,6 +420,140 @@ namespace SketchUp
                 nextLetter = "A";
             }
             return nextLetter;
+        }
+
+        public string DataSource
+        {
+            get
+            {
+                return dataSource;
+            }
+
+            set
+            {
+                dataSource = value;
+            }
+        }
+
+        public string LineRecordTable
+        {
+            get
+            {
+                lineRecordTable = SketchConnection.LineTable;
+                return lineRecordTable;
+            }
+
+            set
+            {
+                lineRecordTable = value;
+            }
+        }
+
+        public string Locality
+        {
+            get
+            {
+                return locality;
+            }
+
+            set
+            {
+                locality = value;
+            }
+        }
+
+        public string MasterRecordTable
+        {
+            get
+            {
+                masterRecordTable = SketchConnection.MasterTable;
+                return masterRecordTable;
+            }
+
+            set
+            {
+                masterRecordTable = value;
+            }
+        }
+
+        public string MastRecordTable
+        {
+            get
+            {
+                mastRecordTable = SketchConnection.MastTable;
+                return mastRecordTable;
+            }
+
+            set
+            {
+                mastRecordTable = value;
+            }
+        }
+
+        public string Password
+        {
+            get
+            {
+                return password;
+            }
+
+            set
+            {
+                password = value;
+            }
+        }
+
+        public string SectionRecordTable
+        {
+            get
+            {
+                sectionRecordTable = SketchConnection.SectionTable;
+                return sectionRecordTable;
+            }
+
+            set
+            {
+                sectionRecordTable = value;
+            }
+        }
+
+        public SMConnection SketchConnection
+        {
+            get
+            {
+                return sketchConnection;
+            }
+
+            set
+            {
+                sketchConnection = value;
+            }
+        }
+
+        public string UserName
+        {
+            get
+            {
+                return userName;
+            }
+
+            set
+            {
+                userName = value;
+            }
+        }
+
+        public SMParcel WorkingCopyOfParcel
+        {
+            get
+            {
+                return workingCopyOfParcel;
+            }
+
+            set
+            {
+                workingCopyOfParcel = value;
+            }
         }
 
         #endregion Properties

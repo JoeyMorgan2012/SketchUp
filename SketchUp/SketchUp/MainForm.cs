@@ -103,8 +103,8 @@ namespace SketchUp
             {
                 SketchUpGlobals.SketchSnapshots.Clear();
                 sketchRepo = GetSketchRepository();
-                SketchUpGlobals.SMParcelFromData = StoredSMParcel(SketchUpGlobals.Record,
-                SketchUpGlobals.Card, sketchRepo);
+                SketchUpGlobals.ParcelMast = SketchRepo.SelectParcelMasterWithParcel(SketchUpGlobals.Record, SketchUpGlobals.Card);
+                SketchUpGlobals.SMParcelFromData = SketchUpGlobals.ParcelMast.Parcel;
                 SketchUpGlobals.SMParcelFromData.SnapShotIndex = 0;
                 SketchUpGlobals.SketchSnapshots.Add(SketchUpGlobals.SMParcelFromData);
                 mainFormParcel = SketchUpGlobals.SMParcelFromData;
@@ -210,7 +210,7 @@ namespace SketchUp
         {
             //This is the legacy code getting all the master data, rat tables,etc.
             /* Trying to eliminate anything that is extraneous
-            SketchUpGlobals.SubSections = new SectionDataCollection(SketchUpGlobals.CamraDbConn, SketchUpGlobals.CurrentParcel.mrecno, SketchUpGlobals.CurrentParcel.mdwell);
+            SketchUpGlobals.SubSections = new SectionDataCollection(SketchUpGlobals.CamraDbConn, SketchUpGlobals.CurrentParcel.mrecno, SketchUpGlobals.ParcelMast.Dwelling);
 
             SketchUpGlobals.CurrentParcel.BuildSketchData();
             getSketch(SketchUpGlobals.CurrentParcel.Record, SketchUpGlobals.CurrentParcel.Card);
@@ -231,7 +231,7 @@ namespace SketchUp
                 EditImage.Text = "Edit Sketch";
             }
 
-            ClearX();
+            ClearXLinesFromDb();
 
             int SectionCnt = MainFormParcel.Sections.Count;
 
@@ -261,8 +261,8 @@ namespace SketchUp
             bool doSketch = !(omitSketch || ExpandoSketch._cantSketch);
             if (doSketch)
             {
-                ExpandoSketch skexp = new ExpandoSketch(SketchUpGlobals.CurrentParcel, SketchUpGlobals.SketchFolder, SketchUpGlobals.CurrentParcel.mrecno.ToString(), SketchUpGlobals.CurrentParcel.mdwell.ToString(),
-                   SketchUpGlobals.FcLocalityPrefix, SketchUpGlobals.CamraDbConn, SketchUpGlobals.SubSections, SketchUpGlobals.HasSketch, SketchUpGlobals.HasNewSketch);
+                ExpandoSketch skexp = new ExpandoSketch(SketchUpGlobals.SketchFolder, SketchUpGlobals.Record, SketchUpGlobals.Card,
+                  SketchUpGlobals.HasSketch, SketchUpGlobals.HasNewSketch);
 
                 skexp.ShowDialog(this);
 
@@ -350,7 +350,8 @@ namespace SketchUp
 
         private void GetNewSMParcel(int record, int card)
         {
-            MainFormParcel=SketchRepo.SelectParcelWithSectionsAndLines(record, card);
+
+            MainFormParcel=SketchRepo.SelectParcelMasterWithParcel(record, card).Parcel;
             SketchUpGlobals.SketchSnapshots.Clear();
             MainFormParcel.SnapShotIndex = 0;
             SketchUpGlobals.SketchSnapshots.Add(MainFormParcel);
@@ -368,33 +369,29 @@ namespace SketchUp
 
         public void LoadInitialSketch()
         {
-            SketchUpGlobals.CurrentParcel = SketchUpParcelData.getParcel(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
-
-            SketchUpGlobals.SubSections = new SectionDataCollection(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
+           
             FixLength(SketchUpGlobals.Record, SketchUpGlobals.Card);
-            int tr = SketchUpGlobals.CurrentParcel.mrecno;
-            ClearX();
+        
+            ClearXLinesFromDb();
             int seccnt = SectionCount();
             Application.DoEvents();
             SetTextAddOrEdit(seccnt);
             Application.DoEvents();
-            if (CamraSupport.VacantOccupancies.Contains(SketchUpGlobals.CurrentParcel.moccup))
+            if (SketchUpCamraSupport.VacantOccupancies.Contains(SketchUpGlobals.ParcelMast.OccupancyCode))
             {
-                int gar1cde = 0;
-                int gar1cnt = 0;
-                int gar2cde = SketchUpGlobals.CurrentParcel.mgart2;
-                int gar2cnt = SketchUpGlobals.CurrentParcel.mgarN2;
-                int cpcde = 0;
-                int cpcnt = 0;
-                int bicnt = 0;
-
-                if (SketchUpGlobals.CurrentParcel.mgart2 != 64)
+                int gar2cde = SketchUpGlobals.ParcelMast.Garage2TypeCode;
+                int gar2cnt = SketchUpGlobals.ParcelMast.Garage2NumCars;
+                int detachedGarageCode = 0;
+                string garCode=(from c in SketchUpLookups.GarageTypeCollection where c.shortDescription.ToUpper() == "DET GAR" select c.Code).FirstOrDefault();
+                int.TryParse(garCode, out detachedGarageCode);
+                if (SketchUpGlobals.ParcelMast.Garage2TypeCode != detachedGarageCode)
                 {
                     gar2cde = 0;
                     gar2cnt = 0;
                 }
+             
+             
                 Application.DoEvents();
-                UpdateGarageAndCarportNumbersInDb(gar1cde, gar1cnt, gar2cde, gar2cnt, cpcde, cpcnt, bicnt);
                 if (seccnt == 0)
                 {
                     DialogResult secresult;
@@ -416,7 +413,7 @@ namespace SketchUp
 
             try
             {
-                getSketch(SketchUpGlobals.CurrentParcel.mrecno, SketchUpGlobals.CurrentParcel.mdwell);
+                getSketch(SketchUpGlobals.ParcelMast.Record, SketchUpGlobals.ParcelMast.Card);
             }
             catch (Exception ex)
             {
@@ -428,7 +425,6 @@ namespace SketchUp
                 throw;
             }
 
-            SketchUpGlobals.CurrentSketchImage = SketchUpGlobals.CurrentParcel.GetSketchImage(374);
             sketchBox.Image = SketchUpGlobals.CurrentSketchImage;
         }
 
@@ -470,8 +466,8 @@ namespace SketchUp
             StringBuilder cleanup = new StringBuilder();
             cleanup.Append(String.Format("delete from {0}.{1}line where jlsect = '{2}' ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, ExpandoSketch.NextSectLtr));
             cleanup.Append(String.Format(" and jlrecord = {0} and jldwell = {1} ",
-                        SketchUpGlobals.CurrentParcel.mrecno,
-                        SketchUpGlobals.CurrentParcel.mdwell));
+                        SketchUpGlobals.Record,
+                        SketchUpGlobals.Card));
 
             SketchUpGlobals.CamraDbConn.DBConnection.ExecuteNonSelectStatement(cleanup.ToString());
         }
@@ -511,30 +507,26 @@ namespace SketchUp
                                 cpcde,
                                 cpcnt,
                                 bicnt,
-                        SketchUpGlobals.CurrentParcel.mrecno,
-                        SketchUpGlobals.CurrentParcel.mdwell);
+                        SketchUpGlobals.Record,
+                        SketchUpGlobals.Card);
             SketchUpGlobals.CamraDbConn.DBConnection.ExecuteNonSelectStatement(clrvac);
         }
 
         private void AddSketchToParcel()
         {
-            SketchUpGlobals.CurrentParcel = SketchUpParcelData.getParcel(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
-
-            SketchUpGlobals.SubSections = new SectionDataCollection(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
-
-           
-            if (CamraSupport.VacantOccupancies.Contains(SketchUpGlobals.CurrentParcel.moccup))
+             
+            if (SketchUpCamraSupport.VacantOccupancies.Contains(SketchUpGlobals.ParcelWorkingCopy.ParcelMast.OccupancyCode))
             {
                 MessageBox.Show("Can't Add Sketch to Vacant Parcel...Add Master Record Data!");
                 this.WindowState = FormWindowState.Minimized;
             }
             else
             {
-                SetTextAddOrEdit(SketchUpGlobals.SubSections.Count);
+                SetTextAddOrEdit(SketchUpGlobals.ParcelWorkingCopy.Sections.Count);
             }
             try
             {
-                getSketch(SketchUpGlobals.CurrentParcel.mrecno, SketchUpGlobals.CurrentParcel.mdwell);
+                getSketch(SketchUpGlobals.Record, SketchUpGlobals.ParcelMast.Card);
 
             }
             catch
@@ -543,7 +535,6 @@ namespace SketchUp
             SMSketcher sms = new SMSketcher(SketchUpGlobals.ParcelWorkingCopy, sketchBox);
             sms.RenderSketch(true);
             SketchUpGlobals.SketchImage = sms.SketchImage;
-            SketchUpGlobals.CurrentSketchImage = SketchUpGlobals.CurrentParcel.GetSketchImage(374);
             sketchBox.Image = SketchUpGlobals.SketchImage;
         }
 
@@ -589,9 +580,9 @@ namespace SketchUp
             }
         }
 
-        private void ClearX()
+        private void ClearXLinesFromDb()
         {
-            string clrx = string.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jldirect = 'X' ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, SketchUpGlobals.CurrentParcel.mrecno, SketchUpGlobals.CurrentParcel.mdwell);
+            string clrx = string.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jldirect = 'X' ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, SketchUpGlobals.Record, SketchUpGlobals.Card);
 
             SketchUpGlobals.CamraDbConn.DBConnection.ExecuteNonSelectStatement(clrx);
         }
@@ -750,7 +741,19 @@ namespace SketchUp
                     }
                 }
 
-                SetSketchBoxValues(ref sketchpath);
+                SMSketcher sms = new SMSketcher(MainFormParcelMast.Parcel, sketchBox);
+                sms.RenderSketch();
+                MainFormParcelMast.Parcel = sms.LocalParcelCopy;
+                SketchUpGlobals.SketchImage= sms.SketchImage;
+                if (File.Exists(sketchpath) && SketchUpGlobals.HasSketch == true)
+                {
+                    SketchImage = sketchpath.GetImage();
+                }
+                else
+                {
+                    SketchImage = SketchUpGlobals.CurrentSketchImage;
+                }
+                sketchBox.Image = SketchImage;
             }
         }
 
@@ -769,7 +772,7 @@ namespace SketchUp
 
         private int SectionCount()
         {
-            string checkSect = string.Format("select count(*) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, SketchUpGlobals.CurrentParcel.mrecno, SketchUpGlobals.CurrentParcel.mdwell);
+            string checkSect = string.Format("select count(*) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, SketchUpGlobals.Record, SketchUpGlobals.ParcelMast.Card);
 
             int seccnt = Convert.ToInt32(SketchUpGlobals.CamraDbConn.DBConnection.ExecuteScalar(checkSect));
             return seccnt;
@@ -803,12 +806,13 @@ namespace SketchUp
                 LocNameTxt.Text = SketchUpGlobals.LocalityDescription;
                 LibraryTxt.Text = SketchUpGlobals.LocalLib;
                 PreFixTxt.Text = SketchUpGlobals.LocalityPreFix;
-
+                RecordTxt.Text = SketchUpGlobals.Record.ToString().Trim();
+                CardTxt.Text = SketchUpGlobals.Card.ToString().Trim();
                 CheckGoodRecord(SketchUpGlobals.Record, SketchUpGlobals.Card);
                 // This is where I am intercepting the legacy code with the
                 // new version that does not load anything not needed.
 
-                CamraSupport.Init(SketchUpGlobals.CamraDbConn);
+                SketchUpLookups.Init(SketchUpGlobals.CamraDbConn);
                 Application.DoEvents();
                 if (SketchUpGlobals.Checker > 0)
                 {
@@ -821,11 +825,7 @@ namespace SketchUp
                     }
                 }
 
-                SketchUpGlobals.Today = DateTime.Today;
-
-                SketchUpGlobals.Year = DateTime.Today.Year;
-                SketchUpGlobals.Month = DateTime.Today.Month;
-                int todayDayNumber = DateTime.Today.Day;
+              
 
                 Cursor = Cursors.Arrow;
             }
@@ -836,23 +836,13 @@ namespace SketchUp
 
         private void SetSketchBoxValues(ref string sketchpath)
         {
-            SketchUpGlobals.CurrentSketchImage = SketchUpGlobals.CurrentParcel.GetSketchImage(374);
-
-            if (File.Exists(sketchpath) && SketchUpGlobals.HasSketch == true)
-            {
-                SketchImage = sketchpath.GetImage();
-
-                sketchBox.Image = SketchImage;
-            }
-            else
-            {
-                sketchBox.Image = SketchUpGlobals.CurrentSketchImage;
-            }
+           
+          
         }
 
         private void SetTextAddOrEdit(int sectionCount)
         {
-            if (!CamraSupport.VacantOccupancies.Contains(SketchUpGlobals.CurrentParcel.moccup))
+            if (!SketchUpCamraSupport.VacantOccupancies.Contains(MainFormParcel.ParcelMast.OccupancyCode))
             {
                 if (sectionCount > 0)
                 {
@@ -935,8 +925,21 @@ namespace SketchUp
             }
         }
 
-        private SMParcel mainFormParcel;
+        public SMParcelMast MainFormParcelMast
+        {
+            get
+            {
+                return mainFormParcelMast;
+            }
 
+            set
+            {
+                mainFormParcelMast = value;
+            }
+        }
+
+        private SMParcel mainFormParcel;
+        private SMParcelMast mainFormParcelMast;
         private Image sketchImage;
         private SketchRepository sketchRepo;
 
@@ -966,7 +969,8 @@ namespace SketchUp
 
         private SMParcel StoredSMParcel(int record, int dwelling, SketchRepository sr)
         {
-            SMParcel parcel = sr.SelectParcelWithSectionsAndLines(record, dwelling);
+            SMParcelMast storedParcelMaster=sr.SelectParcelMasterWithParcel(record, dwelling);
+            SMParcel parcel = storedParcelMaster.Parcel;
             parcel.IdentifyAttachedToSections();
             return parcel;
         }

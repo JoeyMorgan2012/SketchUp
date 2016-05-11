@@ -45,17 +45,7 @@ namespace SketchUp
             }
         }
 
-        public static SketchUpParcelData CurrentParcel
-        {
-            get
-            {
-                return currentParcel;
-            }
-            set
-            {
-                currentParcel = value;
-            }
-        }
+      
 
         public static Image CurrentSketchImage
         {
@@ -296,7 +286,8 @@ namespace SketchUp
                 }
                 else
                 {
-                    parcelWorkingCopy = SketchMgrRepo.SelectParcelWithSectionsAndLines(Record, Card);
+
+                    parcelWorkingCopy = ParcelMast.Parcel;
                     parcelWorkingCopy.SnapShotIndex = 0;
                     SketchSnapshots.Add(parcelWorkingCopy);
                 }
@@ -393,6 +384,8 @@ namespace SketchUp
         {
             get
             {
+
+                currentSMParcel = SketchMgrRepo.SelectParcelMasterWithParcel(record, card).Parcel;
                 return currentSMParcel;
             }
             set
@@ -401,60 +394,26 @@ namespace SketchUp
             }
         }
 
-        public static SectionDataCollection SubSections
+        public static SMParcelMast ParcelMast
         {
             get
             {
-                return _subSections;
+                if (parcelMast==null)
+                {
+                    parcelMast = SketchMgrRepo.SelectParcelMasterWithParcel(record, card);
+                }
+                return parcelMast;
             }
+
             set
             {
-                _subSections = value;
+                parcelMast = value;
             }
         }
-
-        public static DateTime Today
-        {
-            get
-            {
-                return today;
-            }
-            set
-            {
-                today = value;
-            }
-        }
-
-        public static int TodayDayNumber
-        {
-            get
-            {
-                return todayDayNumber;
-            }
-            set
-            {
-                todayDayNumber = value;
-            }
-        }
-
-        public static int Year
-        {
-            get
-            {
-                return year;
-            }
-            set
-            {
-                year = value;
-            }
-        }
-
-        
 
         private static CAMRA_Connection camraDbConn = null;
         private static int card = 0;
         private static int checker = 0;
-        private static SketchUpParcelData currentParcel = null;
         private static Image currentSketchImage;
         private static SMParcel currentSMParcel;
         private static DBAccessManager dbAccessMgr = null;
@@ -482,12 +441,9 @@ namespace SketchUp
         private static Image sketchImage;
         private static SketchRepository sketchMgrRepo;
         private static List<SMParcel> sketchSnapshots;
-        private static DateTime today;
-        private static int todayDayNumber;
-        private static int year;
         private static string _selectedPath = String.Empty;
         private static string _selectedPicPath = String.Empty;
         private static string _selectedSktPath = String.Empty;
-        private static SectionDataCollection _subSections = null;
+        private static SMParcelMast parcelMast;
     }
 }

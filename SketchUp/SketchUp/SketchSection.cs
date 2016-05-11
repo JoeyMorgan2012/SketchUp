@@ -16,7 +16,7 @@ namespace SketchUp
 
         #region Constructor
 
-        public SketchSection(SketchUpParcelData currentparcel, CAMRA_Connection _conn, SectionDataCollection currentSection)
+        public SketchSection(SMParcel parcel)
         {
             InitializeComponent();
 
@@ -24,12 +24,11 @@ namespace SketchUp
 
             rowselected = false;
 
-            _currentParcel = currentparcel;
-            _currentSection = currentSection;
+          
 
             while (_isVacant == false)
             {
-                if (CamraSupport.VacantOccupancies.Contains(_currentParcel.moccup))
+                if (SketchUpCamraSupport.VacantOccupancies.Contains(_currentParcel.Moccup))
                 {
                     DialogResult result;
                     result = MessageBox.Show("Vacant Occupancy - Continue ?", "Vacant Occupancy Warning", MessageBoxButtons.YesNo);
@@ -37,7 +36,7 @@ namespace SketchUp
                     if (result == DialogResult.Yes)
                     {
                         _isVacant = false;
-                        _currentParcel.moccup = 10;
+                        _currentParcel.Moccup = 10;
                     }
                     else if (result == DialogResult.No)
                     {
@@ -303,11 +302,11 @@ namespace SketchUp
 
                 upDateSectionLtr = SectDGView.CurrentRow.Cells["Section"].Value.ToString();
 
-                if (CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
+                if (SketchUpCamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
                 {
                     if (ResidentialSectionCbox.SelectedIndex > 0)
                     {
-                        if (CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
+                        if (SketchUpCamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
                         {
                             substart = ResidentialSectionCbox.SelectedItem.ToString().IndexOf("-", StringComparison.CurrentCulture);
 
@@ -331,11 +330,11 @@ namespace SketchUp
                     UpdateGAR_CP();
                 }
 
-                if (CamraSupport.CommercialOccupancies.Contains(_currentParcel.moccup))
+                if (SketchUpCamraSupport.CommercialOccupancies.Contains(_currentParcel.moccup))
                 {
                     if (CommercialSectionCbox.SelectedIndex > 0)
                     {
-                        if (CamraSupport.CommercialOccupancies.Contains(_currentParcel.moccup))
+                        if (SketchUpCamraSupport.CommercialOccupancies.Contains(_currentParcel.moccup))
                         {
                             substart = CommercialSectionCbox.SelectedItem.ToString().IndexOf("-", StringComparison.CurrentCulture);
 
@@ -500,14 +499,14 @@ namespace SketchUp
                 newClass = SectDGView.CurrentRow.Cells["Class"].Value.ToString();
                 new0Depr = SectDGView.CurrentRow.Cells["0Depr"].Value.ToString();
 
-                if (CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup) && Convert.ToDecimal(SectDGView.CurrentRow.Cells["Factor"].Value.ToString()) != 0)
+                if (SketchUpCamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup) && Convert.ToDecimal(SectDGView.CurrentRow.Cells["Factor"].Value.ToString()) != 0)
                 {
                     MessageBox.Show("Section Factor for Residential Must Be Zero!");
 
                     SectDGView.CurrentRow.Cells["Factor"].Value = 0;
                     newFactor = 0;
                 }
-                if (CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup) && Convert.ToDecimal(SectDGView.CurrentRow.Cells["Deprec"].Value.ToString()) != 0)
+                if (SketchUpCamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup) && Convert.ToDecimal(SectDGView.CurrentRow.Cells["Deprec"].Value.ToString()) != 0)
                 {
                     MessageBox.Show("Section Depreciation for Residential Must Be Zero!");
 
@@ -515,7 +514,7 @@ namespace SketchUp
                     newDeprec = 0;
                 }
 
-                if (CamraSupport.CommercialOccupancies.Contains(_currentParcel.moccup))
+                if (SketchUpCamraSupport.CommercialOccupancies.Contains(_currentParcel.moccup))
                 {
                     newFactor = Convert.ToDecimal(SectDGView.CurrentRow.Cells["Factor"].Value.ToString());
                     newDeprec = Convert.ToDecimal(SectDGView.CurrentRow.Cells["Deprec"].Value.ToString());
@@ -1448,8 +1447,8 @@ namespace SketchUp
             ResTypes = new List<string>();
             ComTypes = new List<string>();
 
-            int residentialSectionCount = CamraSupport.ResidentialSectionTypeCollection.Count;
-            int commercialSectionCount = CamraSupport.CommercialSectionTypeCollection.Count;
+            int residentialSectionCount = SketchUpCamraSupport.ResidentialSectionTypeCollection.Count;
+            int commercialSectionCount = SketchUpCamraSupport.CommercialSectionTypeCollection.Count;
 
             if (residentialSectionCount > 0)
             {
@@ -1480,10 +1479,10 @@ namespace SketchUp
                 if (i > 0)
                 {
                     ComSectTypes = String.Format("{0} - {1}",
-                        CamraSupport.CommercialSectionTypeCollection[i - 1]._commSectionType.ToString().Trim(),
-                        CamraSupport.CommercialSectionTypeCollection[i - 1]._commSectionDescription.ToString().Trim());
+                        SketchUpCamraSupport.CommercialSectionTypeCollection[i - 1]._commSectionType.ToString().Trim(),
+                        SketchUpCamraSupport.CommercialSectionTypeCollection[i - 1]._commSectionDescription.ToString().Trim());
 
-                    ComTypes.Add(CamraSupport.CommercialSectionTypeCollection[i - 1]._commSectionType.ToString().Trim());
+                    ComTypes.Add(SketchUpCamraSupport.CommercialSectionTypeCollection[i - 1]._commSectionType.ToString().Trim());
                 }
                 CommercialSectionCbox.Items.Add(ComSectTypes.Trim());
             }
@@ -1501,10 +1500,10 @@ namespace SketchUp
                 if (i > 0)
                 {
                     ResSectTypes = String.Format("{0} - {1}",
-                        CamraSupport.ResidentialSectionTypeCollection[i - 1]._resSectionType.ToString().Trim(),
-                        CamraSupport.ResidentialSectionTypeCollection[i - 1]._resSectionDescription.ToString().Trim());
+                        SketchUpCamraSupport.ResidentialSectionTypeCollection[i - 1]._resSectionType.ToString().Trim(),
+                        SketchUpCamraSupport.ResidentialSectionTypeCollection[i - 1]._resSectionDescription.ToString().Trim());
 
-                    ResTypes.Add(CamraSupport.ResidentialSectionTypeCollection[i - 1]._resSectionType.ToString().Trim());
+                    ResTypes.Add(SketchUpCamraSupport.ResidentialSectionTypeCollection[i - 1]._resSectionType.ToString().Trim());
                 }
                 ResidentialSectionCbox.Items.Add(ResSectTypes.Trim());
             }
@@ -2083,13 +2082,13 @@ namespace SketchUp
 
                     string tstetype = ds.Tables[0].Rows[i]["jstype"].ToString().Trim();
 
-                    if (CamraSupport.GarageTypes.Contains(ds.Tables[0].Rows[i]["jstype"].ToString().Trim()))
+                    if (SketchUpCamraSupport.GarageTypes.Contains(ds.Tables[0].Rows[i]["jstype"].ToString().Trim()))
                     {
                         Garcnt++;
 
                         GarSize = Convert.ToDecimal(ds.Tables[0].Rows[i]["jssqft"].ToString());
                     }
-                    if (CamraSupport.CarPortTypes.Contains(ds.Tables[0].Rows[i]["jstype"].ToString().Trim()))
+                    if (SketchUpCamraSupport.CarPortTypes.Contains(ds.Tables[0].Rows[i]["jstype"].ToString().Trim()))
                     {
                         CPcnt++;
 
@@ -2200,7 +2199,7 @@ namespace SketchUp
 
                 if (SectDGView.Columns[e.ColumnIndex].Name == "Type")
                 {
-                    if (CamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
+                    if (SketchUpCamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
                     {
                         string curSect = SectDGView.CurrentRow.Cells[1].Value.ToString().PadRight(4).Substring(0, 4);
 
@@ -2214,7 +2213,7 @@ namespace SketchUp
 
                         typeChange = true;
                     }
-                    if (CamraSupport.CommercialOccupancies.Contains(_currentParcel.moccup))
+                    if (SketchUpCamraSupport.CommercialOccupancies.Contains(_currentParcel.moccup))
                     {
                         string curSect = SectDGView.CurrentRow.Cells[1].Value.ToString().PadRight(4).Substring(0, 4);
 
@@ -2277,7 +2276,7 @@ namespace SketchUp
 
         private void SumSectionValues()
         {
-            if (CamraSupport.CommercialOccupancies.Contains(_currentParcel.moccup))
+            if (SketchUpCamraSupport.CommercialOccupancies.Contains(_currentParcel.moccup))
             {
                 sumBaseValue = 0;
                 sumFinalValue = 0;
@@ -2450,7 +2449,7 @@ namespace SketchUp
 
             bool garcptype = false;
 
-            if (CamraSupport.GarageTypes.Contains(OriginalUnitType.Trim()))
+            if (SketchUpCamraSupport.GarageTypes.Contains(OriginalUnitType.Trim()))
             {
                 garcptype = true;
 
@@ -2458,7 +2457,7 @@ namespace SketchUp
 
                 CountGar(OriginalUnitType.Trim());
             }
-            if (CamraSupport.CarPortTypes.Contains(OriginalUnitType.Trim()))
+            if (SketchUpCamraSupport.CarPortTypes.Contains(OriginalUnitType.Trim()))
             {
                 garcptype = true;
 

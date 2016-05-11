@@ -12,7 +12,10 @@ namespace SketchUp
     {
         private static void ClearValues()
         {
-          
+            AirCondCollection = null;
+            AirCondCollection_srt = null;
+            AppDepChgRate = 0;
+            AssessorCodeCollection = null;
             AttachedSectionTypeCollection = null;
             BasementTypeCollection = null;
             BasementTypeCollection_srt = null;
@@ -24,7 +27,7 @@ namespace SketchUp
             CharacteristicTypeCollection_srt = null;
             ClassCollection = null;
             ClassCollection_srt = null;
-         
+            CommercialIncomeSectionCollection = null;
             CommercialRateCollection = null;
             CommercialRateCollection_srt = null;
             CommercialSectionTypeCollection = null;
@@ -32,7 +35,26 @@ namespace SketchUp
             ConditionTypeCollection = null;
             ConditionTypeCollection_srt = null;
             DataEntryOperatorCollection = null;
-        
+            DefDepCondA = 0;
+            DefDepCondF = 0;
+            DefDepCondG = 0;
+            DefDepCondP = 0;
+            DiscountRate = 0;
+            DisimilarityWeightCollection = null;
+            DoorKnockerCollection = null;
+            DoorKnockerCollection_srt = null;
+            EasementTypeCollection = null;
+            EasementTypeCollection_srt = null;
+            EasementTypeCollection_srt = null;
+            EffectiveTaxRate = 0;
+            EquityYieldRate = 0;
+            ExteriorWallTypeCollection = null;
+            FloorAbreviationCollection = null;
+            FloorCoverCollection = null;
+            FoundationCollection = null;
+            FoundationCollection_srt = null;
+            FuelTypeCollection = null;
+            FuelTypeCollection_srt = null;
             GarageTypeCollection = null;
             GarageTypeCollection_srt = null;
             HeatTypeCollection = null;
@@ -212,83 +234,135 @@ namespace SketchUp
             }
         }
 
-    
+        private static void GetAssessorInitalCodeDescriptions(DBAccessManager db)
+        {
+            DataSet ds_assInitCode = db.RunSelectStatement(String.Format(
+                " select rsecto,rdesc,rtid from {0}.{1}rat1 where rid = 'B' and substr(rsecto,1,2) = 'BA' ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
+            foreach (DataRow row in ds_assInitCode.Tables[0].Rows)
+            {
+                string assInitial = String.Format("{0} - {1}",
+                    row["rtid"].ToString().Trim(),
+                    row["rdesc"].ToString().Trim());
+                var assInitCode = new AssessorCodes()
+                {
+                    _assInitCode = row["rtid"].ToString().Trim(),
+                    _assInitDescription = row["rdesc"].ToString().Trim(),
+                    _assPrintDescription = assInitial.ToString().Trim(),
+                };
+                AssessorCodeCollection.Add(assInitCode);
+            }
+        }
 
-        //private static void GetBuildingSectionTypesAndRates(DBAccessManager db)
-        //{
-        //    DataSet ds_residentialSection = db.RunSelectStatement(String.Format(
+        private static void GetBuildingSectionTypesAndRates(DBAccessManager db)
+        {
+            DataSet ds_residentialSection = db.RunSelectStatement(String.Format(
 
-        //    "select rsecto,rdesc,rrpsf from {0}.{1}rat1 where rid = 'P' ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
-        //    foreach (DataRow row in ds_residentialSection.Tables[0].Rows)
-        //    {
-        //        string residentialSectionType = Convert.ToString(row["rsecto"].ToString());
-        //        var residentialBuildingSection = new ResidentialSections()
-        //        {
-        //            _resSectionType = row["rsecto"].ToString().Trim(),
-        //            _resSectionDescription = row["rdesc"].ToString().Trim(),
-        //            _resSectionRate = Convert.ToDecimal(row["rrpsf"].ToString()),
-        //        };
-        //        ResidentialSectionTypeCollection.Add(residentialBuildingSection);
-        //    }
+            "select rsecto,rdesc,rrpsf from {0}.{1}rat1 where rid = 'P' ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
+            foreach (DataRow row in ds_residentialSection.Tables[0].Rows)
+            {
+                string residentialSectionType = Convert.ToString(row["rsecto"].ToString());
+                var residentialBuildingSection = new ResidentialSections()
+                {
+                    _resSectionType = row["rsecto"].ToString().Trim(),
+                    _resSectionDescription = row["rdesc"].ToString().Trim(),
+                    _resSectionRate = Convert.ToDecimal(row["rrpsf"].ToString()),
+                };
+                ResidentialSectionTypeCollection.Add(residentialBuildingSection);
+            }
 
-        //    DataSet ds_commercialSection = db.RunSelectStatement(String.Format(
-        //        "select rsecto,rdesc,rclar,rclbr,rclcr,rcldr,rclmr from {0}.{1}rat1 where rid = 'C' and rrpsf = 0 ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
-        //    foreach (DataRow row in ds_commercialSection.Tables[0].Rows)
-        //    {
-        //        string commercialSectionType = Convert.ToString(row["rsecto"].ToString().Trim());
-        //        var commSectionType = new CommercialSections()
-        //        {
-        //            _commSectionType = Convert.ToString(row["rsecto"].ToString().Trim()),
-        //            _commSectionDescription = Convert.ToString(row["rdesc"].ToString().Trim()),
-        //            _commSectionRateClassA = Convert.ToDecimal(row["rclar"].ToString()),
-        //            _commSectionRateClassB = Convert.ToDecimal(row["rclbr"].ToString()),
-        //            _commSectionRateClassC = Convert.ToDecimal(row["rclcr"].ToString()),
-        //            _commSectionRateClassD = Convert.ToDecimal(row["rcldr"].ToString()),
-        //            _commSectionRateClassM = Convert.ToDecimal(row["rclmr"].ToString())
-        //        };
-        //        CommercialSectionTypeCollection.Add(commSectionType);
-        //    }
+            DataSet ds_commercialSection = db.RunSelectStatement(String.Format(
+                "select rsecto,rdesc,rclar,rclbr,rclcr,rcldr,rclmr from {0}.{1}rat1 where rid = 'C' and rrpsf = 0 ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
+            foreach (DataRow row in ds_commercialSection.Tables[0].Rows)
+            {
+                string commercialSectionType = Convert.ToString(row["rsecto"].ToString().Trim());
+                var commSectionType = new CommercialSections()
+                {
+                    _commSectionType = Convert.ToString(row["rsecto"].ToString().Trim()),
+                    _commSectionDescription = Convert.ToString(row["rdesc"].ToString().Trim()),
+                    _commSectionRateClassA = Convert.ToDecimal(row["rclar"].ToString()),
+                    _commSectionRateClassB = Convert.ToDecimal(row["rclbr"].ToString()),
+                    _commSectionRateClassC = Convert.ToDecimal(row["rclcr"].ToString()),
+                    _commSectionRateClassD = Convert.ToDecimal(row["rcldr"].ToString()),
+                    _commSectionRateClassM = Convert.ToDecimal(row["rclmr"].ToString())
+                };
+                CommercialSectionTypeCollection.Add(commSectionType);
+            }
 
-        //    DataSet ds_commercialIncomeSection = db.RunSelectStatement(String.Format(
-        //      "select rsecto,rdesc,rclar,rclbr,rclcr,rcldr,rclmr from {0}.{1}rat1 where rid = 'C' and rrpsf = 0 and substr(rsecto,1,1) in ('A','B','C','I','H') ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
-        //    foreach (DataRow row in ds_commercialIncomeSection.Tables[0].Rows)
-        //    {
-        //        string commercialIncomeSectionType = Convert.ToString(row["rsecto"].ToString().Trim());
-        //        var commIncSectionType = new CommercialIncomeSections()
-        //        {
-        //            _commIncSectionType = Convert.ToString(row["rsecto"].ToString().Trim()),
-        //            _commIncSectionDescription = Convert.ToString(row["rdesc"].ToString().Trim()),
-        //        };
-        //        CommercialIncomeSectionCollection.Add(commIncSectionType);
-        //    }
+            DataSet ds_commercialIncomeSection = db.RunSelectStatement(String.Format(
+              "select rsecto,rdesc,rclar,rclbr,rclcr,rcldr,rclmr from {0}.{1}rat1 where rid = 'C' and rrpsf = 0 and substr(rsecto,1,1) in ('A','B','C','I','H') ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
+            foreach (DataRow row in ds_commercialIncomeSection.Tables[0].Rows)
+            {
+                string commercialIncomeSectionType = Convert.ToString(row["rsecto"].ToString().Trim());
+                var commIncSectionType = new CommercialIncomeSections()
+                {
+                    _commIncSectionType = Convert.ToString(row["rsecto"].ToString().Trim()),
+                    _commIncSectionDescription = Convert.ToString(row["rdesc"].ToString().Trim()),
+                };
+                CommercialIncomeSectionCollection.Add(commIncSectionType);
+            }
 
-        //    DataSet ds_flrAbrev = db.RunSelectStatement(String.Format(
-        //        "select ttid,ttelem,tdesc,tloc from {0}.{1}stab where ttid = 'FLR'", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
-        //    foreach (DataRow row in ds_flrAbrev.Tables[0].Rows)
-        //    {
-        //        var flrAbrvCode = new FloorAbreviation()
-        //        {
-        //            FlrCode = Convert.ToString(row["ttelem"].ToString().Trim()),
-        //            FlrAbreviation = Convert.ToString(row["tloc"].ToString().Trim())
-        //        };
-        //        FloorAbreviationCollection.Add(flrAbrvCode);
-        //    }
+            DataSet ds_flrAbrev = db.RunSelectStatement(String.Format(
+                "select ttid,ttelem,tdesc,tloc from {0}.{1}stab where ttid = 'FLR'", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
+            foreach (DataRow row in ds_flrAbrev.Tables[0].Rows)
+            {
+                var flrAbrvCode = new FloorAbreviation()
+                {
+                    FlrCode = Convert.ToString(row["ttelem"].ToString().Trim()),
+                    FlrAbreviation = Convert.ToString(row["tloc"].ToString().Trim())
+                };
+                FloorAbreviationCollection.Add(flrAbrvCode);
+            }
 
-        //    DataSet ds_wallAbrev = db.RunSelectStatement(String.Format(
-        //        "select ttid,ttelem,tdesc,tloc from {0}.{1}stab where ttid = 'INW'", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
-        //    foreach (DataRow row in ds_wallAbrev.Tables[0].Rows)
-        //    {
-        //        var wallAbrvCode = new InWallAbreviation()
-        //        {
-        //            WallCode = Convert.ToString(row["ttelem"].ToString().Trim()),
-        //            WallAbreviation = Convert.ToString(row["tloc"].ToString().Trim())
-        //        };
+            DataSet ds_wallAbrev = db.RunSelectStatement(String.Format(
+                "select ttid,ttelem,tdesc,tloc from {0}.{1}stab where ttid = 'INW'", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
+            foreach (DataRow row in ds_wallAbrev.Tables[0].Rows)
+            {
+                var wallAbrvCode = new InWallAbreviation()
+                {
+                    WallCode = Convert.ToString(row["ttelem"].ToString().Trim()),
+                    WallAbreviation = Convert.ToString(row["tloc"].ToString().Trim())
+                };
 
-        //        WallAbreviationCollection.Add(wallAbrvCode);
-        //    }
-        //}
+                WallAbreviationCollection.Add(wallAbrvCode);
+            }
+        }
 
-    
+        private static void GetCapitalizationRates(DBAccessManager db)
+        {
+            StringBuilder caprate = new StringBuilder();
+            caprate.Append((String.Format("select cid,cmtgr,cmtgt,clvr,ceyld,chold,cetax,cchgr,cproj,cdisc,crevc,cincg,cexpci, " +
+                    " cexpcr,cvcla,ctcra from parrevlib.{0}rentr", SketchUpGlobals.LocalityPreFix)));
+
+            try
+            {
+                DataSet ds_capRates = db.RunSelectStatement(caprate.ToString());
+
+                if (ds_capRates.Tables[0].Rows.Count > 0)
+                {
+                    DataRow dr = ds_capRates.Tables[0].Rows[0];
+
+                    MortgageID = dr["cid"].ToString();
+                    MortgageRate = Convert.ToDecimal(dr["cmtgr"].ToString());
+                    MortgageTerm = Convert.ToInt32(dr["cmtgt"].ToString());
+                    LoanToValueRatio = Convert.ToDecimal(dr["clvr"].ToString());
+                    EquityYieldRate = Convert.ToDecimal(dr["ceyld"].ToString());
+                    HoldingPeriod = Convert.ToInt32(dr["chold"].ToString());
+                    EffectiveTaxRate = Convert.ToDecimal(dr["cetax"].ToString());
+                    AppDepChgRate = Convert.ToDecimal(dr["cchgr"].ToString());
+                    ProjectionPeriod = Convert.ToInt32(dr["cproj"].ToString());
+                    DiscountRate = Convert.ToDecimal(dr["cdisc"].ToString());
+                    ReversionCommission = Convert.ToDecimal(dr["crevc"].ToString());
+                    IncomeChgRate = Convert.ToDecimal(dr["cincg"].ToString());
+                    OperExpInitChg = Convert.ToDecimal(dr["cexpci"].ToString());
+                    OperExpTermChg = Convert.ToDecimal(dr["cexpcr"].ToString());
+                    VacancyChgRate = Convert.ToDecimal(dr["cvcla"].ToString());
+                    TermCapRateAdj = Convert.ToDecimal(dr["ctcra"].ToString());
+                }
+            }
+            catch
+            {
+            }
+        }
 
         private static void GetCarportTypes(DBAccessManager db)
         {
@@ -539,20 +613,72 @@ namespace SketchUp
             }
         }
 
-        private static void GetClassValuesData(DBAccessManager db)
+        private static void GetRat2Data(DBAccessManager db)
         {
-            string sqlRat2 = string.Format("select rdca,rdcb,rdcc,rdcd,rdce,rdcm from {0}.{1}rat2 where rsect2 = '0001'", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix);
+            StringBuilder sqlRat2 = new StringBuilder();
+            sqlRat2.AppendLine("select rdca,rdcb,rdcc,rdcd,rdce,rdcm,rbrate,rdate,rekit,yadjy1,rpier,rslab ");
+            sqlRat2.AppendLine(",racamt,rplfix,rfinbs,rcondg,rconda,rcondf,rcondp,roblim ");
+            sqlRat2.AppendLine(String.Format(" from {0}.{1}rat2 where rsect2 = '0001'", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
+
+            //DataSet ds = db.RunSelectStatement(String.Format(
+            //    "select rdca,rdcb,rdcc,rdcd,rdce,rdcm,rbrate,rdate,rekit,yadjy1,rpier,rslab,racamt,rplfix,rfinbs from native.{0}rat2 where rsect2 = '0001'", prefix));
+
             DataSet ds = db.RunSelectStatement(sqlRat2.ToString());
 
             if (ds.Tables[0].Rows.Count > 0)
             {
                 DataRow dr = ds.Tables[0].Rows[0];
+
+                string yearstr = String.Empty;
+                string monthstr = String.Empty;
+                string daystr = String.Empty;
+                int RAyear = 0;
+                int RAmonth = 0;
+                string reassmentyearstr = Convert.ToString(dr["rdate"].ToString().Trim());
+
+                if (reassmentyearstr.Length == 7)
+                {
+                    monthstr = reassmentyearstr.Substring(0, 1);
+                    daystr = reassmentyearstr.Substring(1, 2);
+                    yearstr = reassmentyearstr.Substring(3, 4);
+                    RAyear = Convert.ToInt32(yearstr);
+                    RAmonth = Convert.ToInt32(monthstr);
+                }
+                else if (reassmentyearstr.Length == 8)
+                {
+                    monthstr = reassmentyearstr.Substring(0, 2);
+                    daystr = reassmentyearstr.Substring(2, 2);
+                    yearstr = reassmentyearstr.Substring(4, 4);
+                    RAyear = Convert.ToInt32(yearstr);
+                    RAmonth = Convert.ToInt32(monthstr);
+                }
+
+                ReassessmentDate = String.Format("{0}/{1}/{2}", monthstr, daystr, yearstr);
+
                 Rates.ClassValues.Add("A", Convert.ToDecimal(dr["rdca"].ToString()));
                 Rates.ClassValues.Add("B", Convert.ToDecimal(dr["rdcb"].ToString()));
                 Rates.ClassValues.Add("C", Convert.ToDecimal(dr["rdcc"].ToString()));
                 Rates.ClassValues.Add("D", Convert.ToDecimal(dr["rdcd"].ToString()));
                 Rates.ClassValues.Add("E", Convert.ToDecimal(dr["rdce"].ToString()));
                 Rates.ClassValues.Add("M", Convert.ToDecimal(dr["rdcm"].ToString()));
+
+                Rates.BasementRate = Convert.ToDecimal(dr["rbrate"].ToString());
+                Rates.FinBasementDefaultRate = Convert.ToDecimal(dr["rfinbs"].ToString());
+                Rates.PlumbingRate = Convert.ToDecimal(dr["rplfix"].ToString());
+                ReassessmentYear = RAyear;
+                ReassessmentMonth = RAmonth;
+
+                SaleYearCutOff = Convert.ToInt32((RAyear - 5).ToString());
+                Rates.ExtraKitRate = Convert.ToInt32(dr["rekit"].ToString());
+                Rates.PierRate = Convert.ToDecimal(dr["rpier"].ToString());
+                Rates.SlabRate = Convert.ToDecimal(dr["rslab"].ToString());
+                Rates.AirCondRate = Convert.ToDecimal(dr["racamt"].ToString());
+                Rates.OutBldRateLim = Convert.ToDecimal(dr["roblim"].ToString());
+
+                DefDepCondG = Convert.ToDecimal(dr["rcondg"].ToString());
+                DefDepCondA = Convert.ToDecimal(dr["rconda"].ToString());
+                DefDepCondF = Convert.ToDecimal(dr["rcondf"].ToString());
+                DefDepCondP = Convert.ToDecimal(dr["rcondp"].ToString());
             }
         }
 
@@ -634,7 +760,7 @@ namespace SketchUp
         {
             // Modified for location-specific STAB and DESC files -- JMM 04-13-2016
             DataSet ds_stab = db.RunSelectStatement(String.Format(
-                "SELECT TTID,TTELEM,TDESCP,TDESC,TLOC FROM {0}.{1}STAB WHERE TTID IN  ('BAS','CAR','CLS','GAR','OCC') Order by TTID, TTELEM ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
+                "SELECT TTID,TTELEM,TDESCP,TDESC,TLOC FROM {0}.{1}STAB", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
             List<StabType> allStabTypes = new List<StabType>();
             foreach (DataRow row in ds_stab.Tables[0].Rows)
             {
@@ -737,19 +863,31 @@ namespace SketchUp
             DBAccessManager db = conn.DBConnection;
             ClearValues();
             InitializeRatTableCollectionLists(conn);
-          
-          
-            GetClassValuesData(db);
-          
+            GetGasLogRate(db);
+            GetNoMaxAc(db);
+            GetRat2Data(db);
+            GetCapitalizationRates(db);
+            GetMapCoordinates(db);
+            GetRentalRates(db);
+            GetHomesiteDescription();
+            GetLandDescription();
             GetLandUseDescription();
+            GetWaterRates();
             GetDeckTypes(db);
             GetAllPorchTypes(db);
             GetPatioTypes(db);
             GetGarageTypes(db);
             GetCarportTypes(db);
+            GetUserCodeDescriptions(db);
+            GetSubdivisionCodeDescriptions(db);
+            GetMagisterialDistricts(db);
+            GetWaterRates(db);
+            GetSewerRates(db);
             GetOtherImprovementCodes(db);
+            GetAssessorInitalCodeDescriptions(db);
             GetDataEntryOperatorDescriptions(db);
             GetOccupancyListAndDescriptions(db);
+            GetBuildingSectionTypesAndRates(db);
             GetStabFileData(db);
         }
 
@@ -758,26 +896,58 @@ namespace SketchUp
             // Initialize Static variables
 
             Rates.Rate1Master = new Rat1Master(conn);
-            List<StabType> Rat1AllTypes = new List<StabType>();
-        
+
+            AirCondCollection = new List<StabType>();
+            AirCondCollection_srt = new List<StabTypeD>();
+            AllStructureDescCollection = new List<AllStructureSections>();
+            AssessorCodeCollection = new List<AssessorCodes>();
             AttachedSectionTypeCollection = new List<AttachedSectionTypes>();
             BasementTypeCollection = new List<StabType>();
             BasementTypeCollection_srt = new List<StabTypeD>();
             CarPortTypeCollection = new List<StabType>();
             CarPortTypeCollection_srt = new List<StabTypeD>();
+            CharacteristicDescriptionCollection = new List<CharacteristicTypeDescription>();
+            CharacteristicDescriptionCollection_srt = new List<CharacteristicTypeDescriptionD>();
+            CharacteristicTypeCollection = new List<StabType>();
+            CharacteristicTypeCollection_srt = new List<StabTypeD>();
             ClassCollection = new List<StabType>();
             ClassCollection_srt = new List<StabTypeD>();
-          //  CommercialIncomeSectionCollection = new List<CommercialIncomeSections>();
-            //CommercialRateCollection = new List<CommercialRate>();
-            //CommercialRateCollection_srt = new List<CommercialRateD>();
-            //CommercialSectionTypeCollection = new List<CommercialSections>();
+            CommercialIncomeSectionCollection = new List<CommercialIncomeSections>();
+            CommercialRateCollection = new List<CommercialRate>();
+            CommercialRateCollection_srt = new List<CommercialRateD>();
+            CommercialSectionTypeCollection = new List<CommercialSections>();
+            ConditionTypeCollection = new List<StabType>();
+            ConditionTypeCollection = new List<StabType>();
+            ConditionTypeCollection_srt = new List<StabTypeD>();
+            DataEntryOperatorCollection = new List<DataEntryOperatorCode>();
+            DisimilarityWeightCollection = new List<DismWeights>();
+            DoorKnockerCollection = new List<StabType>();
+            DoorKnockerCollection_srt = new List<StabTypeD>();
+            EasementTypeCollection = new List<StabType>();
+            EasementTypeCollection_srt = new List<StabTypeD>();
+            ExteriorWallTypeCollection = new List<StabType>();
+            ExteriorWallTypeCollection_srt = new List<StabTypeD>();
+            FloorAbreviationCollection = new List<FloorAbreviation>();
+            FloorCoverCollection = new List<StabType>();
+            FloorCoverCollection_srt = new List<StabTypeD>();
+            FoundationCollection = new List<StabType>();
+            FoundationCollection_srt = new List<StabTypeD>();
+            FuelTypeCollection = new List<StabType>();
+            FuelTypeCollection_srt = new List<StabTypeD>();
             GarageTypeCollection = new List<StabType>();
             GarageTypeCollection_srt = new List<StabTypeD>();
+            HeatTypeCollection = new List<StabType>();
+            HeatTypeCollection_srt = new List<StabTypeD>();
             HomeSiteTypeCollection = new List<HomeSiteType>();
             HomeSiteTypeCollection_srt = new List<HomeSiteTypeD>();
+            InteriorWallTypeCollection = new List<StabType>();
+            InteriorWallTypeCollection_srt = new List<StabTypeD>();
             LandTypeCollection = new List<LandType>();
             LandTypeCollection_srt = new List<LandTypeD>();
             LandUseTypeCollection = new List<LandUseType>();
+            LivingAreaSectionTypeCollection = new List<LivingAreaSectionTypes>();
+            MagDistrictCollection = new List<MagDistrictCodes>();
+            MapCoordinateCollection = new List<MapCoordinates>();
             NonBasementTypeCollection = new List<StabType>();
             NonBasementTypeCollection_srt = new List<StabTypeD>();
             OccupancyCollection = new List<StabType>();
@@ -786,9 +956,41 @@ namespace SketchUp
             OccupancyDescriptionCollection_srt = new List<OccupancyDescriptionD>();
             OtherImprovementCollection = new List<OtherImprovement>();
             OtherImprovementCollection_srt = new List<OtherImprovementD>();
+            PavementDescriptionCollection = new List<PavementTypeDescription>();
+            PavementDescriptionCollection_srt = new List<PavementTypeDescriptionD>();
             Rates.ClassValues = new SortedDictionary<string, decimal>();
+            RentalRateCollection = new List<RentRates>();
             ResidentialSectionTypeCollection = new List<ResidentialSections>();
-                }
+            RightofWayDescriptionCollection = new List<RightofWayTypeDescription>();
+            RightofWayDescriptionCollection_srt = new List<RightofWayTypeDescriptionD>();
+            RightofWayTypeCollection = new List<StabType>();
+            RightofWayTypeCollection_srt = new List<StabTypeD>();
+            RoofingCollection = new List<StabType>();
+            RoofingCollection_srt = new List<StabTypeD>();
+            RoofTypeCollection = new List<StabType>();
+            RoofTypeCollection_srt = new List<StabTypeD>();
+            SewerDescriptionCollection = new List<SewerTypeDescription>();
+            SewerDescriptionCollection_srt = new List<SewerTypeDescriptionD>();
+            SewerRateCollection = new List<SewerRates>();
+            SewerTypeCollection = new List<StabType>();
+            SewerTypeCollection_srt = new List<StabTypeD>();
+            StdDeviationCollection = new List<StdDeviations>();
+            SubDivisionCodeCollection = new List<SubDivisionCodes>();
+            SubDivisionCodeCollection_srt = new List<SubDivisionCodesD>();
+            TerrainDescriptionCollection = new List<TerrainTypeDescription>();
+            TerrainDescriptionCollection_srt = new List<TerrainTypeDescriptionD>();
+            TerrainTypeCollection = new List<StabType>();
+            TerrainTypeCollection_srt = new List<StabTypeD>();
+            UserCodeTypeCollection = new List<UserCodeType>();
+            WallAbreviationCollection = new List<InWallAbreviation>();
+            WaterDescriptionCollection = new List<WaterTypeDescription>();
+            WaterDescriptionCollection_srt = new List<WaterTypeDescriptionD>();
+            WaterRateCollection = new List<WaterRates>();
+            WaterTypeCollection = new List<StabType>();
+            WaterTypeCollection_srt = new List<StabTypeD>();
+            ZoningDescriptionCollection = new List<ZoningDescription>();
+            ZoningDescriptionCollection_srt = new List<ZoningDescriptionD>();
+        }
 
         public static string LandDescription(this List<LandType> list, Int32 code)
         {
@@ -811,15 +1013,42 @@ namespace SketchUp
         {
             var BAS = (from t in allStabTypes where t.Type == "BAS" select t).ToList<StabType>();
             var CAR = (from t in allStabTypes where t.Type == "CAR" select t).ToList<StabType>();
-            var CLS = (from t in allStabTypes where t.Type == "CLS" select t).ToList<StabType>();
+            var CHR = (from t in allStabTypes where t.Type == "CHR" select t).ToList<StabType>();
+            var CON = (from t in allStabTypes where t.Type == "CON" select t).ToList<StabType>();
+            var EAS = (from t in allStabTypes where t.Type == "EAS" select t).ToList<StabType>();
+            var EXW = (from t in allStabTypes where t.Type == "EXW" select t).ToList<StabType>();
+            var FLR = (from t in allStabTypes where t.Type == "FLR" select t).ToList<StabType>();
+            var FND = (from t in allStabTypes where t.Type == "FND" select t).ToList<StabType>();
+            var FUL = (from t in allStabTypes where t.Type == "FUL" select t).ToList<StabType>();
             var GAR = (from t in allStabTypes where t.Type == "GAR" select t).ToList<StabType>();
+            var HT = (from t in allStabTypes where t.Type == "HT" select t).ToList<StabType>();
+            var INW = (from t in allStabTypes where t.Type == "INW" select t).ToList<StabType>();
             var OCC = (from t in allStabTypes where t.Type == "OCC" select t).ToList<StabType>();
+            var RFG = (from t in allStabTypes where t.Type == "RFG" select t).ToList<StabType>();
+            var RFT = (from t in allStabTypes where t.Type == "RFT" select t).ToList<StabType>();
+            var ROW = (from t in allStabTypes where t.Type == "ROW" select t).ToList<StabType>();
+            var SEW = (from t in allStabTypes where t.Type == "SEW" select t).ToList<StabType>();
+            var TER = (from t in allStabTypes where t.Type == "TER" select t).ToList<StabType>();
+            var WAT = (from t in allStabTypes where t.Type == "WAT" select t).ToList<StabType>();
             CarPortTypeCollection.AddRange(CAR);
-            ClassCollection.AddRange(CLS);
+            CharacteristicTypeCollection.AddRange(CHR);
+            ConditionTypeCollection.AddRange(CON);
+            EasementTypeCollection.AddRange(EAS);
+            ExteriorWallTypeCollection.AddRange(EXW);
+            FloorCoverCollection.AddRange(FLR);
+            FoundationCollection.AddRange(FND);
+            FuelTypeCollection.AddRange(FUL);
             GarageTypeCollection.AddRange(GAR);
-            BasementTypeCollection.AddRange(BAS);
+            HeatTypeCollection.AddRange(HT);
+            InteriorWallTypeCollection.AddRange(INW);
+            NonBasementTypeCollection.AddRange(BAS);
             OccupancyCollection.AddRange(OCC);
-      
+            RightofWayTypeCollection.AddRange(ROW);
+            RoofingCollection.AddRange(RFG);
+            RoofTypeCollection.AddRange(RFT);
+            SewerTypeCollection.AddRange(SEW);
+            TerrainTypeCollection.AddRange(TER);
+            WaterTypeCollection.AddRange(WAT);
         }
 
         public static decimal ResidentialSectionRate(this List<ResidentialSections> list, string code)
@@ -838,22 +1067,22 @@ namespace SketchUp
             return q.SingleOrDefault();
         }
 
-        //public static string SewerTypeDescription(this List<SewerRates> list, Int32 code)
-        //{
-        //    var q = from h in list
-        //            where h.SewerCode == code
-        //            select h.SewerDescription;
-        //    return q.SingleOrDefault();
-        //}
+        public static string SewerTypeDescription(this List<SewerRates> list, Int32 code)
+        {
+            var q = from h in list
+                    where h.SewerCode == code
+                    select h.SewerDescription;
+            return q.SingleOrDefault();
+        }
 
-        //public static StdDeviations StdDeviation(this List<StdDeviations> list, decimal code)
-        //{
-        //    var q = from h in list
-        //            where h._sdStory == code
-        //            select h;
+        public static StdDeviations StdDeviation(this List<StdDeviations> list, decimal code)
+        {
+            var q = from h in list
+                    where h._sdStory == code
+                    select h;
 
-        //    return q.SingleOrDefault();
-        //}
+            return q.SingleOrDefault();
+        }
 
         public static WaterRates WaterTypes(this List<WaterRates> list, Int32 code)
         {
@@ -916,42 +1145,168 @@ namespace SketchUp
             return q.SingleOrDefault();
         }
 
-      
+        public static string _subDivDescription(this List<SubDivisionCodes> list, string code)
+        {
+            var q = from h in list
+                    where h._subDivCode == code
+                    select h._subDivDescription;
+
+            return q.SingleOrDefault();
+        }
+
+        public static string _userCodeDescription(this List<UserCodeType> list, string code)
+        {
+            var q = from h in list
+                    where h._userCode == code
+                    select h._userCodeDescription;
+            return q.SingleOrDefault();
+        }
+
+        public static string ListCommercialOccupancies
+        {
+            get
+            {
+                string s = String.Empty;
+                for (int i = 0; i < CommercialOccupancies.Count; i++)
+                {
+                    if (i == 0)
+                    {
+                        s += String.Format("{0}", CommercialOccupancies[i]);
+                    }
+                    else
+                    {
+                        s += String.Format(",{0}", CommercialOccupancies[i]);
+                    }
+                }
+                return s;
+            }
+        }
+
+        public static string ListIncomeOccupancies
+        {
+            get
+            {
+                string s = String.Empty;
+                for (int i = 0; i < IncomeOccupancies.Count; i++)
+                {
+                    if (i == 0)
+                    {
+                        s += String.Format("{0}", IncomeOccupancies[i]);
+                    }
+                    else
+                    {
+                        s += String.Format(",{0}", IncomeOccupancies[i]);
+                    }
+                }
+                return s;
+            }
+        }
+
+        public static string ListResidentialOccupancies
+        {
+            get
+            {
+                string s = String.Empty;
+                for (int i = 0; i < ResidentialOccupancies.Count; i++)
+                {
+                    if (i == 0)
+                    {
+                        s += String.Format("{0}", ResidentialOccupancies[i]);
+                    }
+                    else
+                    {
+                        s += String.Format(",{0}", ResidentialOccupancies[i]);
+                    }
+                }
+                return s;
+            }
+        }
+
+        public static string ListVacantOccupancies
+        {
+            get
+            {
+                string s = String.Empty;
+                for (int i = 0; i < VacantOccupancies.Count; i++)
+                {
+                    if (i == 0)
+                    {
+                        s += String.Format("{0}", VacantOccupancies[i]);
+                    }
+                    else
+                    {
+                        s += String.Format(",{0}", VacantOccupancies[i]);
+                    }
+                }
+                return s;
+            }
+        }
+
+        public static List<StabType> AirCondCollection;
+        public static List<StabTypeD> AirCondCollection_srt;
+        public static List<AllStructureSections> AllStructureDescCollection;
+        public static decimal AppDepChgRate;
+        public static List<AssessorCodes> AssessorCodeCollection;
         public static List<AttachedSectionTypes> AttachedSectionTypeCollection;
-       
+        public static List<string> AuxAreaTypes = new List<string>() { "BEGR", "EGAR", "FEGR", "RMAD", "SUNR", "RMAF", "RMAP", "RMTS" };
         public static List<StabType> BasementTypeCollection;
         public static List<StabTypeD> BasementTypeCollection_srt;
+        public static decimal BltInRate;
+        public static decimal BltInRate2;
         public static List<StabType> CarPortTypeCollection;
         public static List<StabTypeD> CarPortTypeCollection_srt;
-  public static List<StabType> ClassCollection;
+
         //public static List<string> CarPortTypes = new List<string>() { "CP", "BCP", "WCP", "BWCP", "UCP", "CPB", "CPU", "CPW", "CPWB" };
         public static List<string> CarPortTypes = new List<string>();
         public static List<CharacteristicTypeDescription> CharacteristicDescriptionCollection;
         public static List<CharacteristicTypeDescriptionD> CharacteristicDescriptionCollection_srt;
         public static List<StabType> CharacteristicTypeCollection;
         public static List<StabTypeD> CharacteristicTypeCollection_srt;
-      
+        public static List<StabType> ClassCollection;
         public static List<StabTypeD> ClassCollection_srt;
-     
+        public static List<CommercialIncomeSections> CommercialIncomeSectionCollection;
+        public static List<int> CommercialOccupancies = new List<int>() { 11, 13, 14, 26 };
         public static List<CommercialRate> CommercialRateCollection;
         public static List<CommercialRateD> CommercialRateCollection_srt;
         public static List<CommercialSections> CommercialSectionTypeCollection;
         public static List<CommercialSections> CommercialSectionTypeDescriptionCollection;
-       
+        public static List<string> CommIndLandUseTypes = new List<string>() { "4", "5" };
         public static List<StabType> ConditionTypeCollection;
         public static List<StabTypeD> ConditionTypeCollection_srt;
         public static List<DataEntryOperatorCode> DataEntryOperatorCollection;
-        public static List<string> CommIndLandUseTypes = new List<string>() { "4", "5" };
+
         //public static List<string> DeckTypes = new List<string>() { "DECK", "DEK", "DK", "DEKA", "DEKG" };
         public static List<string> DeckTypes = new List<string>();
-      
+        public static decimal DefDepCondA;
+        public static decimal DefDepCondF;
+        public static decimal DefDepCondG;
+        public static decimal DefDepCondP;
+        public static decimal DiscountRate;
+        public static List<DismWeights> DisimilarityWeightCollection;
+        public static List<StabType> DoorKnockerCollection;
+        public static List<StabTypeD> DoorKnockerCollection_srt;
+        public static List<StabType> EasementTypeCollection;
+        public static List<StabTypeD> EasementTypeCollection_srt;
+        public static decimal EffectiveTaxRate;
 
         //public static List<string> EnclPorchTypes = new List<string>() { "EPOR", "EPR", "JPOR", "POEB", "POEF", "PORJ" };
         public static List<string> EnclPorchTypes = new List<string>();
+        public static decimal EquityYieldRate;
+        public static List<StabType> ExteriorWallTypeCollection;
+        public static List<StabTypeD> ExteriorWallTypeCollection_srt;
+        public static List<FloorAbreviation> FloorAbreviationCollection;
+        public static List<StabType> FloorCoverCollection;
+        public static List<StabTypeD> FloorCoverCollection_srt;
+        public static List<StabType> FoundationCollection;
+        public static List<StabTypeD> FoundationCollection_srt;
+        public static List<StabType> FuelTypeCollection;
+        public static List<StabTypeD> FuelTypeCollection_srt;
+        public static int FullBathCnt;
         public static List<StabType> GarageTypeCollection;
         public static List<StabTypeD> GarageTypeCollection_srt;
 
-      
+        //public static List<string> GarageTypes = new List<string>() { "GAR", "BGAR", "FGAR", "UGAR", "GARL","GARB","GARF","GABK","GACB","GCEB",
+        //                                                              "GAFV","GACB","GALF","GAUB","GAUF","GCEF" };
         public static List<string> GarageTypes = new List<string>();
         public static int HalfBathCnt;
         public static List<StabType> HeatTypeCollection;
@@ -960,7 +1315,7 @@ namespace SketchUp
         public static List<HomeSiteType> HomeSiteTypeCollection;
         public static List<HomeSiteTypeD> HomeSiteTypeCollection_srt;
         public static decimal IncomeChgRate;
-       
+        public static List<int> IncomeOccupancies = new List<int>() { 11, 13, 14 };
         public static List<StabType> InteriorWallTypeCollection;
         public static List<StabTypeD> InteriorWallTypeCollection_srt;
         public static List<string> InvalidCommercialSection = new List<string>() { "BASE", "ADD", "NBAD", "LAG", "OH" };
@@ -1006,7 +1361,8 @@ namespace SketchUp
         public static int ReassessmentMonth;
         public static int ReassessmentYear;
         public static List<RentRates> RentalRateCollection;
-        private static List<int> residentialOccupancyCodes;
+        public static List<string> ResidentialLandUseTypes = new List<string>() { "1", "2", "3", "5", "6" };
+        public static List<int> ResidentialOccupancies = new List<int>() { 10, 12, 16, 20, 21, 22, 24 };
         public static List<ResidentialSections> ResidentialSectionTypeCollection;
         public static List<ResidentialSections> ResidentialSectionTypeDescriptionCollection;
         public static decimal ReversionCommission;
@@ -1085,50 +1441,5 @@ namespace SketchUp
         public static List<StabTypeD> WaterTypeCollection_srt;
         public static List<ZoningDescription> ZoningDescriptionCollection;
         public static List<ZoningDescriptionD> ZoningDescriptionCollection_srt;
-        private static List<int> commercialOccupanyCodes;
-
-        private static List<string> auxAreaTypes;
-        public static List<int> ResidentialOccupancies
-        {
-            get
-            {
-                residentialOccupancyCodes = CamraDataEnums.GetEnumValues(typeof(CamraDataEnums.ResidentialOccupancyCodes));
-                return residentialOccupancyCodes;
-            }
-
-            set
-            {
-                residentialOccupancyCodes = value;
-            }
-        }
-
-        public static List<int> CommercialOccupancies
-        {
-            get
-            {
-                commercialOccupanyCodes =CamraDataEnums.GetEnumValues(typeof(CamraDataEnums.CommercialOccupancyCodes));
-                return commercialOccupanyCodes;
-            }
-
-            set
-            {
-                commercialOccupanyCodes = value;
-            }
-        }
-
-        public static List<string> AuxAreaTypes
-        {
-            get
-            {
-                auxAreaTypes = CamraDataEnums.GetEnumStrings(typeof(CamraDataEnums.AuxAreaTypes));
-               
-                return auxAreaTypes;
-            }
-
-            set
-            {
-                auxAreaTypes = value;
-            }
-        }
     }
 }
