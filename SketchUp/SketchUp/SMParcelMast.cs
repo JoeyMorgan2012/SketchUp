@@ -1,19 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SketchUp
 {
     public class SMParcelMast
     {
+        public int Card
+        {
+            get
+            {
+                return card;
+            }
+
+            set
+            {
+                card = value;
+            }
+        }
+
         public int CarportNumCars
         {
             get
             {
                 return carportNumCars;
             }
+
             set
             {
                 carportNumCars = value;
@@ -26,21 +38,10 @@ namespace SketchUp
             {
                 return carportTypeCode;
             }
+
             set
             {
                 carportTypeCode = value;
-            }
-        }
-
-        public int Card
-        {
-            get
-            {
-                return card;
-            }
-            set
-            {
-                card = value;
             }
         }
 
@@ -50,6 +51,7 @@ namespace SketchUp
             {
                 return garage1NumCars;
             }
+
             set
             {
                 garage1NumCars = value;
@@ -62,6 +64,7 @@ namespace SketchUp
             {
                 return garage1TypeCode;
             }
+
             set
             {
                 garage1TypeCode = value;
@@ -74,6 +77,7 @@ namespace SketchUp
             {
                 return garage2NumCars;
             }
+
             set
             {
                 garage2NumCars = value;
@@ -86,69 +90,10 @@ namespace SketchUp
             {
                 return garage2TypeCode;
             }
+
             set
             {
                 garage2TypeCode = value;
-            }
-        }
-
-        public int NumCarsBuiltInCode
-        {
-            get
-            {
-                return numCarsBuiltInCode;
-            }
-            set
-            {
-                numCarsBuiltInCode = value;
-            }
-        }
-
-        public int OccupancyCode
-        {
-            get
-            {
-                return occupancyCode;
-            }
-            set
-            {
-                occupancyCode = value;
-            }
-        }
-
-        public virtual SMParcel Parcel
-        {
-            get
-            {
-                return parcel;
-            }
-            set
-            {
-                parcel = value;
-            }
-        }
-
-        public int PropertyClass
-        {
-            get
-            {
-                return propertyClass;
-            }
-            set
-            {
-                propertyClass = value;
-            }
-        }
-
-        public int Record
-        {
-            get
-            {
-                return record;
-            }
-            set
-            {
-                record = value;
             }
         }
 
@@ -165,18 +110,125 @@ namespace SketchUp
             }
         }
 
-        int carportNumCars;
-        int carportTypeCode;
-        int card;
-        int garage1NumCars;
-        int garage1TypeCode;
-        int garage2NumCars;
-        int garage2TypeCode;
-        decimal masterParcelStoreys;
-        int numCarsBuiltInCode;
-        int occupancyCode;
-        int propertyClass;
-        int record;
-        SMParcel parcel;
+        public int NumCarsBuiltInCode
+        {
+            get
+            {
+                return numCarsBuiltInCode;
+            }
+
+            set
+            {
+                numCarsBuiltInCode = value;
+            }
+        }
+
+        public int OccupancyCode
+        {
+            get
+            {
+                return occupancyCode;
+            }
+
+            set
+            {
+                occupancyCode = value;
+            }
+        }
+
+        public virtual SMParcel Parcel
+        {
+            get
+            {
+                return parcel;
+            }
+
+            set
+            {
+                parcel = value;
+            }
+        }
+
+        public int PropertyClass
+        {
+            get
+            {
+                return propertyClass;
+            }
+
+            set
+            {
+                propertyClass = value;
+            }
+        }
+
+        public int Record
+        {
+            get
+            {
+                return record;
+            }
+
+            set
+            {
+                record = value;
+            }
+        }
+
+        public CamraDataEnums.OccupancyType OccupancyType
+        {
+            get
+            {
+                occupancyType = SelectOccupancyType(OccupancyCode);
+                return occupancyType;
+            }
+
+            set
+            {
+                occupancyType = value;
+            }
+        }
+
+        private CamraDataEnums.OccupancyType SelectOccupancyType(int occupancyCode)
+        {
+            CamraDataEnums.OccupancyType occType=CamraDataEnums.OccupancyType.CodeNotFound;
+            if (string.IsNullOrEmpty(OccupancyCode.ToString()))
+            {
+                occType = CamraDataEnums.OccupancyType.CodeNotFound;
+            }
+            else if (SketchUpCamraSupport.CommercialOccupancies.Contains(OccupancyCode))
+            {
+                occType = CamraDataEnums.OccupancyType.Commercial;
+            }
+            else if (SketchUpCamraSupport.ResidentialOccupancies.Contains(OccupancyCode))
+            {
+                occType = CamraDataEnums.OccupancyType.Residential;
+            }
+            else if (SketchUpCamraSupport.TaxExemptOccupancies.Contains(OccupancyCode))
+            {
+                occType = CamraDataEnums.OccupancyType.TaxExempt;
+            }
+            else
+            {
+                occType = CamraDataEnums.OccupancyType.Other;
+            }
+            return occType;
+        }
+
+        CamraDataEnums.OccupancyType occupancyType;
+        private int card;
+        private int carportNumCars;
+        private int carportTypeCode;
+        private int garage1NumCars;
+        private int garage1TypeCode;
+        private int garage2NumCars;
+        private int garage2TypeCode;
+        private decimal masterParcelStoreys;
+        private int numCarsBuiltInCode;
+        private int occupancyCode;
+        private SMParcel parcel;
+        private int propertyClass;
+        private int record;
+        
     }
 }

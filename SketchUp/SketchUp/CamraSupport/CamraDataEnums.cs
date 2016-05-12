@@ -7,7 +7,7 @@ namespace SketchUp
 {
     public static class CamraDataEnums
     {
-#region "Public Methods"
+        #region "Public Methods"
 
         public static List<string> GetEnumStrings(Type enumType)
         {
@@ -31,13 +31,14 @@ namespace SketchUp
             }
             values.Sort();
             return values;
-        } 
+        }
 
-#endregion
+        #endregion "Public Methods"
 
         /*
          public static List<string> AuxAreaTypes = new List<string>() { "BEGR", "EGAR", "FEGR", "RMAD", "SUNR", "RMAF", "RMAP", "RMTS" };
         */
+
         public enum AuxAreaTypes
         {
             BEGR,
@@ -49,6 +50,7 @@ namespace SketchUp
             RMAP,
             RMTS
         }
+
         //public static List<string> CarPortTypes = new List<string>() { "CP", "BCP", "WCP", "BWCP", "UCP", "CPB", "CPU", "CPW", "CPWB" };
         public enum CarPortTypes
         {
@@ -62,7 +64,15 @@ namespace SketchUp
             UCP,
             WCP
         }
-
+        public enum OccupancyType
+        {
+            CodeNotFound,
+            Commercial,
+            Residential,
+            TaxExempt,
+            Vacant,
+            Other
+        }
         //public static List<int> CommercialOccupancies = new List<int>() { 11, 13, 14, 26 };
         public enum CommercialOccupancyCodes
         {
@@ -86,7 +96,7 @@ namespace SketchUp
             WPAT
         }
 
-        // public static List<string> GarageTypes = new List<string>() 
+        // public static List<string> GarageTypes = new List<string>()
         // { "GAR", "BGAR", "FGAR", "UGAR", "GARL","GARB","GARF","GABK","GCEB","GAFV","GACB","GALF","GAUB","GAUF","GCEF" };
         public enum GarageTypes
         {
@@ -151,7 +161,6 @@ namespace SketchUp
             SingleWideMobileHome = 21,
             DoubleWideMobileHome = 22,
             TripleWideMobileHome = 24
-
         }
     }
 }

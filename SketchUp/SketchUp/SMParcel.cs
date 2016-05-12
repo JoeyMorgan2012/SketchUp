@@ -1,16 +1,16 @@
-﻿using SWallTech;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using SWallTech;
 
 namespace SketchUp
 {
     public class SMParcel
     {
-#region "Public Methods"
+        #region "Public Methods"
 
         public void IdentifyAttachedToSections()
         {
@@ -50,8 +50,8 @@ namespace SketchUp
 
         public void SetScaleAndOriginForParcel(int width, int height, PointF containerCorner)
         {
-            SetSketchScale(width,height);
-            SetSketchOrigin(width,height,containerCorner);
+            SetSketchScale(width, height);
+            SetSketchOrigin(width, height, containerCorner);
             SetScaledStartPoints();
         }
 
@@ -62,9 +62,9 @@ namespace SketchUp
             SetScaledStartPoints();
         }
 
-#endregion
+        #endregion "Public Methods"
 
-#region "Private methods"
+        #region "Private methods"
 
         private List<PointF> AllCorners()
         {
@@ -207,7 +207,7 @@ namespace SketchUp
             Scale = SMGlobal.SmallerDouble(xScale, yScale) * 0.85M;
         }
 
-#endregion
+        #endregion "Private methods"
 
         public List<SMLine> AllSectionLines
         {
@@ -217,6 +217,7 @@ namespace SketchUp
 
                 return allSectionLines;
             }
+
             set
             {
                 allSectionLines = value;
@@ -224,6 +225,7 @@ namespace SketchUp
         }
 
         #region Properties
+
         public bool AllSectionsClosed
         {
             get
@@ -231,6 +233,7 @@ namespace SketchUp
                 allSectionsClosed = checkAllSectionsAreClosed();
                 return allSectionsClosed;
             }
+
             set
             {
                 allSectionsClosed = value;
@@ -243,11 +246,12 @@ namespace SketchUp
             {
                 return card;
             }
+
             set
             {
                 card = value;
             }
-        }   
+        }
 
         public List<PointF> CornerPoints
         {
@@ -260,6 +264,7 @@ namespace SketchUp
 
                 return cornerPoints;
             }
+
             set
             {
                 cornerPoints = value;
@@ -272,6 +277,7 @@ namespace SketchUp
             {
                 return exSketch;
             }
+
             set
             {
                 exSketch = value;
@@ -284,6 +290,7 @@ namespace SketchUp
             {
                 return hasSketch;
             }
+
             set
             {
                 hasSketch = value;
@@ -296,6 +303,7 @@ namespace SketchUp
             {
                 return jumpMouseLocation;
             }
+
             set
             {
                 jumpMouseLocation = value;
@@ -313,6 +321,7 @@ namespace SketchUp
                 lastSectionLetter = GetLastSectionLetter(Sections);
                 return lastSectionLetter;
             }
+
             set
             {
                 lastSectionLetter = value;
@@ -326,6 +335,7 @@ namespace SketchUp
                 nextSectionLetter = SketchUp.UtilityMethods.NextLetter(LastSectionLetter);
                 return nextSectionLetter;
             }
+
             set
             {
                 nextSectionLetter = value;
@@ -340,6 +350,7 @@ namespace SketchUp
                 offsetX = Math.Abs(minX);
                 return offsetX;
             }
+
             set
             {
                 offsetX = value;
@@ -354,6 +365,7 @@ namespace SketchUp
                 offsetY = Math.Abs(minY);
                 return offsetY;
             }
+
             set
             {
                 offsetY = value;
@@ -366,6 +378,7 @@ namespace SketchUp
             {
                 return parcelMast;
             }
+
             set
             {
                 parcelMast = value;
@@ -378,6 +391,7 @@ namespace SketchUp
             {
                 return record;
             }
+
             set
             {
                 record = value;
@@ -390,6 +404,7 @@ namespace SketchUp
             {
                 return refreshParcel;
             }
+
             set
             {
                 refreshParcel = value;
@@ -406,6 +421,7 @@ namespace SketchUp
                 }
                 return scale;
             }
+
             set
             {
                 scale = value;
@@ -423,6 +439,7 @@ namespace SketchUp
                 }
                 return sections;
             }
+
             set
             {
                 sections = value;
@@ -435,6 +452,7 @@ namespace SketchUp
             {
                 return sketchImage;
             }
+
             set
             {
                 sketchImage = value;
@@ -451,6 +469,7 @@ namespace SketchUp
                 }
                 return sketchOrigin;
             }
+
             set
             {
                 sketchOrigin = value;
@@ -465,6 +484,7 @@ namespace SketchUp
 
                 return sketchXSize;
             }
+
             set
             {
                 sketchXSize = value;
@@ -478,6 +498,7 @@ namespace SketchUp
                 sketchYSize = CalculateYSize();
                 return sketchYSize;
             }
+
             set
             {
                 sketchYSize = value;
@@ -490,6 +511,7 @@ namespace SketchUp
             {
                 return snapShotIndex;
             }
+
             set
             {
                 snapShotIndex = value;
@@ -502,6 +524,7 @@ namespace SketchUp
             {
                 return storeyEx;
             }
+
             set
             {
                 storeyEx = value;
@@ -514,6 +537,7 @@ namespace SketchUp
             {
                 return storeys;
             }
+
             set
             {
                 storeys = value;
@@ -526,13 +550,15 @@ namespace SketchUp
             {
                 return totalSqFt;
             }
+
             set
             {
                 totalSqFt = value;
             }
         }
 
-        #endregion
+        #endregion Properties
+
         private List<SMLine> allSectionLines;
         private bool allSectionsClosed;
         private int card;

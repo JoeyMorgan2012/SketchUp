@@ -46,7 +46,7 @@ namespace SketchUp
 
         private SMParcel GetOriginalParcelFromDb(int record, int dwelling, SketchRepository sr)
         {
-            SMParcel parcel = sr.SelectParcelWithSectionsAndLines(record, dwelling);
+            SMParcel parcel = sr.SelectParcelMasterWithParcel(record, dwelling).Parcel;
            
             parcel.IdentifyAttachedToSections();
             return parcel;
@@ -57,7 +57,7 @@ namespace SketchUp
             string dataSource = SketchUp.Properties.Settings.Default.IPAddress;
             string password = SketchUp.Properties.Settings.Default.UserName;
             string userName = SketchUp.Properties.Settings.Default.Password;
-            string locality = SketchUpGlobals.LocalityPreFix;
+            string locality = SketchUpGlobals.LocalityPrefix;
             int record = SketchUpGlobals.Record;
             int dwelling = SketchUpGlobals.Card;
 
@@ -70,7 +70,7 @@ namespace SketchUp
         {
             try
             {
-                SketchRepository sr = new SketchRepository(SketchUpGlobals.CamraDbConn.DataSource, SketchUpGlobals.CamraDbConn.User, SketchUpGlobals.CamraDbConn.Password, SketchUpGlobals.LocalityPreFix);
+                SketchRepository sr = new SketchRepository(SketchUpGlobals.CamraDbConn.DataSource, SketchUpGlobals.CamraDbConn.User, SketchUpGlobals.CamraDbConn.Password, SketchUpGlobals.LocalityPrefix);
                 return sr;
             }
             catch (Exception ex)
@@ -96,11 +96,7 @@ namespace SketchUp
             SketchUpGlobals.SketchSnapshots.Add(LocalParcelCopy);
         }
 
-        private void MockGettingCamraData()
-        {
-            SketchUpParcelDataCollection pdc = new SketchUpParcelDataCollection(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
-            SketchUpGlobals.CurrentParcel = pdc.GetParcel(SketchUpGlobals.CamraDbConn, SketchUpGlobals.Record, SketchUpGlobals.Card);
-        }
+      
 
         private int mouseDownX;
         private int mouseDownY;
@@ -385,7 +381,7 @@ namespace SketchUp
 
             //TODO: !! Figure out where this should be set and read
             SketchUpGlobals.LocalLib = "NATIVE";
-            SketchUpGlobals.LocalityPreFix = locality;
+            SketchUpGlobals.LocalityPrefix = locality;
             SketchUpGlobals.FcLib = SketchUpGlobals.LocalLib;
             SketchUpGlobals.FcLocalityPrefix = locality;
             SketchUpGlobals.Record = record;
@@ -1306,7 +1302,7 @@ namespace SketchUp
             string message = string.Empty;
 
             SMSketcher sms = new SMSketcher(LocalParcelCopy, sketchBox);
-            LocalParcelCopy.SetScaleAndOriginForParcel(sketchBox);
+            sms.RenderSketch();
             AddNewTestSection();
             DrawSections();
         }
@@ -1374,5 +1370,91 @@ namespace SketchUp
         private string newSectionLetter = "G";
         private string pointLabel = string.Empty;
         private string sectionLetter = "D";
+        private PointF dbStart;
+        private PointF dbEnd;
+        private decimal scale;
+        private PointF screenStart;
+        private PointF screenEnd;
+        PointF origin;
+        decimal xScale = 0M;
+        decimal yScale = 0M;
+        string InfoMessage()
+        {
+          #if DEBUG
+			StringBuilder traceOut = new StringBuilder();
+			traceOut.AppendLine(string.Format("Scale is {0:N2}(x) and {1:N2}(y)", xScale,yScale));
+            			traceOut.AppendLine(string.Format("Using the {0} scale",xScale>yScale?"Y":"X"));
+			Trace.WriteLine(string.Format("{0}", traceOut.ToString())); 
+            Console.WriteLine(string.Format("{0}", traceOut.ToString()));
+            return traceOut.ToString();
+#endif
+
+        }
+
+        private void tsbDrawRed_Click(object sender, EventArgs e)
+        {
+            GetPointsFromText();
+            ShowScaledPoints();
+            DrawRedLine(screenStart,screenEnd);
+            infoLabel.Text = InfoMessage();
+        }
+
+        private void DrawRedLine(PointF screenStart, PointF screenEnd)
+        {
+            RedPen = new Pen(Color.Red, 2);
+            Graphics g = sketchBox.CreateGraphics();
+            g.DrawLine(RedPen, screenStart, screenEnd);
+            infoLabel.Text = InfoMessage();
+        }
+
+        private void ShowScaledPoints()
+        {
+         
+            float xSize = Math.Abs(dbStart.X - dbEnd.X);
+            float ySize = Math.Abs(dbStart.Y - dbEnd.Y);
+
+            if (xSize==0)
+            {
+                xSize = ySize;
+            }
+          
+         
+            if (ySize == 0)
+            {
+                ySize = xSize;
+            }
+            xScale = (decimal)(sketchBox.Width / xSize);
+            yScale  = (decimal)(sketchBox.Height / ySize);
+         //   scale = SMGlobal.SmallerDecimal(xScale, yScale)*.80M;
+            scale = 7.2M;
+            float centerX = sketchBox.Left+(sketchBox.Width / 2);
+            float centerY = sketchBox.Top + (sketchBox.Height / 2);
+
+            origin = new PointF(centerX,centerY);
+            screenStart = SMGlobal.DbPointToScaledPoint((decimal)dbStart.X, (decimal)dbStart.Y, scale,origin);
+            screenEnd = SMGlobal.DbPointToScaledPoint((decimal)dbEnd.X, (decimal)dbEnd.Y, scale, origin);
+            screenX1TextBox.Text = string.Format("{0:N0}", screenStart.X);
+            screenY1TextBox.Text = string.Format("{0:N0}", screenStart.Y);
+            screenX2TextBox.Text = string.Format("{0:N0}", screenEnd.X);
+            screenY2TextBox.Text = string.Format("{0:N0}", screenEnd.Y);
+        }
+
+        private void GetPointsFromText()
+        {
+            float x1 = 0f;
+            float y1 = 0f;
+            float x2 = 0f;
+            float y2 = 0f;
+            string dbX1 = x1TextBox.Text;
+            string dbY1 = y1TextBox.Text;
+            string dbX2 = x2TextBox.Text;
+            string dbY2 = y2TextBox.Text;
+            float.TryParse(dbX1, out x1);
+            float.TryParse(dbY1, out y1);
+            float.TryParse(dbX2, out x2);
+            float.TryParse(dbY2, out y2);
+            dbStart = new PointF(x1, y1);
+            dbEnd = new PointF(x2, y2);
+        }
     }
 }

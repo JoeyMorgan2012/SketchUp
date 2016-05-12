@@ -1,9 +1,9 @@
-﻿using SWallTech;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using SWallTech;
 
 namespace SketchUp
 {
@@ -15,6 +15,7 @@ namespace SketchUp
             {
                 return camraDbConn;
             }
+
             set
             {
                 camraDbConn = value;
@@ -27,6 +28,7 @@ namespace SketchUp
             {
                 return card;
             }
+
             set
             {
                 card = value;
@@ -39,13 +41,12 @@ namespace SketchUp
             {
                 return checker;
             }
+
             set
             {
                 checker = value;
             }
         }
-
-      
 
         public static Image CurrentSketchImage
         {
@@ -53,6 +54,7 @@ namespace SketchUp
             {
                 return currentSketchImage;
             }
+
             set
             {
                 currentSketchImage = value;
@@ -65,6 +67,7 @@ namespace SketchUp
             {
                 return dbAccessMgr;
             }
+
             set
             {
                 dbAccessMgr = value;
@@ -77,6 +80,7 @@ namespace SketchUp
             {
                 return defaultScale;
             }
+
             set
             {
                 defaultScale = value;
@@ -89,6 +93,7 @@ namespace SketchUp
             {
                 return fcCard;
             }
+
             set
             {
                 fcCard = value;
@@ -101,6 +106,7 @@ namespace SketchUp
             {
                 return fcIpAddress;
             }
+
             set
             {
                 fcIpAddress = value;
@@ -113,6 +119,7 @@ namespace SketchUp
             {
                 return fcLib;
             }
+
             set
             {
                 fcLib = value;
@@ -125,6 +132,7 @@ namespace SketchUp
             {
                 return fcLocalityPrefix;
             }
+
             set
             {
                 fcLocalityPrefix = value;
@@ -137,6 +145,7 @@ namespace SketchUp
             {
                 return fcRecord;
             }
+
             set
             {
                 fcRecord = value;
@@ -149,6 +158,7 @@ namespace SketchUp
             {
                 return hasNewSketch;
             }
+
             set
             {
                 hasNewSketch = value;
@@ -161,6 +171,7 @@ namespace SketchUp
             {
                 return hasSketch;
             }
+
             set
             {
                 hasSketch = value;
@@ -173,6 +184,7 @@ namespace SketchUp
             {
                 return initalCard;
             }
+
             set
             {
                 initalCard = value;
@@ -185,6 +197,7 @@ namespace SketchUp
             {
                 return initalRecord;
             }
+
             set
             {
                 initalRecord = value;
@@ -197,6 +210,7 @@ namespace SketchUp
             {
                 return ipAddress;
             }
+
             set
             {
                 ipAddress = value;
@@ -209,18 +223,20 @@ namespace SketchUp
             {
                 return localityDescription;
             }
+
             set
             {
                 localityDescription = value;
             }
         }
 
-        public static string LocalityPreFix
+        public static string LocalityPrefix
         {
             get
             {
                 return localityPreFix;
             }
+
             set
             {
                 localityPreFix = value;
@@ -231,8 +247,13 @@ namespace SketchUp
         {
             get
             {
+                if (string.IsNullOrEmpty(localLib))
+                {
+                    localLib = "NATIVE";
+                }
                 return localLib;
             }
+
             set
             {
                 localLib = value;
@@ -245,6 +266,7 @@ namespace SketchUp
             {
                 return mainFormIsClosed;
             }
+
             set
             {
                 mainFormIsClosed = value;
@@ -257,6 +279,7 @@ namespace SketchUp
             {
                 return mainFormIsMinimized;
             }
+
             set
             {
                 mainFormIsMinimized = value;
@@ -269,9 +292,27 @@ namespace SketchUp
             {
                 return month;
             }
+
             set
             {
                 month = value;
+            }
+        }
+
+        public static SMParcelMast ParcelMast
+        {
+            get
+            {
+                if (parcelMast == null)
+                {
+                    parcelMast = SketchMgrRepo.SelectParcelMasterWithParcel(record, card);
+                }
+                return parcelMast;
+            }
+
+            set
+            {
+                parcelMast = value;
             }
         }
 
@@ -286,7 +327,6 @@ namespace SketchUp
                 }
                 else
                 {
-
                     parcelWorkingCopy = ParcelMast.Parcel;
                     parcelWorkingCopy.SnapShotIndex = 0;
                     SketchSnapshots.Add(parcelWorkingCopy);
@@ -294,6 +334,7 @@ namespace SketchUp
 
                 return parcelWorkingCopy;
             }
+
             set
             {
                 parcelWorkingCopy = value;
@@ -306,6 +347,7 @@ namespace SketchUp
             {
                 return record;
             }
+
             set
             {
                 record = value;
@@ -318,6 +360,7 @@ namespace SketchUp
             {
                 return reOpenSection;
             }
+
             set
             {
                 reOpenSection = value;
@@ -330,6 +373,7 @@ namespace SketchUp
             {
                 return sketchFolder;
             }
+
             set
             {
                 sketchFolder = value;
@@ -342,6 +386,7 @@ namespace SketchUp
             {
                 return sketchImage;
             }
+
             set
             {
                 sketchImage = value;
@@ -352,12 +397,13 @@ namespace SketchUp
         {
             get
             {
-                if (sketchMgrRepo==null)
+                if (sketchMgrRepo == null)
                 {
-                    sketchMgrRepo = new SketchRepository(IpAddress, "CAMRA2", "CAMRA2", LocalityPreFix);
+                    sketchMgrRepo = new SketchRepository(IpAddress, "CAMRA2", "CAMRA2", LocalityPrefix);
                 }
                 return sketchMgrRepo;
             }
+
             set
             {
                 sketchMgrRepo = value;
@@ -374,6 +420,7 @@ namespace SketchUp
                 }
                 return sketchSnapshots;
             }
+
             set
             {
                 sketchSnapshots = value;
@@ -384,33 +431,19 @@ namespace SketchUp
         {
             get
             {
-
                 currentSMParcel = SketchMgrRepo.SelectParcelMasterWithParcel(record, card).Parcel;
                 return currentSMParcel;
             }
+
             set
             {
                 currentSMParcel = value;
             }
         }
 
-        public static SMParcelMast ParcelMast
-        {
-            get
-            {
-                if (parcelMast==null)
-                {
-                    parcelMast = SketchMgrRepo.SelectParcelMasterWithParcel(record, card);
-                }
-                return parcelMast;
-            }
-
-            set
-            {
-                parcelMast = value;
-            }
-        }
-
+        private static string _selectedPath = String.Empty;
+        private static string _selectedPicPath = String.Empty;
+        private static string _selectedSktPath = String.Empty;
         private static CAMRA_Connection camraDbConn = null;
         private static int card = 0;
         private static int checker = 0;
@@ -434,6 +467,7 @@ namespace SketchUp
         private static bool mainFormIsClosed = false;
         private static bool mainFormIsMinimized = false;
         private static int month;
+        private static SMParcelMast parcelMast;
         private static SMParcel parcelWorkingCopy;
         private static int record = 0;
         private static string reOpenSection;
@@ -441,9 +475,5 @@ namespace SketchUp
         private static Image sketchImage;
         private static SketchRepository sketchMgrRepo;
         private static List<SMParcel> sketchSnapshots;
-        private static string _selectedPath = String.Empty;
-        private static string _selectedPicPath = String.Empty;
-        private static string _selectedSktPath = String.Empty;
-        private static SMParcelMast parcelMast;
     }
 }

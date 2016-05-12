@@ -173,6 +173,7 @@
     <Compile Include="FormSplash.Designer.cs">
       <DependentUpon>FormSplash.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormUtilities.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="MainForm.cs">
@@ -198,6 +199,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rates.cs" />
+    <Compile Include="SectionListItem.cs" />
     <Compile Include="SelectSectionTypeDialog.cs">
       <SubType>Form</SubType>
     </Compile>

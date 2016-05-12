@@ -18,13 +18,13 @@ namespace SketchUp
             InitializeComponent();
 
             _checkStory = false;
-            _nextSectStory = 0;
+            newSectionStoreys = 0;
 
             Record = parcelMast.Record;
             Card = parcelMast.Card;
             btnAdd.Enabled = false;
 
-            ListSectionCollection();
+            PopulateComboSource();
             SectionTypesCbox.DataSource = sectTypeList;
             ReSet();
             GetNextSection(Record, Card);
@@ -46,14 +46,17 @@ namespace SketchUp
         private void AddSectionToWorkingParcel()
         {
             decimal storeys = 0.00M;
-            SMSection newSection = new SMSection(parcelWorkingCopy);
+            SMSection newSection = new SMSection(ParcelWorkingCopy);
             newSection.SectionLetter = SectLtrTxt.Text;
             newSection.SectionType = SectionTypesCbox.SelectedValue.ToString();
             decimal.TryParse(SectionStoriesTxt.Text, out storeys);
             newSection.Storeys = storeys;
-            parcelWorkingCopy.Sections.Add(newSection);
-            parcelWorkingCopy.SnapShotIndex++;
-            SketchUpGlobals.SketchSnapshots.Add(parcelWorkingCopy);
+            newSection.ParentParcel = ParcelWorkingCopy;
+            newSection.Record = SketchUpGlobals.Record;
+            newSection.AttachedTo = string.Empty;
+            ParcelWorkingCopy.Sections.Add(newSection);
+            ParcelWorkingCopy.SnapShotIndex++;
+            SketchUpGlobals.SketchSnapshots.Add(ParcelWorkingCopy);
 
 #if DEBUG
             StringBuilder traceOut = new StringBuilder();
@@ -71,8 +74,53 @@ namespace SketchUp
             this.Close();
         }
 
-        private void ChkBase()
+        private void CheckForMismatchInStoreyCount()
         {
+            decimal storeyTextEntered = 0;
+            newSectionStoreys = 0;
+            storeyTextIsBlank = false;
+            if (SectionStoriesTxt.Text == string.Empty)
+            {
+                storeyTextIsBlank = true;
+            }
+            else
+            {
+                decimal.TryParse(SectionStoriesTxt.Text, out storeyTextEntered);
+                decimal dbStoreys = ParcelWorkingCopy.ParcelMast.MasterParcelStoreys;
+                newSectionStoreys = storeyTextEntered;
+
+                if (nextSec == "A" && storeyTextIsBlank != true && dbStoreys != storeyTextEntered)
+                {
+                    DialogResult storycheck;
+                    storycheck = (MessageBox.Show("Master Story Conflict", "Check Stories Error", MessageBoxButtons.OKCancel, MessageBoxIcon.Question));
+
+                    if (storycheck == DialogResult.OK)
+                    {
+                        if (nextSec == "A" && dbStoreys != storeyTextEntered)
+                        {
+                            MessageBox.Show(string.Format("Master Parcel shows {0} stories .. Entered Sories = {1} ", dbStoreys.ToString("N2"), storeyTextEntered.ToString("N2")));
+
+                            _checkStory = false;
+                        }
+
+                        if (storeyTextEntered > 0)
+                        {
+                            SectionStoriesTxt.Text = storeyTextEntered.ToString("N2");
+                            ParcelWorkingCopy.ParcelMast.MasterParcelStoreys = storeyTextEntered;
+                            _AddStory = true;
+                        }
+
+                        if (_AddStory == true && _AddType == true)
+                        {
+                            this.Close();
+                        }
+                    }
+                    if (storycheck == DialogResult.Cancel)
+                    {
+                        this.Close();
+                    }
+                }
+            }
         }
 
         private void GetNextSection(int _record, int _card)
@@ -86,13 +134,12 @@ namespace SketchUp
                 _checkStory = true;
                 _isnewSketch = true;
 
-                if (_nextSectStory == 0 && nextSec == "A")
+                if (newSectionStoreys == 0 && nextSec == "A")
                 {
-                    _nextSectStory = ParcelWorkingCopy.ParcelMast.MasterParcelStoreys;
-                    SectionSizeTxt.Text = _nextSectStory.ToString("N2");
+                    newSectionStoreys = ParcelWorkingCopy.ParcelMast.MasterParcelStoreys;
+                    SectionSizeTxt.Text = newSectionStoreys.ToString("N2");
                 }
 
-                //ChkBase();
             }
 
             if (nextSec.Trim() == "M")
@@ -126,35 +173,33 @@ namespace SketchUp
 
             if (_AddStory == true)
             {
-                if (_nextSectStory <= 0)
+                if (newSectionStoreys <= 0)
                 {
                     MessageBox.Show("Must enter Story Height", "No Story Warning");
                     SectionStoriesTxt.Text = string.Empty;
                     SectionStoriesTxt.Focus();
                 }
             }
-            if (_nextSectStory == 0)
+            if (newSectionStoreys == 0)
             {
-                _nextSectStory = 1.0m;
+                newSectionStoreys = 1.0m;
             }
 
-            if (_AddStory == false && _nextSectStory != 0 && _nextSectLtr != "A")
+            if (_AddStory == false && newSectionStoreys != 0 && _nextSectLtr != "A")
             {
-                //SectionStoriesTxt.Focus();
-                SectionStoriesTxt.Text = _nextSectStory.ToString("N2");
+                SectionStoriesTxt.Text = newSectionStoreys.ToString("N2");
             }
         }
 
-        private void ListSectionCollection()
+        private void PopulateComboSource()
         {
-            //    int _cboxIndex = 0;
-
+          
             sectTypeList = new List<string>();
 
-            // var index = -1;
             if (SectionTypesCbox.SelectedIndex <= 0)
             {
                 sectTypeList.Add("(Select Section Type)");
+
 
                 foreach (var item in SketchUpLookups.ResidentialSectionTypeCollection)
                 {
@@ -214,115 +259,7 @@ namespace SketchUp
 
         private void SectionStoriesTxt_Leave(object sender, EventArgs e)
         {
-            decimal _sty = 0;
-
-            _nextSectStory = 0;
-
-            _blankStory = false;
-
-            if (SectionStoriesTxt.Text == string.Empty)
-            {
-                _blankStory = true;
-            }
-            else
-            {
-                decimal.TryParse(SectionStoriesTxt.Text, out _sty);
-
-                decimal curstory = ParcelWorkingCopy.ParcelMast.MasterParcelStoreys;
-
-                _nextSectStory = _sty;
-
-                if (SketchUpCamraSupport.ResidentialOccupancies.Contains(ParcelWorkingCopy.ParcelMast.OccupancyCode))
-                {
-                    if (nextSec == "A" && _blankStory != true && curstory != _sty)
-                    {
-                        DialogResult storycheck;
-                        storycheck = (MessageBox.Show("Master Story Conflict", "Check Stories Error",
-                                           MessageBoxButtons.OKCancel, MessageBoxIcon.Question));
-
-                        if (storycheck == DialogResult.OK)
-                        {
-                            if (nextSec == "A" && curstory != _sty)
-                            {
-                                MessageBox.Show(string.Format("Master Parcel shows {0} stories .. Entered Sories = {1} ", curstory.ToString("N2"), _sty.ToString("N2")));
-
-                                _checkStory = false;
-                            }
-
-                            if (_sty > 0)
-                            {
-                                SectionStoriesTxt.Text = _sty.ToString("N2");
-                                ParcelWorkingCopy.ParcelMast.MasterParcelStoreys = _sty;
-
-                                StringBuilder maststory = new StringBuilder();
-                                maststory.Append(string.Format("update {0}.{1}mast set mstor# = {2} ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, _sty));
-                                maststory.Append(string.Format("where mrecno = {0} and mdwell = {1} ", ParcelWorkingCopy.Record, ParcelWorkingCopy.Card));
-
-                                //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "maststory", maststory);
-                                _conn.DBConnection.ExecuteNonSelectStatement(maststory.ToString());
-
-                                //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "maststory", maststory);
-                                _AddStory = true;
-                            }
-
-                            if (_AddStory == true && _AddType == true)
-                            {
-                                this.Close();
-                            }
-                        }
-                        if (storycheck == DialogResult.Cancel)
-                        {
-                            this.Close();
-                        }
-
-                        // }
-                    }
-                }
-
-                if (SketchUpCamraSupport.CommercialOccupancies.Contains(ParcelWorkingCopy.ParcelMast.OccupancyCode))
-                {
-                    if (nextSec == "A" && _blankStory != true && curstory != _sty)
-                    {
-                        DialogResult storycheck2;
-                        storycheck2 = (MessageBox.Show("Master Story Confilct", "Check Stories Error",
-                                            MessageBoxButtons.OKCancel, MessageBoxIcon.Question));
-
-                        if (storycheck2 == DialogResult.OK)
-                        {
-                            if (nextSec == "A" && curstory != _sty)
-                            {
-                                MessageBox.Show(string.Format("Master Parcel shows {0} stories .. Entered Sories = {1} ", curstory.ToString("N2"), _sty.ToString("N2")));
-
-                                _checkStory = false;
-                            }
-
-                            if (_sty > 0)
-                            {
-                                SectionStoriesTxt.Text = _sty.ToString("N2");
-                                ParcelWorkingCopy.ParcelMast.MasterParcelStoreys = _sty;
-
-                                //TODO: Refactor into SketchManager - updates are all deferred.
-
-                                //  StringBuilder maststory = new StringBuilder();
-                                //  maststory.Append(string.Format("update {0}.{1}mast set mstor# = {2} ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, _sty));
-                                //  maststory.Append(string.Format("where mrecno = {0} and mdwell = {1} ", ParcelWorkingCopy.Record,ParcelWorkingCopy.Card));
-                                //_conn.DBConnection.ExecuteNonSelectStatement(maststory.ToString());
-
-                                _AddStory = true;
-                            }
-
-                            if (_AddStory == true && _AddType == true)
-                            {
-                                this.Close();
-                            }
-                        }
-                        if (storycheck2 == DialogResult.Cancel)
-                        {
-                            this.Close();
-                        }
-                    }
-                }
-            }
+            CheckForMismatchInStoreyCount();
         }
 
         private void SectionTypesCbox_SelectedIndexChanged(object sender, EventArgs e)
@@ -331,79 +268,107 @@ namespace SketchUp
             {
                 btnAdd.Enabled = true;
                 _nextSectType = SectionTypesCbox.SelectedItem.ToString().Substring(0, 4);
-
-                _AddType = true;
-
-                if (nextSec == "A" && SketchUpCamraSupport.ResidentialOccupancies.Contains(ParcelWorkingCopy.ParcelMast.OccupancyCode))
-                {
-                    if (_nextSectType != "BASE")
-                    {
-                        MessageBox.Show("A - Section must be of type \"BASE\" ", "Base Section Required");
-                        SectionTypesCbox.Focus();
-                    }
-
-                    SectionStoriesTxt.Text = ParcelWorkingCopy.SelectSectionByLetter("A").Storeys.ToString("N2");
-                }
-                if (_nextSectLtr != "A" && SketchUpCamraSupport.ResidentialOccupancies.Contains(ParcelWorkingCopy.ParcelMast.OccupancyCode))
-                {
-                    if (_nextSectType == "BASE")
-                    {
-                        MessageBox.Show(string.Format("Section - \"{0}\" Cannot be \"BASE\"", _nextSectLtr));
-                        _nextSectType = string.Empty;
-                        SectionTypesCbox.SelectedIndex = 0;
-                        SectionTypesCbox.Focus();
-
-                        //SectionLetterCbox.Focus();
-                    }
-                }
-
-                if (nextSec == "A" && SketchUpCamraSupport.CommercialOccupancies.Contains(ParcelWorkingCopy.ParcelMast.OccupancyCode))
-                {
-                    if (_nextSectType == "BASE")
-                    {
-                        DialogResult result;
-
-                        //result = MessageBox.Show("Commercial Parcel - Do you want Residential Structure ?");
-                        result = (MessageBox.Show("Commercial Parcel - Do you want Residential Structure ?", "Residential Sketch Section Warning",
-                            MessageBoxButtons.YesNo, MessageBoxIcon.Warning));
-
-                        if (result == DialogResult.Yes)
-                        {
-                        }
-                        if (result == DialogResult.No)
-                        {
-                            _nextSectType = string.Empty;
-                            SectionTypesCbox.Focus();
-                        }
-                    }
-
-                    SectionStoriesTxt.Text = ParcelWorkingCopy.SelectSectionByLetter("A").Storeys.ToString("N2");
-                }
-                if (nextSec != "A" && SketchUpCamraSupport.CommercialOccupancies.Contains(ParcelWorkingCopy.ParcelMast.OccupancyCode) && CamraDataEnums.GetEnumStrings(typeof(CamraDataEnums.InvalidCommercialSection)).Contains(_nextSectType.Trim()))
-                {
-                    DialogResult result2;
-
-                    //result = MessageBox.Show("Commercial Parcel - Do you want Residential Structure ?");
-                    result2 = (MessageBox.Show("Commercial Parcel - Invalid Residential Structure Type !", "Commercial Sketch Section Warning",
-                        MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation));
-
-                    if (result2 == DialogResult.OK)
-                    {
-                        _nextSectType = string.Empty;
-                        SectionTypesCbox.Focus();
-                    }
-                    if (result2 == DialogResult.Cancel)
-                    {
-                        _nextSectType = string.Empty;
-                        SectionTypesCbox.Focus();
-                    }
-                }
-
-                SectionStoriesTxt.Focus();
+                _AddType =ValidateSectionSelection();
             }
             if (_AddStory == true && _AddType == true)
             {
                 this.Close();
+            }
+        }
+
+        private bool ValidateSectionSelection()
+        {
+            bool selectionValid = false;
+
+            if (SketchUpCamraSupport.ResidentialOccupancies.Contains(ParcelWorkingCopy.ParcelMast.OccupancyCode))
+            {
+                selectionValid = ValidResidentialSelection();
+            }
+
+            //Commercial
+            else if (SketchUpCamraSupport.CommercialOccupancies.Contains(ParcelWorkingCopy.ParcelMast.OccupancyCode))
+            {
+
+                if (nextSec == "A")
+                    PreventAddingBASEtoCommParcel();
+
+                SectionStoriesTxt.Text = ParcelWorkingCopy.SelectSectionByLetter("A").Storeys.ToString("N2");
+            }
+            else
+
+                if (CamraDataEnums.GetEnumStrings(typeof(CamraDataEnums.InvalidCommercialSection)).Contains(_nextSectType.Trim()))
+            {
+                DialogResult result2;
+
+                //result = MessageBox.Show("Commercial Parcel - Do you want Residential Structure ?");
+                result2 = (MessageBox.Show("Commercial Parcel - Invalid Residential Structure Type !", "Commercial Sketch Section Warning",
+                    MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation));
+
+                if (result2 == DialogResult.OK)
+                {
+                    _nextSectType = string.Empty;
+                    SectionTypesCbox.Focus();
+                }
+                if (result2 == DialogResult.Cancel)
+                {
+                    _nextSectType = string.Empty;
+                    SectionTypesCbox.Focus();
+                }
+            }
+            
+            SectionStoriesTxt.Focus();
+            return selectionValid;
+        }
+
+        private bool ValidResidentialSelection()
+        {
+            bool isValid = false;
+
+            AlertBaseStatusInvalid();
+
+            return isValid;
+        }
+
+        private void PreventAddingBASEtoCommParcel()
+        {
+            if (_nextSectType == "BASE")
+            {
+                DialogResult result;
+                result = (MessageBox.Show("Commercial Parcel - Do you want Residential Structure ?", "Residential Sketch Section Warning",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning));
+
+                if (result == DialogResult.Yes)
+                {
+                }
+                if (result == DialogResult.No)
+                {
+                    _nextSectType = string.Empty;
+                    SectionTypesCbox.Focus();
+                }
+            }
+        }
+
+        private void AlertBaseStatusInvalid()
+        {
+            if (nextSec == "A")
+            {
+                if (_nextSectType != "BASE")
+                {
+                    MessageBox.Show("A - Section must be of type \"BASE\" ", "Base Section Required");
+                    SectionTypesCbox.Focus();
+                }
+
+              
+            }
+        else
+            {
+                if (_nextSectType == "BASE")
+                {
+                    MessageBox.Show(string.Format("Section - \"{0}\" Cannot be \"BASE\"", _nextSectLtr));
+                    _nextSectType = string.Empty;
+                    SectionTypesCbox.SelectedIndex = 0;
+                    SectionTypesCbox.Focus();
+                }
             }
         }
 
@@ -431,17 +396,17 @@ namespace SketchUp
             get; set;
         }
 
-        public static decimal _nextSectStory
-        {
-            get; set;
-        }
-
         public static string _nextSectType
         {
             get; set;
         }
 
         public static decimal _sizeOnly
+        {
+            get; set;
+        }
+
+        public static decimal newSectionStoreys
         {
             get; set;
         }
@@ -469,7 +434,6 @@ namespace SketchUp
         public static bool _isnewSketch = false;
         private bool _AddStory = false;
         private bool _AddType = false;
-        private bool _blankStory = false;
         private bool _checkStory = false;
         private SWallTech.CAMRA_Connection _conn = null;
         private int Card = 0;
@@ -477,5 +441,6 @@ namespace SketchUp
         private int Record = 0;
         private string Section = string.Empty;
         private List<string> sectTypeList = null;
+        private bool storeyTextIsBlank = false;
     }
 }

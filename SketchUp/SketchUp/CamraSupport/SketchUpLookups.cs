@@ -1,16 +1,15 @@
-﻿using SWallTech;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using SWallTech;
 
 namespace SketchUp
 {
     public static class SketchUpLookups
     {
-#region "Public Methods"
+        #region "Public Methods"
 
         public static List<string> ClassCodeList()
         {
@@ -64,6 +63,8 @@ namespace SketchUp
             ClearValues();
             InitializeRatTableCollectionLists(conn);
             GetClassValuesData(db);
+            GetResidentialSections(db);
+            GetCommercialSections(db);
             GetDeckTypes(db);
             GetAllPorchTypes(db);
             GetGarageTypes(db);
@@ -71,26 +72,24 @@ namespace SketchUp
             GetStabFileData(db);
         }
 
-#endregion
+        #endregion "Public Methods"
 
-#region "Private methods"
+        #region "Private methods"
 
         private static void ClearValues()
         {
-
             CarPortTypeCollection = null;
-         
+
             ClassCollection = null;
-         
+
             GarageTypeCollection = null;
-         
+
             OccupancyCollection = null;
-         
+
             OccupancyDescriptionCollection = null;
-         
+
             Rates.ClassValues = null;
             Rates.Rate1Master = null;
-
         }
 
         private static void GetAllPorchTypes(DBAccessManager db)
@@ -98,7 +97,7 @@ namespace SketchUp
             StringBuilder getPor = new StringBuilder();
             getPor.Append(String.Format("select rsecto,rdesc from {0}.{1}rat1 where rid = 'P' and rdesc like '%POR%' ",
                             SketchUpGlobals.LocalLib,
-                            SketchUpGlobals.LocalityPreFix));
+                            SketchUpGlobals.LocalityPrefix));
             getPor.Append(" and rdesc not like '%CAR%' and rdesc not like '%ENCL%' and rdesc not like '%SCR%' ");
             DataSet ds_por = db.RunSelectStatement(getPor.ToString());
 
@@ -116,7 +115,7 @@ namespace SketchUp
             StringBuilder getSPor = new StringBuilder();
             getSPor.Append(String.Format("select rsecto,rdesc from {0}.{1}rat1 where rid = 'P' and rdesc like '%POR%' ",
                             SketchUpGlobals.LocalLib,
-                            SketchUpGlobals.LocalityPreFix));
+                            SketchUpGlobals.LocalityPrefix));
             getSPor.Append(" and rdesc not like '%CAR%' and rdesc not like '%ENCL%' and rdesc like '%SCR%' ");
             DataSet ds_spor = db.RunSelectStatement(getSPor.ToString());
 
@@ -134,7 +133,7 @@ namespace SketchUp
             StringBuilder getEPor = new StringBuilder();
             getEPor.Append(String.Format("select rsecto,rdesc from {0}.{1}rat1 where rid = 'P' and rdesc like '%POR%' ",
                             SketchUpGlobals.LocalLib,
-                            SketchUpGlobals.LocalityPreFix));
+                            SketchUpGlobals.LocalityPrefix));
             getEPor.Append(" and rdesc not like '%CAR%' and rdesc like '%ENCL%' and rdesc not like '%SCR%' ");
             DataSet ds_epor = db.RunSelectStatement(getSPor.ToString());
 
@@ -151,23 +150,13 @@ namespace SketchUp
 
         private static void GetBuildingSectionTypesAndRates(DBAccessManager db)
         {
-            DataSet ds_residentialSection = db.RunSelectStatement(String.Format(
+            
+        }
 
-            "select rsecto,rdesc,rrpsf from {0}.{1}rat1 where rid = 'P' ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
-            foreach (DataRow row in ds_residentialSection.Tables[0].Rows)
-            {
-                string residentialSectionType = Convert.ToString(row["rsecto"].ToString());
-                var residentialBuildingSection = new ResidentialSections()
-                {
-                    _resSectionType = row["rsecto"].ToString().Trim(),
-                    _resSectionDescription = row["rdesc"].ToString().Trim(),
-                    _resSectionRate = Convert.ToDecimal(row["rrpsf"].ToString()),
-                };
-                ResidentialSectionTypeCollection.Add(residentialBuildingSection);
-            }
-
+        private static void GetCommercialSections(DBAccessManager db)
+        {
             DataSet ds_commercialSection = db.RunSelectStatement(String.Format(
-                "select rsecto,rdesc,rclar,rclbr,rclcr,rcldr,rclmr from {0}.{1}rat1 where rid = 'C' and rrpsf = 0 ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
+                "select rsecto,rdesc,rclar,rclbr,rclcr,rcldr,rclmr from {0}.{1}rat1 where rid = 'C' and rrpsf = 0 ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPrefix));
             foreach (DataRow row in ds_commercialSection.Tables[0].Rows)
             {
                 string commercialSectionType = Convert.ToString(row["rsecto"].ToString().Trim());
@@ -183,8 +172,51 @@ namespace SketchUp
                 };
                 CommercialSectionTypeCollection.Add(commSectionType);
             }
+        }
+        public static List<SectionListItem> SectionsByOccupancy(CamraDataEnums.OccupancyType occupancyCode)
+        {
+            List<SectionListItem> sectList=new List<SectionListItem>();
+            switch (occupancyCode)
+            {
+                case CamraDataEnums.OccupancyType.CodeNotFound:
+                    break;
+                case CamraDataEnums.OccupancyType.Commercial:
+                    break;
+                case CamraDataEnums.OccupancyType.Residential:
+                    break;
+                case CamraDataEnums.OccupancyType.TaxExempt:
+                    break;
+                case CamraDataEnums.OccupancyType.Vacant:
+                    break;
+                case CamraDataEnums.OccupancyType.Other:
+                    break;
+                default:
+                    break;
+            }
+            foreach (ResidentialSections s in ResidentialSectionTypeCollection)
+            {
+                SectionListItem sli= new SectionListItem { Code = s._resSectionType, Description = s._resSectionDescription };
+                sectList.Add(sli);
+            }
+            return sectList;
+        }
+        private static SectionListItem[] commercialSections;
+        private static void GetResidentialSections(DBAccessManager db)
+        {
+            DataSet ds_residentialSection = db.RunSelectStatement(String.Format(
 
-          
+            "select rsecto,rdesc,rrpsf from {0}.{1}rat1 where rid = 'P' ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPrefix));
+            foreach (DataRow row in ds_residentialSection.Tables[0].Rows)
+            {
+                string residentialSectionType = Convert.ToString(row["rsecto"].ToString());
+                var residentialBuildingSection = new ResidentialSections()
+                {
+                    _resSectionType = row["rsecto"].ToString().Trim(),
+                    _resSectionDescription = row["rdesc"].ToString().Trim(),
+                    _resSectionRate = Convert.ToDecimal(row["rrpsf"].ToString()),
+                };
+                ResidentialSectionTypeCollection.Add(residentialBuildingSection);
+            }
         }
 
         private static void GetCarportTypes(DBAccessManager db)
@@ -192,7 +224,7 @@ namespace SketchUp
             StringBuilder getcp = new StringBuilder();
             getcp.Append(String.Format("select rsecto,rdesc from {0}.{1}rat1 where rid = 'P' and rdesc like '%CAR%' and rdesc not like '%ENC%'  ",
                             SketchUpGlobals.LocalLib,
-                            SketchUpGlobals.LocalityPreFix));
+                            SketchUpGlobals.LocalityPrefix));
 
             DataSet ds_cp = db.RunSelectStatement(getcp.ToString());
 
@@ -209,7 +241,7 @@ namespace SketchUp
 
         private static void GetClassValuesData(DBAccessManager db)
         {
-            string sqlRat2 = string.Format("select rdca,rdcb,rdcc,rdcd,rdce,rdcm from {0}.{1}rat2 where rsect2 = '0001'", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix);
+            string sqlRat2 = string.Format("select rdca,rdcb,rdcc,rdcd,rdce,rdcm from {0}.{1}rat2 where rsect2 = '0001'", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPrefix);
             DataSet ds = db.RunSelectStatement(sqlRat2.ToString());
 
             if (ds.Tables[0].Rows.Count > 0)
@@ -227,7 +259,7 @@ namespace SketchUp
         private static void GetDeckTypes(DBAccessManager db)
         {
             string getDeckTypesSql = string.Format("select rsecto,rdesc from {0}.{1}rat1 where rid = 'P' and rdesc like '%DECK%' ", SketchUpGlobals.LocalLib,
-                             SketchUpGlobals.LocalityPreFix);
+                             SketchUpGlobals.LocalityPrefix);
             DataSet ds_deck = db.RunSelectStatement(getDeckTypesSql);
 
             if (ds_deck.Tables[0].Rows.Count > 0)
@@ -246,7 +278,7 @@ namespace SketchUp
             StringBuilder getgar = new StringBuilder();
             getgar.Append(String.Format("select rsecto,rdesc from {0}.{1}rat1 where rid = 'P' and rdesc like '%GAR%' ",
                             SketchUpGlobals.LocalLib,
-                            SketchUpGlobals.LocalityPreFix));
+                            SketchUpGlobals.LocalityPrefix));
             getgar.Append("and rdesc not like '%ENC%' and rdesc not like '%COM%' and rdesc not like '%APT%' and rdesc not like '%LIV%' ");
 
             DataSet ds_gar = db.RunSelectStatement(getgar.ToString());
@@ -266,7 +298,7 @@ namespace SketchUp
         {
             // Modified for location-specific STAB and DESC files -- JMM 04-13-2016
             DataSet ds_stab = db.RunSelectStatement(String.Format(
-                "SELECT TTID,TTELEM,TDESCP,TDESC,TLOC FROM {0}.{1}STAB WHERE TTID IN  ('BAS','CAR','CLS','GAR','OCC') Order by TTID, TTELEM ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
+                "SELECT TTID,TTELEM,TDESCP,TDESC,TLOC FROM {0}.{1}STAB WHERE TTID IN  ('BAS','CAR','CLS','GAR','OCC') Order by TTID, TTELEM ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPrefix));
             List<StabType> allStabTypes = new List<StabType>();
             foreach (DataRow row in ds_stab.Tables[0].Rows)
             {
@@ -311,7 +343,6 @@ namespace SketchUp
             ScrnPorchTypes = new List<string>();
 
             Rates.ClassValues = new SortedDictionary<string, decimal>();
-
         }
 
         private static void ParseRatTableDataToLists(List<StabType> allStabTypes)
@@ -326,10 +357,9 @@ namespace SketchUp
             GarageTypeCollection.AddRange(GAR);
             BasementTypeCollection.AddRange(BAS);
             OccupancyCollection.AddRange(OCC);
-
         }
 
-#endregion
+        #endregion "Private methods"
 
         public static List<string> AuxAreaTypes
         {
@@ -339,6 +369,7 @@ namespace SketchUp
 
                 return auxAreaTypes;
             }
+
             set
             {
                 auxAreaTypes = value;
@@ -351,6 +382,7 @@ namespace SketchUp
             {
                 return basementTypeCollection;
             }
+
             set
             {
                 basementTypeCollection = value;
@@ -363,6 +395,7 @@ namespace SketchUp
             {
                 return carPortTypeCollection;
             }
+
             set
             {
                 carPortTypeCollection = value;
@@ -375,6 +408,7 @@ namespace SketchUp
             {
                 return carPortTypes;
             }
+
             set
             {
                 carPortTypes = value;
@@ -387,6 +421,7 @@ namespace SketchUp
             {
                 return characteristicTypeCollection;
             }
+
             set
             {
                 characteristicTypeCollection = value;
@@ -399,6 +434,7 @@ namespace SketchUp
             {
                 return classCollection;
             }
+
             set
             {
                 classCollection = value;
@@ -412,6 +448,7 @@ namespace SketchUp
                 commercialOccupanyCodes = CamraDataEnums.GetEnumValues(typeof(CamraDataEnums.CommercialOccupancyCodes));
                 return commercialOccupanyCodes;
             }
+
             set
             {
                 commercialOccupanyCodes = value;
@@ -424,6 +461,7 @@ namespace SketchUp
             {
                 return commercialSectionTypeCollection;
             }
+
             set
             {
                 commercialSectionTypeCollection = value;
@@ -436,6 +474,7 @@ namespace SketchUp
             {
                 return deckTypes;
             }
+
             set
             {
                 deckTypes = value;
@@ -448,6 +487,7 @@ namespace SketchUp
             {
                 return enclPorchTypes;
             }
+
             set
             {
                 enclPorchTypes = value;
@@ -460,6 +500,7 @@ namespace SketchUp
             {
                 return garageTypeCollection;
             }
+
             set
             {
                 garageTypeCollection = value;
@@ -472,6 +513,7 @@ namespace SketchUp
             {
                 return garageTypes;
             }
+
             set
             {
                 garageTypes = value;
@@ -484,6 +526,7 @@ namespace SketchUp
             {
                 return occupancyCollection;
             }
+
             set
             {
                 occupancyCollection = value;
@@ -496,6 +539,7 @@ namespace SketchUp
             {
                 return occupancyDescriptionCollection;
             }
+
             set
             {
                 occupancyDescriptionCollection = value;
@@ -508,9 +552,23 @@ namespace SketchUp
             {
                 return porchTypes;
             }
+
             set
             {
                 porchTypes = value;
+            }
+        }
+
+        public static List<StabType> Rat1AllTypes
+        {
+            get
+            {
+                return rat1AllTypes;
+            }
+
+            set
+            {
+                rat1AllTypes = value;
             }
         }
 
@@ -521,6 +579,7 @@ namespace SketchUp
                 residentialOccupancyCodes = CamraDataEnums.GetEnumValues(typeof(CamraDataEnums.ResidentialOccupancyCodes));
                 return residentialOccupancyCodes;
             }
+
             set
             {
                 residentialOccupancyCodes = value;
@@ -533,6 +592,7 @@ namespace SketchUp
             {
                 return residentialSectionTypeCollection;
             }
+
             set
             {
                 residentialSectionTypeCollection = value;
@@ -552,18 +612,7 @@ namespace SketchUp
             }
         }
 
-        public static List<StabType> Rat1AllTypes
-        {
-            get
-            {
-                return rat1AllTypes;
-            }
-
-            set
-            {
-                rat1AllTypes = value;
-            }
-        }
+      
 
         private static List<string> auxAreaTypes;
         private static List<StabType> basementTypeCollection;
@@ -579,10 +628,10 @@ namespace SketchUp
         private static List<string> garageTypes;
         private static List<StabType> occupancyCollection;
         private static List<OccupancyDescription> occupancyDescriptionCollection;
-        private static List<string> porchTypes; 
+        private static List<string> porchTypes;
+        private static List<StabType> rat1AllTypes;
         private static List<int> residentialOccupancyCodes;
         private static List<ResidentialSections> residentialSectionTypeCollection;
         private static List<string> scrnPorchTypes;
-        private static List<StabType> rat1AllTypes;
     }
 }

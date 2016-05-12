@@ -57,7 +57,7 @@ namespace SketchUp
             StringBuilder adjLine = new StringBuilder();
             adjLine.Append(String.Format("update {0}.{1}line set jldirect = '{2}',jlxlen = {3},jlylen = {4},jllinelen = {5}, ",
                            SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix,
+                          SketchUpGlobals.LocalityPrefix,
                             CurrentAttDir,
                             newDistX,
                             newDistY,
@@ -106,7 +106,7 @@ namespace SketchUp
             getSpLine.Append("jlpt1x,jlpt1y,jlpt2x,jlpt2Y,jlattach ");
             getSpLine.Append(String.Format("from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' ",
                            SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix,
+                          SketchUpGlobals.LocalityPrefix,
 
                            //SketchUpGlobals.FcLib,
                            //SketchUpGlobals.FcLocalityPrefix,
@@ -2056,7 +2056,7 @@ namespace SketchUp
             sectable.Append("select jlrecord,jldwell,jlsect,jlline#,jldirect,jlxlen,jlylen,jllinelen,jlangle,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach ");
             sectable.Append(String.Format(" from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' ",
                            SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix,
+                          SketchUpGlobals.LocalityPrefix,
 
                             //SketchUpGlobals.FcLib,
                             //SketchUpGlobals.FcLocalityPrefix,
@@ -2100,7 +2100,7 @@ namespace SketchUp
 
             if (CurAttDir.Trim() != offsetDir.Trim())
             {
-                string getNCurDir = string.Format("select jldirect from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' and jlline#= {5} ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix, SketchUpGlobals.Record, SketchUpGlobals.Card, _savedAttSection, AttSpLineNo);
+                string getNCurDir = string.Format("select jldirect from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' and jlline#= {5} ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPrefix, SketchUpGlobals.Record, SketchUpGlobals.Card, _savedAttSection, AttSpLineNo);
 
                 CurrentAttDir = dbConn.DBConnection.ExecuteScalar(getNCurDir.ToString()).ToString();
             }
@@ -2116,7 +2116,7 @@ namespace SketchUp
                 StringBuilder nxtAttDir = new StringBuilder();
                 nxtAttDir.Append(String.Format("select jldirect from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' and jlline# = {5} ",
                                SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix,
+                          SketchUpGlobals.LocalityPrefix,
 
                                 //SketchUpGlobals.FcLib,
                                 //SketchUpGlobals.FcLocalityPrefix,
@@ -2136,7 +2136,7 @@ namespace SketchUp
                 StringBuilder getoriglen = new StringBuilder();
                 getoriglen.Append(String.Format("select jllinelen,jlline# from {0}.{1}line where jlrecord = {2} and jldwell = {3}  and jlsect = '{4}' and jlline# = {5}",
                           SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix,
+                          SketchUpGlobals.LocalityPrefix,
 
                             //SketchUpGlobals.FcLib,
                             //SketchUpGlobals.FcLocalityPrefix,
@@ -2174,7 +2174,7 @@ namespace SketchUp
             StringBuilder getOrigEnds = new StringBuilder();
             getOrigEnds.Append(String.Format("select jldirect,jlsect,jlline#,jlxlen,jlylen,jllinelen,jlpt1x,jlpt1y,jlpt2x,jlpt2y from {0}.{1}line ",
                           SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix
+                          SketchUpGlobals.LocalityPrefix
 
                             //SketchUpGlobals.FcLib,
                             //SketchUpGlobals.FcLocalityPrefix
@@ -2225,7 +2225,7 @@ namespace SketchUp
                 decimal ttue = splitLineDist;
                 StringBuilder incrLine = new StringBuilder();
                 incrLine.Append(String.Format("update {0}.{1}line set jlline# = jlline#+1 ",
-                          SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
+                          SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPrefix));
                 incrLine.Append(String.Format("where jlrecord = {0} and jldwell = {1} and jlsect = '{2}' and jlline# > {3} ", SketchUpGlobals.Record, SketchUpGlobals.Card, CurrentSecLtr, _savedAttLine));
 
                 //Ask Dave why this is not excecuting. Can this whole section be removed?
@@ -2247,7 +2247,7 @@ namespace SketchUp
                 {
                     StringBuilder instLine = new StringBuilder();
                     instLine.Append(String.Format("insert into {0}.{1}line ",
-                                  SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
+                                  SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPrefix));
                     instLine.Append(String.Format(" values ( {0},{1},'{2}',{3},'{4}',{5},{6},{7},{8},{9},{10},{11},{12},'{13}' ) ",
                                         Convert.ToInt32(SectionTable.Rows[i]["Record"].ToString()),
                                         Convert.ToInt32(SectionTable.Rows[i]["Card"].ToString()),
@@ -2326,7 +2326,7 @@ namespace SketchUp
                 StringBuilder fixOrigLine = new StringBuilder();
                 fixOrigLine.Append(String.Format("update {0}.{1}line ",
                           SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix
+                          SketchUpGlobals.LocalityPrefix
 
                             //SketchUpGlobals.FcLib,
                             //SketchUpGlobals.FcLocalityPrefix
@@ -2587,7 +2587,7 @@ namespace SketchUp
             StringBuilder sumArea = new StringBuilder();
             sumArea.Append(String.Format("select sum(jssqft) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ",
                       SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix,
+                          SketchUpGlobals.LocalityPrefix,
                        SketchUpGlobals.Record,
                        SketchUpGlobals.Card));
 
@@ -2602,7 +2602,7 @@ namespace SketchUp
             StringBuilder getStory = new StringBuilder();
             getStory.Append(String.Format("select jsstory from {0}.{1}section where jsrecord = {2} and jsdwell = {3} and jssect = 'A'  ",
                        SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix,
+                          SketchUpGlobals.LocalityPrefix,
                         SketchUpGlobals.Record,
                         SketchUpGlobals.Card));
 
@@ -2615,7 +2615,8 @@ namespace SketchUp
             }
 
             DataSet ds_master = UpdateMasterArea(summedArea);
-             //TODO: Refactor into SketchManager
+
+            //TODO: Refactor into SketchManager
             //if (_deleteMaster == false)
             //{
             //    InsertMasterRecord(summedArea, baseStory, ds_master);
@@ -3011,7 +3012,7 @@ namespace SketchUp
                 StringBuilder mxline = new StringBuilder();
                 mxline.Append(String.Format("select max(jlline#) from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' ",
                               SketchUpGlobals.LocalLib,
-                              SketchUpGlobals.LocalityPreFix,
+                              SketchUpGlobals.LocalityPrefix,
                                SketchUpGlobals.Record,
                                SketchUpGlobals.Card,
                                    NextSectLtr));
@@ -3055,7 +3056,7 @@ namespace SketchUp
                     StringBuilder addSect = new StringBuilder();
                     addSect.Append(String.Format("insert into {0}.{1}line (jlrecord,jldwell,jlsect,jlline#,jldirect,jlxlen,jlylen, jllinelen,jlangle,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach) ",
                           SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix));
+                          SketchUpGlobals.LocalityPrefix));
                     addSect.Append(String.Format(" values ( {0},{1},'{2}',{3},'{4}',{5},{6},{7},{8},{9},{10},{11},{12},'{13}' ) ",
                         SketchUpGlobals.Record, //0
                         SketchUpGlobals.Card, // 1
@@ -3374,7 +3375,7 @@ namespace SketchUp
                 StringBuilder mxline2 = new StringBuilder();
                 mxline2.Append(String.Format("select max(jlline#) from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' ",
                               SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix,
+                          SketchUpGlobals.LocalityPrefix,
 
                                 //SketchUpGlobals.FcLib,
                                 //SketchUpGlobals.FcLocalityPrefix,
@@ -3433,7 +3434,7 @@ namespace SketchUp
                     StringBuilder addSectAng = new StringBuilder();
                     addSectAng.Append(String.Format("insert into {0}.{1}line ( jlrecord,jldwell,jlsect,jlline#,jldirect,jlxlen,jlylen,jllinelen,jlangle,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach) ",
                                  SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix
+                          SketchUpGlobals.LocalityPrefix
 
                                 //SketchUpGlobals.FcLib,
                                 //SketchUpGlobals.FcLocalityPrefix
@@ -3550,7 +3551,7 @@ namespace SketchUp
             getLine.Append("select jlpt1x,jlpt1y,jlpt2x,jlpt2Y ");
             getLine.Append(String.Format("from {0}.{1}line where jlrecord = {2} and jldwell = {3} ",
                       SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix,
+                          SketchUpGlobals.LocalityPrefix,
 
                         //SketchUpGlobals.FcLib,
                         //SketchUpGlobals.FcLocalityPrefix,
@@ -3622,7 +3623,7 @@ namespace SketchUp
 
         private void changeSectionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-                      string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
+            string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
 
 #if DEBUG
             MessageBox.Show(message);
@@ -3639,7 +3640,7 @@ namespace SketchUp
                 StringBuilder delXdir = new StringBuilder();
                 delXdir.Append(String.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jldirect = 'X'",
                                SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix,
+                          SketchUpGlobals.LocalityPrefix,
 
                                 //SketchUpGlobals.FcLib,
                                 //SketchUpGlobals.FcLocalityPrefix,
@@ -3968,7 +3969,7 @@ namespace SketchUp
 
         private int CountLines(string thisSection)
         {
-            string lineCountSql = string.Format("select count(*) from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix, SketchUpGlobals.Record, SketchUpGlobals.Card, thisSection);
+            string lineCountSql = string.Format("select count(*) from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPrefix, SketchUpGlobals.Record, SketchUpGlobals.Card, thisSection);
 
             int lineCount = Convert.ToInt32(dbConn.DBConnection.ExecuteScalar(lineCountSql.ToString()));
             return lineCount;
@@ -3978,7 +3979,7 @@ namespace SketchUp
         {
             try
             {
-                string seccnt = string.Format("select count(*) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix, SketchUpGlobals.Record, SketchUpGlobals.Card);
+                string seccnt = string.Format("select count(*) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPrefix, SketchUpGlobals.Record, SketchUpGlobals.Card);
 
                 int secItemCnt = 0;
                 Int32.TryParse(dbConn.DBConnection.ExecuteScalar(seccnt).ToString(), out secItemCnt);
@@ -4121,7 +4122,7 @@ namespace SketchUp
             StringBuilder deletelinesect = new StringBuilder();
             deletelinesect.Append(String.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' ",
                            SketchUpGlobals.LocalLib,
-                           SketchUpGlobals.LocalityPreFix,
+                           SketchUpGlobals.LocalityPrefix,
 
                             //SketchUpGlobals.FcLib,
                             //SketchUpGlobals.FcLocalityPrefix,
@@ -4343,7 +4344,7 @@ namespace SketchUp
             }
             if (labelPoint != startPoint)//TODO: Complete
 
-                                         //Ignore if I haven't gotten to the placement yet
+            //Ignore if I haven't gotten to the placement yet
             {
                 g.DrawLine(pen, startPoint, endPoint);
                 g.DrawString(distance.ToString(), font, brush, labelPoint);
@@ -4374,6 +4375,7 @@ namespace SketchUp
         private void ExpandoSketch_FormClosing(object sender, FormClosingEventArgs e)
         {
             ClearXLinesFromSections();
+
             //All database updates will happen with an explicit save command, not as part of another operation. JMM 5-9-2016
             //AddMaster();
         }
@@ -4558,7 +4560,7 @@ namespace SketchUp
         private void FixOrigLine()
         {
             StringBuilder fixOrigLine = new StringBuilder();
-            fixOrigLine.Append(String.Format("update {0}.{1}line ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
+            fixOrigLine.Append(String.Format("update {0}.{1}line ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPrefix));
             fixOrigLine.Append(String.Format("set jlxlen = {0},jlylen = {1}, jllinelen = {2}, jlpt2x = {3}, jlpt2y = {4} ",
                                     adjNewSecX,
                                     adjNewSecY,
@@ -4580,7 +4582,7 @@ namespace SketchUp
             sectable.Append("select jlrecord,jldwell,jlsect,jlline#,jldirect,jlxlen,jlylen,jllinelen,jlangle,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach ");
             sectable.Append(String.Format(" from {0}.{1}line where jlrecord = {2} and jldwell = {3}  ",
                           SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix,
+                          SketchUpGlobals.LocalityPrefix,
 
                             //SketchUpGlobals.FcLib,
                             //SketchUpGlobals.FcLocalityPrefix,
@@ -4664,7 +4666,7 @@ namespace SketchUp
                 StringBuilder flipit = new StringBuilder();
                 flipit.Append(String.Format("update {0}.{1}line set jldirect = '{2}', jlpt1x = {3}, jlpt2x = {4} ",
                                SketchUpGlobals.LocalLib,
-                               SketchUpGlobals.LocalityPreFix,
+                               SketchUpGlobals.LocalityPrefix,
 
                                 //SketchUpGlobals.FcLib,
                                 //SketchUpGlobals.FcLocalityPrefix,
@@ -4688,7 +4690,7 @@ namespace SketchUp
             sectable.Append("select jlrecord,jldwell,jlsect,jlline#,jldirect,jlxlen,jlylen,jllinelen,jlangle,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach ");
             sectable.Append(String.Format(" from {0}.{1}line where jlrecord = {2} and jldwell = {3}  ",
                           SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix,
+                          SketchUpGlobals.LocalityPrefix,
 
                             //SketchUpGlobals.FcLib,
                             //SketchUpGlobals.FcLocalityPrefix,
@@ -4773,7 +4775,7 @@ namespace SketchUp
                 StringBuilder flipitFB = new StringBuilder();
                 flipitFB.Append(String.Format("update {0}.{1}line set jldirect = '{2}', jlpt1y = {3}, jlpt2y = {4} ",
                                    SketchUpGlobals.LocalLib,
-                                   SketchUpGlobals.LocalityPreFix,
+                                   SketchUpGlobals.LocalityPrefix,
 
                                      //SketchUpGlobals.FcLib,
                                      //SketchUpGlobals.FcLocalityPrefix,
@@ -4806,7 +4808,7 @@ namespace SketchUp
         private DataSet GetLinesData(int crrec, int crcard)
         {
             DataSet lines;
-            string getLine = string.Format("select jlrecord,jldwell,jlsect,jlline#,jldirect,jlxlen,jlylen,jllinelen,jlangle, jlpt1x,jlpt1y,jlpt2x,jlpt2Y,jlattach from {0}.{1}line where jlrecord = {2} and jldwell = {3} ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix, crrec, crcard);
+            string getLine = string.Format("select jlrecord,jldwell,jlsect,jlline#,jldirect,jlxlen,jlylen,jllinelen,jlangle, jlpt1x,jlpt1y,jlpt2x,jlpt2Y,jlattach from {0}.{1}line where jlrecord = {2} and jldwell = {3} ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPrefix, crrec, crcard);
 
             lines = dbConn.DBConnection.RunSelectStatement(getLine);
             return lines;
@@ -4820,7 +4822,7 @@ namespace SketchUp
             getLine.Append("jlpt1x,jlpt1y,jlpt2x,jlpt2Y,jlattach ");
             getLine.Append(String.Format("from {0}.{1}line where jlrecord = {2} and jldwell = {3} ",
                        SketchUpGlobals.LocalLib,
-                       SketchUpGlobals.LocalityPreFix,
+                       SketchUpGlobals.LocalityPrefix,
 
                         //SketchUpGlobals.FcLib,
                         //SketchUpGlobals.FcLocalityPrefix,
@@ -4837,7 +4839,7 @@ namespace SketchUp
             StringBuilder checkSect = new StringBuilder();
             checkSect.Append(String.Format("select count(*) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} and jssect = '{4}' ",
                            SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix,
+                          SketchUpGlobals.LocalityPrefix,
 
                             //SketchUpGlobals.FcLib,
                             //SketchUpGlobals.FcLocalityPrefix,
@@ -4865,7 +4867,7 @@ namespace SketchUp
             {
                 NextSectLtr = SelectSectionTypeDialog._nextSectLtr;
                 _nextSectType = SelectSectionTypeDialog._nextSectType;
-                _nextStoryHeight = SelectSectionTypeDialog._nextSectStory;
+                _nextStoryHeight = SelectSectionTypeDialog.newSectionStoreys;
                 _nextLineCount = SelectSectionTypeDialog._nextLineCount;
                 _hasNewSketch = (NextSectLtr == "A");
 
@@ -5177,7 +5179,7 @@ namespace SketchUp
         {
             StringBuilder insertLine = new StringBuilder();
             insertLine.Append(String.Format("insert into {0}.{1}line (jlrecord,jldwell,jlsect,jlline#,jldirect,jlxlen,jlylen,jllinelen, ",
-                      SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix));
+                      SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPrefix));
             insertLine.Append("jlangle,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach ) values ( ");
             insertLine.Append(String.Format(" {0},{1},'{2}',{3},'{4}',{5},{6},{7},{8},{9},{10},{11},{12},'{13}' )", SketchUpGlobals.Record, SketchUpGlobals.Card, CurrentSecLtr,
                 mylineNo,
@@ -5204,7 +5206,7 @@ namespace SketchUp
                 StringBuilder insMaster = new StringBuilder();
                 insMaster.Append(String.Format("insert into {0}.{1}master (jmrecord,jmdwell,jmsketch,jmstory,jmstoryex,jmscale,jmtotsqft,jmesketch) ",
                               SketchUpGlobals.LocalLib,
-                               SketchUpGlobals.LocalityPreFix
+                               SketchUpGlobals.LocalityPrefix
 
                                 //SketchUpGlobals.FcLib,
                                 //SketchUpGlobals.FcLocalityPrefix
@@ -5463,7 +5465,7 @@ namespace SketchUp
             StringBuilder lineCntx = new StringBuilder();
             lineCntx.Append(String.Format("select max(jlline#) from {0}.{1}line ",
                        SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix
+                          SketchUpGlobals.LocalityPrefix
 
                         //SketchUpGlobals.FcLib,
                         //SketchUpGlobals.FcLocalityPrefix
@@ -5586,7 +5588,7 @@ namespace SketchUp
             StringBuilder orgLen = new StringBuilder();
             orgLen.Append(String.Format("select jllinelen from {0}.{1}line where jlrecord = {2} and jldwell = {3} ",
                       SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix,
+                          SketchUpGlobals.LocalityPrefix,
 
                         //SketchUpGlobals.FcLib,
                         //SketchUpGlobals.FcLocalityPrefix,
@@ -6286,7 +6288,7 @@ namespace SketchUp
         //                throw;
         //            }
         //        }
-        private void ShowWorkingCopySketch(string sketchFolder, string sketchRecord, string sketchCard,bool hasSketch, bool hasNewSketch)
+        private void ShowWorkingCopySketch(string sketchFolder, string sketchRecord, string sketchCard, bool hasSketch, bool hasNewSketch)
         {
             try
             {
@@ -6303,7 +6305,7 @@ namespace SketchUp
                 {
                     SMSketcher sketcher = new SMSketcher(LocalParcelCopy, ExpSketchPBox);
                     sketcher.RenderSketch();
-                   
+
                     MainImage = sketcher.SketchImage;
                     _currentScale = (float)LocalParcelCopy.Scale;
 
@@ -6372,7 +6374,7 @@ namespace SketchUp
             StringBuilder addFix = new StringBuilder();
             addFix.Append(String.Format("select jlsect from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlline# = 1 ",
                       SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix,
+                          SketchUpGlobals.LocalityPrefix,
 
                         //SketchUpGlobals.FcLib,
                         //SketchUpGlobals.FcLocalityPrefix,
@@ -6399,7 +6401,7 @@ namespace SketchUp
                     chkLen.Append("when jldirect in ( 'NE','SE','NW','SW') then sqrt(abs(jlpt1y-jlpt2y)*abs(jlpt1y-jlpt2y)+abs(jlpt1x-jlpt2x)*abs(jlpt1x-jlpt2x)) ");
                     chkLen.Append(String.Format("end as LineLen, abs(jlpt1x-jlpt2x) as Xlen, abs(jlpt1y-jlpt2y) as Ylen from {0}.{1}line ",
                                   SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPreFix
+                          SketchUpGlobals.LocalityPrefix
 
                                     //SketchUpGlobals.FcLib,
                                     //SketchUpGlobals.FcLocalityPrefix
@@ -6417,7 +6419,7 @@ namespace SketchUp
                             StringBuilder updLine = new StringBuilder();
                             updLine.Append(String.Format("update {0}.{1}line set jlxlen = {2},jlylen = {3},jllinelen = {4} ",
                                            SketchUpGlobals.LocalLib,
-                                           SketchUpGlobals.LocalityPreFix,
+                                           SketchUpGlobals.LocalityPrefix,
 
                                             //SketchUpGlobals.FcLib,
                                             //SketchUpGlobals.FcLocalityPrefix,
@@ -6550,7 +6552,7 @@ namespace SketchUp
             StringBuilder zerocp = new StringBuilder();
             zerocp.Append(String.Format("update {0}.{1}mast set mcarpt = 67, mcar#c = 0 where mrecno = {2} and mdwell = {3} ",
                                     SketchUpGlobals.LocalLib,
-                                    SketchUpGlobals.LocalityPreFix,
+                                    SketchUpGlobals.LocalityPrefix,
                                     SketchUpGlobals.Record,
                                     SketchUpGlobals.Card));
 
@@ -6564,19 +6566,18 @@ namespace SketchUp
             StringBuilder zeroGarageSql = new StringBuilder();
             zeroGarageSql.Append(String.Format("update {0}.{1}mast set mgart = 63, mgar#c = 0,mgart2 = 0,mgar#2 = 0 where mrecno = {2} and mdwell = {3} ",
                                     SketchUpGlobals.LocalLib,
-                                    SketchUpGlobals.LocalityPreFix,
+                                    SketchUpGlobals.LocalityPrefix,
                                     SketchUpGlobals.Record,
                                     SketchUpGlobals.Card));
 
             dbConn.DBConnection.ExecuteNonSelectStatement(zeroGarageSql.ToString());
         }
 
-      
         private DataSet UpdateMasterArea(decimal summedArea)
         {
             string checkMaster = string.Format("select * from {0}.{1}master where jmrecord = {2} and jmdwell = {3} ",
                 SketchUpGlobals.LocalLib,
-                SketchUpGlobals.LocalityPreFix,
+                SketchUpGlobals.LocalityPrefix,
                 SketchUpGlobals.Record,
                 SketchUpGlobals.Card);
 
@@ -6586,7 +6587,7 @@ namespace SketchUp
             {
                 string updateMasterSql = string.Format("update {0}.{1}master set jmtotsqft = {2} where jmrecord = {3} and jmdwell = {4} ",
                                SketchUpGlobals.LocalLib,
-                               SketchUpGlobals.LocalityPreFix,
+                               SketchUpGlobals.LocalityPrefix,
                                summedArea,
                                SketchUpGlobals.Record,
                                SketchUpGlobals.Card);
