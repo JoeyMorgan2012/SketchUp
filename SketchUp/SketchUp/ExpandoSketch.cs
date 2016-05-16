@@ -36,7 +36,7 @@ namespace SketchUp
                 LocalParcelCopy.SnapShotIndex++;
                 AddParcelToSnapshots(LocalParcelCopy);
             }
-
+            SketchingState = SketchDrawingState.SketchLoaded;
             ShowWorkingCopySketch(sketchFolder, sketchRecord.ToString(), sketchCard.ToString(), hasSketch, hasNewSketch);
         }
 
@@ -2646,9 +2646,7 @@ namespace SketchUp
         private void AddSectionBtn_Click(object sender, EventArgs e)
         {
             GetSectionTypeInfo();
-            AddNewPoint();
             _deleteMaster = false;
-
             BeginSectionBtn.BackColor = Color.Orange;
             BeginSectionBtn.Text = "Begin";
 
@@ -4861,16 +4859,16 @@ namespace SketchUp
             SelectSectionTypeDialog sectionTypeForm = new SelectSectionTypeDialog(LocalParcelCopy.ParcelMast, _addSection, lineCnt, IsNewSketch);
 
             sectionTypeForm.ShowDialog(this);
+            if (sectionTypeForm.SectionWasAdded)
 
-            //Ensure they did not just cancel out by checking that there is a new version of the parcel
-            if (LocalParcelCopy.LastSectionLetter == nextSectionLetter)
             {
-                NextSectLtr = SelectSectionTypeDialog._nextSectLtr;
+                LocalParcelCopy = SketchUpGlobals.ParcelWorkingCopy;
+                NextSectLtr = LocalParcelCopy.NextSectionLetter;
                 _nextSectType = SelectSectionTypeDialog._nextSectType;
                 _nextStoryHeight = SelectSectionTypeDialog.newSectionStoreys;
                 _nextLineCount = SelectSectionTypeDialog._nextLineCount;
                 _hasNewSketch = (NextSectLtr == "A");
-
+                
                 AddSectionContextMenu.Enabled = true;
                 jumpToolStripMenuItem.Enabled = true;
                 SketchingState = SketchDrawingState.SectionAdded;
@@ -4883,6 +4881,13 @@ namespace SketchUp
                 {
                 }
             }
+            else
+            {
+                AddSectionContextMenu.Enabled = false;
+                jumpToolStripMenuItem.Enabled = false;
+                SketchingState = SketchDrawingState.SketchLoaded;
+            }
+        
         }
 
         private void GetStartCorner()

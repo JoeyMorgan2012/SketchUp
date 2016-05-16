@@ -181,49 +181,49 @@ namespace SketchUp
                 case CamraDataEnums.OccupancyType.Commercial:
                 case CamraDataEnums.OccupancyType.TaxExempt:
       
-                    foreach (CommercialSections cs in CommercialSectionTypeCollection)
+                    foreach (CommercialSections cs in CommercialSectionTypeCollection.OrderBy(s=>s._commSectionDescription))
                     {
-                        sectList.Add(new ListOrComboBoxItem { Code = cs._commSectionType, Description = cs._commSectionDescription });
+                        sectList.Add(new ListOrComboBoxItem { Code = cs._commSectionType, Description = string.Format("{0} - {1}",cs._commSectionType,cs._commSectionDescription )});
                     }
                     List<ResidentialSections> commOk = (from rs in ResidentialSectionTypeCollection where !CamraDataEnums.GetEnumStrings(typeof(CamraDataEnums.InvalidCommercialSection)).Contains(rs._resSectionType) select rs).ToList();
-                    foreach (ResidentialSections rs in commOk)
+                    foreach (ResidentialSections rs in commOk.OrderBy(c=>c._resSectionDescription))
                     {
-                        sectList.Add(new ListOrComboBoxItem { Code = rs._resSectionType, Description = rs._resSectionDescription });
+                        sectList.Add(new ListOrComboBoxItem { Code = rs._resSectionType, Description = string.Format("{0} - {1}",rs._resSectionType,rs._resSectionDescription) });
                     }
                    
                     break;
                 case CamraDataEnums.OccupancyType.Residential:
-                    foreach (ResidentialSections rs in ResidentialSectionTypeCollection)
+                    foreach (ResidentialSections rs in ResidentialSectionTypeCollection.OrderBy(s=>s._resSectionDescription))
                     {
-                        sectList.Add(new ListOrComboBoxItem { Code = rs._resSectionType, Description = rs._resSectionDescription });
+                        sectList.Add(new ListOrComboBoxItem { Code = rs._resSectionType, Description = string.Format("{0} - {1}", rs._resSectionType, rs._resSectionDescription) });
                     }
                     break;
 
 
                 case CamraDataEnums.OccupancyType.Vacant:
                 case CamraDataEnums.OccupancyType.Other:
-                    foreach (ResidentialSections rs in ResidentialSectionTypeCollection)
+                    foreach (ResidentialSections rs in ResidentialSectionTypeCollection.OrderBy(s=>s._resSectionDescription))
                     {
-                        sectList.Add(new ListOrComboBoxItem { Code = rs._resSectionType, Description = rs._resSectionDescription });
+                        sectList.Add(new ListOrComboBoxItem { Code = rs._resSectionType, Description = string.Format("{0} - {1}", rs._resSectionType, rs._resSectionDescription) });
                     }
-                    foreach (CommercialSections cs in CommercialSectionTypeCollection)
+                    foreach (CommercialSections cs in CommercialSectionTypeCollection.OrderBy(s=>s._commSectionDescription))
                     {
-                        sectList.Add(new ListOrComboBoxItem { Code = cs._commSectionType, Description = cs._commSectionDescription });
+                        sectList.Add(new ListOrComboBoxItem { Code = cs._commSectionType, Description = string.Format("{0} - {1}", cs._commSectionType, cs._commSectionDescription) });
                     }
                     break;
                     
                 default:
                     break;
             }
-            foreach (ResidentialSections s in ResidentialSectionTypeCollection)
+            foreach (ResidentialSections rs in ResidentialSectionTypeCollection.OrderBy(s => s._resSectionDescription))
             {
-                ListOrComboBoxItem sli= new ListOrComboBoxItem { Code = s._resSectionType, Description = s._resSectionDescription };
+                ListOrComboBoxItem sli= new ListOrComboBoxItem { Code = rs._resSectionType, Description = string.Format("{0} - {1}", rs._resSectionType, rs._resSectionDescription) };
                 sectList.Add(sli);
             }
             sectList.OrderBy(d => d.Description);
             return sectList;
         }
-        private static ListOrComboBoxItem[] commercialSections;
+      
         private static void GetResidentialSections(DBAccessManager db)
         {
             DataSet ds_residentialSection = db.RunSelectStatement(String.Format(

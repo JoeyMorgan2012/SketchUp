@@ -48,6 +48,7 @@ namespace SketchUp
             BeginPointSelected,
             DeletingSection,
             Drawing,
+            FormLoaded,
             EditingSectionDescription,
             JumpMoveToBeginPoint,
             JumpPointSelected,
@@ -68,7 +69,7 @@ namespace SketchUp
         #region private fields
 
         private static bool checkDirection = false;
-        private static SketchDrawingState sketchingState;
+        private static SketchDrawingState sketchingState=SketchDrawingState.FormLoaded;
         private Image _baseImage;
         private SWallTech.CAMRA_Connection _conn = null;
         private int _curLineCnt = 0;
