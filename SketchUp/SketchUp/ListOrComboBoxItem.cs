@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SketchUp
 {
-   public class SectionListItem
+   public class ListOrComboBoxItem
     {
         string code;
         string description;

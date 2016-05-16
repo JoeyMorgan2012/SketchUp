@@ -6483,13 +6483,13 @@ namespace SketchUp
 
         private void TotalGaragesAndCarports(SMSection s)
         {
-            if (SketchUpCamraSupport.GarageTypes.Contains(s.SectionType))
+            if (SketchUpLookups.GarageTypes.Contains(s.SectionType))
             {
                 Garcnt++;
 
                 GarSize += s.SqFt;
             }
-            if (SketchUpCamraSupport.CarPortTypes.Contains(s.SectionType))
+            if (SketchUpLookups.CarPortTypes.Contains(s.SectionType))
             {
                 carportCount++;
 

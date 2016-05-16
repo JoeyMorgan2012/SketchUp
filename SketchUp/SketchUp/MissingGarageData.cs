@@ -95,7 +95,7 @@ namespace SketchUp
                 CarPortTypCbox.Items.Add("< Car Port >");
                 _cportList.Add(++index, null);
 
-                foreach (var item in SketchUpCamraSupport.CarPortTypeCollection)
+                foreach (var item in SketchUpLookups.CarPortTypeCollection)
                 {
                     _cportList.Add(++index, item);
                     CarPortTypCbox.Items.Add(item._printedDescription);
@@ -116,7 +116,7 @@ namespace SketchUp
                 GarTypeCbox.Items.Add("< Garages >");
                 _garList.Add(++index, null);
 
-                foreach (var item in SketchUpCamraSupport.GarageTypeCollection)
+                foreach (var item in SketchUpLookups.GarageTypeCollection)
                 {
                     _garList.Add(++index, item);
                     GarTypeCbox.Items.Add(item._printedDescription);

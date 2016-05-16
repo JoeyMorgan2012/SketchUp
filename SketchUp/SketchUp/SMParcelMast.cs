@@ -196,15 +196,15 @@ namespace SketchUp
             {
                 occType = CamraDataEnums.OccupancyType.CodeNotFound;
             }
-            else if (SketchUpCamraSupport.CommercialOccupancies.Contains(OccupancyCode))
+            else if (SketchUpLookups.CommercialOccupancies.Contains(OccupancyCode))
             {
                 occType = CamraDataEnums.OccupancyType.Commercial;
             }
-            else if (SketchUpCamraSupport.ResidentialOccupancies.Contains(OccupancyCode))
+            else if (SketchUpLookups.ResidentialOccupancies.Contains(OccupancyCode))
             {
                 occType = CamraDataEnums.OccupancyType.Residential;
             }
-            else if (SketchUpCamraSupport.TaxExemptOccupancies.Contains(OccupancyCode))
+            else if (CamraDataEnums.GetEnumValues(typeof(CamraDataEnums.TaxExemptOccupancies)).Contains(OccupancyCode))
             {
                 occType = CamraDataEnums.OccupancyType.TaxExempt;
             }

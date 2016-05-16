@@ -148,10 +148,7 @@ namespace SketchUp
             }
         }
 
-        private static void GetBuildingSectionTypesAndRates(DBAccessManager db)
-        {
-            
-        }
+       
 
         private static void GetCommercialSections(DBAccessManager db)
         {
@@ -173,34 +170,60 @@ namespace SketchUp
                 CommercialSectionTypeCollection.Add(commSectionType);
             }
         }
-        public static List<SectionListItem> SectionsByOccupancy(CamraDataEnums.OccupancyType occupancyCode)
+        public static List<ListOrComboBoxItem> SectionsByOccupancy(CamraDataEnums.OccupancyType occupancyCode)
         {
-            List<SectionListItem> sectList=new List<SectionListItem>();
+            List<ListOrComboBoxItem> sectList=new List<ListOrComboBoxItem>();
             switch (occupancyCode)
             {
                 case CamraDataEnums.OccupancyType.CodeNotFound:
+                    sectList.Add(new ListOrComboBoxItem { Code = "CNF", Description = "Invalid Occupancy Code"});
                     break;
                 case CamraDataEnums.OccupancyType.Commercial:
+                case CamraDataEnums.OccupancyType.TaxExempt:
+      
+                    foreach (CommercialSections cs in CommercialSectionTypeCollection)
+                    {
+                        sectList.Add(new ListOrComboBoxItem { Code = cs._commSectionType, Description = cs._commSectionDescription });
+                    }
+                    List<ResidentialSections> commOk = (from rs in ResidentialSectionTypeCollection where !CamraDataEnums.GetEnumStrings(typeof(CamraDataEnums.InvalidCommercialSection)).Contains(rs._resSectionType) select rs).ToList();
+                    foreach (ResidentialSections rs in commOk)
+                    {
+                        sectList.Add(new ListOrComboBoxItem { Code = rs._resSectionType, Description = rs._resSectionDescription });
+                    }
+                   
                     break;
                 case CamraDataEnums.OccupancyType.Residential:
+                    foreach (ResidentialSections rs in ResidentialSectionTypeCollection)
+                    {
+                        sectList.Add(new ListOrComboBoxItem { Code = rs._resSectionType, Description = rs._resSectionDescription });
+                    }
                     break;
-                case CamraDataEnums.OccupancyType.TaxExempt:
-                    break;
+
+
                 case CamraDataEnums.OccupancyType.Vacant:
-                    break;
                 case CamraDataEnums.OccupancyType.Other:
+                    foreach (ResidentialSections rs in ResidentialSectionTypeCollection)
+                    {
+                        sectList.Add(new ListOrComboBoxItem { Code = rs._resSectionType, Description = rs._resSectionDescription });
+                    }
+                    foreach (CommercialSections cs in CommercialSectionTypeCollection)
+                    {
+                        sectList.Add(new ListOrComboBoxItem { Code = cs._commSectionType, Description = cs._commSectionDescription });
+                    }
                     break;
+                    
                 default:
                     break;
             }
             foreach (ResidentialSections s in ResidentialSectionTypeCollection)
             {
-                SectionListItem sli= new SectionListItem { Code = s._resSectionType, Description = s._resSectionDescription };
+                ListOrComboBoxItem sli= new ListOrComboBoxItem { Code = s._resSectionType, Description = s._resSectionDescription };
                 sectList.Add(sli);
             }
+            sectList.OrderBy(d => d.Description);
             return sectList;
         }
-        private static SectionListItem[] commercialSections;
+        private static ListOrComboBoxItem[] commercialSections;
         private static void GetResidentialSections(DBAccessManager db)
         {
             DataSet ds_residentialSection = db.RunSelectStatement(String.Format(

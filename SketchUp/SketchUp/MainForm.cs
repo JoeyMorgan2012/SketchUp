@@ -375,7 +375,7 @@ namespace SketchUp
             Application.DoEvents();
             SetTextAddOrEdit(seccnt);
             Application.DoEvents();
-            if (SketchUpCamraSupport.VacantOccupancies.Contains(SketchUpGlobals.ParcelMast.OccupancyCode))
+            if (CamraDataEnums.GetEnumValues(typeof(CamraDataEnums.VacantOccupancies)).Contains(SketchUpGlobals.ParcelMast.OccupancyCode))
             {
                 int gar2cde = SketchUpGlobals.ParcelMast.Garage2TypeCode;
                 int gar2cnt = SketchUpGlobals.ParcelMast.Garage2NumCars;
@@ -511,7 +511,7 @@ namespace SketchUp
 
         private void AddSketchToParcel()
         {
-            if (SketchUpCamraSupport.VacantOccupancies.Contains(SketchUpGlobals.ParcelWorkingCopy.ParcelMast.OccupancyCode))
+            if (CamraDataEnums.GetEnumValues(typeof(CamraDataEnums)).Contains(SketchUpGlobals.ParcelWorkingCopy.ParcelMast.OccupancyCode))
             {
                 MessageBox.Show("Can't Add Sketch to Vacant Parcel...Add Master Record Data!");
                 this.WindowState = FormWindowState.Minimized;
@@ -834,7 +834,8 @@ namespace SketchUp
 
         private void SetTextAddOrEdit(int sectionCount)
         {
-            if (!SketchUpCamraSupport.VacantOccupancies.Contains(MainFormParcel.ParcelMast.OccupancyCode))
+          
+            if (!CamraDataEnums.GetEnumValues(typeof(CamraDataEnums.VacantOccupancies)).Contains(MainFormParcel.ParcelMast.OccupancyCode))
             {
                 if (sectionCount > 0)
                 {

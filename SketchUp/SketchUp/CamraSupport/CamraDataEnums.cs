@@ -7,7 +7,7 @@ namespace SketchUp
 {
     public static class CamraDataEnums
     {
-        #region "Public Methods"
+#region "Public Methods"
 
         public static List<string> GetEnumStrings(Type enumType)
         {
@@ -33,7 +33,7 @@ namespace SketchUp
             return values;
         }
 
-        #endregion "Public Methods"
+#endregion
 
         /*
          public static List<string> AuxAreaTypes = new List<string>() { "BEGR", "EGAR", "FEGR", "RMAD", "SUNR", "RMAF", "RMAP", "RMTS" };
@@ -64,15 +64,7 @@ namespace SketchUp
             UCP,
             WCP
         }
-        public enum OccupancyType
-        {
-            CodeNotFound,
-            Commercial,
-            Residential,
-            TaxExempt,
-            Vacant,
-            Other
-        }
+
         //public static List<int> CommercialOccupancies = new List<int>() { 11, 13, 14, 26 };
         public enum CommercialOccupancyCodes
         {
@@ -135,6 +127,29 @@ namespace SketchUp
             OH
         }
 
+        public enum OccupancyType
+        {
+            CodeNotFound,
+            Commercial,
+            Residential,
+            TaxExempt,
+            Vacant,
+            Other
+        }
+        //public static List<int> TaxExemptOccupancies = new List<int>() { 17 };
+        public enum TaxExemptOccupancies
+        {
+            Exempt =17
+        }
+        //   public static List<int> VacantOccupancies = new List<int>() { 5, 15, 23, 25, 27 };
+        public enum VacantOccupancies
+        {
+            VacantExempt = 5,
+            VacantLand = 15,
+            VacantWithMH = 23,
+            VacantCommercial = 25,
+            MobileHomePark = 27
+        }
         //public static List<string> PatioTypes = new List<string>() { "PAT", "BPAT", "CPAT", "WPAT", "PATO", "PABK", "PACN", "PACV", "PATW" };
         public enum PatioTypes
         {

@@ -29,15 +29,15 @@ namespace SketchUp
             ReSet();
             GetNextSection(Record, Card);
 
-            if (SketchUpCamraSupport.ResidentialOccupancies.Contains(parcelMast.OccupancyCode))
+            if (SketchUpLookups.ResidentialOccupancies.Contains(parcelMast.OccupancyCode))
             {
                 CurOccTxt.Text = "Residential Occupancy";
             }
-            if (SketchUpCamraSupport.CommercialOccupancies.Contains(parcelMast.OccupancyCode))
+            if (SketchUpLookups.CommercialOccupancies.Contains(parcelMast.OccupancyCode))
             {
                 CurOccTxt.Text = "Commercial Occupany";
             }
-            if (SketchUpCamraSupport.TaxExemptOccupancies.Contains(parcelMast.OccupancyCode))
+            if (CamraDataEnums.GetEnumValues(typeof(CamraDataEnums.TaxExemptOccupancies)).Contains(parcelMast.OccupancyCode))
             {
                 CurOccTxt.Text = "Tax Exempt Occupancy";
             }
@@ -280,13 +280,13 @@ namespace SketchUp
         {
             bool selectionValid = false;
 
-            if (SketchUpCamraSupport.ResidentialOccupancies.Contains(ParcelWorkingCopy.ParcelMast.OccupancyCode))
+            if (SketchUpLookups.ResidentialOccupancies.Contains(ParcelWorkingCopy.ParcelMast.OccupancyCode))
             {
                 selectionValid = ValidResidentialSelection();
             }
 
             //Commercial
-            else if (SketchUpCamraSupport.CommercialOccupancies.Contains(ParcelWorkingCopy.ParcelMast.OccupancyCode))
+            else if (SketchUpLookups.CommercialOccupancies.Contains(ParcelWorkingCopy.ParcelMast.OccupancyCode))
             {
 
                 if (nextSec == "A")
