@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SWallTech;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -8,7 +9,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
-using SWallTech;
 
 namespace SketchUp
 {
@@ -40,12 +40,7 @@ namespace SketchUp
             ShowWorkingCopySketch(sketchFolder, sketchRecord.ToString(), sketchCard.ToString(), hasSketch, hasNewSketch);
         }
 
-        #region "Public Methods"
-
-        public static decimal RoundToNearestHalf(decimal value)
-        {
-            return Math.Round(((value * 2) / 2), 1);
-        }
+#region "Public Methods"
 
         public void AddNewPoint()
         {
@@ -1938,6 +1933,11 @@ namespace SketchUp
 #endif
         }
 
+        public static decimal RoundToNearestHalf(decimal value)
+        {
+            return Math.Round(((value * 2) / 2), 1);
+        }
+
         public void setAttPnts()
         {
             SMParcel newCopy = SketchUpGlobals.ParcelWorkingCopy;
@@ -2460,54 +2460,9 @@ namespace SketchUp
             AdjustLine(newEndX, newEndY, newDistX, newDistY, EndEndX, EndEndY, finDist);
         }
 
-        #endregion "Public Methods"
+#endregion
 
-        #region "Private methods"
-
-        private static List<SMLine> LinesWithClosestEndpoints(PointF mouseLocation)
-        {
-            foreach (SMLine l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines.Where(s => s.SectionLetter != SketchUpGlobals.ParcelWorkingCopy.LastSectionLetter))
-            {
-                l.ComparisonPoint = mouseLocation;
-            }
-            decimal shortestDistance = Math.Round((from l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines select l.EndPointDistanceFromComparisonPoint).Min(), 2);
-            List<SMLine> connectionLines = (from l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines where Math.Round(l.EndPointDistanceFromComparisonPoint, 2) == shortestDistance select l).ToList();
-            return connectionLines;
-        }
-
-        //    if (AngleForm.NorthWest == true)
-        //    {
-        //        MoveNorthWest(NextStartX, NextStartY);
-        //    }
-        private static Color PenColorForDrawing(MovementMode movementType)
-        {
-            Color penColor;
-            switch (movementType)
-            {
-                case MovementMode.Draw:
-                    penColor = Color.Teal;
-                    break;
-
-                case MovementMode.Erase:
-                    penColor = Color.White;
-                    break;
-
-                case MovementMode.Jump:
-                case MovementMode.MoveDrawRed:
-                    penColor = Color.Red;
-
-                    break;
-
-                case MovementMode.MoveNoLine:
-                case MovementMode.NoMovement:
-
-                default:
-                    penColor = Color.Transparent;
-                    break;
-            }
-
-            return penColor;
-        }
+#region "Private methods"
 
         private void AddJumpTableRow(float jx, float jy, float CurrentScale, SMLine line)
         {
@@ -4401,14 +4356,14 @@ namespace SketchUp
         private void ExpSketchPbox_MouseDown(object sender, MouseEventArgs e)
         {
             _isJumpMode = false;
-            if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            if (e.Button == MouseButtons.Left)
             {
                 _mouseX = e.X;
                 _mouseY = e.Y;
 
                 DMouseMove(e.X, e.Y, false);
             }
-            else if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            else if (e.Button == MouseButtons.Right)
             {
                 _isJumpMode = true;
                 _mouseX = e.X;
@@ -4425,7 +4380,21 @@ namespace SketchUp
 
         private void ExpSketchPbox_MouseUp(object sender, MouseEventArgs e)
         {
-            draw = false;
+            if (e.Button == MouseButtons.Left)
+            {
+                _mouseX = e.X;
+                _mouseY = e.Y;
+
+                DMouseMove(e.X, e.Y, false);
+            }
+            else if (e.Button == MouseButtons.Right)
+            {
+                _isJumpMode = true;
+                SketchingState = SketchDrawingState.JumpPointSelected;
+                _mouseX = e.X;
+                _mouseY = e.Y;
+                DMouseMove(e.X, e.Y, true);
+            }
         }
 
         private string FindClosestCorner(float CurrentScale, ref string curltr, List<string> AttSecLtrList)
@@ -5305,9 +5274,7 @@ namespace SketchUp
         //    string anglecalls = DistText.Text.Trim();
         private void JumptoCorner()
         {
-            // float CurrentScale = _currentScale;
-            //int crrec = SketchUpGlobals.Record;
-            //int crcard = SketchUpGlobals.Card;
+           
             decimal scale = LocalParcelCopy.Scale;
             PointF origin = LocalParcelCopy.SketchOrigin;
             CurrentSecLtr = String.Empty;
@@ -5318,7 +5285,16 @@ namespace SketchUp
                 PointF mouseLocation = new PointF(_mouseX, _mouseY);
 
                 List<SMLine> connectionLines = LinesWithClosestEndpoints(mouseLocation);
-
+                #if DEBUG
+			StringBuilder traceOut = new StringBuilder();
+                foreach (SMLine l in connectionLines)
+                {			traceOut.AppendLine(string.Format("Mouse is at {0},{1}",_mouseX,_mouseY));
+                    traceOut.AppendLine(string.Format("{0}-{1} Ends {2:N0},{3:N0}",l.SectionLetter,l.LineNumber,l.ScaledEndPoint.X,l.ScaledEndPoint.Y));
+                }
+			
+			Trace.WriteLine(string.Format("{0}", traceOut.ToString())); 
+            Console.WriteLine(string.Format("{0}", traceOut.ToString()));
+#endif
                 bool sketchHasLineData = (connectionLines.Count > 0);
                 if (connectionLines == null || connectionLines.Count == 0)
                 {
@@ -5388,6 +5364,17 @@ namespace SketchUp
                 UndoJump = false;
             }
             _isJumpMode = false;
+        }
+
+        private static List<SMLine> LinesWithClosestEndpoints(PointF mouseLocation)
+        {
+            foreach (SMLine l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines.Where(s => s.SectionLetter != SketchUpGlobals.ParcelWorkingCopy.LastSectionLetter))
+            {
+                l.ComparisonPoint = mouseLocation;
+            }
+            decimal shortestDistance = Math.Round((from l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines select l.EndPointDistanceFromComparisonPoint).Min(), 2);
+            List<SMLine> connectionLines = (from l in SketchUpGlobals.ParcelWorkingCopy.AllSectionLines where Math.Round(l.EndPointDistanceFromComparisonPoint, 2) == shortestDistance select l).ToList();
+            return connectionLines;
         }
 
         //    REJumpTable = ConstructREJumpTable();
@@ -5537,7 +5524,7 @@ namespace SketchUp
 
             if (sectionLetterList.Count > 1)
             {
-                MultiplePoints.Clear();
+                MultiplePoints = new DataTable();
 
                 MultiSectionSelection attachmentSectionLetterSelected = new MultiSectionSelection(sectionLetterList);
                 attachmentSectionLetterSelected.ShowDialog(this);
@@ -5651,6 +5638,40 @@ namespace SketchUp
                 default:
                     break;
             }
+        }
+
+        //    if (AngleForm.NorthWest == true)
+        //    {
+        //        MoveNorthWest(NextStartX, NextStartY);
+        //    }
+        private static Color PenColorForDrawing(MovementMode movementType)
+        {
+            Color penColor;
+            switch (movementType)
+            {
+                case MovementMode.Draw:
+                    penColor = Color.Teal;
+                    break;
+
+                case MovementMode.Erase:
+                    penColor = Color.White;
+                    break;
+
+                case MovementMode.Jump:
+                case MovementMode.MoveDrawRed:
+                    penColor = Color.Red;
+
+                    break;
+
+                case MovementMode.MoveNoLine:
+                case MovementMode.NoMovement:
+
+                default:
+                    penColor = Color.Transparent;
+                    break;
+            }
+
+            return penColor;
         }
 
         private void PromptToSaveOrDiscard()
@@ -6623,8 +6644,7 @@ namespace SketchUp
             DistText.Focus();
         }
 
-        #endregion "Private methods"
-
+#endregion
         private const int sketchBoxPaddingTotal = 20;
     }
 }

@@ -27,7 +27,7 @@ namespace SketchUp
 
         
 
-        private DataTable MultiSelectAttachmentPoints(List<SMLine>connectionLines)
+        public DataTable MultiSelectAttachmentPoints(List<SMLine>connectionLines)
         {
     
 

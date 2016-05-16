@@ -26,6 +26,7 @@
             this.MainMenu = new System.Windows.Forms.MenuStrip();
             this.beginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.drawingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.runTest1 = new System.Windows.Forms.ToolStripMenuItem();
             this.runTest2 = new System.Windows.Forms.ToolStripMenuItem();
             this.runTest3 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -40,14 +41,13 @@
             this.sectionDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sectionFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cmenuDrawing = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.cmenuJump = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusMain = new System.Windows.Forms.StatusStrip();
             this.mouseLocationLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.feedbackStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.debugInfoStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.debugInfoLabel = new System.Windows.Forms.Label();
             this.sketchBox = new System.Windows.Forms.PictureBox();
-            this.runTest1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.cmenuJump = new System.Windows.Forms.ToolStripMenuItem();
             this.sketchUpGlobalsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.x1TextBox = new System.Windows.Forms.TextBox();
             this.y1TextBox = new System.Windows.Forms.TextBox();
@@ -107,12 +107,23 @@
             this.drawingToolStripMenuItem.Text = "Tests";
             this.drawingToolStripMenuItem.Click += new System.EventHandler(this.drawingToolStripMenuItem_Click);
             // 
+            // runTest1
+            // 
+            this.runTest1.AutoToolTip = true;
+            this.runTest1.Image = global::SketchUp.Properties.Resources.AddControl_16x_32;
+            this.runTest1.Name = "runTest1";
+            this.runTest1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D1)));
+            this.runTest1.Size = new System.Drawing.Size(238, 26);
+            this.runTest1.Text = "Add Section";
+            this.runTest1.ToolTipText = "Run the first test";
+            this.runTest1.Click += new System.EventHandler(this.runTest1_Click);
+            // 
             // runTest2
             // 
             this.runTest2.Name = "runTest2";
             this.runTest2.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D2)));
             this.runTest2.Size = new System.Drawing.Size(238, 26);
-            this.runTest2.Text = "Test 2";
+            this.runTest2.Text = "Undo Last Line";
             this.runTest2.ToolTipText = "Run the second test";
             this.runTest2.Click += new System.EventHandler(this.tsmListParcelSnapshots_Click);
             // 
@@ -121,7 +132,7 @@
             this.runTest3.Name = "runTest3";
             this.runTest3.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D3)));
             this.runTest3.Size = new System.Drawing.Size(238, 26);
-            this.runTest3.Text = "Test 3";
+            this.runTest3.Text = "Identify Corners";
             this.runTest3.ToolTipText = "Run the third test";
             this.runTest3.Click += new System.EventHandler(this.tsmAllTests_Click);
             // 
@@ -205,6 +216,17 @@
             this.cmenuDrawing.Name = "cmenuDrawing";
             this.cmenuDrawing.Size = new System.Drawing.Size(163, 30);
             // 
+            // cmenuJump
+            // 
+            this.cmenuJump.AutoToolTip = true;
+            this.cmenuJump.Image = global::SketchUp.Properties.Resources.Jump_Point;
+            this.cmenuJump.Name = "cmenuJump";
+            this.cmenuJump.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.J)));
+            this.cmenuJump.Size = new System.Drawing.Size(162, 26);
+            this.cmenuJump.Text = "Jump";
+            this.cmenuJump.ToolTipText = "Jump to the nearest corner";
+            this.cmenuJump.Click += new System.EventHandler(this.cmenuJump_Click);
+            // 
             // StatusMain
             // 
             this.StatusMain.ImageScalingSize = new System.Drawing.Size(20, 20);
@@ -258,28 +280,6 @@
             this.sketchBox.Size = new System.Drawing.Size(1057, 545);
             this.sketchBox.TabIndex = 8;
             this.sketchBox.TabStop = false;
-            // 
-            // runTest1
-            // 
-            this.runTest1.AutoToolTip = true;
-            this.runTest1.Image = global::SketchUp.Properties.Resources.AddControl_16x_32;
-            this.runTest1.Name = "runTest1";
-            this.runTest1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D1)));
-            this.runTest1.Size = new System.Drawing.Size(238, 26);
-            this.runTest1.Text = "Test 1";
-            this.runTest1.ToolTipText = "Run the first test";
-            this.runTest1.Click += new System.EventHandler(this.runTest1_Click);
-            // 
-            // cmenuJump
-            // 
-            this.cmenuJump.AutoToolTip = true;
-            this.cmenuJump.Image = global::SketchUp.Properties.Resources.Jump_Point;
-            this.cmenuJump.Name = "cmenuJump";
-            this.cmenuJump.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.J)));
-            this.cmenuJump.Size = new System.Drawing.Size(162, 26);
-            this.cmenuJump.Text = "Jump";
-            this.cmenuJump.ToolTipText = "Jump to the nearest corner";
-            this.cmenuJump.Click += new System.EventHandler(this.cmenuJump_Click);
             // 
             // sketchUpGlobalsBindingSource
             // 

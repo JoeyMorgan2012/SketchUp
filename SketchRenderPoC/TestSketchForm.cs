@@ -1245,18 +1245,17 @@ namespace SketchUp
             sms.RenderSketch();
             sketchBox.Image = sms.SketchImage;
             SMSection lastSection = parcel.SelectSectionByLetter(parcel.LastSectionLetter);
-                 while (lastSection.Lines.Count>0)
-                {
+             
                     int lastLineNumber = (from l in lastSection.Lines select l.LineNumber).Max();
                     
                     SMLine lastLine = lastSection.Lines.Where(l => l.LineNumber == lastLineNumber).FirstOrDefault();
-                    MessageBox.Show(string.Format("I will now remove line {0}-{1}...", lastSection.SectionLetter, lastLine.LineNumber));
+                    MessageBox.Show(string.Format("I will now Undo line {0}-{1}...", lastSection.SectionLetter, lastLine.LineNumber));
                     lastSection.Lines.Remove(lastLine);
                     sms = new SMSketcher(parcel, sketchBox);
                     sms.RenderSketch();
                     sketchBox.Image = sms.SketchImage;
                     
-                }
+                
           
           
         }
@@ -1330,9 +1329,24 @@ namespace SketchUp
 
         private void tsmAllTests_Click(object sender, EventArgs e)
         {
-            TestBreakLine1();
+            //TODO: Offset the corner number or combine if there is an overlap.
+            //Remove the rectangle and replace with a lighter circle.
+            //Identify the legal directions once a corner is chosen, and allow
+            //offset of no more than the length of the selected line.
 
-            //    TestBreakLine2();
+            IdentifyCorners();
+        }
+
+        private void IdentifyCorners()
+        {
+            List<PointF> endPoints = new List<PointF>();
+            int pointNumber = 1;
+            foreach (SMLine l in LocalParcelCopy.AllSectionLines)
+            {
+                string pointLabel = string.Format("{0} ({1})", pointNumber, l.SectionLetter);
+                ShowPoint(pointLabel, l.ScaledEndPoint);
+                pointNumber++;
+            }
         }
 
         private void tsMenuExitForm_Click(object sender, EventArgs e)
