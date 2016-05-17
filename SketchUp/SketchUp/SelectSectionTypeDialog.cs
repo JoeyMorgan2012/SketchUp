@@ -150,6 +150,7 @@ namespace SketchUp
             {
                 SectionStoriesTxt.Text = newSectionStoreys.ToString("N2");
             }
+
         }
 
         private void PopulateComboSource()

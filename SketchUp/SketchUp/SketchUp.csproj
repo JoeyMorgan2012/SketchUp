@@ -128,6 +128,7 @@
       <DependentUpon>AngleFormOriginal.cs</DependentUpon>
     </Compile>
     <Compile Include="CamraSupport\AllStructureSections.cs" />
+    <Compile Include="CamraSupport\AngleVector.cs" />
     <Compile Include="CamraSupport\CamraDataEnums.cs" />
     <Compile Include="CamraSupport\ResidentialSections.cs" />
     <Compile Include="UtilityClasses\SketchUpLookups.cs" />

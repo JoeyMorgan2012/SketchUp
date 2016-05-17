@@ -21,9 +21,9 @@ namespace SketchUp
             this.Close();
         }
 
-        private ExpandoSketch.MoveDirections angleDirection=ExpandoSketch.MoveDirections.None;
+        private CamraDataEnums.CardinalDirection angleDirection=CamraDataEnums.CardinalDirection.None;
 
-        public ExpandoSketch.MoveDirections AngleDirection
+        public CamraDataEnums.CardinalDirection AngleDirection
         {
             get
             {
@@ -46,24 +46,24 @@ namespace SketchUp
         {
             if (rbNW.Checked == true)
             {
-                AngleDirection = ExpandoSketch.MoveDirections.NW;
+                AngleDirection = CamraDataEnums.CardinalDirection.NW;
                 
             }
 
             if (rbNE.Checked == true)
             {
-                AngleDirection = ExpandoSketch.MoveDirections.NE;
+                AngleDirection = CamraDataEnums.CardinalDirection.NE;
                 
             }
 
             if (rbSW.Checked == true)
             {
-                AngleDirection = ExpandoSketch.MoveDirections.SW;
+                AngleDirection = CamraDataEnums.CardinalDirection.SW;
             }
 
             if (rbSE.Checked == true)
             {
-                AngleDirection = ExpandoSketch.MoveDirections.SE;
+                AngleDirection = CamraDataEnums.CardinalDirection.SE;
             }
         }
     }

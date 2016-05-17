@@ -427,6 +427,10 @@ namespace SketchUp
         {
             get
             {
+                if (comparisonPoint == null)
+                {
+                    comparisonPoint = ParentParcel.SketchOrigin;
+                }
                 return comparisonPoint;
             }
 
@@ -440,10 +444,8 @@ namespace SketchUp
         {
             get
             {
-                if (ComparisonPoint==null)
-                {
-                    ComparisonPoint = ParentParcel.SketchOrigin;
-                }
+               
+                endPointDistanceFromComparisonPoint = SMGlobal.LineLength(ComparisonPoint, ScaledEndPoint);
                 return endPointDistanceFromComparisonPoint;
             }
 

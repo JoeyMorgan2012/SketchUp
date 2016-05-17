@@ -35,10 +35,6 @@ namespace SketchUp
 
 #endregion
 
-        /*
-         public static List<string> AuxAreaTypes = new List<string>() { "BEGR", "EGAR", "FEGR", "RMAD", "SUNR", "RMAF", "RMAP", "RMTS" };
-        */
-
         public enum AuxAreaTypes
         {
             BEGR,
@@ -49,6 +45,22 @@ namespace SketchUp
             RMAF,
             RMAP,
             RMTS
+        }
+
+        /*
+         public static List<string> AuxAreaTypes = new List<string>() { "BEGR", "EGAR", "FEGR", "RMAD", "SUNR", "RMAF", "RMAP", "RMTS" };
+        */
+        public enum CardinalDirection
+        {
+            N,
+            NE,
+            E,
+            SE,
+            S,
+            SW,
+            W,
+            NW,
+            None
         }
 
         //public static List<string> CarPortTypes = new List<string>() { "CP", "BCP", "WCP", "BWCP", "UCP", "CPB", "CPU", "CPW", "CPWB" };
@@ -136,20 +148,7 @@ namespace SketchUp
             Vacant,
             Other
         }
-        //public static List<int> TaxExemptOccupancies = new List<int>() { 17 };
-        public enum TaxExemptOccupancies
-        {
-            Exempt =17
-        }
-        //   public static List<int> VacantOccupancies = new List<int>() { 5, 15, 23, 25, 27 };
-        public enum VacantOccupancies
-        {
-            VacantExempt = 5,
-            VacantLand = 15,
-            VacantWithMH = 23,
-            VacantCommercial = 25,
-            MobileHomePark = 27
-        }
+
         //public static List<string> PatioTypes = new List<string>() { "PAT", "BPAT", "CPAT", "WPAT", "PATO", "PABK", "PACN", "PACV", "PATW" };
         public enum PatioTypes
         {
@@ -176,6 +175,22 @@ namespace SketchUp
             SingleWideMobileHome = 21,
             DoubleWideMobileHome = 22,
             TripleWideMobileHome = 24
+        }
+
+        //public static List<int> TaxExemptOccupancies = new List<int>() { 17 };
+        public enum TaxExemptOccupancies
+        {
+            Exempt =17
+        }
+
+        //   public static List<int> VacantOccupancies = new List<int>() { 5, 15, 23, 25, 27 };
+        public enum VacantOccupancies
+        {
+            VacantExempt = 5,
+            VacantLand = 15,
+            VacantWithMH = 23,
+            VacantCommercial = 25,
+            MobileHomePark = 27
         }
     }
 }

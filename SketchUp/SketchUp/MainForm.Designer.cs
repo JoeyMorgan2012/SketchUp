@@ -121,10 +121,10 @@
             this.statusStripMain.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.statusStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusMessage});
-            this.statusStripMain.Location = new System.Drawing.Point(0, 652);
+            this.statusStripMain.Location = new System.Drawing.Point(0, 721);
             this.statusStripMain.Name = "statusStripMain";
             this.statusStripMain.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
-            this.statusStripMain.Size = new System.Drawing.Size(1051, 22);
+            this.statusStripMain.Size = new System.Drawing.Size(1110, 22);
             this.statusStripMain.TabIndex = 13;
             this.statusStripMain.Text = "Status";
             // 
@@ -136,18 +136,18 @@
             // sketchBox
             // 
             this.sketchBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.sketchBox.Location = new System.Drawing.Point(462, 88);
+            this.sketchBox.Location = new System.Drawing.Point(379, 88);
             this.sketchBox.Margin = new System.Windows.Forms.Padding(4);
             this.sketchBox.MinimumSize = new System.Drawing.Size(550, 517);
             this.sketchBox.Name = "sketchBox";
-            this.sketchBox.Size = new System.Drawing.Size(550, 517);
+            this.sketchBox.Size = new System.Drawing.Size(718, 589);
             this.sketchBox.TabIndex = 9;
             this.sketchBox.TabStop = false;
             this.sketchBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.sketchBox_MouseMove);
             // 
             // EditImage
             // 
-            this.EditImage.Location = new System.Drawing.Point(462, 613);
+            this.EditImage.Location = new System.Drawing.Point(235, 672);
             this.EditImage.Margin = new System.Windows.Forms.Padding(4);
             this.EditImage.Name = "EditImage";
             this.EditImage.Size = new System.Drawing.Size(100, 32);
@@ -247,7 +247,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.ClientSize = new System.Drawing.Size(1051, 674);
+            this.ClientSize = new System.Drawing.Size(1110, 743);
             this.Controls.Add(this.LocNameTxt);
             this.Controls.Add(this.PreFixTxt);
             this.Controls.Add(this.label6);

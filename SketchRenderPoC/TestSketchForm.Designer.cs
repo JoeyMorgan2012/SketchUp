@@ -29,6 +29,8 @@
             this.runTest1 = new System.Windows.Forms.ToolStripMenuItem();
             this.runTest2 = new System.Windows.Forms.ToolStripMenuItem();
             this.runTest3 = new System.Windows.Forms.ToolStripMenuItem();
+            this.runTest4 = new System.Windows.Forms.ToolStripMenuItem();
+            this.runTest5 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.tsMenuExitForm = new System.Windows.Forms.ToolStripMenuItem();
@@ -99,6 +101,8 @@
             this.runTest1,
             this.runTest2,
             this.runTest3,
+            this.runTest4,
+            this.runTest5,
             this.toolStripSeparator2,
             this.toolStripSeparator3,
             this.tsMenuExitForm});
@@ -135,6 +139,20 @@
             this.runTest3.Text = "Identify Corners";
             this.runTest3.ToolTipText = "Run the third test";
             this.runTest3.Click += new System.EventHandler(this.tsmAllTests_Click);
+            // 
+            // runTest4
+            // 
+            this.runTest4.Name = "runTest4";
+            this.runTest4.Size = new System.Drawing.Size(238, 26);
+            this.runTest4.Text = "Flip Horizontal";
+            this.runTest4.Click += new System.EventHandler(this.runTest4_Click);
+            // 
+            // runTest5
+            // 
+            this.runTest5.Name = "runTest5";
+            this.runTest5.Size = new System.Drawing.Size(238, 26);
+            this.runTest5.Text = "Flip Vertical";
+            this.runTest5.Click += new System.EventHandler(this.runTest5_Click);
             // 
             // toolStripSeparator2
             // 
@@ -520,6 +538,8 @@
         private System.Windows.Forms.ToolStripButton tsbDrawTeal;
         private System.Windows.Forms.ToolStripButton tsbMoveToPoint;
         private System.Windows.Forms.Label infoLabel;
+        private System.Windows.Forms.ToolStripMenuItem runTest4;
+        private System.Windows.Forms.ToolStripMenuItem runTest5;
     }
 }
 

@@ -47,7 +47,7 @@ namespace SketchUp
         private SMParcel GetOriginalParcelFromDb(int record, int dwelling, SketchRepository sr)
         {
             SMParcel parcel = sr.SelectParcelMasterWithParcel(record, dwelling).Parcel;
-           
+
             parcel.IdentifyAttachedToSections();
             return parcel;
         }
@@ -95,8 +95,6 @@ namespace SketchUp
             LocalParcelCopy.SnapShotIndex = 1;
             SketchUpGlobals.SketchSnapshots.Add(LocalParcelCopy);
         }
-
-      
 
         private int mouseDownX;
         private int mouseDownY;
@@ -1106,6 +1104,14 @@ namespace SketchUp
         {
         }
 
+        private void DrawRedLine(PointF screenStart, PointF screenEnd)
+        {
+            RedPen = new Pen(Color.Red, 2);
+            Graphics g = sketchBox.CreateGraphics();
+            g.DrawLine(RedPen, screenStart, screenEnd);
+            infoLabel.Text = InfoMessage();
+        }
+
         private void editSectionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TestCombinabilityOfLines();
@@ -1123,10 +1129,84 @@ namespace SketchUp
             MessageBox.Show(message);
         }
 
-        private void flipVerticalMenuItem_Click(object sender, EventArgs e)
+        private void FlipSketchHorizonal()
         {
-            string message = string.Format("{0}", "Flip Sketch vertically");
-            MessageBox.Show(message);
+            CamraDataEnums.CardinalDirection dir;
+            string newDir=string.Empty;
+            foreach (SMLine l in LocalParcelCopy.AllSectionLines)
+            {
+                dir = SMGlobal.DirectionFromString(l.Direction);
+              
+                switch (dir)
+                {
+                    case CamraDataEnums.CardinalDirection.N:
+                        newDir = CamraDataEnums.CardinalDirection.N.ToString();
+                        break;
+
+                    case CamraDataEnums.CardinalDirection.NE:
+                        newDir = CamraDataEnums.CardinalDirection.NW.ToString();
+                        break;
+
+                    case CamraDataEnums.CardinalDirection.E:
+                        newDir = CamraDataEnums.CardinalDirection.W.ToString();
+                        break;
+
+                    case CamraDataEnums.CardinalDirection.SE:
+                        newDir = CamraDataEnums.CardinalDirection.SW.ToString();
+                        break;
+
+                    case CamraDataEnums.CardinalDirection.S:
+                        newDir = CamraDataEnums.CardinalDirection.S.ToString();
+                        break;
+
+                    case CamraDataEnums.CardinalDirection.SW:
+                        newDir = CamraDataEnums.CardinalDirection.SE.ToString();
+                        break;
+
+                    case CamraDataEnums.CardinalDirection.W:
+                        newDir = CamraDataEnums.CardinalDirection.E.ToString();
+                        break;
+
+                    case CamraDataEnums.CardinalDirection.NW:
+                        newDir = CamraDataEnums.CardinalDirection.NE.ToString();
+                        break;
+
+                    case CamraDataEnums.CardinalDirection.None:
+                        break;
+
+                    default:
+                        newDir = string.Empty;
+                        break;
+                }
+                l.Direction = newDir;
+                l.StartX = l.StartX * -1M;
+                l.EndX = l.EndX * -1M;
+                
+            }
+            
+            SMSketcher sms = new SMSketcher(LocalParcelCopy, sketchBox);
+            sms.RenderSketch();
+            sketchBox.Image = sms.SketchImage;
+        }
+
+      
+
+        private void GetPointsFromText()
+        {
+            float x1 = 0f;
+            float y1 = 0f;
+            float x2 = 0f;
+            float y2 = 0f;
+            string dbX1 = x1TextBox.Text;
+            string dbY1 = y1TextBox.Text;
+            string dbX2 = x2TextBox.Text;
+            string dbY2 = y2TextBox.Text;
+            float.TryParse(dbX1, out x1);
+            float.TryParse(dbY1, out y1);
+            float.TryParse(dbX2, out x2);
+            float.TryParse(dbY2, out y2);
+            dbStart = new PointF(x1, y1);
+            dbEnd = new PointF(x2, y2);
         }
 
         private void HandleDirectionalKeys(KeyEventArgs e)
@@ -1213,6 +1293,30 @@ namespace SketchUp
             }
         }
 
+        private void IdentifyCorners()
+        {
+            List<PointF> endPoints = new List<PointF>();
+            int pointNumber = 1;
+            foreach (SMLine l in LocalParcelCopy.AllSectionLines)
+            {
+                string pointLabel = string.Format("{0} ({1})", pointNumber, l.SectionLetter);
+                ShowPoint(pointLabel, l.ScaledEndPoint);
+                pointNumber++;
+            }
+        }
+
+        private string InfoMessage()
+        {
+#if DEBUG
+            StringBuilder traceOut = new StringBuilder();
+            traceOut.AppendLine(string.Format("Scale is {0:N2}(x) and {1:N2}(y)", xScale, yScale));
+            traceOut.AppendLine(string.Format("Using the {0} scale", xScale > yScale ? "Y" : "X"));
+            Trace.WriteLine(string.Format("{0}", traceOut.ToString()));
+            Console.WriteLine(string.Format("{0}", traceOut.ToString()));
+            return traceOut.ToString();
+#endif
+        }
+
         private void ParseAngleEntry(KeyEventArgs e, string textEntered)
         {
         }
@@ -1240,24 +1344,19 @@ namespace SketchUp
 
         private void RemoveLastLineAdded(SMParcel parcel, PictureBox targetContainer)
         {
-          
             SMSketcher sms = new SMSketcher(parcel, sketchBox);
             sms.RenderSketch();
             sketchBox.Image = sms.SketchImage;
             SMSection lastSection = parcel.SelectSectionByLetter(parcel.LastSectionLetter);
-             
-                    int lastLineNumber = (from l in lastSection.Lines select l.LineNumber).Max();
-                    
-                    SMLine lastLine = lastSection.Lines.Where(l => l.LineNumber == lastLineNumber).FirstOrDefault();
-                    MessageBox.Show(string.Format("I will now Undo line {0}-{1}...", lastSection.SectionLetter, lastLine.LineNumber));
-                    lastSection.Lines.Remove(lastLine);
-                    sms = new SMSketcher(parcel, sketchBox);
-                    sms.RenderSketch();
-                    sketchBox.Image = sms.SketchImage;
-                    
-                
-          
-          
+
+            int lastLineNumber = (from l in lastSection.Lines select l.LineNumber).Max();
+
+            SMLine lastLine = lastSection.Lines.Where(l => l.LineNumber == lastLineNumber).FirstOrDefault();
+            MessageBox.Show(string.Format("I will now Undo line {0}-{1}...", lastSection.SectionLetter, lastLine.LineNumber));
+            lastSection.Lines.Remove(lastLine);
+            sms = new SMSketcher(parcel, sketchBox);
+            sms.RenderSketch();
+            sketchBox.Image = sms.SketchImage;
         }
 
         private SMSection ReorganizedSection(SMLineManager lm, SMSection section)
@@ -1306,6 +1405,42 @@ namespace SketchUp
             DrawSections();
         }
 
+        private void runTest4_Click(object sender, EventArgs e)
+        {
+            FlipSketchHorizonal();
+        }
+
+        private void ShowScaledPoints()
+        {
+            float xSize = Math.Abs(dbStart.X - dbEnd.X);
+            float ySize = Math.Abs(dbStart.Y - dbEnd.Y);
+
+            if (xSize == 0)
+            {
+                xSize = ySize;
+            }
+
+            if (ySize == 0)
+            {
+                ySize = xSize;
+            }
+            xScale = (decimal)(sketchBox.Width / xSize);
+            yScale = (decimal)(sketchBox.Height / ySize);
+
+            //   scale = SMGlobal.SmallerDecimal(xScale, yScale)*.80M;
+            scale = 7.2M;
+            float centerX = sketchBox.Left + (sketchBox.Width / 2);
+            float centerY = sketchBox.Top + (sketchBox.Height / 2);
+
+            origin = new PointF(centerX, centerY);
+            screenStart = SMGlobal.DbPointToScaledPoint((decimal)dbStart.X, (decimal)dbStart.Y, scale, origin);
+            screenEnd = SMGlobal.DbPointToScaledPoint((decimal)dbEnd.X, (decimal)dbEnd.Y, scale, origin);
+            screenX1TextBox.Text = string.Format("{0:N0}", screenStart.X);
+            screenY1TextBox.Text = string.Format("{0:N0}", screenStart.Y);
+            screenX2TextBox.Text = string.Format("{0:N0}", screenEnd.X);
+            screenY2TextBox.Text = string.Format("{0:N0}", screenEnd.Y);
+        }
+
         private void sketchBox_MouseDown(object sender, MouseEventArgs e)
         {
             mouseDownX = e.X;
@@ -1327,6 +1462,14 @@ namespace SketchUp
             BreakAndRejoinD3();
         }
 
+        private void tsbDrawRed_Click(object sender, EventArgs e)
+        {
+            GetPointsFromText();
+            ShowScaledPoints();
+            DrawRedLine(screenStart, screenEnd);
+            infoLabel.Text = InfoMessage();
+        }
+
         private void tsmAllTests_Click(object sender, EventArgs e)
         {
             //TODO: Offset the corner number or combine if there is an overlap.
@@ -1335,18 +1478,6 @@ namespace SketchUp
             //offset of no more than the length of the selected line.
 
             IdentifyCorners();
-        }
-
-        private void IdentifyCorners()
-        {
-            List<PointF> endPoints = new List<PointF>();
-            int pointNumber = 1;
-            foreach (SMLine l in LocalParcelCopy.AllSectionLines)
-            {
-                string pointLabel = string.Format("{0} ({1})", pointNumber, l.SectionLetter);
-                ShowPoint(pointLabel, l.ScaledEndPoint);
-                pointNumber++;
-            }
         }
 
         private void tsMenuExitForm_Click(object sender, EventArgs e)
@@ -1378,97 +1509,85 @@ namespace SketchUp
         private PointF breakPoint1 = new PointF(-10, -2);
 
         private PointF breakPoint2 = new PointF(0, -12);
+        private PointF dbEnd;
+        private PointF dbStart;
         private bool firstTimeLoaded = false;
         private int line1Number = 3;
         private int line2Number = 5;
         private string newSectionLetter = "G";
+        private PointF origin;
         private string pointLabel = string.Empty;
-        private string sectionLetter = "D";
-        private PointF dbStart;
-        private PointF dbEnd;
         private decimal scale;
-        private PointF screenStart;
         private PointF screenEnd;
-        PointF origin;
-        decimal xScale = 0M;
-        decimal yScale = 0M;
-        string InfoMessage()
-        {
-          #if DEBUG
-			StringBuilder traceOut = new StringBuilder();
-			traceOut.AppendLine(string.Format("Scale is {0:N2}(x) and {1:N2}(y)", xScale,yScale));
-            			traceOut.AppendLine(string.Format("Using the {0} scale",xScale>yScale?"Y":"X"));
-			Trace.WriteLine(string.Format("{0}", traceOut.ToString())); 
-            Console.WriteLine(string.Format("{0}", traceOut.ToString()));
-            return traceOut.ToString();
-#endif
+        private PointF screenStart;
+        private string sectionLetter = "D";
+        private decimal xScale = 0M;
+        private decimal yScale = 0M;
 
+        private void runTest5_Click(object sender, EventArgs e)
+        {
+            FlipUpDown();
         }
-
-        private void tsbDrawRed_Click(object sender, EventArgs e)
+        private void FlipUpDown()
         {
-            GetPointsFromText();
-            ShowScaledPoints();
-            DrawRedLine(screenStart,screenEnd);
-            infoLabel.Text = InfoMessage();
-        }
-
-        private void DrawRedLine(PointF screenStart, PointF screenEnd)
-        {
-            RedPen = new Pen(Color.Red, 2);
-            Graphics g = sketchBox.CreateGraphics();
-            g.DrawLine(RedPen, screenStart, screenEnd);
-            infoLabel.Text = InfoMessage();
-        }
-
-        private void ShowScaledPoints()
-        {
-         
-            float xSize = Math.Abs(dbStart.X - dbEnd.X);
-            float ySize = Math.Abs(dbStart.Y - dbEnd.Y);
-
-            if (xSize==0)
+            SketchUpGlobals.SketchSnapshots.Add(LocalParcelCopy);
+            LocalParcelCopy.SnapShotIndex++;
+            CamraDataEnums.CardinalDirection dir;
+            string newDir = string.Empty;
+            foreach (SMLine l in LocalParcelCopy.AllSectionLines)
             {
-                xSize = ySize;
-            }
-          
-         
-            if (ySize == 0)
-            {
-                ySize = xSize;
-            }
-            xScale = (decimal)(sketchBox.Width / xSize);
-            yScale  = (decimal)(sketchBox.Height / ySize);
-         //   scale = SMGlobal.SmallerDecimal(xScale, yScale)*.80M;
-            scale = 7.2M;
-            float centerX = sketchBox.Left+(sketchBox.Width / 2);
-            float centerY = sketchBox.Top + (sketchBox.Height / 2);
+                dir = SMGlobal.DirectionFromString(l.Direction);
 
-            origin = new PointF(centerX,centerY);
-            screenStart = SMGlobal.DbPointToScaledPoint((decimal)dbStart.X, (decimal)dbStart.Y, scale,origin);
-            screenEnd = SMGlobal.DbPointToScaledPoint((decimal)dbEnd.X, (decimal)dbEnd.Y, scale, origin);
-            screenX1TextBox.Text = string.Format("{0:N0}", screenStart.X);
-            screenY1TextBox.Text = string.Format("{0:N0}", screenStart.Y);
-            screenX2TextBox.Text = string.Format("{0:N0}", screenEnd.X);
-            screenY2TextBox.Text = string.Format("{0:N0}", screenEnd.Y);
-        }
+                switch (dir)
+                {
+                    case CamraDataEnums.CardinalDirection.N:
+                        newDir = CamraDataEnums.CardinalDirection.S.ToString();
+                        break;
 
-        private void GetPointsFromText()
-        {
-            float x1 = 0f;
-            float y1 = 0f;
-            float x2 = 0f;
-            float y2 = 0f;
-            string dbX1 = x1TextBox.Text;
-            string dbY1 = y1TextBox.Text;
-            string dbX2 = x2TextBox.Text;
-            string dbY2 = y2TextBox.Text;
-            float.TryParse(dbX1, out x1);
-            float.TryParse(dbY1, out y1);
-            float.TryParse(dbX2, out x2);
-            float.TryParse(dbY2, out y2);
-            dbStart = new PointF(x1, y1);
-            dbEnd = new PointF(x2, y2);
+                    case CamraDataEnums.CardinalDirection.NE:
+                        newDir = CamraDataEnums.CardinalDirection.SE.ToString();
+                        break;
+
+                    case CamraDataEnums.CardinalDirection.E:
+                        newDir = CamraDataEnums.CardinalDirection.E.ToString();
+                        break;
+
+                    case CamraDataEnums.CardinalDirection.SE:
+                        newDir = CamraDataEnums.CardinalDirection.NE.ToString();
+                        break;
+
+                    case CamraDataEnums.CardinalDirection.S:
+                        newDir = CamraDataEnums.CardinalDirection.N.ToString();
+                        break;
+
+                    case CamraDataEnums.CardinalDirection.SW:
+                        newDir = CamraDataEnums.CardinalDirection.NW.ToString();
+                        break;
+
+                    case CamraDataEnums.CardinalDirection.W:
+                        newDir = CamraDataEnums.CardinalDirection.W.ToString();
+                        break;
+
+                    case CamraDataEnums.CardinalDirection.NW:
+                        newDir = CamraDataEnums.CardinalDirection.SW.ToString();
+                        break;
+
+                    case CamraDataEnums.CardinalDirection.None:
+                        break;
+
+                    default:
+                        newDir = string.Empty;
+                        break;
+                }
+                l.Direction = newDir;
+                l.StartY = l.StartY * -1M;
+                l.EndY = l.EndY * -1M;
+
+            }
+            SketchUpGlobals.SketchSnapshots.Add(LocalParcelCopy);
+            SMSketcher sms = new SMSketcher(LocalParcelCopy, sketchBox);
+            sms.RenderSketch();
+            sketchBox.Image = sms.SketchImage;
         }
     }
 }

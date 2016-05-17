@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
@@ -47,7 +48,166 @@ namespace SketchUp
             double lengthSquaredTotals = xLenSquared + yLenSquared;
             return (decimal)Math.Sqrt(lengthSquaredTotals);
         }
+        public static CamraDataEnums.CardinalDirection ReverseDirection(CamraDataEnums.CardinalDirection direction)
+        {
+            CamraDataEnums.CardinalDirection reverseDirection = direction;
+            switch (direction)
+            {
+                case CamraDataEnums.CardinalDirection.E:
+                    {
+                        reverseDirection = CamraDataEnums.CardinalDirection.W;
+                        break;
+                    }
+                case CamraDataEnums.CardinalDirection.NE:
+                    {
+                       reverseDirection = CamraDataEnums.CardinalDirection.NW;
+                        break;
+                    }
+                case CamraDataEnums.CardinalDirection.SE:
+                    {
+                       reverseDirection = CamraDataEnums.CardinalDirection.SW;
+                        break;
+                    }
+                case CamraDataEnums.CardinalDirection.W:
+                    {
+                       reverseDirection = CamraDataEnums.CardinalDirection.E;
+                        break;
+                    }
+                case CamraDataEnums.CardinalDirection.NW:
+                    {
+                       reverseDirection = CamraDataEnums.CardinalDirection.NE;
+                        break;
+                    }
+                case CamraDataEnums.CardinalDirection.SW:
+                    {
+                       reverseDirection = CamraDataEnums.CardinalDirection.SE;
+                        break;
+                    }
 
+                case CamraDataEnums.CardinalDirection.S:
+                    {
+                       reverseDirection = CamraDataEnums.CardinalDirection.N;
+                        break;
+                    }
+                case CamraDataEnums.CardinalDirection.N:
+                    {
+                       reverseDirection = CamraDataEnums.CardinalDirection.S;
+                        break;
+                    }
+
+                default:
+                    Console.WriteLine(string.Format("Error occurred in {0}, in procedure {1}.\n{2} is not a valid direction value.", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, direction));
+                    break;
+            }
+
+            return reverseDirection;
+        }
+        public static string ReverseDirection(string direction)
+        {
+            string reverseDirection = direction;
+            switch (direction)
+            {
+                case "E":
+                    {
+                        reverseDirection = "W";
+                        break;
+                    }
+                case "NE":
+                    {
+                        reverseDirection = "NW";
+                        break;
+                    }
+                case "SE":
+                    {
+                        reverseDirection = "SW";
+                        break;
+                    }
+                case "W":
+                    {
+                        reverseDirection = "E";
+                        break;
+                    }
+                case "NW":
+                    {
+                        reverseDirection = "NE";
+                        break;
+                    }
+                case "SW":
+                    {
+                        reverseDirection = "SE";
+                        break;
+                    }
+
+                case "S":
+                    {
+                        reverseDirection = "N";
+                        break;
+                    }
+                case "N":
+                    {
+                        reverseDirection = "S";
+                        break;
+                    }
+
+                default:
+                    Console.WriteLine(string.Format("Error occurred in {0}, in procedure {1}.\n{2} is not a valid direction value.", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, direction));
+                    break;
+            }
+
+            return reverseDirection;
+        }
+        public static CamraDataEnums.CardinalDirection DirectionFromString(string direction)
+        {
+            CamraDataEnums.CardinalDirection dir= CamraDataEnums.CardinalDirection.None;
+            switch (direction)
+          
+            {
+                case "E":
+                    {
+                        dir = CamraDataEnums.CardinalDirection.E; 
+                        break;
+                    }
+                case "NE":
+                    {
+                        dir = CamraDataEnums.CardinalDirection.NE;
+                        break;
+                    }
+                case "SE":
+                    {
+                        dir = CamraDataEnums.CardinalDirection.SE;
+                        break;
+                    }
+                case "W":
+                    {
+                        dir = CamraDataEnums.CardinalDirection.W;
+                        break;
+                    }
+                case "NW":
+                    {
+                        dir = CamraDataEnums.CardinalDirection.NW;
+                        break;
+                    }
+                case "SW":
+                    {
+                        dir = CamraDataEnums.CardinalDirection.SW;
+                        break;
+                    }
+
+                case "S":
+                    {
+                        dir = CamraDataEnums.CardinalDirection.S;
+                        break;
+                    }
+                case "N":
+                    {
+                        dir = CamraDataEnums.CardinalDirection.N;
+                        break;
+                    }
+                default:
+                    break;
+            }
+            return dir;
+        }
         public static decimal LargerDecimal(decimal firstNumber, decimal secondNumber)
         {
             if (secondNumber >= firstNumber)

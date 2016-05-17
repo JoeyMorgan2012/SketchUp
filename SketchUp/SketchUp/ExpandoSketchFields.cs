@@ -213,8 +213,7 @@ namespace SketchUp
         private DataTable SectionTable = null;
 
         //  private static List<int> savcnt;
-        private SMParcel selectedParcel;
-
+       
         private string SketchCard = String.Empty;
         private string SketchFolder = String.Empty;
         private Bitmap sketchImage;
@@ -245,11 +244,13 @@ namespace SketchUp
         private Point[] unadj_pts;
         private decimal XadjR = 0;
         private decimal YadjR = 0;
-
+        private SMSection workingSection;
+        private string lastSectionLetter;
         #endregion private fields
 
         #region Public Fields
-
+        
+        
         public static bool _cantSketch = false;
         public static bool _deleteMaster = false;
         public static bool _deleteThisSketch = false;
@@ -908,18 +909,7 @@ namespace SketchUp
             }
         }
 
-        public SMParcel SelectedParcel
-        {
-            get
-            {
-                return selectedParcel;
-            }
-
-            set
-            {
-                selectedParcel = value;
-            }
-        }
+       
 
         public Bitmap SketchImage
         {
@@ -1012,6 +1002,34 @@ namespace SketchUp
             set
             {
                 _newSectionPoints = value;
+            }
+        }
+
+        public SMSection WorkingSection
+        {
+            get
+            {
+                workingSection = LocalParcelCopy.SelectSectionByLetter(LastSectionLetter);
+                return workingSection;
+            }
+
+            set
+            {
+                workingSection = value;
+            }
+        }
+
+        public string LastSectionLetter
+        {
+            get
+            {
+                lastSectionLetter = LocalParcelCopy.LastSectionLetter;
+                return lastSectionLetter;
+            }
+
+            set
+            {
+                lastSectionLetter = value;
             }
         }
 
