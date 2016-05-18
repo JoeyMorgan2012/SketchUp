@@ -718,6 +718,10 @@ namespace SketchUp
         {
             get
             {
+                if (legalMoveDirections==null)
+                {
+                    legalMoveDirections = new List<string>();
+                }
                 return legalMoveDirections;
             }
 

@@ -48,6 +48,7 @@
             this.ExpSketchPBox = new System.Windows.Forms.PictureBox();
             this.SketchStatusBar = new System.Windows.Forms.StatusStrip();
             this.sketchStatusMain = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.ExpandoSketchTools.SuspendLayout();
             this.AddSectionContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgSections)).BeginInit();
@@ -95,7 +96,7 @@
             this.jumpToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("jumpToolStripMenuItem.Image")));
             this.jumpToolStripMenuItem.Name = "jumpToolStripMenuItem";
             this.jumpToolStripMenuItem.ShowShortcutKeys = false;
-            this.jumpToolStripMenuItem.Size = new System.Drawing.Size(229, 26);
+            this.jumpToolStripMenuItem.Size = new System.Drawing.Size(231, 26);
             this.jumpToolStripMenuItem.Text = "Jump to Nearest Corner";
             this.jumpToolStripMenuItem.ToolTipText = "Jump to Nearest Corner (Choose Section Type to Enable";
             this.jumpToolStripMenuItem.Click += new System.EventHandler(this.jumpToolStripMenuItem_Click);
@@ -236,14 +237,14 @@
             this.ExpSketchPBox.TabStop = false;
             this.ExpSketchPBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ExpSketchPbox_MouseClick);
             this.ExpSketchPBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ExpSketchPbox_MouseDown);
-            this.ExpSketchPBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ExpSketchPbox_MouseMove);
             this.ExpSketchPBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ExpSketchPbox_MouseUp);
             // 
             // SketchStatusBar
             // 
             this.SketchStatusBar.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.SketchStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.sketchStatusMain});
+            this.sketchStatusMain,
+            this.statusLabel});
             this.SketchStatusBar.Location = new System.Drawing.Point(0, 577);
             this.SketchStatusBar.Name = "SketchStatusBar";
             this.SketchStatusBar.Size = new System.Drawing.Size(1014, 22);
@@ -252,7 +253,12 @@
             // sketchStatusMain
             // 
             this.sketchStatusMain.Name = "sketchStatusMain";
-            this.sketchStatusMain.Size = new System.Drawing.Size(0, 17);
+            this.sketchStatusMain.Size = new System.Drawing.Size(0, 19);
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(0, 19);
             // 
             // ExpandoSketch
             // 
@@ -303,5 +309,6 @@
         private System.Windows.Forms.ToolStripButton tsbExitSketch;
         private System.Windows.Forms.StatusStrip SketchStatusBar;
         private System.Windows.Forms.ToolStripStatusLabel sketchStatusMain;
+        private System.Windows.Forms.ToolStripStatusLabel statusLabel;
     }
 }
