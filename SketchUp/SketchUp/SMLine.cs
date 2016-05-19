@@ -104,7 +104,7 @@ namespace SketchUp
         {
             get
             {
-                lineLength = (decimal)SMGlobal.LineLength(new PointF((float)StartX, (float)StartY), new PointF((float)EndX, (float)EndY));
+                lineLength = SMGlobal.LineLength(new PointF((float)StartX, (float)StartY), new PointF((float)EndX, (float)EndY));
                 return lineLength;
             }
 
@@ -157,8 +157,7 @@ namespace SketchUp
         {
             get
             {
-                //float drawingStartX = (float)(StartX + ParentParcel.OffsetX);
-                //float drawingStartY = (float)(StartY + ParentParcel.OffsetY);
+                
                 startPoint = new PointF((float)StartX, (float)StartY);
                 return startPoint;
             }

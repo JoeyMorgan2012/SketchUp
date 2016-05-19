@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 namespace SketchUp
@@ -43,23 +45,14 @@ namespace SketchUp
             NoMovement
         }
 
-        public enum SketchDrawingState
+        public enum DrawingState
         {
-            BeginPointSelected,
-            DeletingSection,
+         
             Drawing,
-            FormLoaded,
-            EditingSectionDescription,
-            JumpMoveToBeginPoint,
             JumpPointSelected,
-            SavedToDb,
-            Saving,
             SectionAdded,
-            SectionClosed,
             SketchLoaded,
-            UndoAll,
-            UndoLastLine,
-            UndoSection
+            
         }
 
         #endregion Enums
@@ -69,7 +62,7 @@ namespace SketchUp
         #region private fields
 
         private static bool checkDirection = false;
-        private static SketchDrawingState sketchingState=SketchDrawingState.FormLoaded;
+        private static DrawingState editState=DrawingState.SketchLoaded;
         private Image _baseImage;
         private SWallTech.CAMRA_Connection _conn = null;
         private int _curLineCnt = 0;
@@ -162,7 +155,7 @@ namespace SketchUp
         private int lineCnt = 0;
         private int LineNumberToBreak = 0;
         private string Locality = String.Empty;
-        private SMParcel localParcelCopy;
+     
         private string midDirect = String.Empty;
         private int midLine = 0;
         private string midSection = String.Empty;
@@ -731,18 +724,7 @@ namespace SketchUp
             }
         }
 
-        public SMParcel LocalParcelCopy
-        {
-            get
-            {
-                return localParcelCopy;
-            }
-
-            set
-            {
-                localParcelCopy = value;
-            }
-        }
+     
 
         public Image MainImage
         {
@@ -980,17 +962,63 @@ namespace SketchUp
             }
         }
 
-        private static SketchDrawingState SketchingState
+        private  DrawingState EditState
         {
             get
             {
-                return sketchingState;
+    return editState;
             }
 
             set
             {
-                sketchingState = value;
+                  ShowState(value);
+                editState = value;
+              
+                
             }
+        }
+
+        private void ShowState(DrawingState value)
+        {
+            string message = string.Empty;
+            switch (value)
+            {
+                case DrawingState.Drawing:
+                    message = string.Format("Drawing Section {0}", WorkingSection.SectionLabel);
+                    break;
+                case DrawingState.JumpPointSelected:
+                    StringBuilder directions = new StringBuilder();
+                    if (LegalMoveDirections.Count>0)
+                    {
+
+                    }
+                    int counter = 1;
+                    foreach (string s in LegalMoveDirections.Distinct())
+                    {
+                        if (counter < LegalMoveDirections.Count)
+                        {
+                            directions.AppendFormat("{0}, ", s);
+                        }
+                        else
+                        {
+                            directions.AppendFormat("{0}", s);
+                        }
+                        counter++;
+                    }
+
+                 
+                    message = string.Format("Move ({0}) to set start, or click \"Begin\" to start drawing the section here.",directions.ToString());
+                    break;
+                case DrawingState.SectionAdded:
+                    message = string.Format("Added Section {0}. Right-click to select the nearest corner as a reference point.", WorkingSection.SectionLabel);
+                    break;
+                case DrawingState.SketchLoaded:
+                    message = string.Format("Ready to edit the sketch of record {0}", SketchUpGlobals.ParcelWorkingCopy.Record);
+                    break;
+                default:
+                    break;
+            }
+            DisplayStatus(message);
         }
 
         private List<PointF> NewSectionPoints
@@ -1013,7 +1041,7 @@ namespace SketchUp
         {
             get
             {
-                workingSection = LocalParcelCopy.SelectSectionByLetter(LastSectionLetter);
+                workingSection = SketchUpGlobals.ParcelWorkingCopy.SelectSectionByLetter(LastSectionLetter);
                 return workingSection;
             }
 
@@ -1027,7 +1055,7 @@ namespace SketchUp
         {
             get
             {
-                lastSectionLetter = LocalParcelCopy.LastSectionLetter;
+                lastSectionLetter = SketchUpGlobals.ParcelWorkingCopy.LastSectionLetter;
                 return lastSectionLetter;
             }
 

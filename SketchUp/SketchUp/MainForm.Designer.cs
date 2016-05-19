@@ -143,7 +143,6 @@
             this.sketchBox.Size = new System.Drawing.Size(718, 589);
             this.sketchBox.TabIndex = 9;
             this.sketchBox.TabStop = false;
-            this.sketchBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.sketchBox_MouseMove);
             // 
             // EditImage
             // 

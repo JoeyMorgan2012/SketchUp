@@ -47,8 +47,8 @@
             this.fontDialog1 = new System.Windows.Forms.FontDialog();
             this.ExpSketchPBox = new System.Windows.Forms.PictureBox();
             this.SketchStatusBar = new System.Windows.Forms.StatusStrip();
-            this.sketchStatusMain = new System.Windows.Forms.ToolStripStatusLabel();
-            this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.sketchStatusMessage = new System.Windows.Forms.ToolStripStatusLabel();
+            this.snapshotIndexLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.ExpandoSketchTools.SuspendLayout();
             this.AddSectionContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgSections)).BeginInit();
@@ -86,8 +86,7 @@
             this.AddSectionContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.jumpToolStripMenuItem});
             this.AddSectionContextMenu.Name = "contextMenuStrip1";
-            this.AddSectionContextMenu.Size = new System.Drawing.Size(230, 30);
-            this.AddSectionContextMenu.Click += new System.EventHandler(this.beginPointToolStripMenuItem_Click);
+            this.AddSectionContextMenu.Size = new System.Drawing.Size(232, 30);
             // 
             // jumpToolStripMenuItem
             // 
@@ -98,7 +97,7 @@
             this.jumpToolStripMenuItem.ShowShortcutKeys = false;
             this.jumpToolStripMenuItem.Size = new System.Drawing.Size(231, 26);
             this.jumpToolStripMenuItem.Text = "Jump to Nearest Corner";
-            this.jumpToolStripMenuItem.ToolTipText = "Jump to Nearest Corner (Choose Section Type to Enable";
+            this.jumpToolStripMenuItem.ToolTipText = "Jump to Nearest Corner (Add section to Enable";
             this.jumpToolStripMenuItem.Click += new System.EventHandler(this.jumpToolStripMenuItem_Click);
             // 
             // BeginSectionBtn
@@ -243,22 +242,32 @@
             // 
             this.SketchStatusBar.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.SketchStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.sketchStatusMain,
-            this.statusLabel});
-            this.SketchStatusBar.Location = new System.Drawing.Point(0, 577);
+            this.sketchStatusMessage,
+            this.snapshotIndexLabel});
+            this.SketchStatusBar.Location = new System.Drawing.Point(0, 575);
             this.SketchStatusBar.Name = "SketchStatusBar";
-            this.SketchStatusBar.Size = new System.Drawing.Size(1014, 22);
+            this.SketchStatusBar.Size = new System.Drawing.Size(1014, 24);
             this.SketchStatusBar.TabIndex = 3;
             // 
-            // sketchStatusMain
+            // sketchStatusMessage
             // 
-            this.sketchStatusMain.Name = "sketchStatusMain";
-            this.sketchStatusMain.Size = new System.Drawing.Size(0, 19);
+            this.sketchStatusMessage.AutoSize = false;
+            this.sketchStatusMessage.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.sketchStatusMessage.Name = "sketchStatusMessage";
+            this.sketchStatusMessage.Padding = new System.Windows.Forms.Padding(2, 0, 6, 0);
+            this.sketchStatusMessage.Size = new System.Drawing.Size(480, 19);
+            this.sketchStatusMessage.Spring = true;
+            this.sketchStatusMessage.Text = "Sketch Loaded";
+            this.sketchStatusMessage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // statusLabel
+            // snapshotIndexLabel
             // 
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(0, 19);
+            this.snapshotIndexLabel.AutoSize = false;
+            this.snapshotIndexLabel.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.snapshotIndexLabel.Name = "snapshotIndexLabel";
+            this.snapshotIndexLabel.Padding = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.snapshotIndexLabel.Size = new System.Drawing.Size(480, 19);
+            this.snapshotIndexLabel.Spring = true;
             // 
             // ExpandoSketch
             // 
@@ -308,7 +317,7 @@
         private System.Windows.Forms.FontDialog fontDialog1;
         private System.Windows.Forms.ToolStripButton tsbExitSketch;
         private System.Windows.Forms.StatusStrip SketchStatusBar;
-        private System.Windows.Forms.ToolStripStatusLabel sketchStatusMain;
-        private System.Windows.Forms.ToolStripStatusLabel statusLabel;
+        private System.Windows.Forms.ToolStripStatusLabel sketchStatusMessage;
+        private System.Windows.Forms.ToolStripStatusLabel snapshotIndexLabel;
     }
 }

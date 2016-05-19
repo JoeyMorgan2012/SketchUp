@@ -133,7 +133,7 @@ namespace SketchUp
             sketcher.SketchFont = new Font("Segue UI", 6);
             sketcher.PenColor = Color.Blue;
             sketcher.SketchPen = new Pen(sketcher.PenColor, 2);
-            sketcher.RenderSketch(true);
+            sketcher.RenderSketch();
             sketchBox.Image = sketcher.SketchImage;
         }
 
@@ -528,7 +528,7 @@ namespace SketchUp
             {
             }
             SMSketcher sms = new SMSketcher(SketchUpGlobals.ParcelWorkingCopy, sketchBox);
-            sms.RenderSketch(true);
+            sms.RenderSketch();
             SketchUpGlobals.SketchImage = sms.SketchImage;
             sketchBox.Image = SketchUpGlobals.SketchImage;
         }
@@ -968,10 +968,7 @@ namespace SketchUp
 
         #endregion SMParcel Initializations
 
-        private void sketchBox_MouseMove(object sender, MouseEventArgs e)
-        {
-            statusMessage.Text = string.Format("{0},{1}", e.X, e.Y);
-        }
+      
 
         private void timer_Tick(object sender, EventArgs e)
         {
