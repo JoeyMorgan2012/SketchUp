@@ -35,6 +35,8 @@ namespace SketchUp
 
 #endregion
 
+#region "Enums"
+
         public enum AuxAreaTypes
         {
             BEGR,
@@ -192,5 +194,7 @@ namespace SketchUp
             VacantCommercial = 25,
             MobileHomePark = 27
         }
+
+#endregion
     }
 }

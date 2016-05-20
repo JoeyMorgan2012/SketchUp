@@ -229,6 +229,7 @@ namespace SketchUp
         private SMParcel parcel;
         private int propertyClass;
         private int record;
-        
+        private decimal totalSquareFootage;
+               
     }
 }

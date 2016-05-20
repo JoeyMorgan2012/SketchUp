@@ -130,6 +130,7 @@
     <Compile Include="CamraSupport\AllStructureSections.cs" />
     <Compile Include="CamraSupport\AngleVector.cs" />
     <Compile Include="CamraSupport\CamraDataEnums.cs" />
+    <Compile Include="CamraSupport\LivingAreaSectionTypes.cs" />
     <Compile Include="CamraSupport\ResidentialSections.cs" />
     <Compile Include="UtilityClasses\SketchUpLookups.cs" />
     <Compile Include="CamraSupport\StabType.cs" />
@@ -195,7 +196,7 @@
       <DependentUpon>MultiSectionSelection.cs</DependentUpon>
     </Compile>
     <Compile Include="ParcelChangedEventArgs.cs" />
-    <Compile Include="JumpPointLine.cs" />
+    <Compile Include="DrawOnlyLine.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rates.cs" />

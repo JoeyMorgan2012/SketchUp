@@ -86,7 +86,7 @@
             this.AddSectionContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.jumpToolStripMenuItem});
             this.AddSectionContextMenu.Name = "contextMenuStrip1";
-            this.AddSectionContextMenu.Size = new System.Drawing.Size(232, 30);
+            this.AddSectionContextMenu.Size = new System.Drawing.Size(230, 30);
             // 
             // jumpToolStripMenuItem
             // 
@@ -95,7 +95,7 @@
             this.jumpToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("jumpToolStripMenuItem.Image")));
             this.jumpToolStripMenuItem.Name = "jumpToolStripMenuItem";
             this.jumpToolStripMenuItem.ShowShortcutKeys = false;
-            this.jumpToolStripMenuItem.Size = new System.Drawing.Size(231, 26);
+            this.jumpToolStripMenuItem.Size = new System.Drawing.Size(229, 26);
             this.jumpToolStripMenuItem.Text = "Jump to Nearest Corner";
             this.jumpToolStripMenuItem.ToolTipText = "Jump to Nearest Corner (Add section to Enable";
             this.jumpToolStripMenuItem.Click += new System.EventHandler(this.jumpToolStripMenuItem_Click);
@@ -255,7 +255,7 @@
             this.sketchStatusMessage.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.sketchStatusMessage.Name = "sketchStatusMessage";
             this.sketchStatusMessage.Padding = new System.Windows.Forms.Padding(2, 0, 6, 0);
-            this.sketchStatusMessage.Size = new System.Drawing.Size(480, 19);
+            this.sketchStatusMessage.Size = new System.Drawing.Size(499, 19);
             this.sketchStatusMessage.Spring = true;
             this.sketchStatusMessage.Text = "Sketch Loaded";
             this.sketchStatusMessage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -266,7 +266,7 @@
             this.snapshotIndexLabel.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.snapshotIndexLabel.Name = "snapshotIndexLabel";
             this.snapshotIndexLabel.Padding = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.snapshotIndexLabel.Size = new System.Drawing.Size(480, 19);
+            this.snapshotIndexLabel.Size = new System.Drawing.Size(499, 19);
             this.snapshotIndexLabel.Spring = true;
             // 
             // ExpandoSketch

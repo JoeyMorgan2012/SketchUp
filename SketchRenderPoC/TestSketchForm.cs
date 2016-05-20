@@ -149,30 +149,31 @@ namespace SketchUp
             line2.ParentParcel = LocalParcelCopy;
             newSection.Lines.Add(line2);
 
-            SMLine line3 = new SMLine(newSection);
-            line3.StartX = 73;
-            line3.StartY = -7;
-            line3.EndX = 63;
-            line3.EndY = -7;
-            line3.SectionLetter = newSection.SectionLetter;
-            line3.Direction = "W";
-            line3.LineNumber = 3;
-            line3.XLength = 10;
-            line3.YLength = 0;
-            line3.ParentParcel = LocalParcelCopy;
-            newSection.Lines.Add(line3);
-            SMLine line4 = new SMLine(newSection);
-            line4.StartX = 63;
-            line4.StartY = -7;
-            line4.EndX = 63;
-            line4.EndY = 3;
-            line4.SectionLetter = newSection.SectionLetter;
-            line4.Direction = "S";
-            line4.LineNumber = 4;
-            line4.XLength = 0;
-            line4.YLength = 10;
-            line4.ParentParcel = LocalParcelCopy;
-            newSection.Lines.Add(line4);
+            //SMLine line3 = new SMLine(newSection);
+            //line3.StartX = 73;
+            //line3.StartY = -7;
+            //line3.EndX = 63;
+            //line3.EndY = -7;
+            //line3.SectionLetter = newSection.SectionLetter;
+            //line3.Direction = "W";
+            //line3.LineNumber = 3;
+            //line3.XLength = 10;
+            //line3.YLength = 0;
+            //line3.ParentParcel = LocalParcelCopy;
+            //newSection.Lines.Add(line3);
+
+            //SMLine line4 = new SMLine(newSection);
+            //line4.StartX = 63;
+            //line4.StartY = -7;
+            //line4.EndX = 63;
+            //line4.EndY = 3;
+            //line4.SectionLetter = newSection.SectionLetter;
+            //line4.Direction = "S";
+            //line4.LineNumber = 4;
+            //line4.XLength = 0;
+            //line4.YLength = 10;
+            //line4.ParentParcel = LocalParcelCopy;
+            //newSection.Lines.Add(line4);
 
             LocalParcelCopy.Sections.Add(newSection);
             LocalParcelCopy.SnapShotIndex++;
@@ -206,7 +207,7 @@ namespace SketchUp
         {
             SMSketcher sms = new SMSketcher(LocalParcelCopy, sketchBox);
 
-            sms.RenderSketch(true);
+            sms.RenderSketch(LocalParcelCopy.LastSectionLetter);
             sketchBox.Image = sms.SketchImage;
         }
 
@@ -266,7 +267,7 @@ namespace SketchUp
                     AttachmentSection = (from s in LocalParcelCopy.Sections where s.SectionLetter == AttSectLtr select s).FirstOrDefault();
                     JumpPointLine = connectionLines[0];
                 }
-
+                DbJumpPoint = JumpPointLine.EndPoint;
                 ScaledJumpPoint = JumpPointLine.ScaledEndPoint;
                 LegalMoveDirections = GetLegalMoveDirections(ScaledJumpPoint, AttSectLtr);
                 MoveCursorToScreenPoint(ScaledJumpPoint);
@@ -414,7 +415,7 @@ namespace SketchUp
             SketchUpGlobals.SketchSnapshots.Add(LocalParcelCopy);
             GreenBrush = Brushes.MidnightBlue;
             SMSketcher sms = new SMSketcher(LocalParcelCopy, sketchBox);
-            sms.RenderSketch(true);
+            sms.RenderSketch(LocalParcelCopy.LastSectionLetter);
             sketchBox.Image = sms.SketchImage;
 
             feedbackStatus.Text = string.Format("Breaking line D-{0} at {1:N2},{2:N2}...", line1Number, breakPoint1.X, breakPoint1.Y);
@@ -429,7 +430,7 @@ namespace SketchUp
             GreenBrush = Brushes.MidnightBlue;
             feedbackStatus.Text = string.Format("Breaking line D-{0} at {1:N2},{2:N2}...", line2Number, breakPoint2.X, breakPoint2.Y);
             SMSketcher sms = new SMSketcher(LocalParcelCopy, sketchBox);
-            sms.RenderSketch(true);
+             sms.RenderSketch(LocalParcelCopy.LastSectionLetter);
             sketchBox.Image = sms.SketchImage;
 
             LabelLinesOffsetNeg(SectionD, line1Number);
@@ -518,7 +519,7 @@ namespace SketchUp
         private void RenderSketch(PictureBox targetControl)
         {
             SMSketcher sms = new SMSketcher(LocalParcelCopy, targetControl);
-            sms.RenderSketch(true);
+             sms.RenderSketch(LocalParcelCopy.LastSectionLetter);
             targetControl.Image = sms.SketchImage;
         }
 
@@ -1018,6 +1019,12 @@ namespace SketchUp
             }
         }
 
+        public PointF DbJumpPoint
+        {
+            get;
+            private set;
+        }
+
         private Pen orangePen;
 
         #endregion Properties
@@ -1048,7 +1055,49 @@ namespace SketchUp
             graphics.Clear(Color.White);
             RenderSketch(sketchBox);
         }
+        private void AddTestScreenLine()
+        {
+            PointF screenStart = ScaledJumpPoint;
+            PointF dbStart = DbJumpPoint;
+            decimal distance = 10;
+            CamraDataEnums.CardinalDirection direction = CamraDataEnums.CardinalDirection.W;
+            decimal xDistance = 0.00M;
+            decimal yDistance = 0.00M;
+            LocalParcelCopy.DrawOnlyLines.Clear();
+            SMLine JumpPointLine = LocalParcelCopy.SelectLineBySectionAndNumber("D", 4);
+            DbJumpPoint = JumpPointLine.EndPoint;
+            ScaledJumpPoint = SMGlobal.DbPointToScaledPoint((decimal)DbJumpPoint.X, (decimal)DbJumpPoint.Y, LocalParcelCopy.Scale, LocalParcelCopy.SketchOrigin);
+          
+            DrawOnlyLine dol = new DrawOnlyLine();
+            dol.Direction = direction.ToString();
+            dol.StartX = (decimal)dbStart.X;
+            dol.EndX = (decimal)dbStart.X + distance;
+            dol.StartY = (decimal)dbStart.Y;
+            dol.EndY = (decimal)dbStart.Y;
+            dol.XLength = xDistance;
+            dol.YLength = yDistance;
+            dol.ParentParcel = JumpPointLine.ParentParcel;
+            dol.ParentSection = JumpPointLine.ParentSection;
 
+            LocalParcelCopy.DrawOnlyLines.Add(dol);
+
+            direction = CamraDataEnums.CardinalDirection.N;
+            dol = new DrawOnlyLine();
+            dol.Direction = direction.ToString();
+            dol.StartX = (decimal)dbStart.X;
+            dol.EndX = (decimal)dbStart.X + distance;
+            dol.StartY = (decimal)dbStart.Y;
+            dol.EndY = (decimal)dbStart.Y;
+            dol.XLength = xDistance;
+            dol.YLength = yDistance;
+            dol.ParentParcel = JumpPointLine.ParentParcel;
+            dol.ParentSection = JumpPointLine.ParentSection;
+
+            LocalParcelCopy.DrawOnlyLines.Add(dol);
+            SMSketcher sms = new SMSketcher(LocalParcelCopy, sketchBox);
+            sms.RenderSketch(LocalParcelCopy.LastSectionLetter);
+            sketchBox.Image = sms.SketchImage;
+        }
         private void cmenuJump_Click(object sender, EventArgs e)
         {
             JumpToNearestCorner();
@@ -1185,7 +1234,7 @@ namespace SketchUp
             }
             
             SMSketcher sms = new SMSketcher(LocalParcelCopy, sketchBox);
-            sms.RenderSketch();
+            sms.RenderSketch(LocalParcelCopy.LastSectionLetter);
             sketchBox.Image = sms.SketchImage;
         }
 
@@ -1338,7 +1387,8 @@ namespace SketchUp
         private void pictTest1_DoubleClick(object sender, EventArgs e)
         {
             SMSketcher sms = new SMSketcher(LocalParcelCopy, sketchBox);
-            sms.RenderSketch(false);
+            sms.RenderSketch(LocalParcelCopy.LastSectionLetter);
+            
             sketchBox.Image = sms.SketchImage;
         }
 
@@ -1348,15 +1398,19 @@ namespace SketchUp
             sms.RenderSketch();
             sketchBox.Image = sms.SketchImage;
             SMSection lastSection = parcel.SelectSectionByLetter(parcel.LastSectionLetter);
+            if (lastSection.Lines != null && lastSection.Lines.Count > 0)
+            {
 
-            int lastLineNumber = (from l in lastSection.Lines select l.LineNumber).Max();
 
-            SMLine lastLine = lastSection.Lines.Where(l => l.LineNumber == lastLineNumber).FirstOrDefault();
-            MessageBox.Show(string.Format("I will now Undo line {0}-{1}...", lastSection.SectionLetter, lastLine.LineNumber));
-            lastSection.Lines.Remove(lastLine);
-            sms = new SMSketcher(parcel, sketchBox);
-            sms.RenderSketch();
-            sketchBox.Image = sms.SketchImage;
+                int lastLineNumber = (from l in lastSection.Lines select l.LineNumber).Max();
+
+                SMLine lastLine = lastSection.Lines.Where(l => l.LineNumber == lastLineNumber).FirstOrDefault();
+                MessageBox.Show(string.Format("I will now Undo line {0}-{1}...", lastSection.SectionLetter, lastLine.LineNumber));
+                lastSection.Lines.Remove(lastLine);
+                sms = new SMSketcher(parcel, sketchBox);
+                sms.RenderSketch(parcel.LastSectionLetter);
+                sketchBox.Image = sms.SketchImage;
+            }
         }
 
         private SMSection ReorganizedSection(SMLineManager lm, SMSection section)
@@ -1402,7 +1456,8 @@ namespace SketchUp
             SMSketcher sms = new SMSketcher(LocalParcelCopy, sketchBox);
             sms.RenderSketch();
             AddNewTestSection();
-            DrawSections();
+
+            sms.RenderSketch(LocalParcelCopy.LastSectionLetter);
         }
 
         private void runTest4_Click(object sender, EventArgs e)
@@ -1586,8 +1641,13 @@ namespace SketchUp
             }
             SketchUpGlobals.SketchSnapshots.Add(LocalParcelCopy);
             SMSketcher sms = new SMSketcher(LocalParcelCopy, sketchBox);
-            sms.RenderSketch();
+            sms.RenderSketch(LocalParcelCopy.LastSectionLetter);
             sketchBox.Image = sms.SketchImage;
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            AddTestScreenLine();
         }
     }
 }

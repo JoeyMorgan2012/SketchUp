@@ -50,7 +50,6 @@
             this.debugInfoStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.debugInfoLabel = new System.Windows.Forms.Label();
             this.sketchBox = new System.Windows.Forms.PictureBox();
-            this.sketchUpGlobalsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.x1TextBox = new System.Windows.Forms.TextBox();
             this.y1TextBox = new System.Windows.Forms.TextBox();
             this.x2TextBox = new System.Windows.Forms.TextBox();
@@ -68,12 +67,14 @@
             this.tsbDrawTeal = new System.Windows.Forms.ToolStripButton();
             this.tsbMoveToPoint = new System.Windows.Forms.ToolStripButton();
             this.infoLabel = new System.Windows.Forms.Label();
+            this.addScreenLine = new System.Windows.Forms.ToolStripMenuItem();
+            this.sketchUpGlobalsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.MainMenu.SuspendLayout();
             this.cmenuDrawing.SuspendLayout();
             this.StatusMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sketchBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.sketchUpGlobalsBindingSource)).BeginInit();
             this.toolStripMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.sketchUpGlobalsBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // MainMenu
@@ -101,6 +102,7 @@
             this.runTest1,
             this.runTest2,
             this.runTest3,
+            this.addScreenLine,
             this.runTest4,
             this.runTest5,
             this.toolStripSeparator2,
@@ -299,10 +301,6 @@
             this.sketchBox.TabIndex = 8;
             this.sketchBox.TabStop = false;
             // 
-            // sketchUpGlobalsBindingSource
-            // 
-            this.sketchUpGlobalsBindingSource.DataSource = typeof(SketchUp.SketchUpGlobals);
-            // 
             // x1TextBox
             // 
             this.x1TextBox.Location = new System.Drawing.Point(57, 606);
@@ -450,6 +448,18 @@
             this.infoLabel.TabIndex = 22;
             this.infoLabel.Text = "Info";
             // 
+            // addScreenLine
+            // 
+            this.addScreenLine.Name = "addScreenLine";
+            this.addScreenLine.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D6)));
+            this.addScreenLine.Size = new System.Drawing.Size(238, 26);
+            this.addScreenLine.Text = "Add Screen Line";
+            this.addScreenLine.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
+            // 
+            // sketchUpGlobalsBindingSource
+            // 
+            this.sketchUpGlobalsBindingSource.DataSource = typeof(SketchUp.SketchUpGlobals);
+            // 
             // TestSketchForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -485,9 +495,9 @@
             this.StatusMain.ResumeLayout(false);
             this.StatusMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sketchBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.sketchUpGlobalsBindingSource)).EndInit();
             this.toolStripMain.ResumeLayout(false);
             this.toolStripMain.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.sketchUpGlobalsBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -540,6 +550,7 @@
         private System.Windows.Forms.Label infoLabel;
         private System.Windows.Forms.ToolStripMenuItem runTest4;
         private System.Windows.Forms.ToolStripMenuItem runTest5;
+        private System.Windows.Forms.ToolStripMenuItem addScreenLine;
     }
 }
 
