@@ -48,7 +48,22 @@ namespace SketchUp
             RMAP,
             RMTS
         }
-
+        //public static List<string> Letters = new List<string>() { "A", "B", "C", "D", "F", "G", "H", "I", "J", "K", "L", "M" };
+        public enum Letters
+        {
+            A,
+            B,
+            C,
+            D,
+            F,
+            G,
+            H,
+            I,
+            J,
+            K,
+            L,
+            M
+        }
         /*
          public static List<string> AuxAreaTypes = new List<string>() { "BEGR", "EGAR", "FEGR", "RMAD", "SUNR", "RMAF", "RMAP", "RMTS" };
         */

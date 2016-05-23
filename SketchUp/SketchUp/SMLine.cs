@@ -230,13 +230,6 @@ namespace SketchUp
         {
         }
 
-        public SMLine(int recordNumber, int dwellingNumber, string letter)
-        {
-            record = recordNumber;
-            dwelling = dwellingNumber;
-            sectionLetter = letter;
-        }
-
         public SMLine(SMSection section)
         {
             record = section.Record;

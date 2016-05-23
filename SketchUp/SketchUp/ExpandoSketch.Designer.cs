@@ -86,7 +86,7 @@
             this.AddSectionContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.jumpToolStripMenuItem});
             this.AddSectionContextMenu.Name = "contextMenuStrip1";
-            this.AddSectionContextMenu.Size = new System.Drawing.Size(230, 30);
+            this.AddSectionContextMenu.Size = new System.Drawing.Size(232, 30);
             // 
             // jumpToolStripMenuItem
             // 
@@ -95,7 +95,7 @@
             this.jumpToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("jumpToolStripMenuItem.Image")));
             this.jumpToolStripMenuItem.Name = "jumpToolStripMenuItem";
             this.jumpToolStripMenuItem.ShowShortcutKeys = false;
-            this.jumpToolStripMenuItem.Size = new System.Drawing.Size(229, 26);
+            this.jumpToolStripMenuItem.Size = new System.Drawing.Size(231, 26);
             this.jumpToolStripMenuItem.Text = "Jump to Nearest Corner";
             this.jumpToolStripMenuItem.ToolTipText = "Jump to Nearest Corner (Add section to Enable";
             this.jumpToolStripMenuItem.Click += new System.EventHandler(this.jumpToolStripMenuItem_Click);
@@ -201,7 +201,7 @@
             this.DrawingDoneBtn.Size = new System.Drawing.Size(135, 24);
             this.DrawingDoneBtn.Text = "<Done Drawing>";
             this.DrawingDoneBtn.ToolTipText = "Click when you have added all lines in the section.";
-            this.DrawingDoneBtn.Click += new System.EventHandler(this.DoneDrawingBtn_Click);
+            this.DrawingDoneBtn.Click += new System.EventHandler(this.DrawingDoneBtn_Click);
             // 
             // tsbExitSketch
             // 

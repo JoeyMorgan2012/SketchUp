@@ -289,16 +289,21 @@ namespace SketchUp
 
         private SMLine FindAnchorLine()
         {
-            SMLine anchorline = new SMLine(ParentParcel.Record, ParentParcel.Card, "A");
+            SMLine anchorline = new SMLine(this);
             if (SectionLetter != "A")
             {
                 anchorline = (from l in ParentParcel.AllSectionLines where l.AttachedSection == SectionLetter select l).FirstOrDefault<SMLine>();
-                if (anchorLine == null)
-                {
-                    return new SMLine(ParentParcel.Record, ParentParcel.Card, "A");
-                }
+               
             }
-
+            else
+            {
+                    anchorline= new SMLine(this);
+                
+            }
+            if (anchorLine == null)
+            {
+                anchorline = new SMLine(this);
+            }
             return anchorline;
         }
 

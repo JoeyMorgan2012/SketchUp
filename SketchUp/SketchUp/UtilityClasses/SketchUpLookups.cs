@@ -640,6 +640,23 @@ namespace SketchUp
             }
         }
 
+        public static List<string> Letters
+        {
+            get
+            {
+                if (letters==null || letters.Count==0)
+                {
+                    letters = CamraDataEnums.GetEnumStrings(typeof(CamraDataEnums.Letters)).ToList();
+                }
+                return letters;
+            }
+
+            set
+            {
+                letters = value;
+            }
+        }
+
         #endregion
 
         #region "Fields"
@@ -660,6 +677,7 @@ namespace SketchUp
         private static List<string> garageTypes;
         private static List<StabType> occupancyCollection;
         private static List<OccupancyDescription> occupancyDescriptionCollection;
+        private static List<string> letters;
         private static List<string> porchTypes;
         private static List<StabType> rat1AllTypes;
         private static List<int> residentialOccupancyCodes;

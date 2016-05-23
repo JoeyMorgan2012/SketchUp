@@ -322,7 +322,7 @@ namespace SketchUp
 
         private void RetrieveAndShowCurrentSketchImage()
         {
-            MainFormParcel = SketchUpGlobals.ParcelWorkingCopy;
+            MainFormParcel = SketchUpGlobals.SMParcelFromData;
             SMSketcher sms = new SMSketcher(MainFormParcel, sketchBox);
             sms.RenderSketch();
             SketchUpGlobals.SketchImage = sms.SketchImage;

@@ -10,8 +10,8 @@ namespace SketchUp
     {
         decimal xDistanceScaled;
         decimal yDistanceScaled;
-        decimal xDistanceEntered;
-        decimal yDistanceEntered;
+        decimal xLength;
+        decimal yLength;
         
         CamraDataEnums.CardinalDirection angledLineDirection;
        
@@ -31,29 +31,29 @@ namespace SketchUp
 
        
 
-        public decimal XDistanceEntered
+        public decimal XLength
         {
             get
             {
-                return xDistanceEntered;
+                return xLength;
             }
 
             set
             {
-                xDistanceEntered = value;
+                xLength = value;
             }
         }
 
-        public decimal YDistanceEntered
+        public decimal YLength
         {
             get
             {
-                return yDistanceEntered;
+                return yLength;
             }
 
             set
             {
-                yDistanceEntered = value;
+                yLength = value;
             }
         }
     }
