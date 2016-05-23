@@ -410,85 +410,21 @@ namespace SketchUp
 
         public void TestBreakLine1()
         {
-            SMSection SectionD = BreakSectionLine(sectionLetter, line1Number, breakPoint1, newSectionLetter);
-            LocalParcelCopy.SnapShotIndex += 1;
-            SketchUpGlobals.SketchSnapshots.Add(LocalParcelCopy);
-            GreenBrush = Brushes.MidnightBlue;
-            SMSketcher sms = new SMSketcher(LocalParcelCopy, sketchBox);
-            sms.RenderSketch(LocalParcelCopy.LastSectionLetter);
-            sketchBox.Image = sms.SketchImage;
+            ////SMSection SectionD = BreakSectionLine(sectionLetter, line1Number, breakPoint1, newSectionLetter);
+            //LocalParcelCopy.SnapShotIndex += 1;
+            //SketchUpGlobals.SketchSnapshots.Add(LocalParcelCopy);
+            //GreenBrush = Brushes.MidnightBlue;
+            //SMSketcher sms = new SMSketcher(LocalParcelCopy, sketchBox);
+            //sms.RenderSketch(LocalParcelCopy.LastSectionLetter);
+            //sketchBox.Image = sms.SketchImage;
 
-            feedbackStatus.Text = string.Format("Breaking line D-{0} at {1:N2},{2:N2}...", line1Number, breakPoint1.X, breakPoint1.Y);
-            LabelLinesOffsetNeg(SectionD, line1Number);
+            //feedbackStatus.Text = string.Format("Breaking line D-{0} at {1:N2},{2:N2}...", line1Number, breakPoint1.X, breakPoint1.Y);
+            //LabelLinesOffsetNeg(SectionD, line1Number);
         }
 
-        public void TestBreakLine2()
-        {
-            SMSection SectionD = BreakSectionLine(sectionLetter, line1Number, breakPoint1, newSectionLetter);
-            LocalParcelCopy.SnapShotIndex += 1;
-            SketchUpGlobals.SketchSnapshots.Add(LocalParcelCopy);
-            GreenBrush = Brushes.MidnightBlue;
-            feedbackStatus.Text = string.Format("Breaking line D-{0} at {1:N2},{2:N2}...", line2Number, breakPoint2.X, breakPoint2.Y);
-            SMSketcher sms = new SMSketcher(LocalParcelCopy, sketchBox);
-             sms.RenderSketch(LocalParcelCopy.LastSectionLetter);
-            sketchBox.Image = sms.SketchImage;
+     
 
-            LabelLinesOffsetNeg(SectionD, line1Number);
-        }
 
-        public void TestCombinabilityOfLines()
-        {
-            string sectionLetter = "D";
-            int line1Number = 3;
-            feedbackStatus.Text = "Combining Lines D3 & D4 again.";
-            SMLineManager lm = new SMLineManager();
-            string newSectionLetter = "G";
-            PointF breakPoint1 = new PointF(-10, -2);
-            PointF breakPoint2 = new PointF(0, -12);
-            string pointLabel = string.Empty;
-            SMSection SectionD = BreakSectionLine(sectionLetter, line1Number, breakPoint1, newSectionLetter);
-            RenderSketch(sketchBox);
-            int lastLineNumber = (from l in SectionD.Lines select l.LineNumber).Max();
-            foreach (SMLine line in SectionD.Lines)
-            {
-                if (line.LineNumber < lastLineNumber)
-                {
-                    SMLine nextLine = (from l in SectionD.Lines where l.LineNumber == line.LineNumber + 1 select l).FirstOrDefault();
-                    Console.WriteLine(string.Format("Comparing lines {0} and {1}", line.LineNumber, nextLine.LineNumber));
-                    bool canCombine = lm.LinesCanBeCombined(line, nextLine);
-                    Console.WriteLine(string.Format("Lines {0} and {1} {2} be combined.", line.LineNumber, nextLine.LineNumber, canCombine ? "can" : "cannot"));
-                }
-                else
-                {
-                    SMLine nextLine = (from l in SectionD.Lines where l.LineNumber == 1 select l).FirstOrDefault();
-                    Console.WriteLine(string.Format("Comparing lines {0} and {1}", line.LineNumber, nextLine.LineNumber));
-                    bool canCombine = lm.LinesCanBeCombined(line, nextLine);
-                    Console.WriteLine(string.Format("Lines {0} and {1} {2} be combined.", line.LineNumber, nextLine.LineNumber, canCombine ? "can" : "cannot"));
-                }
-            }
-        }
-
-        private SMSection BreakSectionLine(string sectionLetter, int lineNumber, PointF breakPoint, string newSectionLetter = "")
-        {
-            LocalParcelCopy = SketchUpGlobals.ParcelWorkingCopy;
-
-            SMLineManager lm = new SMLineManager();
-
-            SMSection SectionD =
-               SketchUpGlobals.ParcelWorkingCopy.SelectSectionByLetter(sectionLetter);
-            List<SMLine> sectionlinesD = SectionD.Lines;
-
-            SMParcel parcel = lm.BreakLine(LocalParcelCopy, sectionLetter, lineNumber,
-                  breakPoint1, SketchOrigin, newSectionLetter);
-            List<SMLine> sectionDwithBokenLine = (from s in
-             parcel.Sections.Where(l => l.SectionLetter == sectionLetter)
-                                                  select s).FirstOrDefault<SMSection>().Lines;
-            SectionD.Lines = sectionDwithBokenLine;
-            parcel.SnapShotIndex++;
-            SketchUpGlobals.SketchSnapshots.Add(parcel);
-            LocalParcelCopy = SketchUpGlobals.ParcelWorkingCopy;
-            return SectionD;
-        }
 
         private void LabelLinesOffsetNeg(SMSection selectedSection, int startWithLine = 1)
         {
@@ -1163,7 +1099,7 @@ namespace SketchUp
 
         private void editSectionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TestCombinabilityOfLines();
+            
         }
 
         private void EditSketchForm_Paint(object sender, PaintEventArgs e)

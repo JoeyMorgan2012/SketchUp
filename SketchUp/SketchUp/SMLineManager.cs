@@ -13,13 +13,13 @@ namespace SketchUp
     {
         #region Breaking a line
 
-             public SMParcel BreakLine(SMParcel parcelCopy, string sectionLetter,
-            int lineNumber, PointF breakPoint, PointF sketchOrigin)
+        public SMParcel BreakLine(SMParcel parcelCopy, string sectionLetter,
+       int lineNumber, PointF breakPoint)
         {
             List<SMLine> linesOut = new List<SMLine>();
 
             SMLine originalLine = (from l in
-                parcelCopy.Sections.Where(s => s.SectionLetter == sectionLetter).FirstOrDefault<SMSection>().Lines.Where(n => n.LineNumber
+                parcelCopy.Sections.Where(s => s.SectionLetter == sectionLetter).FirstOrDefault().Lines.Where(n => n.LineNumber
                     == lineNumber)
                                    select l).FirstOrDefault<SMLine>();
 
@@ -33,13 +33,13 @@ namespace SketchUp
                 SMLine Line2 = SecondHalfOfLine(breakPoint, originalLine);
                 List<SMLine> linesBefore = (from l in parcelCopy.Sections.Where(s =>
                     s.SectionLetter ==
-                    sectionLetter).FirstOrDefault<SMSection>().Lines.Where(n =>
+                    sectionLetter).FirstOrDefault().Lines.Where(n =>
                     n.LineNumber < originalLine.LineNumber)
                                             select
          l).ToList();
                 List<SMLine> linesAfter = (from l in parcelCopy.Sections.Where(s =>
                    s.SectionLetter ==
-                   sectionLetter).FirstOrDefault<SMSection>().Lines.Where(n =>
+                   sectionLetter).FirstOrDefault().Lines.Where(n =>
                    n.LineNumber > originalLine.LineNumber)
                                            select l).ToList();
                 foreach (SMLine line in linesAfter)
@@ -51,41 +51,31 @@ namespace SketchUp
                 linesOut.Add(Line2);
                 linesOut.AddRange(linesAfter);
                 parcelCopy.Sections.Where(s => s.SectionLetter ==
-                    sectionLetter).FirstOrDefault<SMSection>().Lines =
+                    sectionLetter).FirstOrDefault().Lines =
                     linesOut;
             }
             return parcelCopy;
         }
 
-        public SMParcel BreakLine(SMParcel parcelCopy, string sectionLetter,
-      int lineNumber, PointF breakPoint, PointF sketchOrigin, string newSectionLetter)
+        public SMSection SectionWithLineBreak(SMSection section, int lineNumber, PointF breakPoint)
         {
             List<SMLine> linesOut = new List<SMLine>();
 
-            SMLine originalLine = (from l in
-                parcelCopy.Sections.Where(s => s.SectionLetter == sectionLetter).FirstOrDefault<SMSection>().Lines.Where(n => n.LineNumber
-                    == lineNumber)
-                                   select l).FirstOrDefault<SMLine>();
-
-            bool validBreakPoint =
-                SMGlobal.PointIsOnLine(originalLine.StartPoint,
-                originalLine.EndPoint, breakPoint);
+            SMLine originalLine = 
+                (from l in section.Lines
+                 .Where(n => n.LineNumber== lineNumber)
+                 select l).FirstOrDefault();
+            bool validBreakPoint = 
+                SMGlobal.PointIsOnLine(originalLine.StartPoint, originalLine.EndPoint, breakPoint);
             if (validBreakPoint)
             {
                 SMLine Line1 = FirstHalfOfLine(breakPoint, originalLine);
-
                 SMLine Line2 = SecondHalfOfLine(breakPoint, originalLine, "");
-                List<SMLine> linesBefore = (from l in parcelCopy.Sections.Where(s =>
-                    s.SectionLetter ==
-                    sectionLetter).FirstOrDefault<SMSection>().Lines.Where(n =>
-                    n.LineNumber < originalLine.LineNumber)
-                                            select
-         l).ToList();
-                List<SMLine> linesAfter = (from l in parcelCopy.Sections.Where(s =>
-                   s.SectionLetter ==
-                   sectionLetter).FirstOrDefault<SMSection>().Lines.Where(n =>
-                   n.LineNumber > originalLine.LineNumber)
-                                           select l).ToList();
+                List<SMLine> linesBefore = (from l in section.Lines.Where(n => n.LineNumber < originalLine.LineNumber) select l).ToList();
+                List<SMLine> linesAfter = 
+                    (from l in section.Lines
+                     .Where(n =>n.LineNumber > originalLine.LineNumber)
+                     select l).ToList();
                 foreach (SMLine line in linesAfter)
                 {
                     line.LineNumber += 1;
@@ -94,74 +84,9 @@ namespace SketchUp
                 linesOut.Add(Line1);
                 linesOut.Add(Line2);
                 linesOut.AddRange(linesAfter);
-                parcelCopy.Sections.Where(s => s.SectionLetter ==
-                    sectionLetter).FirstOrDefault<SMSection>().Lines =
-                    linesOut;
+                section.Lines = linesOut;
             }
-            return parcelCopy;
-        }
-
-        private SMLine CopyLineWithNewEndPoint(SMLine originalLine, PointF breakPoint, PointF sketchOrigin)
-        {
-            try
-            {
-                decimal sketchScale = originalLine.ParentParcel.Scale;
-                SMLine newLine = originalLine;
-                newLine.EndX = (decimal)breakPoint.X;
-                newLine.EndY = (decimal)breakPoint.Y;
-                newLine.XLength = Math.Abs(newLine.EndX - newLine.StartX);
-                newLine.YLength = Math.Abs(newLine.EndY - newLine.StartY);
-                var lineStartX = (float)((newLine.StartX * sketchScale) + (decimal)sketchOrigin.Y);
-                var lineStartY = (float)((newLine.StartY * sketchScale) + (decimal)sketchOrigin.Y);
-                newLine.ScaledStartPoint = new PointF(lineStartX, lineStartY);
-                return newLine;
-            }
-            catch (Exception ex)
-            {
-                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
-                Trace.WriteLine(errMessage);
-                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
-#if DEBUG
-
-                MessageBox.Show(errMessage);
-#endif
-                throw;
-            }
-        }
-
-        private SMLine CopyWithNewStartPoint(SMLine originalLine, PointF breakPoint, PointF sketchOrigin)
-        {
-            decimal sketchScale = originalLine.ParentParcel.Scale;
-            SMLine newLine = originalLine;
-            newLine.StartX = (decimal)breakPoint.X;
-            newLine.StartY = (decimal)breakPoint.Y;
-            newLine.XLength = Math.Abs(newLine.EndX - newLine.StartX);
-            newLine.YLength = Math.Abs(newLine.EndY - newLine.StartY);
-            var lineStartX = (float)((newLine.StartX * sketchScale) + (decimal)sketchOrigin.Y);
-            var lineStartY = (float)((newLine.StartY * sketchScale) + (decimal)sketchOrigin.Y);
-            newLine.ScaledStartPoint = new PointF(lineStartX, lineStartY);
-            newLine.LineNumber = originalLine.LineNumber + 1;
-            return newLine;
-        }
-
-        private SMLine FirstHalfOfLine(PointF breakPoint, SMLine originalLine)
-        {
-            return new SMLine
-            {
-                AttachedSection = originalLine.AttachedSection,
-                ComparisonPoint = originalLine.ComparisonPoint,
-                Direction = originalLine.Direction,
-                Dwelling = originalLine.Dwelling,
-                LineNumber = originalLine.LineNumber,
-                SectionLetter = originalLine.SectionLetter,
-                ParentParcel = originalLine.ParentParcel,
-                ParentSection = originalLine.ParentSection,
-                Record = originalLine.Record,
-                StartX = originalLine.StartX,
-                StartY = originalLine.StartY,
-                EndX = (decimal)breakPoint.X,
-                EndY = (decimal)breakPoint.Y
-            };
+            return section;
         }
 
         public List<SMLine> LinesConnectedToJumpPoint(SMParcel parcel, PointF scaledJumpPoint)
@@ -228,9 +153,73 @@ namespace SketchUp
             };
         }
 
+        private SMLine CopyLineWithNewEndPoint(SMLine originalLine, PointF breakPoint, PointF sketchOrigin)
+        {
+            try
+            {
+                decimal sketchScale = originalLine.ParentParcel.Scale;
+                SMLine newLine = originalLine;
+                newLine.EndX = (decimal)breakPoint.X;
+                newLine.EndY = (decimal)breakPoint.Y;
+                newLine.XLength = Math.Abs(newLine.EndX - newLine.StartX);
+                newLine.YLength = Math.Abs(newLine.EndY - newLine.StartY);
+                var lineStartX = (float)((newLine.StartX * sketchScale) + (decimal)sketchOrigin.Y);
+                var lineStartY = (float)((newLine.StartY * sketchScale) + (decimal)sketchOrigin.Y);
+                newLine.ScaledStartPoint = new PointF(lineStartX, lineStartY);
+                return newLine;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+                Trace.WriteLine(errMessage);
+                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+#if DEBUG
+
+                MessageBox.Show(errMessage);
+#endif
+                throw;
+            }
+        }
+
+        private SMLine CopyWithNewStartPoint(SMLine originalLine, PointF breakPoint, PointF sketchOrigin)
+        {
+            decimal sketchScale = originalLine.ParentParcel.Scale;
+            SMLine newLine = originalLine;
+            newLine.StartX = (decimal)breakPoint.X;
+            newLine.StartY = (decimal)breakPoint.Y;
+            newLine.XLength = Math.Abs(newLine.EndX - newLine.StartX);
+            newLine.YLength = Math.Abs(newLine.EndY - newLine.StartY);
+            var lineStartX = (float)((newLine.StartX * sketchScale) + (decimal)sketchOrigin.Y);
+            var lineStartY = (float)((newLine.StartY * sketchScale) + (decimal)sketchOrigin.Y);
+            newLine.ScaledStartPoint = new PointF(lineStartX, lineStartY);
+            newLine.LineNumber = originalLine.LineNumber + 1;
+            return newLine;
+        }
+
+        private SMLine FirstHalfOfLine(PointF breakPoint, SMLine originalLine)
+        {
+            return new SMLine
+            {
+                AttachedSection = originalLine.AttachedSection,
+                ComparisonPoint = originalLine.ComparisonPoint,
+                Direction = originalLine.Direction,
+                Dwelling = originalLine.Dwelling,
+                LineNumber = originalLine.LineNumber,
+                SectionLetter = originalLine.SectionLetter,
+                ParentParcel = originalLine.ParentParcel,
+                ParentSection = originalLine.ParentSection,
+                Record = originalLine.Record,
+                StartX = originalLine.StartX,
+                StartY = originalLine.StartY,
+                EndX = (decimal)breakPoint.X,
+                EndY = (decimal)breakPoint.Y
+            };
+        }
+
         #endregion Breaking a line
 
         #region Combining lines
+
         // Not implemented until second release! JMM 04-26-16
         public SMLine CombinedLines(SMLine firstLine, SMLine secondLine)
         {
@@ -277,6 +266,7 @@ namespace SketchUp
             return canBeCombined;
         }
 
-        #endregion Combining lines 
+        #endregion Combining lines
+
     }
 }

@@ -306,6 +306,7 @@ namespace SketchUp
                 if (parcelMast == null)
                 {
                     parcelMast = SketchMgrRepo.SelectParcelMasterWithParcel(record, card);
+                    SMParcelFromData = parcelMast.Parcel;
                 }
                 return parcelMast;
             }
@@ -431,13 +432,14 @@ namespace SketchUp
         {
             get
             {
-                currentSMParcel = SketchMgrRepo.SelectParcelMasterWithParcel(record, card).Parcel;
-                return currentSMParcel;
+
+                smParcelFromData = SketchMgrRepo.SelectParcelMasterWithParcel(record, card).Parcel;
+                return smParcelFromData;
             }
 
             set
             {
-                currentSMParcel = value;
+                smParcelFromData = value;
             }
         }
 
@@ -448,7 +450,7 @@ namespace SketchUp
         private static int card = 0;
         private static int checker = 0;
         private static Image currentSketchImage;
-        private static SMParcel currentSMParcel;
+        private static SMParcel smParcelFromData;
         private static DBAccessManager dbAccessMgr = null;
         private static decimal defaultScale;
         private static int fcCard = 0;

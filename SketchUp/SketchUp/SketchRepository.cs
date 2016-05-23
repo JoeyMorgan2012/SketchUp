@@ -86,6 +86,7 @@ namespace SketchUp
                         parcelMast.Parcel = WorkingCopyOfParcel;
                     }
                 }
+                return parcelMast;
             }
             catch (Exception ex)
             {
@@ -99,7 +100,7 @@ namespace SketchUp
 
                 throw;
             }
-            return parcelMast;
+         
         }
 
         private List<SMSection> SelectParcelSections(SMParcel parcel)
