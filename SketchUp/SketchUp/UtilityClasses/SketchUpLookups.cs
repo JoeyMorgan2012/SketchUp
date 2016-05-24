@@ -64,6 +64,7 @@ namespace SketchUp
             InitializeRatTableCollectionLists(conn);
             GetClassValuesData(db);
             GetResidentialSections(db);
+            GetLivingAreaSections(db);
             GetCommercialSections(db);
             GetDeckTypes(db);
             GetAllPorchTypes(db);
@@ -87,15 +88,15 @@ namespace SketchUp
                     {
                         sectList.Add(new ListOrComboBoxItem { Code = cs._commSectionType, Description = string.Format("{0} - {1}",cs._commSectionType,cs._commSectionDescription )});
                     }
-                    List<ResidentialSections> commOk = (from rs in ResidentialSectionTypeCollection where !CamraDataEnums.GetEnumStrings(typeof(CamraDataEnums.InvalidCommercialSection)).Contains(rs._resSectionType) select rs).ToList();
-                    foreach (ResidentialSections rs in commOk.OrderBy(c=>c._resSectionDescription))
+                    List<ResidentalSections> commOk = (from rs in ResidentialSectionTypeCollection where !CamraDataEnums.GetEnumStrings(typeof(CamraDataEnums.InvalidCommercialSection)).Contains(rs._resSectionType) select rs).ToList();
+                    foreach (ResidentalSections rs in commOk.OrderBy(c=>c._resSectionDescription))
                     {
                         sectList.Add(new ListOrComboBoxItem { Code = rs._resSectionType, Description = string.Format("{0} - {1}",rs._resSectionType,rs._resSectionDescription) });
                     }
                    
                     break;
                 case CamraDataEnums.OccupancyType.Residential:
-                    foreach (ResidentialSections rs in ResidentialSectionTypeCollection.OrderBy(s=>s._resSectionDescription))
+                    foreach (ResidentalSections rs in ResidentialSectionTypeCollection.OrderBy(s=>s._resSectionDescription))
                     {
                         sectList.Add(new ListOrComboBoxItem { Code = rs._resSectionType, Description = string.Format("{0} - {1}", rs._resSectionType, rs._resSectionDescription) });
                     }
@@ -104,7 +105,7 @@ namespace SketchUp
 
                 case CamraDataEnums.OccupancyType.Vacant:
                 case CamraDataEnums.OccupancyType.Other:
-                    foreach (ResidentialSections rs in ResidentialSectionTypeCollection.OrderBy(s=>s._resSectionDescription))
+                    foreach (ResidentalSections rs in ResidentialSectionTypeCollection.OrderBy(s=>s._resSectionDescription))
                     {
                         sectList.Add(new ListOrComboBoxItem { Code = rs._resSectionType, Description = string.Format("{0} - {1}", rs._resSectionType, rs._resSectionDescription) });
                     }
@@ -117,7 +118,7 @@ namespace SketchUp
                 default:
                     break;
             }
-            foreach (ResidentialSections rs in ResidentialSectionTypeCollection.OrderBy(s => s._resSectionDescription))
+            foreach (ResidentalSections rs in ResidentialSectionTypeCollection.OrderBy(s => s._resSectionDescription))
             {
                 ListOrComboBoxItem sli= new ListOrComboBoxItem { Code = rs._resSectionType, Description = string.Format("{0} - {1}", rs._resSectionType, rs._resSectionDescription) };
                 sectList.Add(sli);
@@ -303,13 +304,15 @@ namespace SketchUp
       
         private static void GetResidentialSections(DBAccessManager db)
         {
-            DataSet ds_residentialSection = db.RunSelectStatement(String.Format(
-
-            "select rsecto,rdesc,rrpsf from {0}.{1}rat1 where rid = 'P' ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPrefix));
+            string sql = 
+                string.Format("SELECT RSECTO,RDESC,RRPSF FROM {0}.{1}RAT1 WHERE RID = 'P' ",
+                SketchUpGlobals.LocalLib, 
+                SketchUpGlobals.LocalityPrefix);
+            DataSet ds_residentialSection = db.RunSelectStatement(sql);
             foreach (DataRow row in ds_residentialSection.Tables[0].Rows)
             {
-                string residentialSectionType = Convert.ToString(row["rsecto"].ToString());
-                var residentialBuildingSection = new ResidentialSections()
+             
+                var residentialBuildingSection = new ResidentalSections()
                 {
                     _resSectionType = row["rsecto"].ToString().Trim(),
                     _resSectionDescription = row["rdesc"].ToString().Trim(),
@@ -317,14 +320,28 @@ namespace SketchUp
                 };
                 ResidentialSectionTypeCollection.Add(residentialBuildingSection);
             }
-            var livingAreaTypes = (from r in ResidentialSectionTypeCollection where r._resSectionRate == 0 select r).ToList();
-            foreach (ResidentialSections r in livingAreaTypes)
+          
+        }
+        private static void GetLivingAreaSections(DBAccessManager db)
+        {
+            string sql = 
+                string.Format("SELECT RSECTO,RDESC,RRPSF FROM {0}.{1}RAT1 WHERE RID IN ('P','C') AND RRPSF = 0 AND RSECTO NOT IN ( 'Z01' ,'TRPK')", 
+                SketchUpGlobals.LocalLib, 
+                SketchUpGlobals.LocalityPrefix);
+            DataSet ds_LASection = db.RunSelectStatement(sql);
+            foreach (DataRow row in ds_LASection.Tables[0].Rows)
             {
-                LivingAreaSectionTypes la = new LivingAreaSectionTypes { _LAattSectionType = r._resSectionType, _LAattSectionDescription = r._resSectionDescription, _LAattSectionRate = r._resSectionRate };
+               
+                var la = new LivingAreaSectionTypes()
+                {
+                    _LAattSectionType = row["RSECTO"].ToString().Trim(),
+                    _LAattSectionDescription = row["RDESC"].ToString().Trim(),
+                    _LAattSectionRate= Convert.ToDecimal(row["RRPSF"].ToString()),
+                };
                 LivingAreaSectionTypeCollection.Add(la);
             }
-        }
 
+        }
         private static void GetStabFileData(DBAccessManager db)
         {
             // Modified for location-specific STAB and DESC files -- JMM 04-13-2016
@@ -371,7 +388,7 @@ namespace SketchUp
             Rat1AllTypes = new List<StabType>();
             Rates.Rate1Master = new Rat1Master(conn);
             ResidentialOccupancies = new List<int>();
-            ResidentialSectionTypeCollection = new List<ResidentialSections>();
+            ResidentialSectionTypeCollection = new List<ResidentalSections>();
             ScrnPorchTypes = new List<string>();
 
             Rates.ClassValues = new SortedDictionary<string, decimal>();
@@ -603,7 +620,7 @@ namespace SketchUp
             }
         }
 
-        public static List<ResidentialSections> ResidentialSectionTypeCollection
+        public static List<ResidentalSections> ResidentialSectionTypeCollection
         {
             get
             {
@@ -681,7 +698,7 @@ namespace SketchUp
         private static List<string> porchTypes;
         private static List<StabType> rat1AllTypes;
         private static List<int> residentialOccupancyCodes;
-        private static List<ResidentialSections> residentialSectionTypeCollection;
+        private static List<ResidentalSections> residentialSectionTypeCollection;
         private static List<string> scrnPorchTypes;
         private static List<LivingAreaSectionTypes> livingAreaSectionTypeCollection;
 #endregion

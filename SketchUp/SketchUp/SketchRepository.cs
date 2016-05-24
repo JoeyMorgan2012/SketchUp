@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
@@ -39,7 +40,7 @@ namespace SketchUp
         public SMParcelMast SelectParcelMasterWithParcel(int recordNumber, int dwellingNumber)
         {
             SMParcelMast parcelMast = new SMParcelMast();
-            string selectSql = string.Format("SELECT MRECNO AS RECORD, MDWELL AS DWELLING, MOCCUP AS OCCUPANCYCODE,MCLASS  AS PROPERTYCLASS, MGART  AS GARAGE1TYPE, MGAR#C AS GARAGE1NUMCARS, MCARPT AS CARPORTTYPECODE, MCAR#C AS CARPORTNUMCARS, MGART2 AS GARAGE2TYPECODE, MGAR#2 AS GARAGE2NUMCARS,MBI#C AS NUMCARSBUILTINCODE,MSTOR#  AS MASTERPARCELSTOREYS FROM {0} WHERE MRECNO={1} AND MDWELL={2}", SketchConnection.MastTable, recordNumber, dwellingNumber);
+            string selectSql = string.Format("SELECT MRECNO AS RECORD, MDWELL AS DWELLING, MOCCUP AS OCCUPANCYCODE,MCLASS  AS PROPERTYCLASS, MGART  AS GARAGE1TYPE, MGAR#C AS GARAGE1NUMCARS, MCARPT AS CARPORTTYPECODE, MCAR#C AS CARPORTNUMCARS, MGART2 AS GARAGE2TYPECODE, MGAR#2 AS GARAGE2NUMCARS,MBI#C AS NUMCARSBUILTINCODE,MSTOR#  AS MASTERPARCELSTOREYS,MTOTA as TOTALAREA  FROM {0} WHERE MRECNO={1} AND MDWELL={2}", SketchConnection.MastTable, recordNumber, dwellingNumber);
             DataSet parcelMastData = SketchConnection.DbConn.DBConnection.RunSelectStatement(selectSql);
 
             try
@@ -53,8 +54,10 @@ namespace SketchUp
                 int numCarsBuiltInCode = 0;
                 int occupancyCode = 0;
                 int propertyClass = 0;
+                decimal totalLivingArea = 0.00M;
                 decimal masterParcelStoreys;
-                if (parcelMastData.Tables[0].Rows.Count > 0)
+
+                if (parcelMastData.Tables!=null&& parcelMastData.Tables.Count>0&&parcelMastData.Tables[0].Rows.Count > 0)
                 {
                     foreach (DataRow row in parcelMastData.Tables[0].Rows)
                     {
@@ -70,6 +73,7 @@ namespace SketchUp
                         Int32.TryParse(row["GARAGE2NUMCARS"].ToString().Trim(), out garage2NumCars);
                         Int32.TryParse(row["NUMCARSBUILTINCODE"].ToString().Trim(), out numCarsBuiltInCode);
                         decimal.TryParse(row["MASTERPARCELSTOREYS"].ToString().Trim(), out masterParcelStoreys);
+                        decimal.TryParse(row["TOTALAREA"].ToString(), out totalLivingArea);
                         parcelMast.Record = recordNumber;
                         parcelMast.Card = dwellingNumber;
                         parcelMast.OccupancyCode = occupancyCode;
@@ -81,6 +85,7 @@ namespace SketchUp
                         parcelMast.Garage2TypeCode = garage2TypeCode;
                         parcelMast.PropertyClass = propertyClass;
                         parcelMast.MasterParcelStoreys = masterParcelStoreys;
+                        parcelMast.TotalSquareFootage = totalLivingArea;
                         WorkingCopyOfParcel = SelectParcelWithSectionsAndLines(recordNumber, dwellingNumber);
                         WorkingCopyOfParcel.ParcelMast = parcelMast;
                         parcelMast.Parcel = WorkingCopyOfParcel;
@@ -276,7 +281,107 @@ namespace SketchUp
         #endregion Selects for SketchManager Classes
 
         #endregion DAL Methods
+        #region Sketch Management Methods
+        private void DeleteSectionAndReorganize(SMParcel parcel,SMSection section)
+        {
+            try
+            {
+                List<SMSection> sectionsBeforeDelete = parcel.Sections.OrderBy(l => l.SectionLetter).ToList();
 
+#if DEBUG
+                DevUtilities du = new DevUtilities();
+                Trace.WriteLine(du.ParcelInfo(parcel));
+#endif
+
+                AddSketchToSnapshots(parcel);
+                DeleteSelectedSection(parcel,section);
+#if DEBUG
+                
+                Trace.WriteLine(du.ParcelInfo(parcel));
+#endif
+
+                ReorganizeParcel(parcel, sectionsBeforeDelete);
+#if DEBUG
+                
+                Trace.WriteLine(du.ParcelInfo(parcel));
+                Trace.Flush();
+                Trace.Close();
+#endif
+
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+                Trace.WriteLine(errMessage);
+                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+#if DEBUG
+
+                MessageBox.Show(errMessage);
+#endif
+
+
+                throw;
+            }
+        }
+
+        private void ReorganizeParcel(SMParcel parcel, List<SMSection> sectionsBeforeDelete)
+        {
+            List<SMSection> parcelSections = parcel.Sections.OrderBy(l => l.SectionLetter).ToList();
+            #if DEBUG
+                DevUtilities du = new DevUtilities();
+                Trace.WriteLine(du.ParcelInfo(parcel));
+#endif
+
+            foreach (SMSection sec in parcelSections)
+            {
+
+            }
+        }
+
+        public void DeleteSelectedSection(SMParcel parcel, SMSection section)
+        {
+            
+            if (section.SectionLetter == "A")
+            {
+                string message = "You are removing the base section! You must have a section \"A\" in place. Removing this section will remove the entire sketch, and you will have to redraw it.\n\nProceed?";
+                string title = "Delete Base Section A?";
+                MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+                MessageBoxIcon icon = MessageBoxIcon.Warning;
+                MessageBoxDefaultButton defButton = MessageBoxDefaultButton.Button2;
+                DialogResult response = MessageBox.Show(message, title, buttons, icon, defButton);
+                switch (response)
+                {
+
+                    case DialogResult.Yes:
+                        DeleteSketch();
+                        break;
+                    case DialogResult.No:
+                    default:
+                        //Do not alter the sketch
+                        break;
+                }
+            }
+            else
+            {
+
+                parcel.Sections.Remove(section);
+
+            }
+        }
+
+        private void DeleteSketch()
+        {
+                       string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
+
+#if DEBUG
+            MessageBox.Show(message);
+#else
+            Console.WriteLine(message);
+            throw new NotImplementedException();
+#endif
+        }
+        #endregion
         #region Fields
 
         private string dataSource;
@@ -555,6 +660,13 @@ namespace SketchUp
             {
                 workingCopyOfParcel = value;
             }
+        }
+
+        public SMParcel AddSketchToSnapshots(SMParcel parcel)
+        {
+            parcel.SnapShotIndex++;
+            SketchUpGlobals.SketchSnapshots.Add(parcel);
+            return SketchUpGlobals.ParcelWorkingCopy;
         }
 
         #endregion Properties

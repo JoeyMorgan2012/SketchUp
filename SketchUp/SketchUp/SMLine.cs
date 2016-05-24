@@ -6,225 +6,7 @@ namespace SketchUp
 {
     public class SMLine
     {
-        #region Class Properties
-
-        public string AttachedSection
-        {
-            get
-            {
-                return attachedSection ?? string.Empty;
-            }
-
-            set
-            {
-                attachedSection = value ?? string.Empty;
-            }
-        }
-
-        public string Direction
-        {
-            get
-            {
-                return direction.ToUpper();
-            }
-
-            set
-            {
-                direction = value.ToUpper();
-            }
-        }
-
-        public int Dwelling
-        {
-            get
-            {
-                return dwelling;
-            }
-
-            set
-            {
-                dwelling = value;
-            }
-        }
-
-        public PointF EndPoint
-        {
-            get
-            {
-                endPoint = new PointF((float)EndX, (float)EndY);
-                return endPoint;
-            }
-
-            set
-            {
-                endPoint = value;
-            }
-        }
-
-        public decimal EndX
-        {
-            get
-            {
-                return endX;
-            }
-
-            set
-            {
-                endX = value;
-            }
-        }
-
-        public decimal EndY
-        {
-            get
-            {
-                return endY;
-            }
-
-            set
-            {
-                endY = value;
-            }
-        }
-
-        public decimal LineAngle
-        {
-            get
-            {
-                return lineAngle;
-            }
-
-            set
-            {
-                lineAngle = value;
-            }
-        }
-
-        public decimal LineLength
-        {
-            get
-            {
-                lineLength = SMGlobal.LineLength(new PointF((float)StartX, (float)StartY), new PointF((float)EndX, (float)EndY));
-                return lineLength;
-            }
-
-            set
-            {
-                lineLength = value;
-            }
-        }
-
-        public int LineNumber
-        {
-            get
-            {
-                return lineNumber;
-            }
-
-            set
-            {
-                lineNumber = value;
-            }
-        }
-
-        public int Record
-        {
-            get
-            {
-                return record;
-            }
-
-            set
-            {
-                record = value;
-            }
-        }
-
-        public string SectionLetter
-        {
-            get
-            {
-                return sectionLetter;
-            }
-
-            set
-            {
-                sectionLetter = value;
-            }
-        }
-
-        public PointF StartPoint
-        {
-            get
-            {
-                
-                startPoint = new PointF((float)StartX, (float)StartY);
-                return startPoint;
-            }
-
-            set
-            {
-                startPoint = value;
-            }
-        }
-
-        public decimal StartX
-        {
-            get
-            {
-                return startX;
-            }
-
-            set
-            {
-                startX = value;
-            }
-        }
-
-        public decimal StartY
-        {
-            get
-            {
-                return startY;
-            }
-
-            set
-            {
-                startY = value;
-            }
-        }
-
-        public decimal XLength
-        {
-            get
-            {
-                xLength = (EndX - StartX);
-                return xLength;
-            }
-
-            set
-            {
-                xLength = value;
-            }
-        }
-
-        public decimal YLength
-        {
-            get
-            {
-                yLength = (EndY - StartY);
-                return yLength;
-            }
-
-            set
-            {
-                yLength = value;
-            }
-        }
-
-        #endregion Class Properties
-
-        #region Constructors
+#region "Constructor"
 
         public SMLine()
         {
@@ -239,53 +21,66 @@ namespace SketchUp
             ParentParcel = section.ParentParcel;
         }
 
-        #endregion Constructors
+#endregion
 
-        #region Fields
+#region "Public Methods"
 
-        private string attachedSection;
-        private PointF comparisonPoint;
-        private string direction;
-        private int dwelling;
-        private PointF endPoint;
-        private decimal endPointDistanceFromComparisonPoint;
-        private decimal endX;
-        private decimal endY;
-        private decimal lineAngle;
-        private string lineLabel;
-        private decimal lineLength;
-        private int lineNumber;
-        private PointF midPoint;
-        private decimal minX;
-        private decimal minY;
-        private int record;
-        private PointF scaledEndPoint;
-        private PointF scaledStartPoint;
-        private string sectionLetter;
-        private PointF startPoint;
-        private decimal startPointDistanceFromComparisonPoint;
-        private decimal startX;
-        private decimal startY;
-        private decimal xLength;
-        private decimal yLength;
-
-        #endregion Fields
-
-        #region Virtual/navigation properties
-
-        public virtual SMParcel ParentParcel
+        public PointF LineLabelPlacementPoint(PointF sketchOriginPoint)
         {
-            get; set;
+            float lineHalfWidth = Math.Abs((ScaledEndPoint.X - ScaledStartPoint.X) / 2);
+            float lineHalfHeight = Math.Abs((ScaledEndPoint.Y - ScaledStartPoint.Y) / 2);
+            float labelStartX = ScaledStartPoint.X;
+            float labelStartY = ScaledStartPoint.Y;
+            float labelLength = LineLabel.Length;
+            PointF lineMidPoint = MidPointOfLine(sketchOriginPoint);
+            switch (Direction)
+            {
+                case "E": //Left to right, label goes below line
+                          //labelStartX = ScaledStartPoint.X-(labelLength*2);
+                    labelStartX = lineMidPoint.X - ((float)ParentParcel.Scale * (labelLength / 2));
+                    labelStartY = lineMidPoint.Y + 10;
+
+                    break;
+
+                case "W": //right to left, label goes above line
+                    //labelStartX = (ScaledEndPoint.X) + ((float)(XLength * ParentParcel.Scale) / 2);
+                    labelStartX = lineMidPoint.X - ((float)ParentParcel.Scale * (labelLength / 2));
+                    labelStartY = lineMidPoint.Y - 20;
+                    break;
+
+                case "N": //Bottom to top, label goes to the left
+                    labelStartX = lineMidPoint.X - (((float)ParentParcel.Scale *(labelLength)));
+                    labelStartY = lineMidPoint.Y-10;
+                    break;
+
+                case "S": //top to bottom, label goes to the right
+                    labelStartX = lineMidPoint.X + 10;
+                    labelStartY = lineMidPoint.Y-10;
+
+                    //labelStartX = lineMidPoint.X + sketchOriginPoint.X - labelLength + 20;
+                    //labelStartY = lineMidPoint.Y + sketchOriginPoint.Y;
+                    break;
+
+                default:
+                    break;
+            }
+            PointF labelStartPoint = new PointF(labelStartX, labelStartY);
+            return labelStartPoint;
         }
 
-        public virtual SMSection ParentSection
+#endregion
+
+#region "Private methods"
+
+        private PointF ComputeScaledEndPoint(PointF endPoint, decimal scale)
         {
-            get; set;
+            decimal width = XLength * scale;
+            decimal height = YLength * scale;
+
+            endPoint = new PointF(scaledStartPoint.X + (float)+width, scaledStartPoint.Y + (float)height);
+
+            return endPoint;
         }
-
-        #endregion Virtual/navigation properties
-
-        #region private methods
 
         private string DirectionArrow()
         {
@@ -368,51 +163,20 @@ namespace SketchUp
             return midPoint;
         }
 
-        #endregion private methods
+#endregion
 
-        #region public methods
+#region "Properties"
 
-        public PointF LineLabelPlacementPoint(PointF sketchOriginPoint)
+        public string AttachedSection
         {
-            float lineHalfWidth = Math.Abs((ScaledEndPoint.X - ScaledStartPoint.X) / 2);
-            float lineHalfHeight = Math.Abs((ScaledEndPoint.Y - ScaledStartPoint.Y) / 2);
-            float labelStartX = ScaledStartPoint.X;
-            float labelStartY = ScaledStartPoint.Y;
-            float labelLength = LineLabel.Length;
-            PointF lineMidPoint = MidPointOfLine(sketchOriginPoint);
-            switch (Direction)
+            get
             {
-                case "E": //Left to right, label goes below line
-                          //labelStartX = ScaledStartPoint.X-(labelLength*2);
-                    labelStartX = lineMidPoint.X - ((float)ParentParcel.Scale * (labelLength / 2));
-                    labelStartY = lineMidPoint.Y + 10;
-
-                    break;
-
-                case "W": //right to left, label goes above line
-                    //labelStartX = (ScaledEndPoint.X) + ((float)(XLength * ParentParcel.Scale) / 2);
-                    labelStartX = lineMidPoint.X - ((float)ParentParcel.Scale * (labelLength / 2));
-                    labelStartY = lineMidPoint.Y - 20;
-                    break;
-
-                case "N": //Bottom to top, label goes to the left
-                    labelStartX = lineMidPoint.X - (((float)ParentParcel.Scale *(labelLength)));
-                    labelStartY = lineMidPoint.Y-10;
-                    break;
-
-                case "S": //top to bottom, label goes to the right
-                    labelStartX = lineMidPoint.X + 10;
-                    labelStartY = lineMidPoint.Y-10;
-
-                    //labelStartX = lineMidPoint.X + sketchOriginPoint.X - labelLength + 20;
-                    //labelStartY = lineMidPoint.Y + sketchOriginPoint.Y;
-                    break;
-
-                default:
-                    break;
+                return attachedSection ?? string.Empty;
             }
-            PointF labelStartPoint = new PointF(labelStartX, labelStartY);
-            return labelStartPoint;
+            set
+            {
+                attachedSection = value ?? string.Empty;
+            }
         }
 
         public PointF ComparisonPoint
@@ -425,10 +189,46 @@ namespace SketchUp
                 }
                 return comparisonPoint;
             }
-
             set
             {
                 comparisonPoint = value;
+            }
+        }
+
+        public string Direction
+        {
+            get
+            {
+                return direction.ToUpper();
+            }
+            set
+            {
+                direction = value.ToUpper();
+            }
+        }
+
+        public int Dwelling
+        {
+            get
+            {
+                return dwelling;
+            }
+            set
+            {
+                dwelling = value;
+            }
+        }
+
+        public PointF EndPoint
+        {
+            get
+            {
+                endPoint = new PointF((float)EndX, (float)EndY);
+                return endPoint;
+            }
+            set
+            {
+                endPoint = value;
             }
         }
 
@@ -440,10 +240,45 @@ namespace SketchUp
                 endPointDistanceFromComparisonPoint = SMGlobal.LineLength(ComparisonPoint, ScaledEndPoint);
                 return endPointDistanceFromComparisonPoint;
             }
-
             set
             {
                 endPointDistanceFromComparisonPoint = value;
+            }
+        }
+
+        public decimal EndX
+        {
+            get
+            {
+                return endX;
+            }
+            set
+            {
+                endX = value;
+            }
+        }
+
+        public decimal EndY
+        {
+            get
+            {
+                return endY;
+            }
+            set
+            {
+                endY = value;
+            }
+        }
+
+        public decimal LineAngle
+        {
+            get
+            {
+                return lineAngle;
+            }
+            set
+            {
+                lineAngle = value;
             }
         }
 
@@ -454,10 +289,34 @@ namespace SketchUp
                 lineLabel = FormattedLineLabel();
                 return lineLabel;
             }
-
             set
             {
                 lineLabel = value;
+            }
+        }
+
+        public decimal LineLength
+        {
+            get
+            {
+                lineLength = SMGlobal.LineLength(new PointF((float)StartX, (float)StartY), new PointF((float)EndX, (float)EndY));
+                return lineLength;
+            }
+            set
+            {
+                lineLength = value;
+            }
+        }
+
+        public int LineNumber
+        {
+            get
+            {
+                return lineNumber;
+            }
+            set
+            {
+                lineNumber = value;
             }
         }
 
@@ -468,7 +327,6 @@ namespace SketchUp
                 minX = SMGlobal.SmallerDecimal(StartX, EndX);
                 return minX;
             }
-
             set
             {
                 minX = value;
@@ -482,10 +340,31 @@ namespace SketchUp
                 minY = SMGlobal.SmallerDecimal(StartY, EndY);
                 return minY;
             }
-
             set
             {
                 minY = value;
+            }
+        }
+
+        public virtual SMParcel ParentParcel
+        {
+            get; set;
+        }
+
+        public virtual SMSection ParentSection
+        {
+            get; set;
+        }
+
+        public int Record
+        {
+            get
+            {
+                return record;
+            }
+            set
+            {
+                record = value;
             }
         }
 
@@ -496,21 +375,10 @@ namespace SketchUp
                 scaledEndPoint = ComputeScaledEndPoint(EndPoint, ParentParcel.Scale);
                 return scaledEndPoint;
             }
-
             set
             {
                 scaledEndPoint = value;
             }
-        }
-
-        private PointF ComputeScaledEndPoint(PointF endPoint, decimal scale)
-        {
-            decimal width = XLength * scale;
-            decimal height = YLength * scale;
-
-            endPoint = new PointF(scaledStartPoint.X + (float)+width, scaledStartPoint.Y + (float)height);
-
-            return endPoint;
         }
 
         public PointF ScaledStartPoint
@@ -519,10 +387,35 @@ namespace SketchUp
             {
                 return scaledStartPoint;
             }
-
             set
             {
                 scaledStartPoint = value;
+            }
+        }
+
+        public string SectionLetter
+        {
+            get
+            {
+                return sectionLetter;
+            }
+            set
+            {
+                sectionLetter = value;
+            }
+        }
+
+        public PointF StartPoint
+        {
+            get
+            {
+                
+                startPoint = new PointF((float)StartX, (float)StartY);
+                return startPoint;
+            }
+            set
+            {
+                startPoint = value;
             }
         }
 
@@ -534,13 +427,92 @@ namespace SketchUp
 
                 return startPointDistanceFromComparisonPoint;
             }
-
             set
             {
                 startPointDistanceFromComparisonPoint = value;
             }
         }
 
-        #endregion public methods
+        public decimal StartX
+        {
+            get
+            {
+                return startX;
+            }
+            set
+            {
+                startX = value;
+            }
+        }
+
+        public decimal StartY
+        {
+            get
+            {
+                return startY;
+            }
+            set
+            {
+                startY = value;
+            }
+        }
+
+        public decimal XLength
+        {
+            get
+            {
+                xLength = (EndX - StartX);
+                return xLength;
+            }
+            set
+            {
+                xLength = value;
+            }
+        }
+
+        public decimal YLength
+        {
+            get
+            {
+                yLength = (EndY - StartY);
+                return yLength;
+            }
+            set
+            {
+                yLength = value;
+            }
+        }
+
+#endregion
+
+#region "Fields"
+
+        private string attachedSection;
+        private PointF comparisonPoint;
+        private string direction;
+        private int dwelling;
+        private PointF endPoint;
+        private decimal endPointDistanceFromComparisonPoint;
+        private decimal endX;
+        private decimal endY;
+        private decimal lineAngle;
+        private string lineLabel;
+        private decimal lineLength;
+        private int lineNumber;
+        private PointF midPoint;
+        private decimal minX;
+        private decimal minY;
+        private int record;
+        private PointF scaledEndPoint;
+        private PointF scaledStartPoint;
+        private string sectionLetter;
+        private PointF startPoint;
+        private decimal startPointDistanceFromComparisonPoint;
+        private decimal startX;
+        private decimal startY;
+        private decimal xLength;
+        private decimal yLength;
+
+#endregion
     }
 }

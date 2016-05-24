@@ -3,7 +3,7 @@ using System.Text;
 
 namespace SketchUp
 {
-    public class ResidentialSections
+    public class ResidentalSections
     {
         public string _resSectionDescription
         {

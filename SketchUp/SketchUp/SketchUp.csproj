@@ -132,6 +132,7 @@
     <Compile Include="CamraSupport\CamraDataEnums.cs" />
     <Compile Include="CamraSupport\LivingAreaSectionTypes.cs" />
     <Compile Include="CamraSupport\ResidentialSections.cs" />
+    <Compile Include="UtilityClasses\DevUtilities.cs" />
     <Compile Include="UtilityClasses\SketchUpLookups.cs" />
     <Compile Include="CamraSupport\StabType.cs" />
     <Compile Include="CamraSupport\StabTypeD.cs" />
@@ -296,6 +297,7 @@
     <None Include="CamraSketch_1_TemporaryKey.pfx" />
     <None Include="CamraSketch_TemporaryKey.pfx" />
     <None Include="ClassDiagram1.cd" />
+    <None Include="Main Elements Diagram.cd" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
@@ -350,8 +352,6 @@
     <None Include="Resources\Edit_grey_32x.png" />
     <None Include="Resources\Edit_grey_32xMD.png" />
     <None Include="Resources\F12_CloseErrorBoxGrey.png" />
-    <None Include="Resources\FlipHorizontal_16x_32.bmp" />
-    <None Include="Resources\FlipVertical_16x_32.bmp" />
     <None Include="Resources\Font_16x.png" />
     <None Include="Resources\FormBackground.png" />
     <None Include="Resources\HideMember_16x_32.bmp" />
@@ -374,6 +374,17 @@
     <None Include="Resources\CloseError.png" />
     <None Include="Resources\StatusOk.png" />
     <None Include="Resources\icon-home.png" />
+    <None Include="Resources\Save.png" />
+    <None Include="Resources\Undo_16x_32.bmp" />
+    <None Include="Resources\Undo_grey_32x.png" />
+    <None Include="Resources\Start.png" />
+    <None Include="Resources\VSO_Refresh_16x.png" />
+    <None Include="Resources\Exit_16x.png" />
+    <None Include="Resources\ExportFile_16x.png" />
+    <None Include="Resources\FlipHorizontal_16x.png" />
+    <None Include="Resources\FlipHorizontal_16x_32.bmp" />
+    <None Include="Resources\FlipVertical_16x.png" />
+    <None Include="Resources\FlipVertical_16x_32.bmp" />
     <Content Include="StonewallTechIcon.ico" />
   </ItemGroup>
   <ItemGroup>
