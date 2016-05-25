@@ -15,7 +15,7 @@ namespace SketchUp
 
         public SketchRepository(SMParcel selectedParcel)
         {
-            workingCopyOfParcel = selectedParcel;
+            workingParcel = selectedParcel;
         }
 
         public SketchRepository(string dbDataSource, string dbUserName, string dbPassword, string localityPrefix)
@@ -86,9 +86,9 @@ namespace SketchUp
                         parcelMast.PropertyClass = propertyClass;
                         parcelMast.MasterParcelStoreys = masterParcelStoreys;
                         parcelMast.TotalSquareFootage = totalLivingArea;
-                        WorkingCopyOfParcel = SelectParcelWithSectionsAndLines(recordNumber, dwellingNumber);
-                        WorkingCopyOfParcel.ParcelMast = parcelMast;
-                        parcelMast.Parcel = WorkingCopyOfParcel;
+                        WorkingParcel = SelectParcelWithSectionsAndLines(recordNumber, dwellingNumber);
+                        WorkingParcel.ParcelMast = parcelMast;
+                        parcelMast.Parcel = WorkingParcel;
                     }
                 }
                 return parcelMast;
@@ -393,7 +393,7 @@ namespace SketchUp
         private string sectionRecordTable;
         private SMConnection sketchConnection;
         private string userName;
-        private SMParcel workingCopyOfParcel;
+        private SMParcel workingParcel;
 
         #endregion Fields
 
@@ -649,16 +649,16 @@ namespace SketchUp
             }
         }
 
-        public SMParcel WorkingCopyOfParcel
+        public SMParcel WorkingParcel
         {
             get
             {
-                return workingCopyOfParcel;
+                return workingParcel;
             }
 
             set
             {
-                workingCopyOfParcel = value;
+                workingParcel = value;
             }
         }
 
@@ -667,6 +667,79 @@ namespace SketchUp
             parcel.SnapShotIndex++;
             SketchUpGlobals.SketchSnapshots.Add(parcel);
             return SketchUpGlobals.ParcelWorkingCopy;
+        }
+
+        public SMParcelMast SaveCurrentParcel(SMParcel parcel)
+        {
+            workingParcel = parcel;
+
+            UpdateMastRecord();
+            ReorganizeSections();
+            UpdateConnections();
+            UpdateDatabase();
+            SMParcelMast parcelMast = RefreshWorkingCopyFromDb(parcel);
+
+            return parcelMast;
+        }
+
+        private SMParcelMast RefreshWorkingCopyFromDb(SMParcel parcel)
+        {
+            SMParcelMast parcelMast = SelectParcelMasterWithParcel(parcel.Record, parcel.Card);
+            SketchUpGlobals.SMParcelFromData = workingParcel;
+            SketchUpGlobals.ParcelMast = parcelMast;
+            workingParcel = parcelMast.Parcel;
+            SketchUpGlobals.SketchSnapshots.Clear();
+            workingParcel.SnapShotIndex = 0;
+            AddSketchToSnapshots(workingParcel);
+            return parcelMast;
+        }
+
+        private void UpdateMastRecord()
+        {
+            UpdateArea();
+            UpdateGarages();
+            UpdateCarports();
+        }
+
+        private void UpdateDatabase()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void UpdateConnections()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ReorganizeSections()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void UpdateCarports()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void UpdateGarages()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void UpdateArea()
+        {
+            decimal areaSum = 0.00M;
+            decimal dbArea = 0.00M;
+            decimal.TryParse(workingParcel.ParcelMast.TotalSquareFootage.ToString(),out dbArea);
+            foreach (SMSection s in workingParcel.Sections)
+            {
+
+            }
+        }
+
+        private void AdjustParcelSections()
+        {
+            throw new NotImplementedException();
         }
 
         #endregion Properties

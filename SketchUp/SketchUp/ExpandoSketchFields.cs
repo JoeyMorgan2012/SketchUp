@@ -105,6 +105,18 @@ namespace SketchUp
             }
         }
 
+        public PointF DbEndPoint
+        {
+            get
+            {
+                return dbEndPoint;
+            }
+            set
+            {
+                dbEndPoint = value;
+            }
+        }
+
         public decimal DbEndX
         {
             get
@@ -129,6 +141,18 @@ namespace SketchUp
             }
         }
 
+        public PointF DbJumpPoint
+        {
+            get
+            {
+                return dbJumpPoint;
+            }
+            set
+            {
+                dbJumpPoint = value;
+            }
+        }
+
         public decimal DbLineLengthX
         {
             get
@@ -150,18 +174,6 @@ namespace SketchUp
             set
             {
                 dbLineLengthY = value;
-            }
-        }
-
-        public PointF DbEndPoint
-        {
-            get
-            {
-                return dbEndPoint;
-            }
-            set
-            {
-                dbEndPoint = value;
             }
         }
 
@@ -261,18 +273,18 @@ namespace SketchUp
             }
         }
 
-        private  DrawingState EditState
+        private DrawingState EditState
         {
             get
             {
-    return editState;
+                return editState;
             }
             set
             {
-                  ShowState(value);
-                editState = value;
-              
                 
+                SetButtonStates(value);
+                ShowState(value);
+                editState = value;
             }
         }
 
@@ -402,7 +414,7 @@ namespace SketchUp
         {
             get
             {
-                if (legalMoveDirections==null)
+                if (legalMoveDirections == null)
                 {
                     legalMoveDirections = new List<string>();
                 }
@@ -414,15 +426,13 @@ namespace SketchUp
             }
         }
 
-     
-
         public Image MainImage
         {
             get
             {
                 if (_mainImage == null)
                 {
-                    _mainImage = new Bitmap(ExpSketchPBox.Width, ExpSketchPBox.Height);
+                    _mainImage = new Bitmap(sketchBox.Width, sketchBox.Height);
                 }
                 return _mainImage;
             }
@@ -540,18 +550,6 @@ namespace SketchUp
             }
         }
 
-        public PointF ScaledStartPoint
-        {
-            get
-            {
-                return scaledBeginPoint;
-            }
-            set
-            {
-                scaledBeginPoint = value;
-            }
-        }
-
         public PointF ScaledEndPoint
         {
             get
@@ -576,7 +574,17 @@ namespace SketchUp
             }
         }
 
-       
+        public PointF ScaledStartPoint
+        {
+            get
+            {
+                return scaledBeginPoint;
+            }
+            set
+            {
+                scaledBeginPoint = value;
+            }
+        }
 
         public PointF SectionAttachPoint
         {
@@ -589,8 +597,6 @@ namespace SketchUp
                 sectionAttachPoint = value;
             }
         }
-
-       
 
         public Bitmap SketchImage
         {
@@ -691,7 +697,83 @@ namespace SketchUp
 
 #endregion
 
-#region "Fields"
+#region "Public Fields"
+
+        public float BeginSplitX = 0;
+        public float BeginSplitY = 0;
+        public decimal begSplitX = 0;
+        public decimal begSplitY = 0;
+        public int carportCount = 0;
+        public string ConnectSec = String.Empty;
+        public decimal CPSize = 0;
+        public int CurSecLineCnt = 0;
+        public SWallTech.CAMRA_Connection dbConn = null;
+        public float delStartX = 0;
+        public float delStartY = 0;
+        public decimal distance = 0;
+        public float distanceD = 0;
+        public float distanceDXF = 0;
+        public float distanceDYF = 0;
+        public bool draw = false;
+        public decimal EndSplitX = 0;
+        public float EndSplitXF = 0;
+        public decimal EndSplitY = 0;
+        public float EndSplitYF = 0;
+        public static int finalClick;
+        public int Garcnt = 0;
+
+      // TODO: Remove if not needed:	  private List<int> GarCodes = null;
+        public decimal GarSize = 0;
+        public float NextStartX = 0;
+        public float NextStartY = 0;
+        public string offsetDir = String.Empty;
+        public decimal OrigLineLength = 0;
+        public decimal OrigStartX = 0;
+        public decimal OrigStartY = 0;
+        public float PrevStartX = 0;
+        public float PrevStartY = 0;
+        public static bool RefreshEditImageBtn = false;
+        public decimal RemainderLineLength = 0;
+        public int SecItemCnt = 0;
+        public int SecLineCnt = 0;
+        public decimal startSplitX = 0;
+        public decimal startSplitY = 0;
+        public DataTable undoPoints = null;
+        public float UNextStartX = 0;
+        public float UNextStartY = 0;
+        public float UPrevStartX = 0;
+        public float UPrevStartY = 0;
+        public float Xadj = 0;
+        public float XadjP = 0;
+        public float Yadj = 0;
+        public float YadjP = 0;
+        public bool _addSection = false;
+
+       // TODO: Remove if not needed:	 private Image _baseImage;
+        public decimal _calcNextSectArea = 0;
+        public static bool _cantSketch = false;
+        public bool _closeSketch = false;
+        public static bool _deleteMaster = false;
+        public static bool _deleteThisSketch = false;
+        public bool _hasMultiSection = false;
+        public bool _hasNewSketch;
+        public bool _hasSketch = false;
+        public static bool _insertLine = false;
+        public static bool _isClosed = false;
+
+    // TODO: Remove if not needed:	    private string _priorDirection = "";
+     // TODO: Remove if not needed:	   private bool _reOpenSec = false;
+    // TODO: Remove if not needed:	    private int _savedAttLine;
+    // TODO: Remove if not needed:	    private string _savedAttSection = "";
+   // TODO: Remove if not needed:	     private Dictionary<int, float> _StartX = null;
+     // TODO: Remove if not needed:	   private Dictionary<int, float> _StartY = null;
+        public bool _undoLine = false;
+        public static bool _undoMode = false;
+        public bool _vacantParcelSketch = false;
+
+#endregion
+
+#region "Private Fields"
 
         private decimal adjNewSecX = 0;
         private decimal adjNewSecY = 0;
@@ -703,79 +785,64 @@ namespace SketchUp
         private DataTable AttachmentPointsDataTable = null;
         private SMSection attachmentSection;
         private DataTable attachPoints;
-        private int AttLineNo = 0;
+
+     // TODO: Remove if not needed:	   private int AttLineNo = 0;
         private string AttSectLtr = String.Empty;
         private string AttSpLineDir = String.Empty;
         private int AttSpLineNo = 0;
         private float BaseX = 0;
         private float BaseY = 0;
-        public float BeginSplitX = 0;
-        public float BeginSplitY = 0;
-        public decimal begSplitX = 0;
-        public decimal begSplitY = 0;
         private Brush blackBrush;
         private Brush blueBrush;
         private Pen bluePen;
         private List<int> carportCodes = null;
-        public int carportCount = 0;
-        private List<String> carportTypes = null;
+
+       // TODO: Remove if not needed:	 private List<String> carportTypes = null;
         private static bool checkDirection = false;
 
         //Undo uses this but we are re-doing undo. JMM 3-15-2016
         private Color colorRed = Color.Red;
-        public string ConnectSec = String.Empty;
-        public decimal CPSize = 0;
         private int currentAttachmentLine = 0;
         private string CurrentAttDir = String.Empty;
         private string CurrentSecLtr = String.Empty;
-        public int CurSecLineCnt = 0;
-        public SWallTech.CAMRA_Connection dbConn = null;
+        private PointF dbEndPoint;
         private decimal dbEndX;
         private decimal dbEndY;
+
+    // TODO: Remove if not needed:	    private DataTable SectionTable = null;
+
+        //  private static List<int> savcnt;
+        private PointF dbJumpPoint;
         private decimal dbLineLengthX;
         private decimal dbLineLengthY;
-        private PointF dbEndPoint;
         private PointF dbStartPoint;
         private decimal dbStartX;
         private decimal dbStartY;
-        public float delStartX = 0;
-        public float delStartY = 0;
         private int directionModifyerX = 1;
         private int directionModifyerY = 1;
         private MoveDirections directionOfMovement;
         private DataTable displayDataTable = null;
-        public decimal distance = 0;
-        public float distanceD = 0;
-        public float distanceDXF = 0;
-        public float distanceDYF = 0;
         private decimal distanceEntered;
-        public bool draw = false;
         private float drawingScale = 1.0f;
-        private DataTable DupAttPoints = null;
-        private static DrawingState editState=DrawingState.SketchLoaded;
+
+       // TODO: Remove if not needed:	 private DataTable DupAttPoints = null;
+        private static DrawingState editState = DrawingState.SketchLoaded;
         private PointF endOfCurrentLine;
         private PointF endOfJumpMovePoint;
         private float endOldSecX = 0;
         private float endOldSecY = 0;
-        public decimal EndSplitX = 0;
-        public float EndSplitXF = 0;
-        public decimal EndSplitY = 0;
-        public float EndSplitYF = 0;
         private float EndX = 0;
         private decimal EndxD = 0;
         private float EndY = 0;
         private decimal EndyD = 0;
-        public static int finalClick;
         private bool firstTimeLoaded;
         private List<string> FixSect = null;
-     
-        public int Garcnt = 0;
-        private List<int> GarCodes = null;
-        public decimal GarSize = 0;
-        private List<String> GarTypes = null;
+
+  // TODO: Remove if not needed:	      private List<String> GarTypes = null;
         private Brush greenBrush;
         private bool isInAddNewPointMode = false;
-        private bool isLastLine;
+
+     // TODO: Remove if not needed:	   private bool isLastLine;
         private bool isNewSketch = false;
         private SMLine jumpPointLine;
         private List<SMLine> jumpPointLines;
@@ -786,51 +853,29 @@ namespace SketchUp
         private string lastDir = string.Empty;
         private string lastSectionLetter;
         private List<string> legalMoveDirections;
-        
         private int lineCnt = 0;
-        private int LineNumberToBreak = 0;
-        private string Locality = String.Empty;
-     
+       private string Locality = String.Empty;
         private string midDirect = String.Empty;
         private int midLine = 0;
         private string midSection = String.Empty;
         private decimal movementDistanceScaled;
-        private byte[] ms = null;
         private DataTable MultiplePoints = null;
         private int mylineNo = 0;
-        
-        private bool NeedToRedraw = false;
-        private int NewPointIndex;
-        private decimal NewSectionBeginPointX = 0;
-        private decimal NewSectionBeginPointY = 0;
-        private decimal NewSplitLIneDist = 0;
         private decimal nextSectArea = 0;
         private static string nextSectLtr = String.Empty;
-        public float NextStartX = 0;
-        public float NextStartY = 0;
         private string OffSetAttSpLineDir = String.Empty;
-        public string offsetDir = String.Empty;
         private Pen orangePen;
-        public decimal OrigLineLength = 0;
-        public decimal OrigStartX = 0;
-        public decimal OrigStartY = 0;
         private SMParcelMast parcelMast;
         private decimal prevPt2X = 0;
         private decimal prevPt2Y = 0;
-        public float PrevStartX = 0;
-        public float PrevStartY = 0;
         private decimal prevTst1 = 0;
         private decimal prevTst2 = 0;
         private float PrevX = 0;
         private float PrevY = 0;
         private float pt2X = 0;
         private float pt2Y = 0;
-        
         private Brush redBrush;
         private Pen redPen;
-        public static bool RefreshEditImageBtn = false;
-      
-        public decimal RemainderLineLength = 0;
         private DataTable RESpJumpTable = null;
 
         //   private Dictionary<int, byte[]> savpic = null;
@@ -839,18 +884,10 @@ namespace SketchUp
         private PointF scaledBeginPoint;
         private PointF scaledEndPoint;
         private PointF scaledJumpPoint;
-        private PointF scaledStartOfMovement;
         private float SecBeginX = 0;
         private float SecBeginY = 0;
-        public int SecItemCnt = 0;
         private List<String> SecLetters = null;
-        public int SecLineCnt = 0;
         private PointF sectionAttachPoint;
-     
-        private DataTable SectionTable = null;
-
-        //  private static List<int> savcnt;
-       
         private string SketchCard = String.Empty;
         private string SketchFolder = String.Empty;
         private Bitmap sketchImage;
@@ -858,11 +895,10 @@ namespace SketchUp
         private PointF sketchOrigin;
         private string SketchRecord = String.Empty;
         private DataTable sortDist = null;
-        private decimal splitLineDist = 0;
-        private int StandardDrawWidthAndHeight = 3;
+
+      // TODO: Remove if not needed:	  private decimal splitLineDist = 0;
+   // TODO: Remove if not needed:	     private int StandardDrawWidthAndHeight = 3;
         private PointF startOfCurrentLine;
-        public decimal startSplitX = 0;
-        public decimal startSplitY = 0;
         /*
 		Refactored by renaming and providing for null values. Going to ensure that the
 		naming conventions are consistent for all properties. Any field that backs a property
@@ -875,45 +911,24 @@ namespace SketchUp
         private DataTable StrtPts = null;
         private decimal StrxD = 0;
         private decimal StryD = 0;
-        private int TempAttSplineNo = 0;
+
+        // TODO: Remove if not needed:	  private int TempAttSplineNo = 0;
+        //  TODO: Remove if not needed:	   
         private decimal txtLoc = 0;
         private float txtLocf = 0;
         private float txtX = 0;
         private float txtY = 0;
-        private Point[] unadj_pts;
+
+    // TODO: Remove if not needed:	    private Point[] unadj_pts;
         private bool undoJump = false;
-        public DataTable undoPoints = null;
-        public float UNextStartX = 0;
-        public float UNextStartY = 0;
         private bool unsavedChangesExist;
-        public float UPrevStartX = 0;
-        public float UPrevStartY = 0;
         private SMParcel workingParcel;
         private SMSection workingSection;
-        public float Xadj = 0;
-        public float XadjP = 0;
-        private decimal XadjR = 0;
-        public float Yadj = 0;
-        public float YadjP = 0;
-        private decimal YadjR = 0;
-        public bool _addSection = false;
-        private Image _baseImage;
-        public decimal _calcNextSectArea = 0;
-        
-        
-        public static bool _cantSketch = false;
-        public bool _closeSketch = false;
-        private SWallTech.CAMRA_Connection _conn = null;
+
+   // TODO: Remove if not needed:	     private SWallTech.CAMRA_Connection _conn = null;
         private int _curLineCnt = 0;
         private float _currentScale = 0;
-        public static bool _deleteMaster = false;
-        public static bool _deleteThisSketch = false;
-        public bool _hasMultiSection = false;
-        public bool _hasNewSketch;
-        public bool _hasSketch = false;
-        public static bool _insertLine = false;
         private bool _isAngle = false;
-        public static bool _isClosed = false;
         private bool _isclosing = false;
         private bool _isJumpMode = false;
         private bool _isKeyValid = false;
@@ -921,34 +936,33 @@ namespace SketchUp
         private Image _mainImage;
         private int _mouseX;
         private int _mouseY;
-        private int _newIndex = 0;
+
+      // TODO: Remove if not needed:	  private int _newIndex = 0;
         private List<PointF> _newSectionPoints;
         private int _nextLineCount = 0;
         private string _nextSectType = String.Empty;
         private decimal _nextStoryHeight = 0;
         private bool _openForm = false;
-        private string _priorDirection = "";
-        private bool _reOpenSec = false;
-        private int _savedAttLine;
-        private string _savedAttSection = "";
-        private Dictionary<int, float> _StartX = null;
-        private Dictionary<int, float> _StartY = null;
-        public bool _undoLine = false;
-        public static bool _undoMode = false;
-        public bool _vacantParcelSketch = false;
 
 #endregion
 
 #region "Enums"
 
+      
+
+
+
         public enum DrawingState
         {
-         
+            DoneDrawing,
             Drawing,
             JumpPointSelected,
             SectionAdded,
+            SectionDeleted,
+            SectionEditCompleted,
+            SectionEditStarted,
             SketchLoaded,
-            
+            SketchSaved
         }
 
         public enum MoveDirections

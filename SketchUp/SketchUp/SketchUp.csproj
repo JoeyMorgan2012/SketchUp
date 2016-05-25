@@ -385,6 +385,16 @@
     <None Include="Resources\FlipHorizontal_16x_32.bmp" />
     <None Include="Resources\FlipVertical_16x.png" />
     <None Include="Resources\FlipVertical_16x_32.bmp" />
+    <None Include="Resources\edit.png" />
+    <None Include="Resources\Edit2.png" />
+    <None Include="Resources\Edit3.png" />
+    <None Include="Resources\Edit4.png" />
+    <None Include="Resources\EditClipboard.png" />
+    <None Include="Resources\EditIcon.png" />
+    <None Include="Resources\HorizontalFlip.png" />
+    <None Include="Resources\Save1.png" />
+    <None Include="Resources\VerticalFlip.png" />
+    <None Include="Resources\Save and Continue1.jpg" />
     <Content Include="StonewallTechIcon.ico" />
   </ItemGroup>
   <ItemGroup>

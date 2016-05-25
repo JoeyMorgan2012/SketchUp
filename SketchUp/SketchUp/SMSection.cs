@@ -1,15 +1,16 @@
-﻿using SWallTech;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using SWallTech;
 
 namespace SketchUp
 {
     public class SMSection
     {
-#region "Constructor"
+        #region "Constructor"
 
         public SMSection(SMParcel parcel)
         {
@@ -18,9 +19,9 @@ namespace SketchUp
             ParentParcel = parcel;
         }
 
-#endregion
+        #endregion "Constructor"
 
-#region "Public Methods"
+        #region "Public Methods"
 
         public SMLine SelectLineByNumber(int lineNum)
         {
@@ -33,26 +34,45 @@ namespace SketchUp
             return line;
         }
 
-#endregion
+        #endregion "Public Methods"
 
-#region "Private methods"
+        #region "Private methods"
 
         private bool CalculateOpenOrClosed()
         {
             bool closed = false;
-            if (Lines!=null&&lines.Count>2)
-                //Cannot close a shape unless there are at least three lines!
-            {
+            if (Lines != null && lines.Count > 2)
 
-     SMLine firstLine = (from l in Lines orderby l.LineNumber select l).First();
-            SMLine lastLine= (from l in Lines orderby l.LineNumber select l).Last();
-                if (lastLine.EndX==firstLine.StartX&&lastLine.EndY==firstLine.StartY)
+            //Cannot close a shape unless there are at least three lines!
+            {
+                SMLine firstLine = (from l in Lines orderby l.LineNumber select l).First();
+                SMLine lastLine = (from l in Lines orderby l.LineNumber select l).Last();
+                if (lastLine.EndX == firstLine.StartX && lastLine.EndY == firstLine.StartY)
                 {
                     closed = true;
                 }
             }
             return closed;
-       
+        }
+
+        private decimal CalculateSectionArea()
+        {
+            List<PointF> areaPoints = new List<PointF>();
+            decimal area = sqFt;
+            foreach (SMLine l in Lines.OrderBy(n => n.LineNumber))
+            {
+                areaPoints.Add(l.StartPoint);
+                areaPoints.Add(l.EndPoint);
+            }
+
+            PolygonF sectionPolygon = new PolygonF(areaPoints.ToArray<PointF>());
+            area = Math.Round(sectionPolygon.Area*Storeys, 2);
+
+#if DEBUG
+            Trace.WriteLine(string.Format("Section {0} area: {1}", SectionLetter, area));
+            Trace.Flush();
+#endif
+            return area;
         }
 
         private PointF ComputeLabelLocation()
@@ -68,7 +88,6 @@ namespace SketchUp
             float labelSize = SectionType.Length;
             PointF adjustedCenter = PointF.Add(sectionBounds.CenterPointOfBounds, new SizeF(-labelSize, -20));
             return adjustedCenter;
-            
         }
 
         private SMLine FindAnchorLine()
@@ -77,12 +96,10 @@ namespace SketchUp
             if (SectionLetter != "A")
             {
                 anchorline = (from l in ParentParcel.AllSectionLines where l.AttachedSection == SectionLetter select l).FirstOrDefault<SMLine>();
-               
             }
             else
             {
-                    anchorline= new SMLine(this);
-                
+                anchorline = new SMLine(this);
             }
             if (anchorLine == null)
             {
@@ -91,13 +108,9 @@ namespace SketchUp
             return anchorline;
         }
 
-#endregion
+        #endregion "Private methods"
 
-#region "Properties"
-
-       
-
-
+        #region "Properties"
 
         public decimal AdjFactor
         {
@@ -105,6 +118,7 @@ namespace SketchUp
             {
                 return adjFactor;
             }
+
             set
             {
                 adjFactor = value;
@@ -118,9 +132,26 @@ namespace SketchUp
                 anchorLine = FindAnchorLine();
                 return anchorLine;
             }
+
             set
             {
                 anchorLine = value;
+            }
+        }
+
+        public FormattableString AreaLabel
+        {
+            get
+            {
+                string area = SqFt.ToString();
+                areaLabel = $"\n{area} ft²";
+               
+                return areaLabel;
+            }
+
+            set
+            {
+                areaLabel = value;
             }
         }
 
@@ -130,6 +161,7 @@ namespace SketchUp
             {
                 return attachedTo;
             }
+
             set
             {
                 attachedTo = value;
@@ -142,6 +174,7 @@ namespace SketchUp
             {
                 return depreciation;
             }
+
             set
             {
                 depreciation = value;
@@ -154,6 +187,7 @@ namespace SketchUp
             {
                 return description;
             }
+
             set
             {
                 description = value;
@@ -166,6 +200,7 @@ namespace SketchUp
             {
                 return dwelling;
             }
+
             set
             {
                 dwelling = value;
@@ -178,6 +213,7 @@ namespace SketchUp
             {
                 return hasSketch;
             }
+
             set
             {
                 hasSketch = value;
@@ -188,12 +224,13 @@ namespace SketchUp
         {
             get
             {
-                if (lines==null)
+                if (lines == null)
                 {
                     lines = new List<SMLine>();
                 }
                 return lines;
             }
+
             set
             {
                 lines = value;
@@ -212,6 +249,7 @@ namespace SketchUp
             {
                 return record;
             }
+
             set
             {
                 record = value;
@@ -224,6 +262,7 @@ namespace SketchUp
             {
                 return refreshSection;
             }
+
             set
             {
                 refreshSection = value;
@@ -237,6 +276,7 @@ namespace SketchUp
                 scaledSectionCenter = ComputeLabelLocation();
                 return scaledSectionCenter;
             }
+
             set
             {
                 scaledSectionCenter = value;
@@ -249,6 +289,7 @@ namespace SketchUp
             {
                 return sectionClass;
             }
+
             set
             {
                 sectionClass = value;
@@ -262,19 +303,21 @@ namespace SketchUp
                 sectionIsClosed = CalculateOpenOrClosed();
                 return sectionIsClosed;
             }
+
             set
             {
                 sectionIsClosed = value;
             }
         }
 
-        public string SectionLabel
+        public FormattableString SectionLabel
         {
             get
             {
-                sectionLabel = string.Format("{0}-{1}", SectionLetter.ToUpper(), SectionType.ToUpper());
+                sectionLabel = $"{SectionLetter.ToUpper()}-{SectionType.ToUpper()}{AreaLabel}";
                 return sectionLabel;
             }
+
             set
             {
                 sectionLabel = value;
@@ -287,6 +330,7 @@ namespace SketchUp
             {
                 return sectionLetter;
             }
+
             set
             {
                 sectionLetter = value;
@@ -299,6 +343,7 @@ namespace SketchUp
             {
                 return sectionType;
             }
+
             set
             {
                 sectionType = value;
@@ -311,6 +356,7 @@ namespace SketchUp
             {
                 return sectionValue;
             }
+
             set
             {
                 sectionValue = value;
@@ -321,8 +367,17 @@ namespace SketchUp
         {
             get
             {
+                if (SectionIsClosed)
+                {
+                    sqFt = CalculateSectionArea();
+                }
+                else
+                {
+                    sqFt = 0.00M;
+                }
                 return sqFt;
             }
+
             set
             {
                 sqFt = value;
@@ -335,6 +390,7 @@ namespace SketchUp
             {
                 return storeys;
             }
+
             set
             {
                 storeys = value;
@@ -347,18 +403,20 @@ namespace SketchUp
             {
                 return zeroDepr;
             }
+
             set
             {
                 zeroDepr = value;
             }
         }
 
-#endregion
+        #endregion "Properties"
 
-#region "Fields"
+        #region "Private Fields"
 
         private decimal adjFactor;
         private SMLine anchorLine;
+        private FormattableString areaLabel;
         private string attachedTo;
         private decimal depreciation;
         private string description;
@@ -370,7 +428,7 @@ namespace SketchUp
         private PointF scaledSectionCenter;
         private string sectionClass;
         private bool sectionIsClosed;
-        private string sectionLabel;
+        private FormattableString sectionLabel;
         private string sectionLetter;
         private string sectionType;
         private decimal sectionValue;
@@ -378,6 +436,6 @@ namespace SketchUp
         private decimal storeys;
         private string zeroDepr;
 
-#endregion
+        #endregion "Private Fields"
     }
 }
