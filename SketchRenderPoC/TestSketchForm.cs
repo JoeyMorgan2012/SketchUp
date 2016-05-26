@@ -492,10 +492,11 @@ namespace SketchUp
 
         private void DrawLabel(SMSection section)
         {
-            string label = section.SectionLabel;
+            string label = section.SectionLabel.ToString();
+            ;
 
             Font font = new Font("Segoe UI", 10, FontStyle.Bold, GraphicsUnit.Point);
-            int labelLength = section.SectionLabel.Length;
+            int labelLength = section.SectionLabel.ToString().Length;
 
             PointF labelLocation = section.ScaledSectionCenter;
 

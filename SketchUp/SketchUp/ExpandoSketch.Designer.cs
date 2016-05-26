@@ -31,54 +31,56 @@ namespace SketchUp
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExpandoSketch));
             this.MainToolStrip = new System.Windows.Forms.ToolStrip();
             this.AddSectionContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.cmiJumpToCorner = new System.Windows.Forms.ToolStripMenuItem();
-            this.cmiBeginDrawing = new System.Windows.Forms.ToolStripMenuItem();
-            this.cmiDoneSketching = new System.Windows.Forms.ToolStripMenuItem();
-            this.cmiSaveDrawing = new System.Windows.Forms.ToolStripMenuItem();
             this.cmiSepLine1 = new System.Windows.Forms.ToolStripSeparator();
-            this.cmiFlipHorizontally = new System.Windows.Forms.ToolStripMenuItem();
-            this.cmiFlipVeritcally = new System.Windows.Forms.ToolStripMenuItem();
             this.cmiSepLine2 = new System.Windows.Forms.ToolStripSeparator();
-            this.cmiExitSketch = new System.Windows.Forms.ToolStripMenuItem();
             this.DistLbl = new System.Windows.Forms.ToolStripLabel();
             this.DistText = new System.Windows.Forms.ToolStripTextBox();
             this.TextLbl = new System.Windows.Forms.ToolStripLabel();
             this.FieldText = new System.Windows.Forms.ToolStripTextBox();
-            this.btnBeginSection = new System.Windows.Forms.ToolStripButton();
-            this.btnDrawingDone = new System.Windows.Forms.ToolStripButton();
-            this.btnUnDo = new System.Windows.Forms.ToolStripButton();
             this.dgSections = new System.Windows.Forms.DataGridView();
             this.selectFontDlg = new System.Windows.Forms.FontDialog();
             this.SketchStatusBar = new System.Windows.Forms.StatusStrip();
             this.sketchStatusMessage = new System.Windows.Forms.ToolStripStatusLabel();
             this.snapshotIndexLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.sketchBox = new System.Windows.Forms.PictureBox();
             this.mnuMain = new System.Windows.Forms.MenuStrip();
             this.miFile = new System.Windows.Forms.ToolStripMenuItem();
-            this.miFileAddSection = new System.Windows.Forms.ToolStripMenuItem();
-            this.miFileEditSection = new System.Windows.Forms.ToolStripMenuItem();
             this.separator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.miFileCloseNoSave = new System.Windows.Forms.ToolStripMenuItem();
             this.separator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.miSaveAndContinue = new System.Windows.Forms.ToolStripMenuItem();
-            this.miSaveAndClose = new System.Windows.Forms.ToolStripMenuItem();
             this.miEdit = new System.Windows.Forms.ToolStripMenuItem();
-            this.miEditUndoLine = new System.Windows.Forms.ToolStripMenuItem();
             this.miEditUndoSectionLines = new System.Windows.Forms.ToolStripMenuItem();
             this.miUndoAddSection = new System.Windows.Forms.ToolStripMenuItem();
             this.miHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.miHelpContact = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.miHelpAbout = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.sketchBox = new System.Windows.Forms.PictureBox();
+            this.cmiJumpToCorner = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmiBeginDrawing = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmiAddClosingLine = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmiDoneSketching = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmiSaveDrawing = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmiFlipHorizontally = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmiFlipVeritcally = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmiExitSketch = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnAdd = new System.Windows.Forms.ToolStripButton();
+            this.btnUnDo = new System.Windows.Forms.ToolStripButton();
+            this.btnEditSections = new System.Windows.Forms.ToolStripButton();
+            this.miFileAddSection = new System.Windows.Forms.ToolStripMenuItem();
+            this.miFileEditSection = new System.Windows.Forms.ToolStripMenuItem();
+            this.miFileCloseNoSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.miSaveAndContinue = new System.Windows.Forms.ToolStripMenuItem();
+            this.miSaveAndClose = new System.Windows.Forms.ToolStripMenuItem();
+            this.miEditUndoLine = new System.Windows.Forms.ToolStripMenuItem();
             this.MainToolStrip.SuspendLayout();
             this.AddSectionContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgSections)).BeginInit();
             this.SketchStatusBar.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.sketchBox)).BeginInit();
             this.mnuMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.sketchBox)).BeginInit();
             this.SuspendLayout();
             // 
             // MainToolStrip
@@ -91,9 +93,11 @@ namespace SketchUp
             this.DistText,
             this.TextLbl,
             this.FieldText,
-            this.btnBeginSection,
-            this.btnDrawingDone,
-            this.btnUnDo});
+            this.toolStripSeparator3,
+            this.btnAdd,
+            this.btnUnDo,
+            this.toolStripSeparator2,
+            this.btnEditSections});
             this.MainToolStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.MainToolStrip.Location = new System.Drawing.Point(0, 28);
             this.MainToolStrip.Name = "MainToolStrip";
@@ -110,6 +114,7 @@ namespace SketchUp
             this.AddSectionContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cmiJumpToCorner,
             this.cmiBeginDrawing,
+            this.cmiAddClosingLine,
             this.cmiDoneSketching,
             this.cmiSaveDrawing,
             this.cmiSepLine1,
@@ -119,76 +124,17 @@ namespace SketchUp
             this.cmiExitSketch});
             this.AddSectionContextMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.AddSectionContextMenu.Name = "AddSectionContextMenu";
-            this.AddSectionContextMenu.Size = new System.Drawing.Size(287, 198);
-            // 
-            // cmiJumpToCorner
-            // 
-            this.cmiJumpToCorner.AutoToolTip = true;
-            this.cmiJumpToCorner.Enabled = false;
-            this.cmiJumpToCorner.Image = ((System.Drawing.Image)(resources.GetObject("cmiJumpToCorner.Image")));
-            this.cmiJumpToCorner.Name = "cmiJumpToCorner";
-            this.cmiJumpToCorner.ShowShortcutKeys = false;
-            this.cmiJumpToCorner.Size = new System.Drawing.Size(286, 26);
-            this.cmiJumpToCorner.Text = "Jump to Nearest Corner";
-            this.cmiJumpToCorner.ToolTipText = "Jump to Nearest Corner (Add section to Enable";
-            this.cmiJumpToCorner.Click += new System.EventHandler(this.jumpToolStripMenuItem_Click);
-            // 
-            // cmiBeginDrawing
-            // 
-            this.cmiBeginDrawing.Image = global::SketchUp.Properties.Resources.Edit_32xMD;
-            this.cmiBeginDrawing.Name = "cmiBeginDrawing";
-            this.cmiBeginDrawing.Size = new System.Drawing.Size(286, 26);
-            this.cmiBeginDrawing.Text = "Begin Drawing";
-            // 
-            // cmiDoneSketching
-            // 
-            this.cmiDoneSketching.Image = global::SketchUp.Properties.Resources.GreenCheck;
-            this.cmiDoneSketching.Name = "cmiDoneSketching";
-            this.cmiDoneSketching.Size = new System.Drawing.Size(286, 26);
-            this.cmiDoneSketching.Text = "Done Sketching";
-            // 
-            // cmiSaveDrawing
-            // 
-            this.cmiSaveDrawing.Image = global::SketchUp.Properties.Resources.Save;
-            this.cmiSaveDrawing.Name = "cmiSaveDrawing";
-            this.cmiSaveDrawing.Size = new System.Drawing.Size(286, 26);
-            this.cmiSaveDrawing.Text = "Save to Database";
+            this.AddSectionContextMenu.Size = new System.Drawing.Size(287, 252);
             // 
             // cmiSepLine1
             // 
             this.cmiSepLine1.Name = "cmiSepLine1";
             this.cmiSepLine1.Size = new System.Drawing.Size(283, 6);
             // 
-            // cmiFlipHorizontally
-            // 
-            this.cmiFlipHorizontally.Image = global::SketchUp.Properties.Resources.FlipHorizontal_16x;
-            this.cmiFlipHorizontally.Name = "cmiFlipHorizontally";
-            this.cmiFlipHorizontally.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.H)));
-            this.cmiFlipHorizontally.Size = new System.Drawing.Size(286, 26);
-            this.cmiFlipHorizontally.Text = "Flip Horizontally";
-            // 
-            // cmiFlipVeritcally
-            // 
-            this.cmiFlipVeritcally.Image = global::SketchUp.Properties.Resources.FlipVertical_16x;
-            this.cmiFlipVeritcally.Name = "cmiFlipVeritcally";
-            this.cmiFlipVeritcally.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.V)));
-            this.cmiFlipVeritcally.Size = new System.Drawing.Size(286, 26);
-            this.cmiFlipVeritcally.Text = "Flip Veritcally";
-            // 
             // cmiSepLine2
             // 
             this.cmiSepLine2.Name = "cmiSepLine2";
             this.cmiSepLine2.Size = new System.Drawing.Size(283, 6);
-            // 
-            // cmiExitSketch
-            // 
-            this.cmiExitSketch.Image = global::SketchUp.Properties.Resources.Close_16x;
-            this.cmiExitSketch.Name = "cmiExitSketch";
-            this.cmiExitSketch.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.X)));
-            this.cmiExitSketch.Size = new System.Drawing.Size(286, 26);
-            this.cmiExitSketch.Text = "Exit Sketch";
             // 
             // DistLbl
             // 
@@ -220,47 +166,6 @@ namespace SketchUp
             this.FieldText.Margin = new System.Windows.Forms.Padding(1, 0, 15, 0);
             this.FieldText.Name = "FieldText";
             this.FieldText.Size = new System.Drawing.Size(200, 27);
-            // 
-            // btnBeginSection
-            // 
-            this.btnBeginSection.BackColor = System.Drawing.Color.Transparent;
-            this.btnBeginSection.Enabled = false;
-            this.btnBeginSection.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnBeginSection.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnBeginSection.Image = global::SketchUp.Properties.Resources.Edit_32xMD;
-            this.btnBeginSection.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnBeginSection.Margin = new System.Windows.Forms.Padding(25, 1, 15, 2);
-            this.btnBeginSection.Name = "btnBeginSection";
-            this.btnBeginSection.Size = new System.Drawing.Size(130, 24);
-            this.btnBeginSection.Text = "Start Drawing";
-            this.btnBeginSection.ToolTipText = "Begin Drawing the new section";
-            this.btnBeginSection.Click += new System.EventHandler(this.BeginSectionBtn_Click);
-            // 
-            // btnDrawingDone
-            // 
-            this.btnDrawingDone.BackColor = System.Drawing.Color.Transparent;
-            this.btnDrawingDone.Enabled = false;
-            this.btnDrawingDone.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDrawingDone.Image = global::SketchUp.Properties.Resources.GreenCheck;
-            this.btnDrawingDone.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnDrawingDone.Margin = new System.Windows.Forms.Padding(0, 1, 15, 2);
-            this.btnDrawingDone.Name = "btnDrawingDone";
-            this.btnDrawingDone.Size = new System.Drawing.Size(129, 24);
-            this.btnDrawingDone.Text = "Done Drawing";
-            this.btnDrawingDone.ToolTipText = "Click when you have added all lines in the section.";
-            this.btnDrawingDone.Click += new System.EventHandler(this.DrawingDoneBtn_Click);
-            // 
-            // btnUnDo
-            // 
-            this.btnUnDo.BackColor = System.Drawing.Color.Transparent;
-            this.btnUnDo.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnUnDo.Image = global::SketchUp.Properties.Resources.Undo_grey_32x;
-            this.btnUnDo.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnUnDo.Margin = new System.Windows.Forms.Padding(10, 1, 15, 2);
-            this.btnUnDo.Name = "btnUnDo";
-            this.btnUnDo.Size = new System.Drawing.Size(71, 24);
-            this.btnUnDo.Text = "UnDo";
-            this.btnUnDo.Click += new System.EventHandler(this.UnDoBtn_Click);
             // 
             // dgSections
             // 
@@ -303,21 +208,6 @@ namespace SketchUp
             this.snapshotIndexLabel.Size = new System.Drawing.Size(503, 19);
             this.snapshotIndexLabel.Spring = true;
             // 
-            // sketchBox
-            // 
-            this.sketchBox.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.sketchBox.ContextMenuStrip = this.AddSectionContextMenu;
-            this.sketchBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.sketchBox.Location = new System.Drawing.Point(0, 55);
-            this.sketchBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.sketchBox.Name = "sketchBox";
-            this.sketchBox.Size = new System.Drawing.Size(1022, 621);
-            this.sketchBox.TabIndex = 2;
-            this.sketchBox.TabStop = false;
-            this.sketchBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ExpSketchPbox_MouseClick);
-            this.sketchBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ExpSketchPbox_MouseDown);
-            this.sketchBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ExpSketchPbox_MouseUp);
-            // 
             // mnuMain
             // 
             this.mnuMain.ImageScalingSize = new System.Drawing.Size(20, 20);
@@ -347,53 +237,15 @@ namespace SketchUp
             this.miFile.Size = new System.Drawing.Size(44, 24);
             this.miFile.Text = "File";
             // 
-            // miFileAddSection
-            // 
-            this.miFileAddSection.Image = global::SketchUp.Properties.Resources.AddControl_16x_32;
-            this.miFileAddSection.Name = "miFileAddSection";
-            this.miFileAddSection.Size = new System.Drawing.Size(267, 26);
-            this.miFileAddSection.Text = "Add Section";
-            this.miFileAddSection.Click += new System.EventHandler(this.miFileAddSection_Click);
-            // 
-            // miFileEditSection
-            // 
-            this.miFileEditSection.Image = global::SketchUp.Properties.Resources.Edit4;
-            this.miFileEditSection.Name = "miFileEditSection";
-            this.miFileEditSection.Size = new System.Drawing.Size(267, 26);
-            this.miFileEditSection.Text = "Edit Sections";
-            // 
             // separator1
             // 
             this.separator1.Name = "separator1";
             this.separator1.Size = new System.Drawing.Size(264, 6);
             // 
-            // miFileCloseNoSave
-            // 
-            this.miFileCloseNoSave.Image = global::SketchUp.Properties.Resources.DeleteListItem_32x;
-            this.miFileCloseNoSave.Name = "miFileCloseNoSave";
-            this.miFileCloseNoSave.Size = new System.Drawing.Size(267, 26);
-            this.miFileCloseNoSave.Text = "Discard Changes and Close ";
-            // 
             // separator2
             // 
             this.separator2.Name = "separator2";
             this.separator2.Size = new System.Drawing.Size(264, 6);
-            // 
-            // miSaveAndContinue
-            // 
-            this.miSaveAndContinue.Image = global::SketchUp.Properties.Resources.Save_and_Continue;
-            this.miSaveAndContinue.Name = "miSaveAndContinue";
-            this.miSaveAndContinue.Size = new System.Drawing.Size(267, 26);
-            this.miSaveAndContinue.Text = "Save and Continue";
-            this.miSaveAndContinue.Click += new System.EventHandler(this.miSaveAndContinue_Click);
-            // 
-            // miSaveAndClose
-            // 
-            this.miSaveAndClose.Image = global::SketchUp.Properties.Resources.Save;
-            this.miSaveAndClose.Name = "miSaveAndClose";
-            this.miSaveAndClose.Size = new System.Drawing.Size(267, 26);
-            this.miSaveAndClose.Text = "Save and Close";
-            this.miSaveAndClose.Click += new System.EventHandler(this.miSaveAndClose_Click);
             // 
             // miEdit
             // 
@@ -404,13 +256,6 @@ namespace SketchUp
             this.miEdit.Name = "miEdit";
             this.miEdit.Size = new System.Drawing.Size(47, 24);
             this.miEdit.Text = "Edit";
-            // 
-            // miEditUndoLine
-            // 
-            this.miEditUndoLine.Image = global::SketchUp.Properties.Resources.Undo_grey_32x;
-            this.miEditUndoLine.Name = "miEditUndoLine";
-            this.miEditUndoLine.Size = new System.Drawing.Size(210, 26);
-            this.miEditUndoLine.Text = "Undo Line";
             // 
             // miEditUndoSectionLines
             // 
@@ -453,6 +298,179 @@ namespace SketchUp
             this.miHelpAbout.Size = new System.Drawing.Size(296, 26);
             this.miHelpAbout.Text = "About CAMRA SketchUp";
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 27);
+            // 
+            // sketchBox
+            // 
+            this.sketchBox.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.sketchBox.ContextMenuStrip = this.AddSectionContextMenu;
+            this.sketchBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.sketchBox.Location = new System.Drawing.Point(0, 55);
+            this.sketchBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.sketchBox.Name = "sketchBox";
+            this.sketchBox.Size = new System.Drawing.Size(1022, 621);
+            this.sketchBox.TabIndex = 2;
+            this.sketchBox.TabStop = false;
+            this.sketchBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ExpSketchPbox_MouseClick);
+            this.sketchBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ExpSketchPbox_MouseDown);
+            this.sketchBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ExpSketchPbox_MouseUp);
+            // 
+            // cmiJumpToCorner
+            // 
+            this.cmiJumpToCorner.AutoToolTip = true;
+            this.cmiJumpToCorner.Enabled = false;
+            this.cmiJumpToCorner.Image = global::SketchUp.Properties.Resources.JumpPointImage;
+            this.cmiJumpToCorner.Name = "cmiJumpToCorner";
+            this.cmiJumpToCorner.ShowShortcutKeys = false;
+            this.cmiJumpToCorner.Size = new System.Drawing.Size(286, 26);
+            this.cmiJumpToCorner.Text = "Jump to Nearest Corner";
+            this.cmiJumpToCorner.ToolTipText = "Jump to Nearest Corner (Add section to Enable";
+            this.cmiJumpToCorner.Click += new System.EventHandler(this.jumpToolStripMenuItem_Click);
+            // 
+            // cmiBeginDrawing
+            // 
+            this.cmiBeginDrawing.Image = global::SketchUp.Properties.Resources.EditImage;
+            this.cmiBeginDrawing.Name = "cmiBeginDrawing";
+            this.cmiBeginDrawing.Size = new System.Drawing.Size(286, 26);
+            this.cmiBeginDrawing.Text = "Begin Drawing";
+            this.cmiBeginDrawing.Click += new System.EventHandler(this.cmiBeginDrawing_Click);
+            // 
+            // cmiAddClosingLine
+            // 
+            this.cmiAddClosingLine.Image = global::SketchUp.Properties.Resources.CloseSection;
+            this.cmiAddClosingLine.Name = "cmiAddClosingLine";
+            this.cmiAddClosingLine.Size = new System.Drawing.Size(286, 26);
+            this.cmiAddClosingLine.Text = "Add Closing Line";
+            this.cmiAddClosingLine.Click += new System.EventHandler(this.cmiAddClosingLine_Click);
+            // 
+            // cmiDoneSketching
+            // 
+            this.cmiDoneSketching.Image = global::SketchUp.Properties.Resources.GreenCheck;
+            this.cmiDoneSketching.Name = "cmiDoneSketching";
+            this.cmiDoneSketching.Size = new System.Drawing.Size(286, 26);
+            this.cmiDoneSketching.Text = "Done Sketching";
+            // 
+            // cmiSaveDrawing
+            // 
+            this.cmiSaveDrawing.Image = global::SketchUp.Properties.Resources.Save;
+            this.cmiSaveDrawing.Name = "cmiSaveDrawing";
+            this.cmiSaveDrawing.Size = new System.Drawing.Size(286, 26);
+            this.cmiSaveDrawing.Text = "Save to Database";
+            // 
+            // cmiFlipHorizontally
+            // 
+            this.cmiFlipHorizontally.Image = global::SketchUp.Properties.Resources.FlipHorizontalImage;
+            this.cmiFlipHorizontally.Name = "cmiFlipHorizontally";
+            this.cmiFlipHorizontally.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.H)));
+            this.cmiFlipHorizontally.Size = new System.Drawing.Size(286, 26);
+            this.cmiFlipHorizontally.Text = "Flip Horizontally";
+            // 
+            // cmiFlipVeritcally
+            // 
+            this.cmiFlipVeritcally.Image = global::SketchUp.Properties.Resources.FlipVerticalImage;
+            this.cmiFlipVeritcally.Name = "cmiFlipVeritcally";
+            this.cmiFlipVeritcally.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.V)));
+            this.cmiFlipVeritcally.Size = new System.Drawing.Size(286, 26);
+            this.cmiFlipVeritcally.Text = "Flip Veritcally";
+            // 
+            // cmiExitSketch
+            // 
+            this.cmiExitSketch.Image = global::SketchUp.Properties.Resources.Close_16x;
+            this.cmiExitSketch.Name = "cmiExitSketch";
+            this.cmiExitSketch.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.X)));
+            this.cmiExitSketch.Size = new System.Drawing.Size(286, 26);
+            this.cmiExitSketch.Text = "Exit Sketch";
+            // 
+            // btnAdd
+            // 
+            this.btnAdd.BackColor = System.Drawing.Color.Transparent;
+            this.btnAdd.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAdd.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.btnAdd.Image = global::SketchUp.Properties.Resources.AddSection;
+            this.btnAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnAdd.Margin = new System.Windows.Forms.Padding(25, 1, 15, 2);
+            this.btnAdd.Name = "btnAdd";
+            this.btnAdd.Size = new System.Drawing.Size(114, 24);
+            this.btnAdd.Text = "Add Section";
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+            // 
+            // btnUnDo
+            // 
+            this.btnUnDo.BackColor = System.Drawing.Color.Transparent;
+            this.btnUnDo.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnUnDo.Image = global::SketchUp.Properties.Resources.Undo_grey_32x;
+            this.btnUnDo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnUnDo.Margin = new System.Windows.Forms.Padding(10, 1, 15, 2);
+            this.btnUnDo.Name = "btnUnDo";
+            this.btnUnDo.Size = new System.Drawing.Size(71, 24);
+            this.btnUnDo.Text = "UnDo";
+            this.btnUnDo.Click += new System.EventHandler(this.UnDoBtn_Click);
+            // 
+            // btnEditSections
+            // 
+            this.btnEditSections.Image = global::SketchUp.Properties.Resources.EditImage;
+            this.btnEditSections.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnEditSections.Name = "btnEditSections";
+            this.btnEditSections.Size = new System.Drawing.Size(118, 24);
+            this.btnEditSections.Text = "Edit Sections";
+            // 
+            // miFileAddSection
+            // 
+            this.miFileAddSection.Image = global::SketchUp.Properties.Resources.AddSection;
+            this.miFileAddSection.Name = "miFileAddSection";
+            this.miFileAddSection.Size = new System.Drawing.Size(267, 26);
+            this.miFileAddSection.Text = "Add Section";
+            this.miFileAddSection.Click += new System.EventHandler(this.miFileAddSection_Click);
+            // 
+            // miFileEditSection
+            // 
+            this.miFileEditSection.Image = global::SketchUp.Properties.Resources.EditImage;
+            this.miFileEditSection.Name = "miFileEditSection";
+            this.miFileEditSection.Size = new System.Drawing.Size(267, 26);
+            this.miFileEditSection.Text = "Edit Sections";
+            this.miFileEditSection.Click += new System.EventHandler(this.miFileEditSection_Click);
+            // 
+            // miFileCloseNoSave
+            // 
+            this.miFileCloseNoSave.Image = global::SketchUp.Properties.Resources.DeleteListItem_32x;
+            this.miFileCloseNoSave.Name = "miFileCloseNoSave";
+            this.miFileCloseNoSave.Size = new System.Drawing.Size(267, 26);
+            this.miFileCloseNoSave.Text = "Discard Changes and Close ";
+            this.miFileCloseNoSave.Click += new System.EventHandler(this.miFileCloseNoSave_Click);
+            // 
+            // miSaveAndContinue
+            // 
+            this.miSaveAndContinue.Image = global::SketchUp.Properties.Resources.SaveAndContinue;
+            this.miSaveAndContinue.Name = "miSaveAndContinue";
+            this.miSaveAndContinue.Size = new System.Drawing.Size(267, 26);
+            this.miSaveAndContinue.Text = "Save and Continue";
+            this.miSaveAndContinue.Click += new System.EventHandler(this.miSaveAndContinue_Click);
+            // 
+            // miSaveAndClose
+            // 
+            this.miSaveAndClose.Image = global::SketchUp.Properties.Resources.Save;
+            this.miSaveAndClose.Name = "miSaveAndClose";
+            this.miSaveAndClose.Size = new System.Drawing.Size(267, 26);
+            this.miSaveAndClose.Text = "Save and Close";
+            this.miSaveAndClose.Click += new System.EventHandler(this.miSaveAndClose_Click);
+            // 
+            // miEditUndoLine
+            // 
+            this.miEditUndoLine.Image = global::SketchUp.Properties.Resources.Undo_grey_32x;
+            this.miEditUndoLine.Name = "miEditUndoLine";
+            this.miEditUndoLine.Size = new System.Drawing.Size(210, 26);
+            this.miEditUndoLine.Text = "Undo Line";
+            // 
             // ExpandoSketch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
@@ -478,9 +496,9 @@ namespace SketchUp
             ((System.ComponentModel.ISupportInitialize)(this.dgSections)).EndInit();
             this.SketchStatusBar.ResumeLayout(false);
             this.SketchStatusBar.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.sketchBox)).EndInit();
             this.mnuMain.ResumeLayout(false);
             this.mnuMain.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.sketchBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -491,13 +509,12 @@ namespace SketchUp
         private System.Windows.Forms.ToolStrip MainToolStrip;
         private System.Windows.Forms.ContextMenuStrip AddSectionContextMenu;
         private System.Windows.Forms.ToolStripMenuItem cmiJumpToCorner;
-        private System.Windows.Forms.ToolStripButton btnBeginSection;
+        private System.Windows.Forms.ToolStripButton btnAdd;
         private System.Windows.Forms.ToolStripLabel DistLbl;
         private System.Windows.Forms.ToolStripTextBox DistText;
         private System.Windows.Forms.ToolStripLabel TextLbl;
         private System.Windows.Forms.ToolStripTextBox FieldText;
         private System.Windows.Forms.ToolStripButton btnUnDo;
-        private System.Windows.Forms.ToolStripButton btnDrawingDone;
         private System.Windows.Forms.PictureBox sketchBox;
         private System.Windows.Forms.DataGridView dgSections;
         private System.Windows.Forms.FontDialog selectFontDlg;
@@ -529,6 +546,10 @@ namespace SketchUp
         private ToolStripMenuItem miHelpContact;
         private ToolStripMenuItem miHelpAbout;
         private ToolStripSeparator toolStripSeparator1;
+        private ToolStripSeparator toolStripSeparator3;
+        private ToolStripSeparator toolStripSeparator2;
+        private ToolStripButton btnEditSections;
+        private ToolStripMenuItem cmiAddClosingLine;
         // private ToolStripMenuItem cmiExitSketch;
     }
 }

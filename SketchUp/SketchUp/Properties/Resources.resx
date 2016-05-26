@@ -124,17 +124,11 @@
   <data name="Edit_32xMD" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Edit_32xMD.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="EditIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\EditIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="CloudOK_32x" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\CloudOK_32x.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="HorizontalFlip" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\HorizontalFlip.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="FormBackground" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\FormBackground.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Edit_grey_24x" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Edit_grey_24x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -142,22 +136,19 @@
   <data name="FlipVertical_16x_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\FlipVertical_16x_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ExportFile_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ExportFile_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Undo_16x_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Undo_16x_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Jump Point" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="JumpPointImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Jump Point1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="FlipHorizontal_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="FlipHorizontalImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\FlipHorizontal_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="GreenCheck" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\GreenCheck.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Edit4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="EditImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Edit4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="DeleteListItem_32x" type="System.Resources.ResXFileRef, System.Windows.Forms">
@@ -202,9 +193,6 @@
   <data name="NoIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\NoIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Save1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Save1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="DeleteListItem_32x_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\DeleteListItem_32x_24.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -223,7 +211,7 @@
   <data name="F12_CloseErrorBoxGrey" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\F12_CloseErrorBoxGrey.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="AddControl_16x_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="AddSection" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\AddControl_16x_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CloseError" type="System.Resources.ResXFileRef, System.Windows.Forms">
@@ -232,7 +220,7 @@
   <data name="StatusOk" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\StatusOk.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="FlipVertical_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="FlipVerticalImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\FlipVertical_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Font_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
@@ -244,7 +232,7 @@
   <data name="Jump_Arrow" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Jump Point.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Add_inverse_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="GreenPlus" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Add_inverse_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Draw" type="System.Resources.ResXFileRef, System.Windows.Forms">
@@ -268,7 +256,10 @@
   <data name="Edit_32xSM" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Edit_32xSM.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Save and Continue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="SaveAndContinue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Save and Continue1.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CloseSection" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CloseSection.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

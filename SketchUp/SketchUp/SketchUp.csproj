@@ -395,6 +395,7 @@
     <None Include="Resources\Save1.png" />
     <None Include="Resources\VerticalFlip.png" />
     <None Include="Resources\Save and Continue1.jpg" />
+    <None Include="Resources\CloseSection.png" />
     <Content Include="StonewallTechIcon.ico" />
   </ItemGroup>
   <ItemGroup>

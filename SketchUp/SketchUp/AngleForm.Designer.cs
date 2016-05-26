@@ -29,13 +29,13 @@
         private void InitializeComponent()
         {
             this.directionGroup = new System.Windows.Forms.GroupBox();
+            this.rbNone = new System.Windows.Forms.RadioButton();
             this.rbSW = new System.Windows.Forms.RadioButton();
             this.rbSE = new System.Windows.Forms.RadioButton();
             this.rbNW = new System.Windows.Forms.RadioButton();
             this.rbNE = new System.Windows.Forms.RadioButton();
             this.btnSelectDirection = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.rbNone = new System.Windows.Forms.RadioButton();
             this.directionGroup.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -56,6 +56,19 @@
             this.directionGroup.TabStop = false;
             this.directionGroup.Text = "( Distances N/S , E/W )";
             // 
+            // rbNone
+            // 
+            this.rbNone.AutoSize = true;
+            this.rbNone.Checked = true;
+            this.rbNone.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbNone.Location = new System.Drawing.Point(65, 38);
+            this.rbNone.Name = "rbNone";
+            this.rbNone.Size = new System.Drawing.Size(83, 27);
+            this.rbNone.TabIndex = 0;
+            this.rbNone.TabStop = true;
+            this.rbNone.Text = "(None)";
+            this.rbNone.UseVisualStyleBackColor = true;
+            // 
             // rbSW
             // 
             this.rbSW.AutoSize = true;
@@ -66,6 +79,7 @@
             this.rbSW.Size = new System.Drawing.Size(121, 27);
             this.rbSW.TabIndex = 4;
             this.rbSW.TabStop = true;
+            this.rbSW.Tag = "SW";
             this.rbSW.Text = "South-West";
             this.rbSW.UseVisualStyleBackColor = true;
             // 
@@ -79,6 +93,7 @@
             this.rbSE.Size = new System.Drawing.Size(114, 27);
             this.rbSE.TabIndex = 3;
             this.rbSE.TabStop = true;
+            this.rbSE.Tag = "SE";
             this.rbSE.Text = "South-East";
             this.rbSE.UseVisualStyleBackColor = true;
             // 
@@ -92,6 +107,7 @@
             this.rbNW.Size = new System.Drawing.Size(121, 27);
             this.rbNW.TabIndex = 2;
             this.rbNW.TabStop = true;
+            this.rbNW.Tag = "NW";
             this.rbNW.Text = "North-West";
             this.rbNW.UseVisualStyleBackColor = true;
             // 
@@ -105,6 +121,7 @@
             this.rbNE.Size = new System.Drawing.Size(114, 27);
             this.rbNE.TabIndex = 1;
             this.rbNE.TabStop = true;
+            this.rbNE.Tag = "NE";
             this.rbNE.Text = "North-East";
             this.rbNE.UseVisualStyleBackColor = true;
             // 
@@ -133,19 +150,6 @@
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // rbNone
-            // 
-            this.rbNone.AutoSize = true;
-            this.rbNone.Checked = true;
-            this.rbNone.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbNone.Location = new System.Drawing.Point(65, 38);
-            this.rbNone.Name = "rbNone";
-            this.rbNone.Size = new System.Drawing.Size(83, 27);
-            this.rbNone.TabIndex = 0;
-            this.rbNone.TabStop = true;
-            this.rbNone.Text = "(None)";
-            this.rbNone.UseVisualStyleBackColor = true;
             // 
             // AngleForm
             // 

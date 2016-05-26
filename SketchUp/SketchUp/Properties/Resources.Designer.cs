@@ -63,19 +63,9 @@ namespace SketchUp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Add_inverse_16x {
+        internal static System.Drawing.Bitmap AddSection {
             get {
-                object obj = ResourceManager.GetObject("Add_inverse_16x", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap AddControl_16x_32 {
-            get {
-                object obj = ResourceManager.GetObject("AddControl_16x_32", resourceCulture);
+                object obj = ResourceManager.GetObject("AddSection", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -96,6 +86,16 @@ namespace SketchUp.Properties {
         internal static System.Drawing.Bitmap CloseError {
             get {
                 object obj = ResourceManager.GetObject("CloseError", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap CloseSection {
+            get {
+                object obj = ResourceManager.GetObject("CloseSection", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -263,16 +263,6 @@ namespace SketchUp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Edit4 {
-            get {
-                object obj = ResourceManager.GetObject("Edit4", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap EditClipboard {
             get {
                 object obj = ResourceManager.GetObject("EditClipboard", resourceCulture);
@@ -283,9 +273,9 @@ namespace SketchUp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap EditIcon {
+        internal static System.Drawing.Bitmap EditImage {
             get {
-                object obj = ResourceManager.GetObject("EditIcon", resourceCulture);
+                object obj = ResourceManager.GetObject("EditImage", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -303,29 +293,9 @@ namespace SketchUp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap ExportFile_16x {
-            get {
-                object obj = ResourceManager.GetObject("ExportFile_16x", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap F12_CloseErrorBoxGrey {
             get {
                 object obj = ResourceManager.GetObject("F12_CloseErrorBoxGrey", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap FlipHorizontal_16x {
-            get {
-                object obj = ResourceManager.GetObject("FlipHorizontal_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -343,9 +313,9 @@ namespace SketchUp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap FlipVertical_16x {
+        internal static System.Drawing.Bitmap FlipHorizontalImage {
             get {
-                object obj = ResourceManager.GetObject("FlipVertical_16x", resourceCulture);
+                object obj = ResourceManager.GetObject("FlipHorizontalImage", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -363,6 +333,16 @@ namespace SketchUp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap FlipVerticalImage {
+            get {
+                object obj = ResourceManager.GetObject("FlipVerticalImage", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Font_16x {
             get {
                 object obj = ResourceManager.GetObject("Font_16x", resourceCulture);
@@ -373,9 +353,9 @@ namespace SketchUp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap FormBackground {
+        internal static System.Drawing.Bitmap GreenCheck {
             get {
-                object obj = ResourceManager.GetObject("FormBackground", resourceCulture);
+                object obj = ResourceManager.GetObject("GreenCheck", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -383,9 +363,9 @@ namespace SketchUp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap GreenCheck {
+        internal static System.Drawing.Bitmap GreenPlus {
             get {
-                object obj = ResourceManager.GetObject("GreenCheck", resourceCulture);
+                object obj = ResourceManager.GetObject("GreenPlus", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -433,9 +413,9 @@ namespace SketchUp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Jump_Point {
+        internal static System.Drawing.Bitmap JumpPointImage {
             get {
-                object obj = ResourceManager.GetObject("Jump Point", resourceCulture);
+                object obj = ResourceManager.GetObject("JumpPointImage", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -483,19 +463,9 @@ namespace SketchUp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Save_and_Continue {
+        internal static System.Drawing.Bitmap SaveAndContinue {
             get {
-                object obj = ResourceManager.GetObject("Save and Continue", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap Save1 {
-            get {
-                object obj = ResourceManager.GetObject("Save1", resourceCulture);
+                object obj = ResourceManager.GetObject("SaveAndContinue", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

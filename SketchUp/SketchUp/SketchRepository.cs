@@ -703,43 +703,91 @@ namespace SketchUp
 
         private void UpdateDatabase()
         {
+            string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
+
+#if DEBUG
+            MessageBox.Show(message);
+#else
+            Console.WriteLine(message);
             throw new NotImplementedException();
+#endif
         }
 
         private void UpdateConnections()
         {
+             string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
+
+#if DEBUG
+            MessageBox.Show(message);
+#else
+            Console.WriteLine(message);
             throw new NotImplementedException();
+#endif
         }
 
         private void ReorganizeSections()
         {
+            string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
+
+#if DEBUG
+            MessageBox.Show(message);
+#else
+            Console.WriteLine(message);
             throw new NotImplementedException();
+#endif
         }
 
         private void UpdateCarports()
         {
+            string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
+
+#if DEBUG
+            MessageBox.Show(message);
+#else
+            Console.WriteLine(message);
             throw new NotImplementedException();
+#endif
         }
 
         private void UpdateGarages()
         {
+             string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
+
+#if DEBUG
+            MessageBox.Show(message);
+#else
+            Console.WriteLine(message);
             throw new NotImplementedException();
+#endif
         }
 
         private void UpdateArea()
         {
             decimal areaSum = 0.00M;
             decimal dbArea = 0.00M;
+            List<string> laTypes = new List<string>();
+            laTypes.AddRange((from la in SketchUpLookups.LivingAreaSectionTypeCollection select la._LAattSectionType).ToList());
             decimal.TryParse(workingParcel.ParcelMast.TotalSquareFootage.ToString(),out dbArea);
             foreach (SMSection s in workingParcel.Sections)
             {
-
+                if (laTypes.Contains(s.SectionType))
+                {
+                    areaSum += s.SqFt;
+                }
             }
+            SketchUpGlobals.ParcelWorkingCopy.ParcelMast.TotalSquareFootage = areaSum;
         }
 
         private void AdjustParcelSections()
         {
+            string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
+
+#if DEBUG
+            MessageBox.Show(message);
+#else
+            Console.WriteLine(message);
             throw new NotImplementedException();
+#endif
         }
 
         #endregion Properties

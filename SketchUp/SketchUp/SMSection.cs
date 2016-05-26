@@ -143,8 +143,16 @@ namespace SketchUp
         {
             get
             {
-                string area = SqFt.ToString();
+                if (SectionIsClosed&&SqFt>0)
+                {
+  string area = SqFt.ToString();
                 areaLabel = $"\n{area} ft²";
+                }
+                else
+                {
+                    string area = string.Empty;
+                    areaLabel = $"{area}";
+                }
                
                 return areaLabel;
             }
@@ -410,10 +418,12 @@ namespace SketchUp
             }
         }
 
+   
+
         #endregion "Properties"
 
         #region "Private Fields"
-
+      
         private decimal adjFactor;
         private SMLine anchorLine;
         private FormattableString areaLabel;
