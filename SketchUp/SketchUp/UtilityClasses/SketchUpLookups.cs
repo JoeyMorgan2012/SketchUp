@@ -263,6 +263,12 @@ namespace SketchUp
             }
         }
 
+        public static List<string> SectionLetters()
+        {
+            List<string> letters = new List<string> { "A", "B", "C", "D", "F", "G", "H", "I", "J", "K", "L", "M" };
+            return letters;
+        }
+
         private static void GetDeckTypes(DBAccessManager db)
         {
             string getDeckTypesSql = string.Format("select rsecto,rdesc from {0}.{1}rat1 where rid = 'P' and rdesc like '%DECK%' ", SketchUpGlobals.LocalLib,

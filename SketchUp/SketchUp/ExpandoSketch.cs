@@ -12,23 +12,13 @@ using System.Windows.Forms;
 
 namespace SketchUp
 {
-    /*
-       The ExpandoSketch Form contains all of the sketch-rendering code.
-       The original file was over 8,000 lines long, so the class is broken into two
-       physical files defining the logical class. The breakdown is:
-
-           ExpandoSketch.cs - All methods not refactored into SketchRepository
-
-           ExpandoSketchFields.cs -  This file contains fields, properties and enums for the ExpandoSketch Form class.
-   */
 
     public partial class ExpandoSketch : Form
     {
-#region "Constructor"
+        #region "Constructor"
 
         public ExpandoSketch(string sketchFolder, int sketchRecord, int sketchCard, bool hasSketch, bool hasNewSketch)
         {
-            // Omitted any steps not needed for SketchUp. JMM 5-9-2016
             InitializeComponent();
             AddSectionContextMenu.Enabled = false;
             WorkingParcel = SketchUpGlobals.ParcelWorkingCopy;
@@ -37,9 +27,52 @@ namespace SketchUp
             ShowWorkingCopySketch(sketchFolder, sketchRecord.ToString(), sketchCard.ToString(), hasSketch, hasNewSketch);
         }
 
-#endregion
+        #endregion
 
-#region "Private methods"
+        #region "Private methods"
+
+        private static string LegalDirectionsMessage(List<string> legalDirections)
+        {
+            StringBuilder statusMessage = new StringBuilder();
+            statusMessage.Append("Legal Directions: ");
+            int counter = 1;
+            foreach (string s in legalDirections.Distinct())
+            {
+                if (counter < legalDirections.Count)
+                {
+                    statusMessage.AppendFormat("{0}, ", s);
+                }
+                else
+                {
+                    statusMessage.AppendFormat("{0}", s);
+                }
+                counter++;
+            }
+
+            return statusMessage.ToString();
+        }
+
+        private static Color PenColorForDrawing(DrawingState editingStep)
+        {
+            Color penColor;
+            switch (editingStep)
+            {
+                case DrawingState.Drawing:
+                    penColor = Color.Red;
+                    break;
+
+                case DrawingState.SectionAdded:
+                case DrawingState.JumpPointSelected:
+                    penColor = Color.Teal;
+                    break;
+
+                default:
+                    penColor = Color.Transparent;
+                    break;
+            }
+
+            return penColor;
+        }
 
         private void AddJumpLineToSketch(CamraDataEnums.CardinalDirection direction, decimal xLength, decimal yLength, decimal dbStartX, decimal dbStartY)
         {
@@ -145,8 +178,6 @@ namespace SketchUp
                 newLine.StartY = DbStartY;
                 newLine.EndX = newLine.StartX + xLength;
                 newLine.EndY = newLine.StartY + yLength;
-                //newLine.XLength = Math.Abs(xLength);
-                //newLine.YLength = Math.Abs(yLength);
                 WorkingSection.Lines.Add(newLine);
                 WorkingSection.ParentParcel = WorkingParcel;
             }
@@ -217,11 +248,7 @@ namespace SketchUp
 
             DataSet ds_master = UpdateMasterArea(summedArea);
 
-            //TODO: Refactor into SketchManager
-            //if (_deleteMaster == false)
-            //{
-            //    InsertMasterRecord(summedArea, baseStory, ds_master);
-            //}
+
         }
 
         private void AddMoveToImage()
@@ -256,7 +283,7 @@ namespace SketchUp
             AddSection();
         }
 
-      
+
         private void AdjustLengthDirection(CamraDataEnums.CardinalDirection moveDirection, ref decimal xLength, ref decimal ylength)
         {
             switch (moveDirection)
@@ -286,15 +313,12 @@ namespace SketchUp
             bool sectionReady = WorkingSection != null && WorkingSection.Lines != null & WorkingSection.SectionIsClosed;
             if (sectionReady)
             {
-                //Determine if the origin of the new section requires a line split
                 SMLine firstLine = (from l in WorkingSection.Lines where l.LineNumber == 1 select l).FirstOrDefault();
                 PointF wsStart = firstLine.StartPoint;
                 var linesWithStart = (from l in AttachmentSection.Lines where SMGlobal.PointIsOnLine(l.StartPoint, l.EndPoint, wsStart) select l).ToList();
 
                 if (linesWithStart != null && linesWithStart.Count > 1)
                 {
-                    // If there is more than one line, the jump point is the start point;
-                    // (because it is a corner.) No split needed.
                     SMLine anchorLine = (from l in linesWithStart where l.EndPoint == wsStart select l).FirstOrDefault();
                     anchorLine.AttachedSection = WorkingSection.SectionLetter;
                 }
@@ -349,7 +373,7 @@ namespace SketchUp
             switch (editState)
             {
                 case DrawingState.DoneDrawing:
-                    SaveCurrentParcelToDatabaseAndExit(WorkingParcel);
+                    SaveChanges(WorkingParcel);
                     break;
 
                 case DrawingState.Drawing:
@@ -362,9 +386,9 @@ namespace SketchUp
                     else
                     {
                         AutoCloseSection(WorkingSection);
-                       
+
                     }
-                   
+
 
                     break;
 
@@ -399,7 +423,7 @@ namespace SketchUp
             SetButtonStates(EditState);
         }
 
-     
+
 
         private Image byteArrayToImage(byte[] byteArrayIn)
         {
@@ -422,7 +446,7 @@ namespace SketchUp
             }
         }
 
-   
+
 
         private void calculateNewArea(int record, int card, string nextsec)
         {
@@ -432,8 +456,6 @@ namespace SketchUp
                       SketchUpGlobals.LocalLib,
                           SketchUpGlobals.LocalityPrefix,
 
-                        //SketchUpGlobals.FcLib,
-                        //SketchUpGlobals.FcLocalityPrefix,
                         SketchUpGlobals.Record,
                         SketchUpGlobals.Card));
             getLine.Append(String.Format("and jlsect = '{0}' ", nextsec));
@@ -890,118 +912,24 @@ namespace SketchUp
 
         private void deleteExistingSketchToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //_deleteThisSketch = false;
-            //_deleteMaster = true;
-            //DialogResult result;
-            //result = (MessageBox.Show("Do you REALLY want to Delete this entire Sketch", "Delete Existing Sketch Warning",
-            //    MessageBoxButtons.YesNo, MessageBoxIcon.Warning));
-            //if (result == DialogResult.Yes)
-            //{
-            //    DialogResult finalChk;
-            //    finalChk = (MessageBox.Show("Are you Sure", "Final Delete Sketch Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning));
 
-            //    if (finalChk == DialogResult.Yes)
-            //    {
-            //        StringBuilder delSect = new StringBuilder();
-            //        delSect.Append(String.Format("delete from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ",
-            //                  SketchUpGlobals.LocalLib,
-            //              SketchUpGlobals.LocalityPreFix,
 
-            //                    //SketchUpGlobals.FcLib,
-            //                    //SketchUpGlobals.FcLocalityPrefix,
-            //                    SketchUpGlobals.Record,
-            //                    SketchUpGlobals.Card));
 
-            //        dbConn.DBConnection.ExecuteNonSelectStatement(delSect.ToString());
 
-            //        StringBuilder delLine = new StringBuilder();
-            //        delLine.Append(String.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} ",
-            //                       SketchUpGlobals.LocalLib,
-            //              SketchUpGlobals.LocalityPreFix,
 
-            //                       //SketchUpGlobals.FcLib,
-            //                       //SketchUpGlobals.FcLocalityPrefix,
-            //                       SketchUpGlobals.Record,
-            //                       SketchUpGlobals.Card));
 
-            //        dbConn.DBConnection.ExecuteNonSelectStatement(delLine.ToString());
 
-            //        StringBuilder delmaster = new StringBuilder();
-            //        delmaster.Append(String.Format("delete from {0}.{1}master where jmrecord = {2} and jmdwell = {3} ",
-            //                  SketchUpGlobals.LocalLib,
-            //              SketchUpGlobals.LocalityPreFix,
 
-            //                   //SketchUpGlobals.FcLib,
-            //                   //SketchUpGlobals.FcLocalityPrefix,
-            //                   SketchUpGlobals.Record,
-            //                   SketchUpGlobals.Card));
 
-            //        dbConn.DBConnection.ExecuteNonSelectStatement(delmaster.ToString());
-            //    }
-            //    if (finalChk == DialogResult.No)
-            //    {
-            //    }
 
-            //    RefreshEditImageBtn = true;
-            //    _deleteThisSketch = true;
-            //    _isClosed = true;
 
-            //    DialogResult makeVacant;
-            //    makeVacant = (MessageBox.Show("Do you want to clear Master File", "Clear Master File Question",
-            //                    MessageBoxButtons.YesNo, MessageBoxIcon.Question));
 
-            //    if (makeVacant == DialogResult.Yes)
-            //    {
-            //        StringBuilder clrMast2 = new StringBuilder();
-            //        clrMast2.Append(String.Format("update {0}.{1}mast set moccup = 15, mstory = ' ', mage = 0, mcond = ' ', mclass = ' ', ",
-            //                   SketchUpGlobals.LocalLib,
-            //                   SketchUpGlobals.LocalityPreFix
 
-            //                    //SketchUpGlobals.FcLib,
-            //                    //SketchUpGlobals.FcLocalityPrefix
-            //                    ));
-            //        clrMast2.Append(" mfactr = 0, mdeprc = 0, mfound = 0, mexwll = 0, mrooft = 0, mroofg = 0, m#dunt = 0, m#room = 0, m#br = 0, m#fbth = 0, m#hbth = 0 , mswl = 0, ");
-            //        clrMast2.Append(" mfp2 = ' ', mheat = 0, mfuel = 0, mac = ' ', mfp1 = ' ', mekit = 0, mbastp = 0, mpbtot = 0, msbtot = 0, mpbfin = 0, msbfin = 0, mbrate = 0, ");
-            //        clrMast2.Append(" m#flue = 0, mflutp = ' ', mgart = 0, mgar#c = 0, mcarpt = 0, mcar#c = 0, mbi#c = 0, mgart2 = 0, mgar#2 = 0, macpct = 0, m0depr = ' ',meffag = 0, ");
-            //        clrMast2.Append(" mfairv = 0, mexwl2 = 0, mtbv = 0, mtbas = 0, mtfbas = 0, mtplum = 0, mtheat = 0, mtac = 0, mtfp = 0, mtfl = 0 , mtbi = 0 , mttadd = 0 , mnbadj = 0, ");
-            //        clrMast2.Append(" mtsubt = 0, mtotbv = 0, mbasa = 0, mtota = 0, mpsf = 0, minwll = ' ', mfloor = ' ', myrblt = 0, mpcomp = 0, mfuncd = 0, mecond = 0, mimadj = 0, ");
-            //        clrMast2.Append(" mtbimp = 0, mcvexp = 'Improvement Deleted', mqapch = 0, mqafil = ' ', mfp# = 0, msfp# = 0, mfl#= 0, msfl# = 0, mmfl# = 0, miofp# = 0,mstor# = 0, ");
-            //        clrMast2.Append(String.Format(" moldoc = {0}, ", _currentParcel.orig_moccup));
-            //        clrMast2.Append(String.Format(" mcvmo = {0}, mcvda = {1}, mcvyr = {2} ",
-            //                  SketchUpGlobals.Month,
-            //                  SketchUpGlobals.TodayDayNumber,
-            //                  SketchUpGlobals.Year
 
-            //                    //MainForm.Month,
-            //                    // MainForm.Today,
-            //                    // MainForm.Year
-            //                    ));
-            //        clrMast2.Append(String.Format(" where mrecno = {0} and mdwell = {1} ", SketchUpGlobals.Record, SketchUpGlobals.Card));
 
-            //        dbConn.DBConnection.ExecuteNonSelectStatement(clrMast2.ToString());
 
-            //        if (_currentParcel.GasLogFP > 0)
-            //        {
-            //            StringBuilder clrGasLg = new StringBuilder();
-            //            clrGasLg.Append(String.Format("update {0}.{1}gaslg set gnogas = 0 where grecno = {2} and gdwell = {3} ",
-            //               SketchUpGlobals.LocalLib,
-            //              SketchUpGlobals.LocalityPreFix,
 
-            //                //SketchUpGlobals.FcLib,
-            //                //SketchUpGlobals.FcLocalityPrefix,
-            //                SketchUpGlobals.Record,
-            //                SketchUpGlobals.Card));
 
-            //            dbConn.DBConnection.ExecuteNonSelectStatement(clrGasLg.ToString());
-            //        }
-            //    }
-            //    if (makeVacant == DialogResult.No)
-            //    {
-            //    }
-            //}
-            //if (result == DialogResult.No)
-            //{
-            //}
             string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
 
 #if DEBUG
@@ -1019,8 +947,6 @@ namespace SketchUp
                            SketchUpGlobals.LocalLib,
                            SketchUpGlobals.LocalityPrefix,
 
-                            //SketchUpGlobals.FcLib,
-                            //SketchUpGlobals.FcLocalityPrefix,
                             SketchUpGlobals.Record,
                             SketchUpGlobals.Card,
                             CurrentSecLtr));
@@ -1040,7 +966,7 @@ namespace SketchUp
 #endif
         }
 
-     
+
 
         private CamraDataEnums.CardinalDirection DirectionOfKeyEntered(KeyEventArgs e)
         {
@@ -1164,32 +1090,10 @@ namespace SketchUp
 
         private void DMouseMove(int X, int Y, bool jumpMode)
         {
-            //if (jumpMode == true)
-            //{
-            //    _isJumpMode = true;
-            //    draw = false;
-            //    _mouseX = X;
-            //    _mouseY = Y;
-            //}
-            //else
-            //{
-            //    _isJumpMode = false;
-            //    draw = true;
-            //    Graphics g = Graphics.FromImage(MainImage);
-            //    Pen pen1 = new Pen(Color.White, 4);
-            //    g.DrawRectangle(pen1, X, Y, 1, 1);
-            //    g.Save();
 
-            //    ExpSketchPBox.Image = MainImage;
 
-            //click++;
-            //savpic.Add(click, imageToByteArray(_mainimage));
-            //}
         }
 
-        //    legalDirections.AddRange((from l in WorkingParcel.AllSectionLines where l.ScaledEndPoint == scaledJumpPoint  select ReverseDirection(l.Direction)).ToList());
-        //    return legalDirections.Distinct().ToList();
-        //}
         //ToDo: Begin here to hook in parcel updates
         private void DrawingDoneBtn_Click(object sender, EventArgs e)
         {
@@ -1211,10 +1115,6 @@ namespace SketchUp
             sketchBox.Image = sms.SketchImage;
         }
 
-        private void ExpandoSketchTools_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-        }
-
         private void ExpandoSketch_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = StopClose();
@@ -1224,6 +1124,9 @@ namespace SketchUp
         {
         }
 
+        private void ExpandoSketchTools_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+        }
         private void ExpSketchPbox_MouseClick(object sender, MouseEventArgs e)
         {
             if (!_isJumpMode)
@@ -1406,7 +1309,6 @@ namespace SketchUp
             return angle;
         }
 
-        //    AngD2 = Convert.ToDecimal(D1);
         private List<string> GetLegalMoveDirections(PointF startPoint, string attachSectionLetter)
         {
             List<string> legalDirections = new List<string>();
@@ -1460,8 +1362,6 @@ namespace SketchUp
                        SketchUpGlobals.LocalLib,
                        SketchUpGlobals.LocalityPrefix,
 
-                        //SketchUpGlobals.FcLib,
-                        //SketchUpGlobals.FcLocalityPrefix,
                         crrec,
                         crcard));
             getLine.Append("and jldirect <> 'X' ");
@@ -1477,8 +1377,6 @@ namespace SketchUp
                            SketchUpGlobals.LocalLib,
                           SketchUpGlobals.LocalityPrefix,
 
-                            //SketchUpGlobals.FcLib,
-                            //SketchUpGlobals.FcLocalityPrefix,
                             SketchUpGlobals.Record,
                             SketchUpGlobals.Card,
                             NextSectLtr));
@@ -1654,17 +1552,7 @@ namespace SketchUp
             SketchUpGlobals.HasSketch = hasSketch;
 
             // TODO: Remove if not needed:
-            //SectionLtrs = ConstructSectionLtrs();
-            //AreaTable = ConstructAreaTable();
-            //MultiplePoints = ConstructMulPtsTable();
-            //AttachmentPointsDataTable = ConstructAttachmentPointsDataTable();
-            //AttachPoints = ConstructAttachPointsDataTable();
-            //DupAttPoints = ConstructDupAttPointsTable();
-            //StrtPts = ConstructStartPointsTable();
 
-            //                case CamraDataEnums.CardinalDirection.None:
-            //                    break;
-            //    DupAttPoints = ConstructDupAttPointsTable();
         }
 
         private void InitializeDisplayDataGrid()
@@ -1706,8 +1594,6 @@ namespace SketchUp
                               SketchUpGlobals.LocalLib,
                                SketchUpGlobals.LocalityPrefix
 
-                                //SketchUpGlobals.FcLib,
-                                //SketchUpGlobals.FcLocalityPrefix
                                 ));
                 insMaster.Append(String.Format("values ({0},{1},'{2}',{3},'{4}',{5},{6},'{7}' ) ",
                             SketchUpGlobals.Record,
@@ -1780,7 +1666,6 @@ namespace SketchUp
                     ScaledStartPoint = ScaledJumpPoint;
                     LegalMoveDirections = GetLegalMoveDirections(ScaledJumpPoint, AttSectLtr);
                     MoveCursorToNewPoint(ScaledJumpPoint);
-                  //  LoadLegacyJumpTable();
                     SetReadyButtonAppearance();
                     _isJumpMode = true;
                     EditState = DrawingState.JumpPointSelected;
@@ -1814,44 +1699,7 @@ namespace SketchUp
             _isJumpMode = false;
         }
 
-      
 
-
-        private static string LegalDirectionsMessage(List<string> legalDirections)
-        {
-            StringBuilder statusMessage = new StringBuilder();
-            statusMessage.Append("Legal Directions: ");
-            int counter = 1;
-            foreach (string s in legalDirections.Distinct())
-            {
-                if (counter < legalDirections.Count)
-                {
-                    statusMessage.AppendFormat("{0}, ", s);
-                }
-                else
-                {
-                    statusMessage.AppendFormat("{0}", s);
-                }
-                counter++;
-            }
-
-            return statusMessage.ToString();
-        }
-
-        //private void AddDbPoints(PointF startPoint, PointF endPoint, decimal xDistance, decimal yDistance, CamraDataEnums.CardinalDirection moveDirection)
-        //{
-        //    int nextLineNumber;
-        //    PointF dbStart;
-        //    PointF dbEnd;
-
-        //    dbStart = SMGlobal.ScaledPointToDbPoint((decimal)startPoint.X, (decimal)startPoint.Y, WorkingParcel.Scale, WorkingParcel.SketchOrigin);
-        //    dbEnd = SMGlobal.ScaledPointToDbPoint((decimal)startPoint.X, (decimal)startPoint.Y, WorkingParcel.Scale, WorkingParcel.SketchOrigin);
-
-        //    string direction = moveDirection.ToString();
-        //    nextLineNumber = WorkingSection.Lines.Count + 1;
-        //    AddNewLine(nextLineNumber, dbStart, dbEnd, direction);
-        //}
-        //                    break;
         private List<SMLine> LinesWithClosestEndpoints(PointF mouseLocation)
         {
             foreach (SMLine l in WorkingParcel.AllSectionLines.Where(s => s.SectionLetter != WorkingParcel.LastSectionLetter))
@@ -1865,7 +1713,7 @@ namespace SketchUp
             return connectionLines;
         }
 
-     
+
         private void LoadSectionLinesGrid(string sectionLetter)
         {
             displayDataTable.Rows.Clear();
@@ -1883,10 +1731,6 @@ namespace SketchUp
             }
         }
 
-        //                    break;
-        //    //savpic = new Dictionary<int, byte[]>();
-        //    _StartX = new Dictionary<int, float>();
-        //    _StartY = new Dictionary<int, float>();
         private void LoadStartPointsDataTable()
         {
             List<SMLine> startLines = (from l in WorkingParcel.AllSectionLines where l.LineNumber == 1 select l).OrderBy(s => s.SectionLetter).ToList();
@@ -1904,24 +1748,6 @@ namespace SketchUp
             }
         }
 
-        //        case SketchDrawingState.JumpMoveToBeginPoint:
-        //        case SketchDrawingState.JumpPointSelected:
-        //            switch (direction)
-        //            {
-        //                //Regular directions
-        //                case CamraDataEnums.CardinalDirection.N:
-        //                    endX = ScaledStartPoint.X;
-        //                    endY = ScaledStartPoint.Y - (float)scaledDistance;
-        //    SketchFolder = sketchFolder;
-        //    SketchRecord = sketchRecord;
-        //    SketchCard = sketchCard;
-        //    SketchUpGlobals.HasSketch = hasSketch;
-        //        if (JumpTable.Rows.Count > 0)
-        //        {
-        //            secltr = FindClosestCorner(CurrentScale, ref curltr, AttSecLtrList);
-        //        }
-        //    }
-        //}
         private int MaximumLineCount()
         {
             int maxLineCnt;
@@ -1930,8 +1756,6 @@ namespace SketchUp
                        SketchUpGlobals.LocalLib,
                           SketchUpGlobals.LocalityPrefix
 
-                        //SketchUpGlobals.FcLib,
-                        //SketchUpGlobals.FcLocalityPrefix
                         ));
             lineCntx.Append(String.Format("where jlrecord = {0} and jldwell = {1} and jlsect = '{2}' ",
                 SketchUpGlobals.Record, SketchUpGlobals.Card, CurrentSecLtr));
@@ -1940,13 +1764,6 @@ namespace SketchUp
             return maxLineCnt;
         }
 
-        //        case SketchDrawingState.Drawing:
-        //            movementType = MovementMode.Draw;
-        //            break;
-        //    IsNewSketch = false;
-        //    _hasNewSketch = hasNewSketch;
-        //    IsNewSketch = hasNewSketch;
-        //    _addSection = false;
         private void MeasureAngle()
         {
             throw new NotImplementedException();
@@ -1971,34 +1788,17 @@ namespace SketchUp
         private void miSaveAndClose_Click(object sender, EventArgs e)
         {
             SaveChanges(WorkingParcel);
+            WorkingSection = null;
 
-            UnsavedChangesExist = false;
-            Close();
         }
 
         private void miSaveAndContinue_Click(object sender, EventArgs e)
         {
             SaveChanges(WorkingParcel);
-
-            UnsavedChangesExist = false;
             WorkingSection = null;
         }
 
-        //    string D1 = anglecalls.Substring(0, commaCnt).Trim();
-        //
         // TODO: Remove if not needed:
-        //private void HandleMovementByKey(CamraDataEnums.CardinalDirection direction, decimal distance)
-        //{
-        //    decimal scale = WorkingParcel.Scale;
-        //    decimal scaledDistance = distance * scale;
-        //    MovementMode movementType;
-        //    float endX;
-        //    float endY;
-        //    switch (SketchingState)
-        //    {
-        //        case SketchDrawingState.BeginPointSelected:
-        //    Locality = _locality;
-        //        List<string> AttSecLtrList = new List<string>();
         private void MoveCursor()
         {
             Color penColor;
@@ -2014,10 +1814,8 @@ namespace SketchUp
 
             sketchBox.Image = MainImage;
 
-            //DMouseClick();
         }
 
-        //    _currentSection = new SectionDataCollection(_fox, SketchUpGlobals.Record, SketchUpGlobals.Card);
         private void MoveCursorToNewPoint(PointF newPoint)
         {
             Color penColor;
@@ -2057,17 +1855,6 @@ namespace SketchUp
             return multipleSectionsAttachment;
         }
 
-        //private void InitializeDataTablesAndVariables(SketchUpParcelData currentParcel, string sketchFolder, string sketchRecord, string sketchCard, string _locality, CAMRA_Connection _fox, SectionDataCollection currentSection, bool hasSketch, bool hasNewSketch)
-        //{
-        //    checkDirection = false;
-        //    _currentParcel = currentParcel;
-        //    _currentSection = currentSection;
-        //private void NorthDirBtn_Click(object sender, EventArgs e)
-        //{
-        //    _isKeyValid = true;
-        //    MoveNorth(NextStartX, NextStartY);
-        //    DistText.Focus();
-        //}
 
         private void NotifyUserOfLegalMoves()
         {
@@ -2089,8 +1876,6 @@ namespace SketchUp
             }
         }
 
-        //        string secltr = String.Empty;
-        //        string curltr = String.Empty;
         private decimal OriginalDistanceX()
         {
             decimal origDistX = 0;
@@ -2100,8 +1885,6 @@ namespace SketchUp
                       SketchUpGlobals.LocalLib,
                           SketchUpGlobals.LocalityPrefix,
 
-                        //SketchUpGlobals.FcLib,
-                        //SketchUpGlobals.FcLocalityPrefix,
                         SketchUpGlobals.Record,
                         SketchUpGlobals.Card
                         ));
@@ -2164,33 +1947,6 @@ namespace SketchUp
             angle.AngledLineDirection = direction;
             return angle;
         }
-
-        //    if (AngleForm.NorthWest == true)
-        //    {
-        //        MoveNorthWest(NextStartX, NextStartY);
-        //    }
-        private static Color PenColorForDrawing(DrawingState editingStep)
-        {
-            Color penColor;
-            switch (editingStep)
-            {
-                case DrawingState.Drawing:
-                    penColor = Color.Red;
-                    break;
-
-                case DrawingState.SectionAdded:
-                case DrawingState.JumpPointSelected:
-                    penColor = Color.Teal;
-                    break;
-
-                default:
-                    penColor = Color.Transparent;
-                    break;
-            }
-
-            return penColor;
-        }
-
         private void RedrawSketch(SMParcel parcel)
         {
             SMSketcher sketcher = new SMSketcher(parcel, sketchBox);
@@ -2201,42 +1957,12 @@ namespace SketchUp
 
         private void RefreshSketch()
         {
-            //ExpSketchPBox.Refresh();
-            //MainImage = null;
-            //float scaleOut = 0.00f;
-            //SMParcel parcel = SketchUpGlobals.ParcelWorkingCopy;
-            //MainImage = _currentParcel.GetSketchImage(parcel, ExpSketchPBox.Width, ExpSketchPBox.Height,
-            //    1000, 572, 400, out scaleOut);
-            //DrawingScale = (float)parcel.Scale;
-            //_currentScale = DrawingScale;
-            //Graphics g = Graphics.FromImage(MainImage);
-            //SMSketcher sketcher = new SMSketcher(parcel, ExpSketchPBox);
-            //sketcher.RenderSketch(true);
-            //MainImage = sketcher.SketchImage;
 
-            //SolidBrush Lblbrush = new SolidBrush(Color.Black);
-            //SolidBrush FillBrush = new SolidBrush(Color.White);
-            //Pen whitePen = new Pen(Color.White, 2);
-            //Pen blackPen = new Pen(Color.Black, 2);
 
-            //Font LbLf = new Font("Segue UI", 10, FontStyle.Bold);
-            //Font TitleF = new Font("Segue UI", 10, FontStyle.Bold | FontStyle.Underline);
-            //Font MainTitle = new System.Drawing.Font("Segue UI", 15, FontStyle.Bold | FontStyle.Underline);
-            //char[] leadzero = new char[] { '0' };
 
-            //g.DrawString(Locality, TitleF, Lblbrush, new PointF(10, 10));
-            //g.DrawString("Edit Sketch", MainTitle, Lblbrush, new PointF(450, 10));
-            //g.DrawString(String.Format("Record # - {0}", SketchRecord.TrimStart(leadzero)), LbLf, Lblbrush, new PointF(10, 30));
-            //g.DrawString(String.Format("Card # - {0}", SketchCard), LbLf, Lblbrush, new PointF(10, 45));
 
-            //g.DrawString(String.Format("Scale - {0}", _currentScale), LbLf, Lblbrush, new PointF(10, 70));
 
-            //ExpSketchPBox.Image = MainImage;
 
-            //if (_closeSketch == true)
-            //{
-            //    Close();
-            //}
             string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
 
 #if DEBUG
@@ -2247,21 +1973,13 @@ namespace SketchUp
 #endif
         }
 
-        //#if DEBUG
-        //            MessageBox.Show(message);
-        //#else
-        //            Console.WriteLine(message);
-        //            throw new NotImplementedException();
-        //#endif
-        //        }
         private void RefreshWorkspace()
         {
             RedrawSketch(WorkingParcel);
             SetButtonStates(EditState);
         }
 
-        //            //}
-        //            string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
+
         private void ReorderSectionsAfterChanges()
         {
             Garcnt = 0;
@@ -2290,7 +2008,6 @@ namespace SketchUp
             ConfirmCarportNumbers();
         }
 
-        //            //    GetStartCorner();
         private void RevertToPriorVersion()
         {
             string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
@@ -2330,31 +2047,9 @@ namespace SketchUp
             }
         }
 
-        //            //    JumpX = _JumpX;
-        //            //    JumpY = _JumpY;
         private void rotateSketchToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //DialogResult result;
-            //result = (MessageBox.Show("Do you want to Flip Sketch Left to Right", "Flip Sketch Warning",
-            //    MessageBoxButtons.YesNo, MessageBoxIcon.Question));
-            //if (result == DialogResult.Yes)
-            //{
-            //    FlipLeftRight();
-            //}
-            //if (result == DialogResult.No)
-            //{
-            //    DialogResult result2;
-            //    result2 = (MessageBox.Show("Do you want to Flip Sketch Front to Back", "Flip Sketch Warning",
-            //        MessageBoxButtons.YesNo, MessageBoxIcon.Question));
-            //    if (result2 == DialogResult.Yes)
-            //    {
-            //        FlipUpDown();
-            //    }
 
-            //    if (result2 == DialogResult.No)
-            //    {
-            //    }
-            //}
 
             FlipSketch fskt = new FlipSketch();
             fskt.ShowDialog();
@@ -2368,43 +2063,51 @@ namespace SketchUp
             }
         }
 
-        private void SaveChanges(SMParcel parcel)
+        private bool SaveChanges(SMParcel parcel)
         {
-            SketchRepository sr = new SketchRepository(parcel);
-            ParcelMast = sr.SaveCurrentParcel(parcel);
-            WorkingParcel = ParcelMast.Parcel;
-        }
-
-        private void SaveCurrentParcelToDatabaseAndExit(SMParcel parcel)
-        {
-             string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
-
+            try
+            {
+                if (UnsavedChangesExist)
+                {
+                    SketchRepository sr = new SketchRepository(parcel);
+                    ParcelMast = sr.SaveCurrentParcel(parcel);
+                    WorkingParcel = ParcelMast.Parcel;
+                    UnsavedChangesExist = false;
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+                Trace.WriteLine(errMessage);
+                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
 #if DEBUG
-            MessageBox.Show(message);
-#else
-            Console.WriteLine(message);
-            throw new NotImplementedException();
+
+                MessageBox.Show(errMessage);
 #endif
+                return false;
+
+                throw;
+            }
+          
         }
 
-        //            //    float _JumpX = (ScaleBaseX + (Convert.ToSingle(REJumpTable.Rows[rowindex - 1]["XPt2"].ToString()) * _currentScale)); //  change XPt1 to XPt2
-        //            //    float _JumpY = (ScaleBaseY + (Convert.ToSingle(REJumpTable.Rows[rowindex - 1]["YPT2"].ToString()) * _currentScale));
-        //                AddXLine(thisSection);
+      
+
         private void SaveJumpPointsAndOldSectionEndPoints(float CurrentScale, int rowindex, DataView SortedJumpTableDataView)
         {
             try
             {
-                float _JumpX = (ScaleBaseX + (Convert.ToSingle(JumpTable.Rows[rowindex]["XPt2"].ToString()) * CurrentScale)); //  change XPt1 to XPt2
+                float _JumpX = (ScaleBaseX + (Convert.ToSingle(JumpTable.Rows[rowindex]["XPt2"].ToString()) * CurrentScale));
                 float _JumpY = (ScaleBaseY + (Convert.ToSingle(JumpTable.Rows[rowindex]["YPT2"].ToString()) * CurrentScale));
 
-                JumpX = (ScaleBaseX + (Convert.ToSingle(SortedJumpTableDataView[0]["XPt2"].ToString()) * CurrentScale));  //  change XPt1 to XPt2
+                JumpX = (ScaleBaseX + (Convert.ToSingle(SortedJumpTableDataView[0]["XPt2"].ToString()) * CurrentScale));
                 JumpY = (ScaleBaseY + (Convert.ToSingle(SortedJumpTableDataView[0]["YPt2"].ToString()) * CurrentScale));
 
-                float _endOldSecX = (ScaleBaseX + (Convert.ToSingle(JumpTable.Rows[rowindex]["XPt1"].ToString()) * CurrentScale));//   change XPt2 to XPt1
-                float _endOldSecY = (ScaleBaseY + (Convert.ToSingle(JumpTable.Rows[rowindex]["YPt1"].ToString()) * CurrentScale)); // ScaleBaseY was ScaleBaseX ??
-
-                endOldSecX = (ScaleBaseX + (Convert.ToSingle(SortedJumpTableDataView[0]["XPt2"].ToString()) * CurrentScale));//   change XPt2 to XPt1
-                endOldSecY = (ScaleBaseY + (Convert.ToSingle(SortedJumpTableDataView[0]["YPt2"].ToString()) * CurrentScale));  // ScaleBaseY was ScaleBaseX ??
+                float _endOldSecX = (ScaleBaseX + (Convert.ToSingle(JumpTable.Rows[rowindex]["XPt1"].ToString()) * CurrentScale));
+                float _endOldSecY = (ScaleBaseY + (Convert.ToSingle(JumpTable.Rows[rowindex]["YPt1"].ToString()) * CurrentScale));
+                endOldSecX = (ScaleBaseX + (Convert.ToSingle(SortedJumpTableDataView[0]["XPt2"].ToString()) * CurrentScale));
+                endOldSecY = (ScaleBaseY + (Convert.ToSingle(SortedJumpTableDataView[0]["YPt2"].ToString()) * CurrentScale));
             }
             catch (Exception ex)
             {
@@ -2413,23 +2116,11 @@ namespace SketchUp
             }
         }
 
-        //    bool sketchHasLineData = lines.Tables[0].Rows.Count > 0;
-        //    if (sketchHasLineData)
-        //    {
-        //        SecItemCnt = CountSections();
         private void SetAddNewPointButton(bool enabled)
         {
             isInAddNewPointMode = enabled;
         }
 
-        //            //    float _JumpXT = (ScaleBaseX + (Convert.ToSingle(REJumpTable.Rows[rowindex - 1]["XPt2"].ToString()) * _currentScale));
-        //        // PopulateSectionList();
-        //        for (int i = 0; i < SecItemCnt; i++)
-        //        {
-        //            string thisSection = SecLetters[i].ToString();
-        //            if (SecItemCnt >= 1)
-        //            {
-        //                SecLineCnt= CountLines(thisSection);
         private void SetButtonStates(DrawingState sketchState)
         {
             switch (sketchState)
@@ -2479,7 +2170,7 @@ namespace SketchUp
                 default:
 
                     btnAdd.Enabled = true;
-                    AddSectionContextMenu.Enabled = true;
+                    AddSectionContextMenu.Enabled = !UnsavedChangesExist;
                     btnAdd.Text = "Add Section";
                     btnAdd.Image = AddImage;
                     cmiJumpToCorner.Enabled = false;
@@ -2489,8 +2180,6 @@ namespace SketchUp
             }
         }
 
-        //            //        REJumpTable.Rows.Add(row);
-        //            //    }
         private void SetReadyButtonAppearance()
         {
             btnAdd.BackColor = Color.PaleTurquoise;
@@ -2498,7 +2187,6 @@ namespace SketchUp
             btnAdd.Enabled = ScaledJumpPoint != null;
         }
 
-        //            //        _StartY.Add(rowindex, yPoint);
         private void ShowMessageBox(string s)
         {
             MessageBox.Show(s);
@@ -2559,7 +2247,6 @@ namespace SketchUp
             AddParcelToSnapshots(WorkingParcel);
         }
 
-        //            //        _StartX.Add(rowindex, xPoint);
         private void ShowState(DrawingState value)
         {
             string message = string.Empty;
@@ -2613,20 +2300,12 @@ namespace SketchUp
             DisplayStatus(message);
         }
 
-        //            //        rowindex = Convert.ToInt32(rolines.Tables[0].Rows[i]["jlline#"].ToString());
         private void ShowVersion(int snapShotIndex)
         {
             string versionInfo = string.Format("#{0}", snapShotIndex);
             snapshotIndexLabel.Text = versionInfo;
         }
 
-        //            //        float xPoint = (ScaleBaseX + (Convert.ToSingle(xpt2) * _currentScale));
-        //            //        float yPoint = (ScaleBaseY + (Convert.ToSingle(ypt2) * _currentScale));
-        //                MessageBox.Show(errMessage);
-        //#endif
-        //                throw;
-        //            }
-        //        }
         private void ShowWorkingCopySketch(string sketchFolder, string sketchRecord, string sketchCard, bool hasSketch, bool hasNewSketch)
         {
             try
@@ -2648,8 +2327,6 @@ namespace SketchUp
                     MainImage = sketcher.SketchImage;
                     _currentScale = (float)WorkingParcel.Scale;
 
-                    //MainImage = currentParcel.GetSketchImage(ExpSketchPBox.Width, ExpSketchPBox.Height, 1000, 572, 400, out _scale);
-                    //_currentScale = _scale;
                 }
                 else
                 {
@@ -2657,8 +2334,6 @@ namespace SketchUp
                 }
                 ScaleBaseX = sketchBox.Width / (float)WorkingParcel.SketchXSize;
 
-                // ScaleBaseX = BuildingSketcher.basePtX;
-                //  ScaleBaseY = BuildingSketcher.basePtY;
                 ScaleBaseY = sketchBox.Height / (float)WorkingParcel.SketchYSize;
 
                 if (MainImage == null)
@@ -2689,8 +2364,6 @@ namespace SketchUp
             }
         }
 
-        //            //        decimal xpt2 = Convert.ToDecimal(rolines.Tables[0].Rows[i]["jlpt2x"].ToString());
-        //            //        decimal ypt2 = Convert.ToDecimal(rolines.Tables[0].Rows[i]["jlpt2y"].ToString());
         private void sortSection()
         {
             //TODO: Refactor into SketchManager
@@ -2709,8 +2382,6 @@ namespace SketchUp
                       SketchUpGlobals.LocalLib,
                           SketchUpGlobals.LocalityPrefix,
 
-                        //SketchUpGlobals.FcLib,
-                        //SketchUpGlobals.FcLocalityPrefix,
                         SketchUpGlobals.Record,
                         SketchUpGlobals.Card));
 
@@ -2736,8 +2407,6 @@ namespace SketchUp
                                   SketchUpGlobals.LocalLib,
                           SketchUpGlobals.LocalityPrefix
 
-                                    //SketchUpGlobals.FcLib,
-                                    //SketchUpGlobals.FcLocalityPrefix
                                     ));
                     chkLen.Append(String.Format("where jlrecord = {0} and jldwell = {1} order by jlsect,jlline# ", SketchUpGlobals.Record, SketchUpGlobals.Card));
 
@@ -2747,15 +2416,12 @@ namespace SketchUp
                     {
                         for (int i = 0; i < fixl.Tables[0].Rows.Count; i++)
                         {
-                            //MessageBox.Show(String.Format("Updating Line Record - {0}, Card - {1} at 3177", SketchUpGlobals.Record, SketchUpGlobals.Card));
 
                             StringBuilder updLine = new StringBuilder();
                             updLine.Append(String.Format("update {0}.{1}line set jlxlen = {2},jlylen = {3},jllinelen = {4} ",
                                            SketchUpGlobals.LocalLib,
                                            SketchUpGlobals.LocalityPrefix,
 
-                                            //SketchUpGlobals.FcLib,
-                                            //SketchUpGlobals.FcLocalityPrefix,
                                             Convert.ToDecimal(fixl.Tables[0].Rows[i]["Xlen"].ToString()),
                                             Convert.ToDecimal(fixl.Tables[0].Rows[i]["Ylen"].ToString()),
                                             Convert.ToDecimal(fixl.Tables[0].Rows[i]["LineLen"].ToString())));
@@ -2782,7 +2448,7 @@ namespace SketchUp
                 switch (response)
                 {
                     case DialogResult.Yes:
-                        SaveCurrentParcelToDatabaseAndExit(WorkingParcel);
+                        SaveChanges(WorkingParcel);
 
                         break;
 
@@ -2799,8 +2465,8 @@ namespace SketchUp
             return preventClose;
         }
 
-     
-      
+
+
         private void TotalGaragesAndCarports(SMSection s)
         {
             if (SketchUpLookups.GarageTypes.Contains(s.SectionType))
@@ -2817,13 +2483,13 @@ namespace SketchUp
             }
         }
 
-       
-private void UnDoBtn_Click(object sender, EventArgs e)
+
+        private void UnDoBtn_Click(object sender, EventArgs e)
         {
             switch (EditState)
             {
                 case DrawingState.Drawing:
-                    
+
                     UndoLine();
                     break;
                 case DrawingState.DoneDrawing:
@@ -2835,12 +2501,12 @@ private void UnDoBtn_Click(object sender, EventArgs e)
                     break;
                 case DrawingState.JumpPointSelected:
 
-                    RedrawSketch(WorkingParcel);
+                    RefreshWorkspace();
 
                     break;
 
                 case DrawingState.SectionAdded:
-                    FormattableString message=$"Do you wish to undo the addition of {WorkingSection.SectionLabel}?";
+                    FormattableString message = $"Do you wish to undo the addition of {WorkingSection.SectionLabel}?";
                     string title = "Undo Section Addition?";
                     MessageBoxButtons buttons = MessageBoxButtons.YesNo;
                     MessageBoxIcon icon = MessageBoxIcon.Question;
@@ -2848,18 +2514,18 @@ private void UnDoBtn_Click(object sender, EventArgs e)
                     DialogResult response = MessageBox.Show(message.ToString(), title, buttons, icon, defButton);
                     switch (response)
                     {
-                       
+
                         case DialogResult.Yes:
                             RevertToSavedSketch();
                             break;
-                       
+
                         default:
                             break;
                     }
                     break;
 
                 case DrawingState.SketchLoaded:
-      
+
                 default:
                     break;
             }
@@ -2971,8 +2637,8 @@ private void UnDoBtn_Click(object sender, EventArgs e)
             return ds_master;
         }
 
-#endregion
-      
-      
+        #endregion
+
+
     }
 }

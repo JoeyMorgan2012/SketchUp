@@ -64,14 +64,8 @@ namespace SketchUp
                 areaPoints.Add(l.StartPoint);
                 areaPoints.Add(l.EndPoint);
             }
-
             PolygonF sectionPolygon = new PolygonF(areaPoints.ToArray<PointF>());
             area = Math.Round(sectionPolygon.Area*Storeys, 2);
-
-#if DEBUG
-            Trace.WriteLine(string.Format("Section {0} area: {1}", SectionLetter, area));
-            Trace.Flush();
-#endif
             return area;
         }
 

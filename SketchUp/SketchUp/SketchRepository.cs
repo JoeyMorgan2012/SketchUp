@@ -11,7 +11,7 @@ namespace SketchUp
 {
     public class SketchRepository
     {
-        #region Constructor
+#region "Constructor"
 
         public SketchRepository(SMParcel selectedParcel)
         {
@@ -23,19 +23,193 @@ namespace SketchUp
             SketchConnection = new SMConnection(dbDataSource, dbUserName, dbPassword, localityPrefix);
         }
 
-        #endregion Constructor
+#endregion
 
-        #region DAL Methods
+#region "Public Methods"
 
-        public void DeleteSketchData(SMParcel parcel)
+        public SMParcel AddSketchToSnapshots(SMParcel parcel)
         {
+            parcel.SnapShotIndex++;
+            SketchUpGlobals.SketchSnapshots.Add(parcel);
+            return SketchUpGlobals.ParcelWorkingCopy;
         }
 
-        #region CRUD methods refactored out of ExpandoSketch Class
+        public void DeleteSelectedSection(SMParcel parcel, SMSection section)
+        {
+            if (section.SectionLetter == "A")
+            {
+                string message = "You are removing the base section! You must have a section \"A\" in place. Removing this section will remove the entire sketch, and you will have to redraw it.\n\nProceed?";
+                string title = "Delete Base Section A?";
+                MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+                MessageBoxIcon icon = MessageBoxIcon.Warning;
+                MessageBoxDefaultButton defButton = MessageBoxDefaultButton.Button2;
+                DialogResult response = MessageBox.Show(message, title, buttons, icon, defButton);
+                switch (response)
+                {
+                    case DialogResult.Yes:
+                        DeleteSketch(parcel);
+                        break;
 
-        #endregion CRUD methods refactored out of ExpandoSketch Class
+                    case DialogResult.No:
+                    default:
 
-        #region Selects for SketchManager Classes
+                        //Do not alter the sketch
+                        break;
+                }
+            }
+            else
+            {
+                parcel.Sections.Remove(section);
+            }
+        }
+
+        public static string NextLetter(string lastLetter = "A")
+        {
+            string nextLetter = string.Empty;
+            switch (lastLetter)
+            {
+                case "A":
+                    nextLetter = "B";
+                    break;
+
+                case "B":
+                    nextLetter = "C";
+                    break;
+
+                case "C":
+                    nextLetter = "D";
+                    break;
+
+                case "D":
+                    nextLetter = "F";
+                    break;
+
+                case "F":
+                    nextLetter = "G";
+                    break;
+
+                case "G":
+                    nextLetter = "H";
+                    break;
+
+                case "H":
+                    nextLetter = "I";
+                    break;
+
+                case "I":
+                    nextLetter = "J";
+                    break;
+
+                case "J":
+                    nextLetter = "K";
+                    break;
+
+                case "K":
+                    nextLetter = "L";
+                    break;
+
+                case "L":
+                    nextLetter = "M";
+                    break;
+
+                default:
+                    nextLetter = string.Empty;
+                    break;
+            }
+            return nextLetter;
+        }
+
+        public static string NextLetter(SWallTech.CAMRA_Connection conn, int record, int card)
+        {
+            var lastLetter = string.Empty;
+            string nextLetter = string.Empty;
+            FormattableString sql = $"SELECT JSSECT FROM {SketchUpGlobals.LocalLib}.{SketchUpGlobals.LocalityPrefix}SECTION WHERE JSRECORD = {record} AND JSDWELL = {card} order by jssect desc fetch first row only";
+
+            DataSet ds = conn.DBConnection.RunSelectStatement(sql.ToString());
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                DataRow dr = ds.Tables[0].Rows[0];
+
+                lastLetter = dr["JSSECT"].ToString().Trim().ToUpper();
+            }
+            if (lastLetter != null)
+            {
+                switch (lastLetter)
+                {
+                    case "A":
+                        nextLetter = "B";
+                        break;
+
+                    case "B":
+                        nextLetter = "C";
+                        break;
+
+                    case "C":
+                        nextLetter = "D";
+                        break;
+
+                    case "D":
+                        nextLetter = "F";
+                        break;
+
+                    case "F":
+                        nextLetter = "G";
+                        break;
+
+                    case "G":
+                        nextLetter = "H";
+                        break;
+
+                    case "H":
+                        nextLetter = "I";
+                        break;
+
+                    case "I":
+                        nextLetter = "J";
+                        break;
+
+                    case "J":
+                        nextLetter = "K";
+                        break;
+
+                    case "K":
+                        nextLetter = "L";
+                        break;
+
+                    case "L":
+                        nextLetter = "M";
+                        break;
+
+                    default:
+                        nextLetter = string.Empty;
+                        break;
+                }
+            }
+            else
+            {
+                nextLetter = "A";
+            }
+            return nextLetter;
+        }
+
+        public SMParcelMast SaveCurrentParcel(SMParcel parcel)
+        {
+            workingParcel = parcel;
+
+            UpdateMastValues(parcel);
+            ReorganizeSections(parcel);
+            UpdateConnections(parcel);
+            UpdateDatabase(parcel);
+
+            SMParcelMast parcelMast = RefreshWorkingCopyFromDb(parcel);
+
+            return parcelMast;
+        }
+
+        private void UpdateDatabase(SMParcel parcel)
+        {
+            throw new NotImplementedException();
+        }
 
         public SMParcelMast SelectParcelMasterWithParcel(int recordNumber, int dwellingNumber)
         {
@@ -57,7 +231,7 @@ namespace SketchUp
                 decimal totalLivingArea = 0.00M;
                 decimal masterParcelStoreys;
 
-                if (parcelMastData.Tables!=null&& parcelMastData.Tables.Count>0&&parcelMastData.Tables[0].Rows.Count > 0)
+                if (parcelMastData.Tables != null && parcelMastData.Tables.Count > 0 && parcelMastData.Tables[0].Rows.Count > 0)
                 {
                     foreach (DataRow row in parcelMastData.Tables[0].Rows)
                     {
@@ -105,7 +279,109 @@ namespace SketchUp
 
                 throw;
             }
-         
+        }
+
+#endregion
+
+#region "Private methods"
+
+        private void AdjustParcelSections()
+        {
+            List<string> letters = SketchUpLookups.SectionLetters();
+        }
+
+        public SMParcel DeleteSectionAndReorganize(SMParcel parcel, SMSection section)
+        {
+            try
+            {
+                List<SMSection> sectionsBeforeDelete = parcel.Sections.OrderBy(l => l.SectionLetter).ToList();
+
+#if DEBUG
+                DevUtilities du = new DevUtilities();
+                Trace.WriteLine(du.ParcelInfo(parcel));
+#endif
+
+                AddSketchToSnapshots(parcel);
+                DeleteSelectedSection(parcel, section);
+#if DEBUG
+
+                Trace.WriteLine(du.ParcelInfo(parcel));
+#endif
+
+                ReorganizeParcel(parcel, sectionsBeforeDelete);
+#if DEBUG
+
+                Trace.WriteLine(du.ParcelInfo(parcel));
+                Trace.Flush();
+                Trace.Close();
+#endif
+                return parcel;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+                Trace.WriteLine(errMessage);
+                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+#if DEBUG
+
+                MessageBox.Show(errMessage);
+#endif
+
+                throw;
+            }
+        }
+
+        private void DeleteSketch(SMParcel parcel)
+        {
+ 
+            FormattableString deleteLinesSql= $"DELETE FROM {LineRecordTable} WHERE JLRECORD = {parcel.Record} AND JLDWELL = {parcel.Card}";
+
+            SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteLinesSql.ToString());
+
+            FormattableString deleteSectionsSql=$"DELETE FROM {SectionRecordTable} WHERE JSRECORD = {parcel.Record} AND JSDWELL = {parcel.Card}";
+            
+            SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteSectionsSql.ToString());
+
+            FormattableString deleteMasterSql=$"DELETE FROM {MasterRecordTable} WHERE JMRECORD = {parcel.Record} AND JMDWELL = {parcel.Card}";
+
+            SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteMasterSql.ToString());
+        }
+
+        private SMParcelMast RefreshWorkingCopyFromDb(SMParcel parcel)
+        {
+            SMParcelMast parcelMast = SelectParcelMasterWithParcel(parcel.Record, parcel.Card);
+            SketchUpGlobals.SMParcelFromData = workingParcel;
+            SketchUpGlobals.ParcelMast = parcelMast;
+            workingParcel = parcelMast.Parcel;
+            SketchUpGlobals.SketchSnapshots.Clear();
+            workingParcel.SnapShotIndex = 0;
+            AddSketchToSnapshots(workingParcel);
+            return parcelMast;
+        }
+
+        private void ReorganizeParcel(SMParcel parcel, List<SMSection> sectionsBeforeDelete)
+        {
+            List<SMSection> parcelSections = parcel.Sections.OrderBy(l => l.SectionLetter).ToList();
+#if DEBUG
+            DevUtilities du = new DevUtilities();
+            Trace.WriteLine(du.ParcelInfo(parcel));
+#endif
+
+            foreach (SMSection sec in parcelSections)
+            {
+            }
+        }
+
+        private void ReorganizeSections(SMParcel parcel)
+        {
+            string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
+
+#if DEBUG
+            MessageBox.Show(message);
+#else
+            Console.WriteLine(message);
+            throw new NotImplementedException();
+#endif
         }
 
         private List<SMSection> SelectParcelSections(SMParcel parcel)
@@ -278,255 +554,55 @@ namespace SketchUp
             }
         }
 
-        #endregion Selects for SketchManager Classes
-
-        #endregion DAL Methods
-        #region Sketch Management Methods
-        private void DeleteSectionAndReorganize(SMParcel parcel,SMSection section)
+        private void UpdateArea(SMParcel parcel)
         {
-            try
+            decimal areaSum = 0.00M;
+            decimal dbArea = 0.00M;
+            List<string> laTypes = new List<string>();
+            laTypes.AddRange((from la in SketchUpLookups.LivingAreaSectionTypeCollection select la._LAattSectionType).ToList());
+            decimal.TryParse(parcel.ParcelMast.TotalSquareFootage.ToString(), out dbArea);
+            foreach (SMSection s in parcel.Sections)
             {
-                List<SMSection> sectionsBeforeDelete = parcel.Sections.OrderBy(l => l.SectionLetter).ToList();
-
-#if DEBUG
-                DevUtilities du = new DevUtilities();
-                Trace.WriteLine(du.ParcelInfo(parcel));
-#endif
-
-                AddSketchToSnapshots(parcel);
-                DeleteSelectedSection(parcel,section);
-#if DEBUG
-                
-                Trace.WriteLine(du.ParcelInfo(parcel));
-#endif
-
-                ReorganizeParcel(parcel, sectionsBeforeDelete);
-#if DEBUG
-                
-                Trace.WriteLine(du.ParcelInfo(parcel));
-                Trace.Flush();
-                Trace.Close();
-#endif
-
-
+                if (laTypes.Contains(s.SectionType))
+                {
+                    areaSum += s.SqFt;
+                }
             }
-            catch (Exception ex)
-            {
-                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
-                Trace.WriteLine(errMessage);
-                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
-#if DEBUG
-
-                MessageBox.Show(errMessage);
-#endif
-
-
-                throw;
-            }
+            SketchUpGlobals.ParcelWorkingCopy.ParcelMast.TotalSquareFootage = areaSum;
         }
 
-        private void ReorganizeParcel(SMParcel parcel, List<SMSection> sectionsBeforeDelete)
-        {
-            List<SMSection> parcelSections = parcel.Sections.OrderBy(l => l.SectionLetter).ToList();
-            #if DEBUG
-                DevUtilities du = new DevUtilities();
-                Trace.WriteLine(du.ParcelInfo(parcel));
-#endif
-
-            foreach (SMSection sec in parcelSections)
-            {
-
-            }
-        }
-
-        public void DeleteSelectedSection(SMParcel parcel, SMSection section)
+        private void UpdateCarports(SMParcel parcel)
         {
             
-            if (section.SectionLetter == "A")
-            {
-                string message = "You are removing the base section! You must have a section \"A\" in place. Removing this section will remove the entire sketch, and you will have to redraw it.\n\nProceed?";
-                string title = "Delete Base Section A?";
-                MessageBoxButtons buttons = MessageBoxButtons.YesNo;
-                MessageBoxIcon icon = MessageBoxIcon.Warning;
-                MessageBoxDefaultButton defButton = MessageBoxDefaultButton.Button2;
-                DialogResult response = MessageBox.Show(message, title, buttons, icon, defButton);
-                switch (response)
-                {
-
-                    case DialogResult.Yes:
-                        DeleteSketch();
-                        break;
-                    case DialogResult.No:
-                    default:
-                        //Do not alter the sketch
-                        break;
-                }
-            }
-            else
-            {
-
-                parcel.Sections.Remove(section);
-
-            }
         }
 
-        private void DeleteSketch()
+        private void UpdateConnections(SMParcel parcel)
         {
-                       string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
-
-#if DEBUG
-            MessageBox.Show(message);
-#else
-            Console.WriteLine(message);
+            
             throw new NotImplementedException();
-#endif
+
         }
+
+       
+        private void UpdateMastValues(SMParcel parcel)
+        {
+            UpdateArea(parcel);
+            UpdateGarages(parcel);
+            UpdateCarports(parcel);
+        }
+
+        private void UpdateGarages(SMParcel parcel)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
-        #region Fields
 
-        private string dataSource;
-        private string lineRecordTable;
-        private string locality;
-        private string masterRecordTable;
-        private string mastRecordTable;
-        private string password;
-        private string sectionRecordTable;
-        private SMConnection sketchConnection;
-        private string userName;
-        private SMParcel workingParcel;
+        #region "Properties"
 
-        #endregion Fields
 
-        #region Properties
 
-        public static string NextLetter(string lastLetter = "A")
-        {
-            string nextLetter = string.Empty;
-            switch (lastLetter)
-            {
-                case "A":
-                    nextLetter = "B";
-                    break;
 
-                case "B":
-                    nextLetter = "C";
-                    break;
-
-                case "C":
-                    nextLetter = "D";
-                    break;
-
-                case "D":
-                    nextLetter = "F";
-                    break;
-
-                case "F":
-                    nextLetter = "G";
-                    break;
-
-                case "G":
-                    nextLetter = "H";
-                    break;
-
-                case "H":
-                    nextLetter = "I";
-                    break;
-
-                case "I":
-                    nextLetter = "J";
-                    break;
-
-                case "J":
-                    nextLetter = "K";
-                    break;
-
-                case "K":
-                    nextLetter = "L";
-                    break;
-
-                case "L":
-                    nextLetter = "M";
-                    break;
-
-                default:
-                    nextLetter = string.Empty;
-                    break;
-            }
-            return nextLetter;
-        }
-
-        public static string NextLetter(SWallTech.CAMRA_Connection conn, int record, int card)
-        {
-            var lastLetter = string.Empty;
-            string nextLetter = string.Empty;
-            string sql = string.Format("SELECT JSSECT FROM \"NATIVE\".\"{0}SECTION\" WHERE JSRECORD = {1} AND JSDWELL = {2} order by jssect desc fetch first row only", conn.LocalityPrefix, record, card);
-
-            DataSet ds = conn.DBConnection.RunSelectStatement(sql);
-            if (ds.Tables[0].Rows.Count > 0)
-            {
-                DataRow dr = ds.Tables[0].Rows[0];
-
-                lastLetter = dr["JSSECT"].ToString().Trim().ToUpper();
-            }
-            if (lastLetter != null)
-            {
-                switch (lastLetter)
-                {
-                    case "A":
-                        nextLetter = "B";
-                        break;
-
-                    case "B":
-                        nextLetter = "C";
-                        break;
-
-                    case "C":
-                        nextLetter = "D";
-                        break;
-
-                    case "D":
-                        nextLetter = "F";
-                        break;
-
-                    case "F":
-                        nextLetter = "G";
-                        break;
-
-                    case "G":
-                        nextLetter = "H";
-                        break;
-
-                    case "H":
-                        nextLetter = "I";
-                        break;
-
-                    case "I":
-                        nextLetter = "J";
-                        break;
-
-                    case "J":
-                        nextLetter = "K";
-                        break;
-
-                    case "K":
-                        nextLetter = "L";
-                        break;
-
-                    case "L":
-                        nextLetter = "M";
-                        break;
-
-                    default:
-                        nextLetter = string.Empty;
-                        break;
-                }
-            }
-            else
-            {
-                nextLetter = "A";
-            }
-            return nextLetter;
-        }
 
         public string DataSource
         {
@@ -534,7 +610,6 @@ namespace SketchUp
             {
                 return dataSource;
             }
-
             set
             {
                 dataSource = value;
@@ -548,7 +623,6 @@ namespace SketchUp
                 lineRecordTable = SketchConnection.LineTable;
                 return lineRecordTable;
             }
-
             set
             {
                 lineRecordTable = value;
@@ -561,7 +635,6 @@ namespace SketchUp
             {
                 return locality;
             }
-
             set
             {
                 locality = value;
@@ -575,7 +648,6 @@ namespace SketchUp
                 masterRecordTable = SketchConnection.MasterTable;
                 return masterRecordTable;
             }
-
             set
             {
                 masterRecordTable = value;
@@ -589,7 +661,6 @@ namespace SketchUp
                 mastRecordTable = SketchConnection.MastTable;
                 return mastRecordTable;
             }
-
             set
             {
                 mastRecordTable = value;
@@ -602,7 +673,6 @@ namespace SketchUp
             {
                 return password;
             }
-
             set
             {
                 password = value;
@@ -616,7 +686,6 @@ namespace SketchUp
                 sectionRecordTable = SketchConnection.SectionTable;
                 return sectionRecordTable;
             }
-
             set
             {
                 sectionRecordTable = value;
@@ -629,7 +698,6 @@ namespace SketchUp
             {
                 return sketchConnection;
             }
-
             set
             {
                 sketchConnection = value;
@@ -642,7 +710,6 @@ namespace SketchUp
             {
                 return userName;
             }
-
             set
             {
                 userName = value;
@@ -655,141 +722,27 @@ namespace SketchUp
             {
                 return workingParcel;
             }
-
             set
             {
                 workingParcel = value;
             }
         }
 
-        public SMParcel AddSketchToSnapshots(SMParcel parcel)
-        {
-            parcel.SnapShotIndex++;
-            SketchUpGlobals.SketchSnapshots.Add(parcel);
-            return SketchUpGlobals.ParcelWorkingCopy;
-        }
+#endregion
 
-        public SMParcelMast SaveCurrentParcel(SMParcel parcel)
-        {
-            workingParcel = parcel;
+#region "Private Fields"
 
-            UpdateMastRecord();
-            ReorganizeSections();
-            UpdateConnections();
-            UpdateDatabase();
-            SMParcelMast parcelMast = RefreshWorkingCopyFromDb(parcel);
+        private string dataSource;
+        private string lineRecordTable;
+        private string locality;
+        private string masterRecordTable;
+        private string mastRecordTable;
+        private string password;
+        private string sectionRecordTable;
+        private SMConnection sketchConnection;
+        private string userName;
+        private SMParcel workingParcel;
 
-            return parcelMast;
-        }
-
-        private SMParcelMast RefreshWorkingCopyFromDb(SMParcel parcel)
-        {
-            SMParcelMast parcelMast = SelectParcelMasterWithParcel(parcel.Record, parcel.Card);
-            SketchUpGlobals.SMParcelFromData = workingParcel;
-            SketchUpGlobals.ParcelMast = parcelMast;
-            workingParcel = parcelMast.Parcel;
-            SketchUpGlobals.SketchSnapshots.Clear();
-            workingParcel.SnapShotIndex = 0;
-            AddSketchToSnapshots(workingParcel);
-            return parcelMast;
-        }
-
-        private void UpdateMastRecord()
-        {
-            UpdateArea();
-            UpdateGarages();
-            UpdateCarports();
-        }
-
-        private void UpdateDatabase()
-        {
-            string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
-
-#if DEBUG
-            MessageBox.Show(message);
-#else
-            Console.WriteLine(message);
-            throw new NotImplementedException();
-#endif
-        }
-
-        private void UpdateConnections()
-        {
-             string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
-
-#if DEBUG
-            MessageBox.Show(message);
-#else
-            Console.WriteLine(message);
-            throw new NotImplementedException();
-#endif
-        }
-
-        private void ReorganizeSections()
-        {
-            string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
-
-#if DEBUG
-            MessageBox.Show(message);
-#else
-            Console.WriteLine(message);
-            throw new NotImplementedException();
-#endif
-        }
-
-        private void UpdateCarports()
-        {
-            string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
-
-#if DEBUG
-            MessageBox.Show(message);
-#else
-            Console.WriteLine(message);
-            throw new NotImplementedException();
-#endif
-        }
-
-        private void UpdateGarages()
-        {
-             string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
-
-#if DEBUG
-            MessageBox.Show(message);
-#else
-            Console.WriteLine(message);
-            throw new NotImplementedException();
-#endif
-        }
-
-        private void UpdateArea()
-        {
-            decimal areaSum = 0.00M;
-            decimal dbArea = 0.00M;
-            List<string> laTypes = new List<string>();
-            laTypes.AddRange((from la in SketchUpLookups.LivingAreaSectionTypeCollection select la._LAattSectionType).ToList());
-            decimal.TryParse(workingParcel.ParcelMast.TotalSquareFootage.ToString(),out dbArea);
-            foreach (SMSection s in workingParcel.Sections)
-            {
-                if (laTypes.Contains(s.SectionType))
-                {
-                    areaSum += s.SqFt;
-                }
-            }
-            SketchUpGlobals.ParcelWorkingCopy.ParcelMast.TotalSquareFootage = areaSum;
-        }
-
-        private void AdjustParcelSections()
-        {
-            string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
-
-#if DEBUG
-            MessageBox.Show(message);
-#else
-            Console.WriteLine(message);
-            throw new NotImplementedException();
-#endif
-        }
-
-        #endregion Properties
+#endregion
     }
 }
