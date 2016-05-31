@@ -34,92 +34,28 @@ namespace SketchUp
             return SketchUpGlobals.ParcelWorkingCopy;
         }
 
-        public void DeleteSelectedSection(SMParcel parcel, SMSection section)
+      
+
+     
+
+        public void DeleteSketch(SMParcel parcel)
         {
-            if (section.SectionLetter == "A")
-            {
-                string message = "You are removing the base section! You must have a section \"A\" in place. Removing this section will remove the entire sketch, and you will have to redraw it.\n\nProceed?";
-                string title = "Delete Base Section A?";
-                MessageBoxButtons buttons = MessageBoxButtons.YesNo;
-                MessageBoxIcon icon = MessageBoxIcon.Warning;
-                MessageBoxDefaultButton defButton = MessageBoxDefaultButton.Button2;
-                DialogResult response = MessageBox.Show(message, title, buttons, icon, defButton);
-                switch (response)
-                {
-                    case DialogResult.Yes:
-                        DeleteSketch(parcel);
-                        break;
+            FormattableString deleteLinesSql = $"DELETE FROM {LineRecordTable} WHERE JLRECORD = {parcel.Record} AND JLDWELL = {parcel.Card}";
 
-                    case DialogResult.No:
-                    default:
+            SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteLinesSql.ToString());
 
-                        //Do not alter the sketch
-                        break;
-                }
-            }
-            else
-            {
-                parcel.Sections.Remove(section);
-            }
+            FormattableString deleteSectionsSql = $"DELETE FROM {SectionRecordTable} WHERE JSRECORD = {parcel.Record} AND JSDWELL = {parcel.Card}";
+
+            SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteSectionsSql.ToString());
+
+            FormattableString deleteMasterSql = $"DELETE FROM {MasterRecordTable} WHERE JMRECORD = {parcel.Record} AND JMDWELL = {parcel.Card}";
+
+            SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteMasterSql.ToString());
         }
 
-        public static string NextLetter(string lastLetter = "A")
-        {
-            string nextLetter = string.Empty;
-            switch (lastLetter)
-            {
-                case "A":
-                    nextLetter = "B";
-                    break;
+       
 
-                case "B":
-                    nextLetter = "C";
-                    break;
-
-                case "C":
-                    nextLetter = "D";
-                    break;
-
-                case "D":
-                    nextLetter = "F";
-                    break;
-
-                case "F":
-                    nextLetter = "G";
-                    break;
-
-                case "G":
-                    nextLetter = "H";
-                    break;
-
-                case "H":
-                    nextLetter = "I";
-                    break;
-
-                case "I":
-                    nextLetter = "J";
-                    break;
-
-                case "J":
-                    nextLetter = "K";
-                    break;
-
-                case "K":
-                    nextLetter = "L";
-                    break;
-
-                case "L":
-                    nextLetter = "M";
-                    break;
-
-                default:
-                    nextLetter = string.Empty;
-                    break;
-            }
-            return nextLetter;
-        }
-
-        public static string NextLetter(SWallTech.CAMRA_Connection conn, int record, int card)
+        public static string NextLetterFromDb(SWallTech.CAMRA_Connection conn, int record, int card)
         {
             var lastLetter = string.Empty;
             string nextLetter = string.Empty;
@@ -192,23 +128,19 @@ namespace SketchUp
             return nextLetter;
         }
 
+      
+
         public SMParcelMast SaveCurrentParcel(SMParcel parcel)
         {
             workingParcel = parcel;
 
             UpdateMastValues(parcel);
-            ReorganizeSections(parcel);
-            UpdateConnections(parcel);
+            UpdateLinesAndSections(parcel);
             UpdateDatabase(parcel);
 
             SMParcelMast parcelMast = RefreshWorkingCopyFromDb(parcel);
 
             return parcelMast;
-        }
-
-        private void UpdateDatabase(SMParcel parcel)
-        {
-            throw new NotImplementedException();
         }
 
         public SMParcelMast SelectParcelMasterWithParcel(int recordNumber, int dwellingNumber)
@@ -265,6 +197,7 @@ namespace SketchUp
                         parcelMast.Parcel = WorkingParcel;
                     }
                 }
+
                 return parcelMast;
             }
             catch (Exception ex)
@@ -285,68 +218,6 @@ namespace SketchUp
 
 #region "Private methods"
 
-        private void AdjustParcelSections()
-        {
-            List<string> letters = SketchUpLookups.SectionLetters();
-        }
-
-        public SMParcel DeleteSectionAndReorganize(SMParcel parcel, SMSection section)
-        {
-            try
-            {
-                List<SMSection> sectionsBeforeDelete = parcel.Sections.OrderBy(l => l.SectionLetter).ToList();
-
-#if DEBUG
-                DevUtilities du = new DevUtilities();
-                Trace.WriteLine(du.ParcelInfo(parcel));
-#endif
-
-                AddSketchToSnapshots(parcel);
-                DeleteSelectedSection(parcel, section);
-#if DEBUG
-
-                Trace.WriteLine(du.ParcelInfo(parcel));
-#endif
-
-                ReorganizeParcel(parcel, sectionsBeforeDelete);
-#if DEBUG
-
-                Trace.WriteLine(du.ParcelInfo(parcel));
-                Trace.Flush();
-                Trace.Close();
-#endif
-                return parcel;
-            }
-            catch (Exception ex)
-            {
-                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
-                Trace.WriteLine(errMessage);
-                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
-#if DEBUG
-
-                MessageBox.Show(errMessage);
-#endif
-
-                throw;
-            }
-        }
-
-        private void DeleteSketch(SMParcel parcel)
-        {
- 
-            FormattableString deleteLinesSql= $"DELETE FROM {LineRecordTable} WHERE JLRECORD = {parcel.Record} AND JLDWELL = {parcel.Card}";
-
-            SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteLinesSql.ToString());
-
-            FormattableString deleteSectionsSql=$"DELETE FROM {SectionRecordTable} WHERE JSRECORD = {parcel.Record} AND JSDWELL = {parcel.Card}";
-            
-            SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteSectionsSql.ToString());
-
-            FormattableString deleteMasterSql=$"DELETE FROM {MasterRecordTable} WHERE JMRECORD = {parcel.Record} AND JMDWELL = {parcel.Card}";
-
-            SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteMasterSql.ToString());
-        }
-
         private SMParcelMast RefreshWorkingCopyFromDb(SMParcel parcel)
         {
             SMParcelMast parcelMast = SelectParcelMasterWithParcel(parcel.Record, parcel.Card);
@@ -359,31 +230,8 @@ namespace SketchUp
             return parcelMast;
         }
 
-        private void ReorganizeParcel(SMParcel parcel, List<SMSection> sectionsBeforeDelete)
-        {
-            List<SMSection> parcelSections = parcel.Sections.OrderBy(l => l.SectionLetter).ToList();
-#if DEBUG
-            DevUtilities du = new DevUtilities();
-            Trace.WriteLine(du.ParcelInfo(parcel));
-#endif
-
-            foreach (SMSection sec in parcelSections)
-            {
-            }
-        }
-
-        private void ReorganizeSections(SMParcel parcel)
-        {
-            string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
-
-#if DEBUG
-            MessageBox.Show(message);
-#else
-            Console.WriteLine(message);
-            throw new NotImplementedException();
-#endif
-        }
-
+     
+      
         private List<SMSection> SelectParcelSections(SMParcel parcel)
         {
             List<SMSection> sections = new List<SMSection>();
@@ -485,7 +333,7 @@ namespace SketchUp
                         TotalSqFt = 0,
                         ExSketch = string.Empty
                     };
-
+                    parcel.IdentifyAttachedToSections();
                     return parcel;
                 }
             }
@@ -573,36 +421,53 @@ namespace SketchUp
 
         private void UpdateCarports(SMParcel parcel)
         {
-            
+            MessageBox.Show(string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module.Name, MethodBase.GetCurrentMethod().Name),"Refactoring in Progress",MessageBoxButtons.OK,MessageBoxIcon.Information);
         }
 
-        private void UpdateConnections(SMParcel parcel)
+        private void UpdateDatabase(SMParcel parcel)
         {
-            
             throw new NotImplementedException();
-
         }
 
        
-        private void UpdateMastValues(SMParcel parcel)
-        {
-            UpdateArea(parcel);
-            UpdateGarages(parcel);
-            UpdateCarports(parcel);
-        }
 
         private void UpdateGarages(SMParcel parcel)
+        {
+            	MessageBox.Show(string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module.Name, MethodBase.GetCurrentMethod().Name),"Refactoring in Progress",MessageBoxButtons.OK,MessageBoxIcon.Information);
+ 
+        }
+
+        private void UpdateLinesAndSections(SMParcel parcel)
         {
             throw new NotImplementedException();
         }
 
-        #endregion
+        private void UpdateMastValues(SMParcel parcel)
+        {
+            try
+            {
+                UpdateArea(parcel);
+                UpdateGarages(parcel);
+                UpdateCarports(parcel);
+            }
+            catch (Exception ex)
+            {
+                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+                Trace.WriteLine(errMessage);
+                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+#if DEBUG
 
-        #region "Properties"
+                MessageBox.Show(errMessage);
+#endif
 
 
+                throw;
+            }
+        }
 
+#endregion
 
+#region "Properties"
 
         public string DataSource
         {

@@ -1,8 +1,10 @@
 ﻿using SWallTech;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
@@ -10,7 +12,7 @@ namespace SketchUp
 {
     public class SMParcel
     {
-#region "Public Methods"
+        #region "Public Methods"
 
         public void IdentifyAttachedToSections()
         {
@@ -20,6 +22,119 @@ namespace SketchUp
                 {
                     sms.AttachedTo = (from l in AllSectionLines where l.AttachedSection == sms.SectionLetter select l.SectionLetter).FirstOrDefault<string>() ?? string.Empty;
                 }
+            }
+        }
+        public void RemoveSectionFromParcel(SMSection section)
+        {
+            if (section.SectionLetter == "A")
+            {
+                string message = "You are removing the base section! You must have a section \"A\" in place. Removing this section will remove the entire sketch, and you will have to redraw it.\n\nProceed?";
+                string title = "Delete Base Section A?";
+                MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+                MessageBoxIcon icon = MessageBoxIcon.Warning;
+                MessageBoxDefaultButton defButton = MessageBoxDefaultButton.Button2;
+                DialogResult response = MessageBox.Show(message, title, buttons, icon, defButton);
+                switch (response)
+                {
+                    case DialogResult.Yes:
+                        SketchRepository sr = new SketchRepository(section.ParentParcel);
+                        sr.DeleteSketch(section.ParentParcel);
+                        break;
+
+                    default:
+
+                        //Do not alter the sketch
+                        break;
+                }
+            }
+            else
+            {
+                Sections.Remove(section);
+            }
+            ReorganizeSections();
+
+        }
+
+        public void RemoveSectionFromParcel(string sectionLetter)
+        {
+            SMSection section = SelectSectionByLetter(sectionLetter);
+            RemoveSectionFromParcel(section);
+        }
+
+        public void ReorganizeParcelLineConnections()
+        {
+            try
+            {
+                foreach (SMLine l in AllSectionLines)
+                {
+                    l.AttachedSection = string.Empty;
+                    List<SMLine> attachedLines = (from al in AllSectionLines where al.SectionLetter != "A" && al.SectionLetter != l.SectionLetter && al.StartPoint == l.EndPoint select al).Distinct().ToList();
+                    if (attachedLines != null)
+                    {
+                        if (attachedLines.Count == 1) //Only one section attaches
+                        {
+                            l.AttachedSection = attachedLines[0].SectionLetter.ToUpper();
+                        }
+                        else
+                        {
+                            for (int i = 1; i < attachedLines.Count; i++)
+                            {
+                                SMLine dupLine = l;
+                                SMSection currentSection = SelectSectionByLetter(l.SectionLetter);
+                                int lineNum = (from SMLine line in currentSection.Lines select line.LineNumber).Max() + 1;
+                                dupLine.LineNumber = lineNum;
+                                dupLine.AttachedSection = attachedLines[i].SectionLetter.ToUpper();
+                                currentSection.Lines.Add(dupLine);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+                Trace.WriteLine(errMessage);
+                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+#if DEBUG
+
+                MessageBox.Show(errMessage);
+#endif
+
+
+                throw;
+            }
+        }
+
+        public void ReorganizeSections()
+        {
+            try
+            {
+                string sectionLetter = string.Empty;
+                List<string> sectionLetters = SketchUpLookups.SectionLetters();
+                if (Sections != null)
+                {
+                    for (int i = 0; i < Sections.Count; i++)
+                    {
+                        sectionLetter = sectionLetters[i];
+                        Sections[i].SectionLetter = sectionLetter;
+                        Sections[i].Lines.ForEach(a => a.SectionLetter = sectionLetter);
+                    }
+
+                }
+                ReorganizeParcelLineConnections();
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+                Trace.WriteLine(errMessage);
+                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+#if DEBUG
+
+                MessageBox.Show(errMessage);
+#endif
+
+                throw;
             }
         }
 
@@ -555,7 +670,7 @@ namespace SketchUp
 
 #endregion
 
-#region "Fields"
+#region "Private Fields"
 
         private List<SMLine> allSectionLines;
         private bool allSectionsClosed;

@@ -2069,6 +2069,7 @@ namespace SketchUp
             {
                 if (UnsavedChangesExist)
                 {
+                    parcel.ReorganizeSections();
                     SketchRepository sr = new SketchRepository(parcel);
                     ParcelMast = sr.SaveCurrentParcel(parcel);
                     WorkingParcel = ParcelMast.Parcel;

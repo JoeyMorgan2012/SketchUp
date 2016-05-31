@@ -176,6 +176,7 @@ namespace SketchUp
             //newSection.Lines.Add(line4);
 
             LocalParcelCopy.Sections.Add(newSection);
+           
             LocalParcelCopy.SnapShotIndex++;
             SketchUpGlobals.SketchSnapshots.Add(LocalParcelCopy);
             LocalParcelCopy = SketchUpGlobals.ParcelWorkingCopy;
@@ -1474,12 +1475,9 @@ namespace SketchUp
 
         private void tsMenuExitForm_Click(object sender, EventArgs e)
         {
-            if (graphics != null)
-            {
-                graphics.Dispose();
-            }
-            Dispose();
+           
             Close();
+            Application.Exit();
         }
 
         private void tsmListParcelSnapshots_Click(object sender, EventArgs e)
@@ -1582,9 +1580,26 @@ namespace SketchUp
             sketchBox.Image = sms.SketchImage;
         }
 
-        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+    
+    
+        SMParcel ParcelWithoutB(SMParcel parcel)
         {
-            AddTestScreenLine();
+           
+            //Arrange
+            SketchRepository sr = new SketchRepository(parcel);
+
+            SMSection sectionB = (parcel.SelectSectionByLetter("B"));
+            parcel.RemoveSectionFromParcel( sectionB);
+            
+            return parcel;
+        }
+
+        private void miRemoveSectionB_Click(object sender, EventArgs e)
+        {
+            SMParcel test = ParcelWithoutB(LocalParcelCopy);
+            SMSketcher sms = new SMSketcher(LocalParcelCopy, sketchBox);
+            sms.RenderSketch();
+            sketchBox.Image = sms.SketchImage;
         }
     }
 }

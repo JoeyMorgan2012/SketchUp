@@ -66,6 +66,7 @@
             this.rbNone.Size = new System.Drawing.Size(83, 27);
             this.rbNone.TabIndex = 0;
             this.rbNone.TabStop = true;
+            this.rbNone.Tag = "rbNone";
             this.rbNone.Text = "(None)";
             this.rbNone.UseVisualStyleBackColor = true;
             // 

@@ -29,8 +29,10 @@
             this.runTest1 = new System.Windows.Forms.ToolStripMenuItem();
             this.runTest2 = new System.Windows.Forms.ToolStripMenuItem();
             this.runTest3 = new System.Windows.Forms.ToolStripMenuItem();
+            this.addScreenLine = new System.Windows.Forms.ToolStripMenuItem();
             this.runTest4 = new System.Windows.Forms.ToolStripMenuItem();
             this.runTest5 = new System.Windows.Forms.ToolStripMenuItem();
+            this.miRemoveSectionB = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.tsMenuExitForm = new System.Windows.Forms.ToolStripMenuItem();
@@ -67,7 +69,6 @@
             this.tsbDrawTeal = new System.Windows.Forms.ToolStripButton();
             this.tsbMoveToPoint = new System.Windows.Forms.ToolStripButton();
             this.infoLabel = new System.Windows.Forms.Label();
-            this.addScreenLine = new System.Windows.Forms.ToolStripMenuItem();
             this.sketchUpGlobalsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.MainMenu.SuspendLayout();
             this.cmenuDrawing.SuspendLayout();
@@ -105,6 +106,7 @@
             this.addScreenLine,
             this.runTest4,
             this.runTest5,
+            this.miRemoveSectionB,
             this.toolStripSeparator2,
             this.toolStripSeparator3,
             this.tsMenuExitForm});
@@ -119,7 +121,7 @@
             this.runTest1.Image = global::SketchUp.Properties.Resources.AddControl_16x_32;
             this.runTest1.Name = "runTest1";
             this.runTest1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D1)));
-            this.runTest1.Size = new System.Drawing.Size(238, 26);
+            this.runTest1.Size = new System.Drawing.Size(358, 26);
             this.runTest1.Text = "Add Section";
             this.runTest1.ToolTipText = "Run the first test";
             this.runTest1.Click += new System.EventHandler(this.runTest1_Click);
@@ -128,7 +130,7 @@
             // 
             this.runTest2.Name = "runTest2";
             this.runTest2.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D2)));
-            this.runTest2.Size = new System.Drawing.Size(238, 26);
+            this.runTest2.Size = new System.Drawing.Size(358, 26);
             this.runTest2.Text = "Undo Last Line";
             this.runTest2.ToolTipText = "Run the second test";
             this.runTest2.Click += new System.EventHandler(this.tsmListParcelSnapshots_Click);
@@ -137,41 +139,55 @@
             // 
             this.runTest3.Name = "runTest3";
             this.runTest3.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D3)));
-            this.runTest3.Size = new System.Drawing.Size(238, 26);
+            this.runTest3.Size = new System.Drawing.Size(358, 26);
             this.runTest3.Text = "Identify Corners";
             this.runTest3.ToolTipText = "Run the third test";
             this.runTest3.Click += new System.EventHandler(this.tsmAllTests_Click);
             // 
+            // addScreenLine
+            // 
+            this.addScreenLine.Name = "addScreenLine";
+            this.addScreenLine.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D6)));
+            this.addScreenLine.Size = new System.Drawing.Size(358, 26);
+            this.addScreenLine.Text = "Remove Section B and Reorganize";
+            // 
             // runTest4
             // 
             this.runTest4.Name = "runTest4";
-            this.runTest4.Size = new System.Drawing.Size(238, 26);
+            this.runTest4.Size = new System.Drawing.Size(358, 26);
             this.runTest4.Text = "Flip Horizontal";
             this.runTest4.Click += new System.EventHandler(this.runTest4_Click);
             // 
             // runTest5
             // 
             this.runTest5.Name = "runTest5";
-            this.runTest5.Size = new System.Drawing.Size(238, 26);
+            this.runTest5.Size = new System.Drawing.Size(358, 26);
             this.runTest5.Text = "Flip Vertical";
             this.runTest5.Click += new System.EventHandler(this.runTest5_Click);
+            // 
+            // miRemoveSectionB
+            // 
+            this.miRemoveSectionB.Name = "miRemoveSectionB";
+            this.miRemoveSectionB.Size = new System.Drawing.Size(358, 26);
+            this.miRemoveSectionB.Text = "Remove Garage";
+            this.miRemoveSectionB.Click += new System.EventHandler(this.miRemoveSectionB_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(235, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(355, 6);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(235, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(355, 6);
             // 
             // tsMenuExitForm
             // 
             this.tsMenuExitForm.AutoToolTip = true;
             this.tsMenuExitForm.Name = "tsMenuExitForm";
             this.tsMenuExitForm.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.X)));
-            this.tsMenuExitForm.Size = new System.Drawing.Size(238, 26);
+            this.tsMenuExitForm.Size = new System.Drawing.Size(358, 26);
             this.tsMenuExitForm.Text = "Exit Sketch View";
             this.tsMenuExitForm.ToolTipText = "Return to the Main Screen";
             this.tsMenuExitForm.Click += new System.EventHandler(this.tsMenuExitForm_Click);
@@ -448,14 +464,6 @@
             this.infoLabel.TabIndex = 22;
             this.infoLabel.Text = "Info";
             // 
-            // addScreenLine
-            // 
-            this.addScreenLine.Name = "addScreenLine";
-            this.addScreenLine.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D6)));
-            this.addScreenLine.Size = new System.Drawing.Size(238, 26);
-            this.addScreenLine.Text = "Add Screen Line";
-            this.addScreenLine.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
-            // 
             // sketchUpGlobalsBindingSource
             // 
             this.sketchUpGlobalsBindingSource.DataSource = typeof(SketchUp.SketchUpGlobals);
@@ -551,6 +559,7 @@
         private System.Windows.Forms.ToolStripMenuItem runTest4;
         private System.Windows.Forms.ToolStripMenuItem runTest5;
         private System.Windows.Forms.ToolStripMenuItem addScreenLine;
+        private System.Windows.Forms.ToolStripMenuItem miRemoveSectionB;
     }
 }
 
