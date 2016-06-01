@@ -48,7 +48,7 @@ namespace SketchUp
         {
             SMParcel parcel = sr.SelectParcelMasterWithParcel(record, dwelling).Parcel;
 
-            parcel.IdentifyAttachedToSections();
+          
             return parcel;
         }
 

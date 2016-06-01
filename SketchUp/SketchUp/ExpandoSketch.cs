@@ -607,8 +607,10 @@ namespace SketchUp
             }
         }
 
-        private void ConfirmGarageNumbers(SMParcel originalParcel)
+        private bool ConfirmGarageNumbers()
         {
+            bool garageOk = false;
+            SMParcelMast originalParcelMast = SketchUpGlobals.SMParcelFromData.ParcelMast;
             if (Garcnt > 0)
             {
                 if (Garcnt == 1 && parcelMast.Garage1TypeCode <= 60 || Garcnt == 1 && parcelMast.Garage1TypeCode == 63 || Garcnt == 1 && parcelMast.Garage1TypeCode == 64)
@@ -616,10 +618,9 @@ namespace SketchUp
                     MissingGarageData missGar = new MissingGarageData(parcelMast, GarSize, "GAR");
                     missGar.ShowDialog();
 
-                    if (MissingGarageData.GarCode != originalParcel.ParcelMast.Garage1TypeCode)
-                    {
+                    if (MissingGarageData.GarageCode != originalParcelMast.Garage1TypeCode)                    {
                         parcelMast.Garage1NumCars = MissingGarageData.GarNbr;
-                        parcelMast.Garage1TypeCode = MissingGarageData.GarCode;
+                        parcelMast.Garage1TypeCode = MissingGarageData.GarageCode;
                     }
                 }
                 if (Garcnt > 1 && parcelMast.Garage1NumCars == 0)
@@ -627,10 +628,10 @@ namespace SketchUp
                     MissingGarageData missGar = new MissingGarageData(parcelMast, GarSize, "GAR");
                     missGar.ShowDialog();
 
-                    if (MissingGarageData.GarCode != originalParcel.ParcelMast.Garage1TypeCode)
+                    if (MissingGarageData.GarageCode != originalParcelMast.Garage1TypeCode)
                     {
                         parcelMast.Garage1NumCars = MissingGarageData.GarNbr;
-                        parcelMast.Garage1TypeCode = MissingGarageData.GarCode;
+                        parcelMast.Garage1TypeCode = MissingGarageData.GarageCode;
                     }
                 }
                 if (Garcnt > 2)
@@ -640,7 +641,9 @@ namespace SketchUp
 
                     parcelMast.Garage2NumCars += MissingGarageData.GarNbr;
                 }
+              
             }
+            return garageOk;
         }
 
         private DataTable ConstructAreaTable()
@@ -1980,30 +1983,12 @@ namespace SketchUp
         }
 
 
-        private void ReorderSectionsAfterChanges()
+        private void VerifyCarportsAndGarages()
         {
-            Garcnt = 0;
-            GarSize = 0;
-            carportCount = 0;
-            CPSize = 0;
+          
             SMParcel originalParcel = SketchUpGlobals.SMParcelFromData;
             SMParcelMast parcelMaster = WorkingParcel.ParcelMast;
-            var sectionLetterList = (from s in ParcelMast.Parcel.Sections select s.SectionLetter).Distinct().ToList();
-            sectionLetterList.Sort();
-            foreach (SMSection s in WorkingParcel.Sections)
-            {
-                TotalGaragesAndCarports(s);
-            }
-
-            if (Garcnt == 0)
-            {
-                UpdateGarageCountToZero();
-            }
-            if (carportCount == 0)
-            {
-                UpdateCarportCountToZero();
-            }
-
+          
             ConfirmGarageNumbers(originalParcel);
             ConfirmCarportNumbers();
         }
@@ -2071,6 +2056,8 @@ namespace SketchUp
                 {
                     parcel.ReorganizeSections();
                     SketchRepository sr = new SketchRepository(parcel);
+                    ConfirmCarportNumbers();
+                    ConfirmGarageNumbers();
                     ParcelMast = sr.SaveCurrentParcel(parcel);
                     WorkingParcel = ParcelMast.Parcel;
                     UnsavedChangesExist = false;
@@ -2587,30 +2574,34 @@ namespace SketchUp
 
         private void UpdateCarportCountToZero()
         {
-            //TODO: make this flexible to update the garage count and square footage per the ParcelMast
-            //TODO: Refactor into SketchManager
-            StringBuilder zerocp = new StringBuilder();
-            zerocp.Append(String.Format("update {0}.{1}mast set mcarpt = 67, mcar#c = 0 where mrecno = {2} and mdwell = {3} ",
-                                    SketchUpGlobals.LocalLib,
-                                    SketchUpGlobals.LocalityPrefix,
-                                    SketchUpGlobals.Record,
-                                    SketchUpGlobals.Card));
+            string codeFromLookup= (from c in SketchUpLookups.CarPortTypeCollection where c.Description.Trim().ToUpper() == "NONE" select c.Code).FirstOrDefault();
+            int cpCode = 0;
+            int.TryParse(codeFromLookup, out cpCode);
+            ParcelMast.CarportTypeCode = cpCode == 0 ? 67 : cpCode;
+            ParcelMast.CarportNumCars = 0;
 
-            dbConn.DBConnection.ExecuteNonSelectStatement(zerocp.ToString());
+            ////TODO: make this flexible to update the garage count and square footage per the ParcelMast
+            ////TODO: Refactor into SketchManager
+            //StringBuilder zerocp = new StringBuilder();
+            //zerocp.Append(String.Format("update {0}.{1}mast set mcarpt = 67, mcar#c = 0 where mrecno = {2} and mdwell = {3} ",
+            //                        SketchUpGlobals.LocalLib,
+            //                        SketchUpGlobals.LocalityPrefix,
+            //                        SketchUpGlobals.Record,
+            //                        SketchUpGlobals.Card));
+
+            //dbConn.DBConnection.ExecuteNonSelectStatement(zerocp.ToString());
         }
 
         private void UpdateGarageCountToZero()
         {
-            //TODO: Refactor into SketchManager
-            //TODO: make this flexible to update the garage count and square footage per the ParcelMast
-            StringBuilder zeroGarageSql = new StringBuilder();
-            zeroGarageSql.Append(String.Format("update {0}.{1}mast set mgart = 63, mgar#c = 0,mgart2 = 0,mgar#2 = 0 where mrecno = {2} and mdwell = {3} ",
-                                    SketchUpGlobals.LocalLib,
-                                    SketchUpGlobals.LocalityPrefix,
-                                    SketchUpGlobals.Record,
-                                    SketchUpGlobals.Card));
-
-            dbConn.DBConnection.ExecuteNonSelectStatement(zeroGarageSql.ToString());
+            string codeFromLookup = (from c in SketchUpLookups.GarageTypeCollection where c.Description.Trim().ToUpper() == "NONE" select c.Code).FirstOrDefault();
+            int garCode = 0;
+            int.TryParse(codeFromLookup, out garCode);
+            ParcelMast.Garage1TypeCode = (garCode == 0 ? 63 : garCode);
+            ParcelMast.Garage1NumCars= 0;
+            ParcelMast.Garage2TypeCode = 0;
+            ParcelMast.Garage2NumCars = 0;
+            
         }
 
         private DataSet UpdateMasterArea(decimal summedArea)

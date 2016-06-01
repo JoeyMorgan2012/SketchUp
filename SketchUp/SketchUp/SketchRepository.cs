@@ -11,7 +11,7 @@ namespace SketchUp
 {
     public class SketchRepository
     {
-#region "Constructor"
+        #region "Constructor"
 
         public SketchRepository(SMParcel selectedParcel)
         {
@@ -23,37 +23,9 @@ namespace SketchUp
             SketchConnection = new SMConnection(dbDataSource, dbUserName, dbPassword, localityPrefix);
         }
 
-#endregion
+        #endregion "Constructor"
 
-#region "Public Methods"
-
-        public SMParcel AddSketchToSnapshots(SMParcel parcel)
-        {
-            parcel.SnapShotIndex++;
-            SketchUpGlobals.SketchSnapshots.Add(parcel);
-            return SketchUpGlobals.ParcelWorkingCopy;
-        }
-
-      
-
-     
-
-        public void DeleteSketch(SMParcel parcel)
-        {
-            FormattableString deleteLinesSql = $"DELETE FROM {LineRecordTable} WHERE JLRECORD = {parcel.Record} AND JLDWELL = {parcel.Card}";
-
-            SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteLinesSql.ToString());
-
-            FormattableString deleteSectionsSql = $"DELETE FROM {SectionRecordTable} WHERE JSRECORD = {parcel.Record} AND JSDWELL = {parcel.Card}";
-
-            SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteSectionsSql.ToString());
-
-            FormattableString deleteMasterSql = $"DELETE FROM {MasterRecordTable} WHERE JMRECORD = {parcel.Record} AND JMDWELL = {parcel.Card}";
-
-            SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteMasterSql.ToString());
-        }
-
-       
+        #region "Public Methods"
 
         public static string NextLetterFromDb(SWallTech.CAMRA_Connection conn, int record, int card)
         {
@@ -128,7 +100,27 @@ namespace SketchUp
             return nextLetter;
         }
 
-      
+        public SMParcel AddSketchToSnapshots(SMParcel parcel)
+        {
+            parcel.SnapShotIndex++;
+            SketchUpGlobals.SketchSnapshots.Add(parcel);
+            return SketchUpGlobals.ParcelWorkingCopy;
+        }
+
+        public void DeleteSketch(SMParcel parcel)
+        {
+            FormattableString deleteLinesSql = $"DELETE FROM {LineRecordTable} WHERE JLRECORD = {parcel.Record} AND JLDWELL = {parcel.Card}";
+
+            SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteLinesSql.ToString());
+
+            FormattableString deleteSectionsSql = $"DELETE FROM {SectionRecordTable} WHERE JSRECORD = {parcel.Record} AND JSDWELL = {parcel.Card}";
+
+            SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteSectionsSql.ToString());
+
+            FormattableString deleteMasterSql = $"DELETE FROM {MasterRecordTable} WHERE JMRECORD = {parcel.Record} AND JMDWELL = {parcel.Card}";
+
+            SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteMasterSql.ToString());
+        }
 
         public SMParcelMast SaveCurrentParcel(SMParcel parcel)
         {
@@ -146,11 +138,10 @@ namespace SketchUp
         public SMParcelMast SelectParcelMasterWithParcel(int recordNumber, int dwellingNumber)
         {
             SMParcelMast parcelMast = new SMParcelMast();
-            string selectSql = string.Format("SELECT MRECNO AS RECORD, MDWELL AS DWELLING, MOCCUP AS OCCUPANCYCODE,MCLASS  AS PROPERTYCLASS, MGART  AS GARAGE1TYPE, MGAR#C AS GARAGE1NUMCARS, MCARPT AS CARPORTTYPECODE, MCAR#C AS CARPORTNUMCARS, MGART2 AS GARAGE2TYPECODE, MGAR#2 AS GARAGE2NUMCARS,MBI#C AS NUMCARSBUILTINCODE,MSTOR#  AS MASTERPARCELSTOREYS,MTOTA as TOTALAREA  FROM {0} WHERE MRECNO={1} AND MDWELL={2}", SketchConnection.MastTable, recordNumber, dwellingNumber);
-            DataSet parcelMastData = SketchConnection.DbConn.DBConnection.RunSelectStatement(selectSql);
+            FormattableString selectSql = $"SELECT MRECNO AS RECORD, MDWELL AS DWELLING, MOCCUP AS OCCUPANCYCODE,MCLASS  AS PROPERTYCLASS, MGART  AS GARAGE1TYPE, MGAR#C AS GARAGE1NUMCARS, MCARPT AS CARPORTTYPECODE, MCAR#C AS CARPORTNUMCARS, MGART2 AS GARAGE2TYPECODE, MGAR#2 AS GARAGE2NUMCARS,MBI#C AS NUMCARSBUILTINCODE,MSTOR#  AS MASTERPARCELSTOREYS,MTOTA as TOTALAREA  FROM {SketchConnection.MastTable} WHERE MRECNO={recordNumber} AND MDWELL={dwellingNumber}";
+            DataSet parcelMastData = SketchConnection.DbConn.DBConnection.RunSelectStatement(selectSql.ToString());
 
-            try
-            {
+          
                 int carportTypeCode = 0;
                 int carportNumCars = 0;
                 int garage1NumCars = 0;
@@ -192,6 +183,7 @@ namespace SketchUp
                         parcelMast.PropertyClass = propertyClass;
                         parcelMast.MasterParcelStoreys = masterParcelStoreys;
                         parcelMast.TotalSquareFootage = totalLivingArea;
+                        parcelMast.NumCarsBuiltInCode = numCarsBuiltInCode;
                         WorkingParcel = SelectParcelWithSectionsAndLines(recordNumber, dwellingNumber);
                         WorkingParcel.ParcelMast = parcelMast;
                         parcelMast.Parcel = WorkingParcel;
@@ -199,24 +191,12 @@ namespace SketchUp
                 }
 
                 return parcelMast;
-            }
-            catch (Exception ex)
-            {
-                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
-                Trace.WriteLine(errMessage);
-                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
-#if DEBUG
-
-                MessageBox.Show(errMessage);
-#endif
-
-                throw;
-            }
+         
         }
 
-#endregion
+        #endregion "Public Methods"
 
-#region "Private methods"
+        #region "Private methods"
 
         private SMParcelMast RefreshWorkingCopyFromDb(SMParcel parcel)
         {
@@ -230,8 +210,6 @@ namespace SketchUp
             return parcelMast;
         }
 
-     
-      
         private List<SMSection> SelectParcelSections(SMParcel parcel)
         {
             List<SMSection> sections = new List<SMSection>();
@@ -421,7 +399,7 @@ namespace SketchUp
 
         private void UpdateCarports(SMParcel parcel)
         {
-            MessageBox.Show(string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module.Name, MethodBase.GetCurrentMethod().Name),"Refactoring in Progress",MessageBoxButtons.OK,MessageBoxIcon.Information);
+            MessageBox.Show(string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module.Name, MethodBase.GetCurrentMethod().Name), "Refactoring in Progress", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void UpdateDatabase(SMParcel parcel)
@@ -429,12 +407,9 @@ namespace SketchUp
             throw new NotImplementedException();
         }
 
-       
-
         private void UpdateGarages(SMParcel parcel)
         {
-            	MessageBox.Show(string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module.Name, MethodBase.GetCurrentMethod().Name),"Refactoring in Progress",MessageBoxButtons.OK,MessageBoxIcon.Information);
- 
+            MessageBox.Show(string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module.Name, MethodBase.GetCurrentMethod().Name), "Refactoring in Progress", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void UpdateLinesAndSections(SMParcel parcel)
@@ -442,10 +417,30 @@ namespace SketchUp
             throw new NotImplementedException();
         }
 
+        private void UpdateMainInfo(SMParcel parcel)
+        {
+            try
+            {
+            }
+            catch (Exception ex)
+            {
+                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+                Trace.WriteLine(errMessage);
+                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+#if DEBUG
+
+                MessageBox.Show(errMessage);
+#endif
+
+                throw;
+            }
+        }
+
         private void UpdateMastValues(SMParcel parcel)
         {
             try
             {
+                UpdateMainInfo(parcel);
                 UpdateArea(parcel);
                 UpdateGarages(parcel);
                 UpdateCarports(parcel);
@@ -460,14 +455,13 @@ namespace SketchUp
                 MessageBox.Show(errMessage);
 #endif
 
-
                 throw;
             }
         }
 
-#endregion
+        #endregion "Private methods"
 
-#region "Properties"
+        #region "Properties"
 
         public string DataSource
         {
@@ -475,6 +469,7 @@ namespace SketchUp
             {
                 return dataSource;
             }
+
             set
             {
                 dataSource = value;
@@ -488,6 +483,7 @@ namespace SketchUp
                 lineRecordTable = SketchConnection.LineTable;
                 return lineRecordTable;
             }
+
             set
             {
                 lineRecordTable = value;
@@ -500,6 +496,7 @@ namespace SketchUp
             {
                 return locality;
             }
+
             set
             {
                 locality = value;
@@ -513,6 +510,7 @@ namespace SketchUp
                 masterRecordTable = SketchConnection.MasterTable;
                 return masterRecordTable;
             }
+
             set
             {
                 masterRecordTable = value;
@@ -526,6 +524,7 @@ namespace SketchUp
                 mastRecordTable = SketchConnection.MastTable;
                 return mastRecordTable;
             }
+
             set
             {
                 mastRecordTable = value;
@@ -538,6 +537,7 @@ namespace SketchUp
             {
                 return password;
             }
+
             set
             {
                 password = value;
@@ -551,6 +551,7 @@ namespace SketchUp
                 sectionRecordTable = SketchConnection.SectionTable;
                 return sectionRecordTable;
             }
+
             set
             {
                 sectionRecordTable = value;
@@ -563,6 +564,7 @@ namespace SketchUp
             {
                 return sketchConnection;
             }
+
             set
             {
                 sketchConnection = value;
@@ -575,6 +577,7 @@ namespace SketchUp
             {
                 return userName;
             }
+
             set
             {
                 userName = value;
@@ -587,15 +590,16 @@ namespace SketchUp
             {
                 return workingParcel;
             }
+
             set
             {
                 workingParcel = value;
             }
         }
 
-#endregion
+        #endregion "Properties"
 
-#region "Private Fields"
+        #region "Private Fields"
 
         private string dataSource;
         private string lineRecordTable;
@@ -608,6 +612,6 @@ namespace SketchUp
         private string userName;
         private SMParcel workingParcel;
 
-#endregion
+        #endregion "Private Fields"
     }
 }

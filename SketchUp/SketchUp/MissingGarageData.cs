@@ -4,7 +4,6 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using SWallTech;
 
 namespace SketchUp
 {
@@ -12,7 +11,7 @@ namespace SketchUp
     {
         public MissingGarageData(SMParcelMast parcelMast, decimal newSectArea, string Type)
         {
-            GarCode = 0;
+            GarageCode = 0;
             GarNbr = 0;
             CPCode = 0;
             CpNbr = 0;
@@ -27,60 +26,13 @@ namespace SketchUp
 
             NewArea = newSectArea;
 
-            if (Type == "GAR")
-            {
-                CarPortTypCbox.Visible = false;
-                CarPortNbrCarTxt.Visible = false;
-                CarPortLbl.Visible = false;
-                MissingCarporLbl.Visible = false;
-                GarTypeCbox.Visible = true;
-                GarNbrCarTxt.Visible = true;
-                GarLbl.Visible = true;
-                MissingGarLbl.Visible = true;
-            }
+            SetControlVisibilityForSectionTypes(Type);
 
-            if (Type == "CP")
-            {
-                CarPortTypCbox.Visible = true;
-                CarPortNbrCarTxt.Visible = true;
-                CarPortLbl.Visible = true;
-                MissingCarporLbl.Visible = true;
-                GarTypeCbox.Visible = false;
-                GarNbrCarTxt.Visible = false;
-                GarLbl.Visible = false;
-                MissingGarLbl.Visible = false;
-            }
+            SetDefaultCarsForGarage(parcelMast, Type);
 
-            if (Type == "GAR" && NewArea <= 360)
-            {
-                GarNbrCarTxt.Text = "1";
-                parcelMast.Garage1NumCars = 1;
-                GarNbr = 1;
-            }
-            if (Type == "GAR" && NewArea > 360)
-            {
-                GarNbrCarTxt.Text = "2";
-                parcelMast.Garage1NumCars = 2;
-                GarNbr = 2;
-            }
+            SetDefaultCarsForCarport(parcelMast, Type);
 
-            if (Type == "CP" && NewArea <= 275)
-            {
-                CarPortNbrCarTxt.Text = "1";
-                parcelMast.CarportNumCars = 1;
-                CpNbr = 1;
-            }
-            if (Type == "CP" && NewArea > 275)
-            {
-                CarPortNbrCarTxt.Text = "2";
-                parcelMast.CarportNumCars = 2;
-                CpNbr = 2;
-            }
-
-            GarTypeCbox.Items.Clear();
-            ListGarageSelection();
-            CarPortTypCbox.Items.Clear();
-            ListCPortSelection();
+            PopulateComboBoxes();
         }
 
         public void ListCPortSelection()
@@ -173,19 +125,20 @@ namespace SketchUp
             {
                 if (parcelMast != null && CarPortTypCbox.SelectedIndex > 0)
                 {
-                    int CarPortck = Convert.ToInt32(CarPortTypCbox.SelectedItem.ToString().Substring(0, 2));
-                    CPCode = CarPortck;
+                    int codeValue = 0;
+                    string selectedValue = CarPortTypCbox.SelectedItem.ToString().Substring(0, 2);
+                    Int32.TryParse(selectedValue, out codeValue);
+                    CPCode = codeValue;
 
-                    if (CarPortck != originalParcelMast.CarportTypeCode)
+                    if (CPCode != originalParcelMast.CarportTypeCode)
                     {
                         CarPortTypCbox.BackColor = Color.PaleGreen;
-                       
                     }
                     else
                     {
                         CarPortTypCbox.BackColor = Color.White;
                     }
-                    parcelMast.CarportTypeCode = CarPortck;
+                    parcelMast.CarportTypeCode = CPCode;
                 }
             }
         }
@@ -206,10 +159,12 @@ namespace SketchUp
             {
                 if (parcelMast != null && GarTypeCbox.SelectedIndex > 0)
                 {
-                    int Garageck = Convert.ToInt32(GarTypeCbox.SelectedItem.ToString().Substring(0, 2));
-                    GarCode = Garageck;
+                    string selectedValue = GarTypeCbox.SelectedItem.ToString().Substring(0, 2);
+                    int codeValue = 0;
+                    Int32.TryParse(selectedValue, out codeValue);
+                    GarageCode = codeValue;
 
-                    if (Garageck != originalParcelMast.Garage1TypeCode)
+                    if (GarageCode != originalParcelMast.Garage1TypeCode)
                     {
                         GarTypeCbox.BackColor = Color.PaleGreen;
                     }
@@ -217,9 +172,75 @@ namespace SketchUp
                     {
                         GarTypeCbox.BackColor = Color.White;
                     }
- parcelMast.Garage1TypeCode = Garageck;
+                    parcelMast.Garage1TypeCode = GarageCode;
                 }
-               
+            }
+        }
+
+        private void PopulateComboBoxes()
+        {
+            GarTypeCbox.Items.Clear();
+            ListGarageSelection();
+            CarPortTypCbox.Items.Clear();
+            ListCPortSelection();
+        }
+
+        private void SetControlVisibilityForSectionTypes(string Type)
+        {
+            if (Type == "GAR")
+            {
+                CarPortTypCbox.Visible = false;
+                CarPortNbrCarTxt.Visible = false;
+                CarPortLbl.Visible = false;
+                MissingCarporLbl.Visible = false;
+                GarTypeCbox.Visible = true;
+                GarNbrCarTxt.Visible = true;
+                GarLbl.Visible = true;
+                MissingGarLbl.Visible = true;
+            }
+
+            if (Type == "CP")
+            {
+                CarPortTypCbox.Visible = true;
+                CarPortNbrCarTxt.Visible = true;
+                CarPortLbl.Visible = true;
+                MissingCarporLbl.Visible = true;
+                GarTypeCbox.Visible = false;
+                GarNbrCarTxt.Visible = false;
+                GarLbl.Visible = false;
+                MissingGarLbl.Visible = false;
+            }
+        }
+
+        private void SetDefaultCarsForCarport(SMParcelMast parcelMast, string Type)
+        {
+            if (Type == "CP" && NewArea <= 275)
+            {
+                CarPortNbrCarTxt.Text = "1";
+                parcelMast.CarportNumCars = 1;
+                CpNbr = 1;
+            }
+            if (Type == "CP" && NewArea > 275)
+            {
+                CarPortNbrCarTxt.Text = "2";
+                parcelMast.CarportNumCars = 2;
+                CpNbr = 2;
+            }
+        }
+
+        private void SetDefaultCarsForGarage(SMParcelMast parcelMast, string Type)
+        {
+            if (Type == "GAR" && NewArea <= 360)
+            {
+                GarNbrCarTxt.Text = "1";
+                parcelMast.Garage1NumCars = 1;
+                GarNbr = 1;
+            }
+            if (Type == "GAR" && NewArea > 360)
+            {
+                GarNbrCarTxt.Text = "2";
+                parcelMast.Garage1NumCars = 2;
+                GarNbr = 2;
             }
         }
 
@@ -233,7 +254,7 @@ namespace SketchUp
             get; set;
         }
 
-        public static int GarCode
+        public static int GarageCode
         {
             get; set;
         }
@@ -244,7 +265,6 @@ namespace SketchUp
         }
 
         //private DBAccessManager _fox = null;
-        private CAMRA_Connection _conn = null;
 
         private Dictionary<int, StabType> _cportList = null;
         private Dictionary<int, StabType> _garList = null;

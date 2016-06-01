@@ -14,7 +14,7 @@ namespace SketchUp
     {
         #region "Public Methods"
 
-        public void IdentifyAttachedToSections()
+        private void IdentifyAttachedToSections()
         {
             if (AllSectionLines != null)
             {
