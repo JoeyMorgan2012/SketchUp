@@ -15,7 +15,7 @@ namespace SketchUp
         public SMLine(SMSection section)
         {
             record = section.Record;
-            dwelling = section.Dwelling;
+            dwelling = section.Card;
             sectionLetter = section.SectionLetter;
             ParentSection = section;
             ParentParcel = section.ParentParcel;

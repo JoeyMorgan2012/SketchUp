@@ -15,7 +15,7 @@ namespace SketchUp
         public SMSection(SMParcel parcel)
         {
             record = parcel.Record;
-            dwelling = parcel.Card;
+            card = parcel.Card;
             ParentParcel = parcel;
         }
 
@@ -196,16 +196,16 @@ namespace SketchUp
             }
         }
 
-        public int Dwelling
+        public int Card
         {
             get
             {
-                return dwelling;
+                return card;
             }
 
             set
             {
-                dwelling = value;
+                card = value;
             }
         }
 
@@ -424,7 +424,7 @@ namespace SketchUp
         private string attachedTo;
         private decimal depreciation;
         private string description;
-        private int dwelling;
+        private int card;
         private bool hasSketch;
         private List<SMLine> lines;
         private int record;

@@ -256,7 +256,7 @@ namespace SketchUp
                         SMSection thisSection = new SMSection(parcel)
                         {
                             Record = parcel.Record,
-                            Dwelling = parcel.Card,
+                            Card = parcel.Card,
                             SectionLetter = row["JSSECT"].ToString().Trim(),
                             SectionType = row["JSTYPE"].ToString().Trim(),
                             Storeys = storeys,
@@ -348,7 +348,7 @@ namespace SketchUp
 
         {
             List<SMLine> lines = new List<SMLine>();
-            string selectSql = string.Format("SELECT JLRECORD , JLDWELL , JLSECT , JLLINE# , JLDIRECT , JLXLEN , JLYLEN , JLLINELEN , JLANGLE , JLPT1X , JLPT1Y , JLPT2X , JLPT2Y , JLATTACH FROM {0} WHERE JLRECORD={1} AND JLDWELL={2} AND JLSECT='{3}'", SketchConnection.LineTable, section.Record, section.Dwelling, section.SectionLetter);
+            string selectSql = string.Format("SELECT JLRECORD , JLDWELL , JLSECT , JLLINE# , JLDIRECT , JLXLEN , JLYLEN , JLLINELEN , JLANGLE , JLPT1X , JLPT1Y , JLPT2X , JLPT2Y , JLATTACH FROM {0} WHERE JLRECORD={1} AND JLDWELL={2} AND JLSECT='{3}'", SketchConnection.LineTable, section.Record, section.Card, section.SectionLetter);
             try
             {
                 int lineNumber = 0;
