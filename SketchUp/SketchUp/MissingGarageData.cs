@@ -9,17 +9,18 @@ namespace SketchUp
 {
     public partial class MissingGarageData : Form
     {
+        bool updatesComplete = false;
         public MissingGarageData(SMParcelMast parcelMast, decimal newSectArea, string Type)
         {
             GarageCode = 0;
             GarNbr = 0;
             CPCode = 0;
-            CpNbr = 0;
+            CarportNumCars = 0;
 
             InitializeComponent();
-            originalParcelMast = SketchUpGlobals.SMParcelFromData.ParcelMast;
-            Build_CarPort_Data();
-            Build_Garage_Data();
+        
+            Build_CarPort_Data(parcelMast);
+            Build_Garage_Data(parcelMast);
 
             GarNbrCarTxt.Text = "0";
             CarPortNbrCarTxt.Text = "0";
@@ -77,7 +78,7 @@ namespace SketchUp
             GarTypeCbox.SelectedIndex = _cboxIndex;
         }
 
-        private void Build_CarPort_Data()
+        private void Build_CarPort_Data(SMParcelMast parcelMast)
         {
             if (CarPortTypCbox.Items.Count > 0)
             {
@@ -93,7 +94,7 @@ namespace SketchUp
             }
         }
 
-        private void Build_Garage_Data()
+        private void Build_Garage_Data(SMParcelMast parcelMast)
         {
             if (GarTypeCbox.Items.Count > 0)
             {
@@ -111,26 +112,26 @@ namespace SketchUp
 
         private void CarPortNbrCarTxt_Leave(object sender, EventArgs e)
         {
-            CpNbr = Convert.ToInt32(CarPortNbrCarTxt.Text.ToString());
+            CarportNumCars = Convert.ToInt32(CarPortNbrCarTxt.Text.ToString());
         }
 
         private void CarPortNbrCarTxt_TextChanged(object sender, EventArgs e)
         {
-            CpNbr = Convert.ToInt32(CarPortNbrCarTxt.Text.ToString());
+            CarportNumCars = Convert.ToInt32(CarPortNbrCarTxt.Text.ToString());
         }
 
         private void CarPortTypCbox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (CarPortTypCbox.Items.Count > 0)
             {
-                if (parcelMast != null && CarPortTypCbox.SelectedIndex > 0)
+                if (ParcelMast != null && CarPortTypCbox.SelectedIndex > 0)
                 {
                     int codeValue = 0;
                     string selectedValue = CarPortTypCbox.SelectedItem.ToString().Substring(0, 2);
                     Int32.TryParse(selectedValue, out codeValue);
                     CPCode = codeValue;
 
-                    if (CPCode != originalParcelMast.CarportTypeCode)
+                    if (CPCode != OriginalParcelMast.CarportTypeCode)
                     {
                         CarPortTypCbox.BackColor = Color.PaleGreen;
                     }
@@ -138,7 +139,7 @@ namespace SketchUp
                     {
                         CarPortTypCbox.BackColor = Color.White;
                     }
-                    parcelMast.CarportTypeCode = CPCode;
+                    ParcelMast.CarportTypeCode = CPCode;
                 }
             }
         }
@@ -157,14 +158,14 @@ namespace SketchUp
         {
             if (GarTypeCbox.Items.Count > 0)
             {
-                if (parcelMast != null && GarTypeCbox.SelectedIndex > 0)
+                if (ParcelMast != null && GarTypeCbox.SelectedIndex > 0)
                 {
                     string selectedValue = GarTypeCbox.SelectedItem.ToString().Substring(0, 2);
                     int codeValue = 0;
                     Int32.TryParse(selectedValue, out codeValue);
                     GarageCode = codeValue;
 
-                    if (GarageCode != originalParcelMast.Garage1TypeCode)
+                    if (GarageCode != OriginalParcelMast.Garage1TypeCode)
                     {
                         GarTypeCbox.BackColor = Color.PaleGreen;
                     }
@@ -172,7 +173,7 @@ namespace SketchUp
                     {
                         GarTypeCbox.BackColor = Color.White;
                     }
-                    parcelMast.Garage1TypeCode = GarageCode;
+                    ParcelMast.Garage1TypeCode = GarageCode;
                 }
             }
         }
@@ -218,13 +219,13 @@ namespace SketchUp
             {
                 CarPortNbrCarTxt.Text = "1";
                 parcelMast.CarportNumCars = 1;
-                CpNbr = 1;
+                CarportNumCars = 1;
             }
             if (Type == "CP" && NewArea > 275)
             {
                 CarPortNbrCarTxt.Text = "2";
                 parcelMast.CarportNumCars = 2;
-                CpNbr = 2;
+                CarportNumCars = 2;
             }
         }
 
@@ -249,7 +250,7 @@ namespace SketchUp
             get; set;
         }
 
-        public static int CpNbr
+        public static int CarportNumCars
         {
             get; set;
         }
@@ -264,12 +265,76 @@ namespace SketchUp
             get; set;
         }
 
+        public bool GarageDataOk
+        {
+            get
+            {
+                return garageDataOk;
+            }
+
+            set
+            {
+                garageDataOk = value;
+            }
+        }
+
+        public bool CarportDataOk
+        {
+            get
+            {
+                return carportDataOk;
+            }
+
+            set
+            {
+                carportDataOk = value;
+            }
+        }
+
+        public SMParcelMast ParcelMast
+        {
+            get
+            {
+                return parcelMast;
+            }
+
+            set
+            {
+                parcelMast = value;
+            }
+        }
+
+        public SMParcelMast OriginalParcelMast
+        {
+            get
+            {
+                return originalParcelMast;
+            }
+
+            set
+            {
+                originalParcelMast = value;
+            }
+        }
+
+   
+
+
+
         //private DBAccessManager _fox = null;
 
         private Dictionary<int, StabType> _cportList = null;
         private Dictionary<int, StabType> _garList = null;
         private decimal NewArea = 0;
+        private bool garageDataOk;
+        private bool carportDataOk;
+        private SMParcelMast parcelMast;
         private SMParcelMast originalParcelMast;
-        private SMParcelMast parcelMast = SketchUpGlobals.ParcelWorkingCopy.ParcelMast;
+
+        private void MissingGarageData_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            //TODO: Make more robust--prevent closing if errors still exist
+            
+        }
     }
 }

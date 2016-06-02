@@ -12,18 +12,8 @@ namespace SketchUp
 {
     public class SMParcel
     {
-        #region "Public Methods"
+#region "Public Methods"
 
-        private void IdentifyAttachedToSections()
-        {
-            if (AllSectionLines != null)
-            {
-                foreach (SMSection sms in Sections)
-                {
-                    sms.AttachedTo = (from l in AllSectionLines where l.AttachedSection == sms.SectionLetter select l.SectionLetter).FirstOrDefault<string>() ?? string.Empty;
-                }
-            }
-        }
         public void RemoveSectionFromParcel(SMSection section)
         {
             if (section.SectionLetter == "A")
@@ -122,7 +112,7 @@ namespace SketchUp
 
                 }
                 ReorganizeParcelLineConnections();
-
+                
             }
             catch (Exception ex)
             {
@@ -227,6 +217,17 @@ namespace SketchUp
                 lastLetter = (from s in sections orderby s.SectionLetter descending select s.SectionLetter).FirstOrDefault();
             }
             return lastLetter;
+        }
+
+        public void IdentifyAttachedToSections()
+        {
+            if (AllSectionLines != null)
+            {
+                foreach (SMSection sms in Sections)
+                {
+                    sms.AttachedTo = (from l in AllSectionLines where l.AttachedSection == sms.SectionLetter select l.SectionLetter).FirstOrDefault<string>() ?? string.Empty;
+                }
+            }
         }
 
         private List<SMLine> SelectAllLines()

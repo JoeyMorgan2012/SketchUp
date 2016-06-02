@@ -798,7 +798,7 @@ namespace SketchUp
         public float EndSplitXF = 0;
         public decimal EndSplitY = 0;
         public float EndSplitYF = 0;
-        public int Garcnt = 0;
+        public int garageCount = 0;
 
         // TODO: Remove if not needed:	  private List<int> GarCodes = null;
         public decimal GarSize = 0;

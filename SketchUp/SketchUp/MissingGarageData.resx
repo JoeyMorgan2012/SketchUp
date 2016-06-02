@@ -112,9 +112,56 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAEAQAwAAAEAGACICQAAFgAAACgAAABAAAAAGAAAAAEAGAAAAAAAAAAAACwBAAAsAQAAAAAAAAAA
+        AAC3mIWhfFubdFSog2i5mIPMs6Wxj3iddFKgeVquiXPAopHx6+f8///n49v+/v7////b08ji29Hx7ur6
+        +ffa0Mbh2dPk3dT9/v7m49z+///j4Nj8/v/n4tv7+/rMv7P9/vzm4dzh2tHh2NDr6OL49fPXzMPj3db9
+        /v3c1M3h29LWzcX8/frm4tzh2dHh187u6ufz8O3x7urt6uXe1Mrk3Nb+/v7k3tjh2tPb0Mbn6OfHyMb3
+        9/f////////////////CnIe1i26aaEeLWSiWaUDBnYjHoYypfF+RXzeMWSukeFbn3tj+/v7d1cr9/v3+
+        ///Rxbnf2dPy8u7v6+bq5N37/v708vD+/v3KvK7f2tPQxLn9/v3Yz8LTyL3YzcP9/fvZ0Mf6/v77/vze
+        1c318e3l39f+///////b0cb8/v7g19D6+fTc0cf4+vjg2M/p5N7u6OLr5uDm4NnZz8Tk3tj+/v3i2tHe
+        1s3XzcL5+vr9/f3///////////////////9pKAV9SRWbcUqedk54RxZpJgJtMwiEUiGPXjSGVSN2QhfL
+        vLDq5uLbzsPe1tHx8vLZ0sjd1Mzx7er7/Pve18/h2tPu6eb+/v7u6+j9/v/s6eT+/v7g1M36+vnt6ub8
+        /fzu6ufg2dLi2NH08e/5+Pbx7uz9/v7////i3Nbe2dDe19D9/v3v7Oji2NLf19D19fH19PPx7+zy7+3g
+        1s3k3NX8/fzs5uDi29Hh2dH9/v7///////////////////////+rfWaRYDOddlBDQkA0MS5QRD9ORT5L
+        Rj5KSERkYl96d3WFg4KLioqPj4+VlZWSkpKMjIyCgoJycnJaWlo6Ojo7OztbW1uCgoKwsLDr6+v+/v7/
+        ///x8fFqamr19fWenp7ExMSjo6P6+vqzs7PFxcWQkJDGxsbs7OxmZmbGxsb29vb///+RkZH4+Ph+fn7+
+        /v7z8/NfX1+5ubl1dXX5+flwcHDf39/r6+txcXHy8vL///////////////////////+yhm+zh2qaaUed
+        gmgYFRUBAQAtLCmGc2WlhGaOYTKSYz7h1c7///3////////////////////////////+/v7Nzc1MTEwA
+        AAAAAAAEBARAQEC7u7v///96enr+/v6GhobT09PGxsaWlpbt7e1paWm/v7+zs7Pt7e1eXl69vb34+Pj/
+        //9sbGy4uLiOjo7Q0ND39/dvb2/29vZ0dHT+/v6IiIjo6Oj+/v51dXX/////////////////////////
+        //9pKQJ0QAiKVyqPXjWRhHcqKSp/XT1/SBONXTKOWix4QxjHtKr///7/////////////////////////
+        ///////y8vJsbGwAAAAAAAAAAAAAAAAXFxf9/f1paWna2try8vKPj4/Q0NCSkpL5+flbW1u2trZ8fHz/
+        //+wsLC8vLyUlJTs7Ox4eHjDw8Ozs7Ofn5/9/f26urrIyMhpaWn8/PzKysqoqKj///95eXn6+vr/////
+        //////////////////+6lH+dbkaPXDGca0i8lX7gyb23k3iUYjeRXjeoeVnJo4/z6+X+////////////
+        ///+/v739/fGxsaKiopPT08PDw8BAQEAAAABAQELCwtPT0/Gxsb+/v7S0tLMzMz////8/Pzn5+f+/v7+
+        /v7z8/P5+fnz8/P////////z8/P39/f7+/vy8vL+/v75+fnx8fH////+/v7z8/Pt7e39/f37+/t8fHz/
+        //+vr6/Hx8f///////////////////////+gblOmeVmaaUWGTxt7SBaXZUimelykdVOQXzZ8SRGDTiXY
+        ysD+/v7x8fG5ubl9fX1AQEALCwsBAQEBAQEBAQEQEBBYWFiKioq6urr19fX/////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+        ///////4+PiMjIz+/v7V1dWsrKz///////////////////////9tLwtzPgaHVCOVYzyRYDeARCVrMgV7
+        RgyOXDKWZz+GZ0xwaGU7OzsFBQUAAAAAAAACAgIlJSVeXl6WlpbQ0ND7+/v/////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////HpZGpfFqSYDeY
+        ZUC3jXLdw7TEn4ibbUeSXzWhjXoIBggAAAAAAAAAAAABAQF5eXne3t7+/v7/////////////////////
+        ///////////////////6+vpNTU17e3v9/f3/////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+        //+MVziabESXZUCDUBpzPQaBSCmUZEKbakePXjWIXCt3aVk7OTgGBgUBAQECAgJ9fX3Y2Nj7+/v+/v7/
+        ///////////////////+/v7+/v7z8/PCwsJNTU0BAQEBAQF5eXn+/v7/////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+        //////////////////+Zb1acelOqiWe2lX2xknWedF2XcFGhf1evkHG2lnysim7Yzsfv7+/ExMSdnZ19
+        fX1nZ2dnZ2d6enqIiIiOjo6WlpaWlpaVlZWUlJSMjIyEhISMjIyYmJiUlJR4eHhGRka4uLj/////////
+        ////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AYAAAAAAAAAB4AAAAAAAAAEAAAAAAAAAAAAAAAAAAAMAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAA=
+</value>
+  </data>
 </root>

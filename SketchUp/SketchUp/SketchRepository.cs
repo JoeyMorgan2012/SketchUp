@@ -15,6 +15,7 @@ namespace SketchUp
 
         public SketchRepository(SMParcel selectedParcel)
         {
+            SketchConnection = new SMConnection(SketchUpGlobals.IpAddress, "CAMRA2", "CAMRA2", SketchUpGlobals.LocalityPrefix);
             workingParcel = selectedParcel;
         }
 
@@ -125,7 +126,6 @@ namespace SketchUp
         public SMParcelMast SaveCurrentParcel(SMParcel parcel)
         {
             workingParcel = parcel;
-
             UpdateMastValues(parcel);
             UpdateLinesAndSections(parcel);
             UpdateDatabase(parcel);
@@ -141,57 +141,55 @@ namespace SketchUp
             FormattableString selectSql = $"SELECT MRECNO AS RECORD, MDWELL AS DWELLING, MOCCUP AS OCCUPANCYCODE,MCLASS  AS PROPERTYCLASS, MGART  AS GARAGE1TYPE, MGAR#C AS GARAGE1NUMCARS, MCARPT AS CARPORTTYPECODE, MCAR#C AS CARPORTNUMCARS, MGART2 AS GARAGE2TYPECODE, MGAR#2 AS GARAGE2NUMCARS,MBI#C AS NUMCARSBUILTINCODE,MSTOR#  AS MASTERPARCELSTOREYS,MTOTA as TOTALAREA  FROM {SketchConnection.MastTable} WHERE MRECNO={recordNumber} AND MDWELL={dwellingNumber}";
             DataSet parcelMastData = SketchConnection.DbConn.DBConnection.RunSelectStatement(selectSql.ToString());
 
-          
-                int carportTypeCode = 0;
-                int carportNumCars = 0;
-                int garage1NumCars = 0;
-                int garage1TypeCode = 0;
-                int garage2NumCars = 0;
-                int garage2TypeCode = 0;
-                int numCarsBuiltInCode = 0;
-                int occupancyCode = 0;
-                int propertyClass = 0;
-                decimal totalLivingArea = 0.00M;
-                decimal masterParcelStoreys;
+            int carportTypeCode = 0;
+            int carportNumCars = 0;
+            int garage1NumCars = 0;
+            int garage1TypeCode = 0;
+            int garage2NumCars = 0;
+            int garage2TypeCode = 0;
+            int numCarsBuiltInCode = 0;
+            int occupancyCode = 0;
+            int propertyClass = 0;
+            decimal totalLivingArea = 0.00M;
+            decimal masterParcelStoreys;
 
-                if (parcelMastData.Tables != null && parcelMastData.Tables.Count > 0 && parcelMastData.Tables[0].Rows.Count > 0)
+            if (parcelMastData.Tables != null && parcelMastData.Tables.Count > 0 && parcelMastData.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow row in parcelMastData.Tables[0].Rows)
                 {
-                    foreach (DataRow row in parcelMastData.Tables[0].Rows)
-                    {
-                        //Get numeric values from strings
-                        int.TryParse(row["OCCUPANCYCODE"].ToString().Trim(), out occupancyCode);
-                        int.TryParse(row["PROPERTYCLASS"].ToString().Trim(), out propertyClass);
-                        int.TryParse(row["GARAGE1TYPE"].ToString().Trim(), out garage1TypeCode);
-                        Int32.TryParse(row["GARAGE1NUMCARS"].ToString().Trim(), out garage1NumCars);
-                        Int32.TryParse(row["CARPORTTYPECODE"].ToString().Trim(), out carportTypeCode);
+                    //Get numeric values from strings
+                    int.TryParse(row["OCCUPANCYCODE"].ToString().Trim(), out occupancyCode);
+                    int.TryParse(row["PROPERTYCLASS"].ToString().Trim(), out propertyClass);
+                    int.TryParse(row["GARAGE1TYPE"].ToString().Trim(), out garage1TypeCode);
+                    Int32.TryParse(row["GARAGE1NUMCARS"].ToString().Trim(), out garage1NumCars);
+                    Int32.TryParse(row["CARPORTTYPECODE"].ToString().Trim(), out carportTypeCode);
 
-                        Int32.TryParse(row["CARPORTNUMCARS"].ToString().Trim(), out carportNumCars);
-                        Int32.TryParse(row["GARAGE2TYPECODE"].ToString().Trim(), out garage2TypeCode);
-                        Int32.TryParse(row["GARAGE2NUMCARS"].ToString().Trim(), out garage2NumCars);
-                        Int32.TryParse(row["NUMCARSBUILTINCODE"].ToString().Trim(), out numCarsBuiltInCode);
-                        decimal.TryParse(row["MASTERPARCELSTOREYS"].ToString().Trim(), out masterParcelStoreys);
-                        decimal.TryParse(row["TOTALAREA"].ToString(), out totalLivingArea);
-                        parcelMast.Record = recordNumber;
-                        parcelMast.Card = dwellingNumber;
-                        parcelMast.OccupancyCode = occupancyCode;
-                        parcelMast.CarportNumCars = carportNumCars;
-                        parcelMast.CarportTypeCode = carportTypeCode;
-                        parcelMast.Garage1NumCars = garage1NumCars;
-                        parcelMast.Garage1TypeCode = garage1TypeCode;
-                        parcelMast.Garage2NumCars = garage2NumCars;
-                        parcelMast.Garage2TypeCode = garage2TypeCode;
-                        parcelMast.PropertyClass = propertyClass;
-                        parcelMast.MasterParcelStoreys = masterParcelStoreys;
-                        parcelMast.TotalSquareFootage = totalLivingArea;
-                        parcelMast.NumCarsBuiltInCode = numCarsBuiltInCode;
-                        WorkingParcel = SelectParcelWithSectionsAndLines(recordNumber, dwellingNumber);
-                        WorkingParcel.ParcelMast = parcelMast;
-                        parcelMast.Parcel = WorkingParcel;
-                    }
+                    Int32.TryParse(row["CARPORTNUMCARS"].ToString().Trim(), out carportNumCars);
+                    Int32.TryParse(row["GARAGE2TYPECODE"].ToString().Trim(), out garage2TypeCode);
+                    Int32.TryParse(row["GARAGE2NUMCARS"].ToString().Trim(), out garage2NumCars);
+                    Int32.TryParse(row["NUMCARSBUILTINCODE"].ToString().Trim(), out numCarsBuiltInCode);
+                    decimal.TryParse(row["MASTERPARCELSTOREYS"].ToString().Trim(), out masterParcelStoreys);
+                    decimal.TryParse(row["TOTALAREA"].ToString(), out totalLivingArea);
+                    parcelMast.Record = recordNumber;
+                    parcelMast.Card = dwellingNumber;
+                    parcelMast.OccupancyCode = occupancyCode;
+                    parcelMast.CarportNumCars = carportNumCars;
+                    parcelMast.CarportTypeCode = carportTypeCode;
+                    parcelMast.Garage1NumCars = garage1NumCars;
+                    parcelMast.Garage1TypeCode = garage1TypeCode;
+                    parcelMast.Garage2NumCars = garage2NumCars;
+                    parcelMast.Garage2TypeCode = garage2TypeCode;
+                    parcelMast.PropertyClass = propertyClass;
+                    parcelMast.MasterParcelStoreys = masterParcelStoreys;
+                    parcelMast.TotalSquareFootage = totalLivingArea;
+                    parcelMast.NumCarsBuiltInCode = numCarsBuiltInCode;
+                    WorkingParcel = SelectParcelWithSectionsAndLines(recordNumber, dwellingNumber);
+                    WorkingParcel.ParcelMast = parcelMast;
+                    parcelMast.Parcel = WorkingParcel;
                 }
+            }
 
-                return parcelMast;
-         
+            return parcelMast;
         }
 
         #endregion "Public Methods"
@@ -421,18 +419,19 @@ namespace SketchUp
         {
             try
             {
+                FormattableString updateMastSql = $"UPDATE {MastRecordTable} SET MSTOR#={parcel.ParcelMast.MasterParcelStoreys} , MGART={parcel.ParcelMast.Garage1TypeCode} , MGAR#C={parcel.ParcelMast.Garage1NumCars} , MCARPT={parcel.ParcelMast.CarportTypeCode} , MCAR#C={parcel.ParcelMast.CarportNumCars} , MBI#C={parcel.ParcelMast.NumCarsBuiltInCode} , MGART2={parcel.ParcelMast.Garage2TypeCode} , MGAR#2={parcel.ParcelMast.Garage2NumCars} , MTOTA={parcel.ParcelMast.TotalSquareFootage}  WHERE MRECNO={parcel.ParcelMast.Record} AND MDWELL={parcel.ParcelMast.Card}";
+               int affected= SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(updateMastSql.ToString());
+
             }
             catch (Exception ex)
             {
-                string errMessage = string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message);
+                string errMessage = $"Error occurred in {MethodBase.GetCurrentMethod().Module}, in procedure {MethodBase.GetCurrentMethod().Name}: {ex.Message}".ToString();
                 Trace.WriteLine(errMessage);
-                Debug.WriteLine(string.Format("Error occurred in {0}, in procedure {1}: {2}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name, ex.Message));
+                Console.WriteLine(errMessage);
 #if DEBUG
 
                 MessageBox.Show(errMessage);
 #endif
-
-                throw;
             }
         }
 
@@ -440,10 +439,10 @@ namespace SketchUp
         {
             try
             {
-                UpdateMainInfo(parcel);
                 UpdateArea(parcel);
                 UpdateGarages(parcel);
                 UpdateCarports(parcel);
+                UpdateMainInfo(parcel);
             }
             catch (Exception ex)
             {

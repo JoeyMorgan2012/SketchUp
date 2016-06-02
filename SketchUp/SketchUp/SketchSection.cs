@@ -28,7 +28,7 @@ namespace SketchUp
 
             while (_isVacant == false)
             {
-                if (SketchUpCamraSupport.VacantOccupancies.Contains(_currentParcel.Moccup))
+                if (parcel.ParcelMast.OccupancyType==CamraDataEnums.OccupancyType.Vacant)
                 {
                     DialogResult result;
                     result = MessageBox.Show("Vacant Occupancy - Continue ?", "Vacant Occupancy Warning", MessageBoxButtons.YesNo);
@@ -36,7 +36,8 @@ namespace SketchUp
                     if (result == DialogResult.Yes)
                     {
                         _isVacant = false;
-                        _currentParcel.Moccup = 10;
+                        parcel.ParcelMast.OccupancyCode =(int)CamraDataEnums.ResidentialOccupancyCodes.Dwelling;
+                        parcel.ParcelMast.OccupancyType = CamraDataEnums.OccupancyType.Residential;
                     }
                     else if (result == DialogResult.No)
                     {
@@ -44,7 +45,7 @@ namespace SketchUp
                         break;
                     }
                 }
-                InitializeComboBoxes(currentparcel);
+                InitializeComboBoxes(parcel);
 
                 Rectangle r = Screen.PrimaryScreen.WorkingArea;
                 this.StartPosition = FormStartPosition.CenterScreen;
@@ -138,10 +139,6 @@ namespace SketchUp
 
         public string UGarType = String.Empty;
 
-        private SketchUpParcelData _currentParcel = null;
-
-        private SectionDataCollection _currentSection = null;
-
         private decimal _defDepr = 0;
 
         private string _Djsect = String.Empty;
@@ -168,7 +165,7 @@ namespace SketchUp
 
         private string _jstype = String.Empty;
 
-        private SectionData _sect = null;
+       
         private int _value = 0;
         private bool alowNoDep = false;
 
@@ -302,11 +299,11 @@ namespace SketchUp
 
                 upDateSectionLtr = SectDGView.CurrentRow.Cells["Section"].Value.ToString();
 
-                if (SketchUpCamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
+                if (SketchUpLookups.ResidentialOccupancies.Contains(_currentParcel.moccup))
                 {
                     if (ResidentialSectionCbox.SelectedIndex > 0)
                     {
-                        if (SketchUpCamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
+                        if (SketchUpLookups.ResidentialOccupancies.Contains(_currentParcel.moccup))
                         {
                             substart = ResidentialSectionCbox.SelectedItem.ToString().IndexOf("-", StringComparison.CurrentCulture);
 
@@ -330,11 +327,11 @@ namespace SketchUp
                     UpdateGAR_CP();
                 }
 
-                if (SketchUpCamraSupport.CommercialOccupancies.Contains(_currentParcel.moccup))
+                if (SketchUpLookups.CommercialOccupancies.Contains(_currentParcel.moccup))
                 {
                     if (CommercialSectionCbox.SelectedIndex > 0)
                     {
-                        if (SketchUpCamraSupport.CommercialOccupancies.Contains(_currentParcel.moccup))
+                        if (SketchUpLookups.CommercialOccupancies.Contains(_currentParcel.moccup))
                         {
                             substart = CommercialSectionCbox.SelectedItem.ToString().IndexOf("-", StringComparison.CurrentCulture);
 
@@ -499,14 +496,14 @@ namespace SketchUp
                 newClass = SectDGView.CurrentRow.Cells["Class"].Value.ToString();
                 new0Depr = SectDGView.CurrentRow.Cells["0Depr"].Value.ToString();
 
-                if (SketchUpCamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup) && Convert.ToDecimal(SectDGView.CurrentRow.Cells["Factor"].Value.ToString()) != 0)
+                if (SketchUpLookups.ResidentialOccupancies.Contains(_currentParcel.moccup) && Convert.ToDecimal(SectDGView.CurrentRow.Cells["Factor"].Value.ToString()) != 0)
                 {
                     MessageBox.Show("Section Factor for Residential Must Be Zero!");
 
                     SectDGView.CurrentRow.Cells["Factor"].Value = 0;
                     newFactor = 0;
                 }
-                if (SketchUpCamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup) && Convert.ToDecimal(SectDGView.CurrentRow.Cells["Deprec"].Value.ToString()) != 0)
+                if (SketchUpLookups.ResidentialOccupancies.Contains(_currentParcel.moccup) && Convert.ToDecimal(SectDGView.CurrentRow.Cells["Deprec"].Value.ToString()) != 0)
                 {
                     MessageBox.Show("Section Depreciation for Residential Must Be Zero!");
 
@@ -514,7 +511,7 @@ namespace SketchUp
                     newDeprec = 0;
                 }
 
-                if (SketchUpCamraSupport.CommercialOccupancies.Contains(_currentParcel.moccup))
+                if (SketchUpLookups.CommercialOccupancies.Contains(_currentParcel.moccup))
                 {
                     newFactor = Convert.ToDecimal(SectDGView.CurrentRow.Cells["Factor"].Value.ToString());
                     newDeprec = Convert.ToDecimal(SectDGView.CurrentRow.Cells["Deprec"].Value.ToString());
@@ -750,43 +747,7 @@ namespace SketchUp
             }
         }
 
-        private void AddRowsToSections(SectionDataCollection currentSection)
-        {
-            //for (int i = 0; i < currentSection.Count; i++)
-            //{
-            //    string getDesc = string.Format("select rclar,rclbr,rclcr,rcldr,rrpsf,rdesc from {0}.{1}rat1 where rid in ( 'C','P') and rsecto = '{2}' ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, currentSection[i].jstype.ToString().Trim());
-
-            //    DataSet rates = conn.DBConnection.RunSelectStatement(getDesc);
-            //    _getUnitRate(currentSection[i].jstype, currentSection[i].jsclass);
-
-            //    DataRow row = Sections.NewRow();
-            //    row["Section"] = currentSection[i].jssect.ToString();
-            //    row["Type"] = currentSection[i].jstype.ToString();
-            //    row["Desc"] = typDesc.Trim();
-            //    row["Story"] = Convert.ToDecimal(currentSection[i].jsstory.ToString());
-            //    row["Size"] = Convert.ToDecimal(currentSection[i].jssqft.ToString());
-            //    row["0Depr"] = currentSection[i].js0depr.ToString();
-            //    row["Class"] = currentSection[i].jsclass.ToString();
-            //    row["Factor"] = Convert.ToDecimal(currentSection[i].jsfactor.ToString());
-            //    row["Deprec"] = Convert.ToDecimal(currentSection[i].jsdeprc.ToString());
-            //    row["Rate"] = UnitRate;
-
-            //    _getUnitValue(currentSection[i].js0depr, currentSection[i].jssqft, currentSection[i].jsfactor, currentSection[i].jsdeprc);
-
-            //    row["Value"] = _value;
-            //    row["NewValue"] = _fullvalue;
-
-            //    Sections.Rows.Add(row);
-            //}
-            string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
-
-#if DEBUG
-            MessageBox.Show(message);
-#else
-            Console.WriteLine(message);
-            throw new NotImplementedException();
-#endif
-        }
+        
 
         private void AdjustAttachments()
         {
@@ -1372,49 +1333,49 @@ namespace SketchUp
             }
         }
 
-        private void GetMisingGarageData()
-        {
-            MissingGarageData missGar = new MissingGarageData(conn, _currentParcel, GarSize, "GAR");
-            missGar.ShowDialog();
+        //private void GetMisingGarageData()
+        //{
+        //    MissingGarageData missGar = new MissingGarageData(conn, _currentParcel, GarSize, "GAR");
+        //    missGar.ShowDialog();
 
-            int newgarcnt = _currentParcel.mgarN2 + MissingGarageData.GarNbr;
+        //    int newgarcnt = _currentParcel.mgarN2 + MissingGarageData.GarNbr;
 
-            string addcp = string.Format("update {0}.{1}mast set mgar#2 = {2} where mrecno = {3} and mdwell = {4} ",
-                    SketchUpGlobals.LocalLib,
-                    SketchUpGlobals.LocalityPreFix,
-                    newgarcnt,
-                    _currentParcel.mrecno,
-                    _currentParcel.mdwell);
+        //    string addcp = string.Format("update {0}.{1}mast set mgar#2 = {2} where mrecno = {3} and mdwell = {4} ",
+        //            SketchUpGlobals.LocalLib,
+        //            SketchUpGlobals.LocalityPreFix,
+        //            newgarcnt,
+        //            _currentParcel.mrecno,
+        //            _currentParcel.mdwell);
 
-            //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "addcp", addcp);
-            conn.DBConnection.ExecuteNonSelectStatement(addcp);
+        //    //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "addcp", addcp);
+        //    conn.DBConnection.ExecuteNonSelectStatement(addcp);
 
-            //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "addcp", addcp);
-            SketchUpParcelData.getParcel(conn, _currentParcel.mrecno, _currentParcel.mdwell);
-        }
+        //    //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "addcp", addcp);
+        //    SketchUpParcelData.getParcel(conn, _currentParcel.mrecno, _currentParcel.mdwell);
+        //}
 
-        private void GetMissingFirstGarageData()
-        {
-            MissingGarageData missGar = new MissingGarageData(conn, _currentParcel, GarSize, "GAR");
-            missGar.ShowDialog();
+        //private void GetMissingFirstGarageData()
+        //{
+        //    MissingGarageData missGar = new MissingGarageData(conn, _currentParcel, GarSize, "GAR");
+        //    missGar.ShowDialog();
 
-            if (MissingGarageData.GarCode != _currentParcel.orig_mgart)
-            {
-                string fixCp = string.Format("update {0}.{1}mast set mgart = {2},mgar#c = {3} where mrecno = {4} and mdwell = {5} ",
-                 SketchUpGlobals.LocalLib,
-                     SketchUpGlobals.LocalityPreFix,
-                    MissingGarageData.GarCode,
-                    MissingGarageData.GarNbr,
-                    _currentParcel.mrecno,
-                    _currentParcel.mdwell);
+        //    if (MissingGarageData.GarCode != _currentParcel.orig_mgart)
+        //    {
+        //        string fixCp = string.Format("update {0}.{1}mast set mgart = {2},mgar#c = {3} where mrecno = {4} and mdwell = {5} ",
+        //         SketchUpGlobals.LocalLib,
+        //             SketchUpGlobals.LocalityPreFix,
+        //            MissingGarageData.GarCode,
+        //            MissingGarageData.GarNbr,
+        //            _currentParcel.mrecno,
+        //            _currentParcel.mdwell);
 
-                //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "fixCp", fixCp);
-                conn.DBConnection.ExecuteNonSelectStatement(fixCp);
+        //        //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "fixCp", fixCp);
+        //        conn.DBConnection.ExecuteNonSelectStatement(fixCp);
 
-                //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "fixCp", fixCp);
-                SketchUpParcelData.getParcel(conn, _currentParcel.mrecno, _currentParcel.mdwell);
-            }
-        }
+        //        //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "fixCp", fixCp);
+        //        SketchUpParcelData.getParcel(conn, _currentParcel.mrecno, _currentParcel.mdwell);
+        //    }
+        //}
 
         private void GetRatesFromTables(string type)
         {
@@ -1442,13 +1403,13 @@ namespace SketchUp
             }
         }
 
-        private void InitializeComboBoxes(SketchUpParcelData currentparcel)
+        private void InitializeComboBoxes()
         {
             ResTypes = new List<string>();
             ComTypes = new List<string>();
 
-            int residentialSectionCount = SketchUpCamraSupport.ResidentialSectionTypeCollection.Count;
-            int commercialSectionCount = SketchUpCamraSupport.CommercialSectionTypeCollection.Count;
+            int residentialSectionCount = SketchUpLookups.ResidentialSectionTypeCollection.Count;
+            int commercialSectionCount = SketchUpLookups.CommercialSectionTypeCollection.Count;
 
             if (residentialSectionCount > 0)
             {
@@ -1479,10 +1440,10 @@ namespace SketchUp
                 if (i > 0)
                 {
                     ComSectTypes = String.Format("{0} - {1}",
-                        SketchUpCamraSupport.CommercialSectionTypeCollection[i - 1]._commSectionType.ToString().Trim(),
-                        SketchUpCamraSupport.CommercialSectionTypeCollection[i - 1]._commSectionDescription.ToString().Trim());
+                        SketchUpLookups.CommercialSectionTypeCollection[i - 1]._commSectionType.ToString().Trim(),
+                        SketchUpLookups.CommercialSectionTypeCollection[i - 1]._commSectionDescription.ToString().Trim());
 
-                    ComTypes.Add(SketchUpCamraSupport.CommercialSectionTypeCollection[i - 1]._commSectionType.ToString().Trim());
+                    ComTypes.Add(SketchUpLookups.CommercialSectionTypeCollection[i - 1]._commSectionType.ToString().Trim());
                 }
                 CommercialSectionCbox.Items.Add(ComSectTypes.Trim());
             }
@@ -1490,23 +1451,16 @@ namespace SketchUp
 
         private void PopulateResidentialSectionsComboBox(int ressectcnt)
         {
-            for (int i = 0; i < ressectcnt; i++)
+            sectionsList.Add(new ListOrComboBoxItem
             {
-                string ResSectTypes = String.Empty;
-                if (i == 0)
-                {
-                    ResSectTypes = "<Residential Sections>";
-                }
-                if (i > 0)
-                {
-                    ResSectTypes = String.Format("{0} - {1}",
-                        SketchUpCamraSupport.ResidentialSectionTypeCollection[i - 1]._resSectionType.ToString().Trim(),
-                        SketchUpCamraSupport.ResidentialSectionTypeCollection[i - 1]._resSectionDescription.ToString().Trim());
-
-                    ResTypes.Add(SketchUpCamraSupport.ResidentialSectionTypeCollection[i - 1]._resSectionType.ToString().Trim());
-                }
-                ResidentialSectionCbox.Items.Add(ResSectTypes.Trim());
-            }
+                Code = string.Empty,
+                Description = "(Select Section Type)"
+            });
+            sectionsList.AddRange(SketchUpLookups.SectionsByOccupancy(ParcelMaster.OccupancyType));
+            SectionTypesCbox.DataSource = sectionsList;
+            SectionTypesCbox.ValueMember = "Code";
+            SectionTypesCbox.DisplayMember = "Description";
+            SectionLetterCbox.SelectedIndex = 0;
         }
 
         private void PreventResidentialChangeNewCommercialClass()
@@ -2082,13 +2036,13 @@ namespace SketchUp
 
                     string tstetype = ds.Tables[0].Rows[i]["jstype"].ToString().Trim();
 
-                    if (SketchUpCamraSupport.GarageTypes.Contains(ds.Tables[0].Rows[i]["jstype"].ToString().Trim()))
+                    if (SketchUpLookups.GarageTypes.Contains(ds.Tables[0].Rows[i]["jstype"].ToString().Trim()))
                     {
                         Garcnt++;
 
                         GarSize = Convert.ToDecimal(ds.Tables[0].Rows[i]["jssqft"].ToString());
                     }
-                    if (SketchUpCamraSupport.CarPortTypes.Contains(ds.Tables[0].Rows[i]["jstype"].ToString().Trim()))
+                    if (SketchUpLookups.CarPortTypes.Contains(ds.Tables[0].Rows[i]["jstype"].ToString().Trim()))
                     {
                         CPcnt++;
 
@@ -2119,8 +2073,6 @@ namespace SketchUp
                 AdjustAttachments();
                 setAttPnts();
 
-                //Moved to a single call to getParcel after all other updates have run.
-                SketchUpParcelData.getParcel(conn, _currentParcel.mrecno, _currentParcel.mdwell);
             }
         }
 
@@ -2199,7 +2151,7 @@ namespace SketchUp
 
                 if (SectDGView.Columns[e.ColumnIndex].Name == "Type")
                 {
-                    if (SketchUpCamraSupport.ResidentialOccupancies.Contains(_currentParcel.moccup))
+                    if (SketchUpLookups.ResidentialOccupancies.Contains(_currentParcel.moccup))
                     {
                         string curSect = SectDGView.CurrentRow.Cells[1].Value.ToString().PadRight(4).Substring(0, 4);
 
@@ -2213,7 +2165,7 @@ namespace SketchUp
 
                         typeChange = true;
                     }
-                    if (SketchUpCamraSupport.CommercialOccupancies.Contains(_currentParcel.moccup))
+                    if (SketchUpLookups.CommercialOccupancies.Contains(_currentParcel.moccup))
                     {
                         string curSect = SectDGView.CurrentRow.Cells[1].Value.ToString().PadRight(4).Substring(0, 4);
 
@@ -2276,7 +2228,7 @@ namespace SketchUp
 
         private void SumSectionValues()
         {
-            if (SketchUpCamraSupport.CommercialOccupancies.Contains(_currentParcel.moccup))
+            if (SketchUpLookups.CommercialOccupancies.Contains(_currentParcel.moccup))
             {
                 sumBaseValue = 0;
                 sumFinalValue = 0;
@@ -2449,7 +2401,7 @@ namespace SketchUp
 
             bool garcptype = false;
 
-            if (SketchUpCamraSupport.GarageTypes.Contains(OriginalUnitType.Trim()))
+            if (SketchUpLookups.GarageTypes.Contains(OriginalUnitType.Trim()))
             {
                 garcptype = true;
 
@@ -2457,7 +2409,7 @@ namespace SketchUp
 
                 CountGar(OriginalUnitType.Trim());
             }
-            if (SketchUpCamraSupport.CarPortTypes.Contains(OriginalUnitType.Trim()))
+            if (SketchUpLookups.CarPortTypes.Contains(OriginalUnitType.Trim()))
             {
                 garcptype = true;
 

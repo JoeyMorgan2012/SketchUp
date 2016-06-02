@@ -211,45 +211,7 @@ namespace SketchUp
             }
         }
 
-        private void AddMaster()
-        {
-            decimal summedArea = 0;
-            decimal baseStory = 0;
-
-            StringBuilder sumArea = new StringBuilder();
-            sumArea.Append(String.Format("select sum(jssqft) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} ",
-                      SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPrefix,
-                       SketchUpGlobals.Record,
-                       SketchUpGlobals.Card));
-
-            try
-            {
-                summedArea = Convert.ToDecimal(dbConn.DBConnection.ExecuteScalar(sumArea.ToString()));
-            }
-            catch
-            {
-            }
-
-            StringBuilder getStory = new StringBuilder();
-            getStory.Append(String.Format("select jsstory from {0}.{1}section where jsrecord = {2} and jsdwell = {3} and jssect = 'A'  ",
-                       SketchUpGlobals.LocalLib,
-                          SketchUpGlobals.LocalityPrefix,
-                        SketchUpGlobals.Record,
-                        SketchUpGlobals.Card));
-
-            try
-            {
-                baseStory = Convert.ToDecimal(dbConn.DBConnection.ExecuteScalar(getStory.ToString()));
-            }
-            catch
-            {
-            }
-
-            DataSet ds_master = UpdateMasterArea(summedArea);
-
-
-        }
+    
 
         private void AddMoveToImage()
         {
@@ -395,17 +357,22 @@ namespace SketchUp
                 case DrawingState.JumpPointSelected:
                 case DrawingState.SectionAdded:
                     EditState = DrawingState.Drawing;
-
+                    UnsavedChangesExist = true;
                     break;
 
                 case DrawingState.SectionDeleted:
-
+                    UnsavedChangesExist = true;
+                    SaveChanges(WorkingParcel);
                     break;
 
                 case DrawingState.SectionEditCompleted:
+                    UnsavedChangesExist = true;
+                    SaveChanges(WorkingParcel);
                     break;
 
                 case DrawingState.SectionEditStarted:
+                    UnsavedChangesExist = true;
+                
                     break;
 
                 case DrawingState.SketchLoaded:
@@ -413,7 +380,8 @@ namespace SketchUp
                     break;
 
                 case DrawingState.SketchSaved:
-
+                    UnsavedChangesExist = false;
+                  
                     break;
 
                 default:
@@ -587,43 +555,68 @@ namespace SketchUp
             NextSectArea = (Math.Round((_calcNextSectArea * _nextStoryHeight), 1));
         }
 
-        private void ConfirmCarportNumbers()
+        private bool ConfirmCarportNumbers()
         {
-            if (carportCount > 0)
+            //TODO: Remove debugging code bool carportUpdateNeeded = false;
+            bool carportUpdateNeeded = true;
+            decimal carportSize = 0;
+            var carportSections = (from s in WorkingParcel.Sections where SketchUpLookups.CarPortTypes.Contains(s.SectionType) select s).ToList();
+            if (carportSections != null)
             {
-                if (carportCount > 0 && parcelMast.CarportNumCars == 0 || carportCount > 0 && parcelMast.CarportTypeCode == 67)
-                {
-                    MissingGarageData missCP = new MissingGarageData(parcelMast, CPSize, "CP");
-                    missCP.ShowDialog();
-                }
-
-                if (carportCount > 1 && parcelMast.CarportTypeCode != 0 || carportCount > 1 && parcelMast.CarportTypeCode != 67)
-                {
-                    MissingGarageData missCPx = new MissingGarageData(parcelMast, CPSize, "CP");
-                    missCPx.ShowDialog();
-
-                    parcelMast.CarportNumCars += MissingGarageData.CpNbr;
-                }
+                carportCount = carportSections.Count();
+                carportSize = carportSections.Sum(s => s.SqFt);
             }
+            string noCpCode = (from c in SketchUpLookups.CarPortTypeCollection where c.Description == "NONE" select c.Code).FirstOrDefault();
+            int noCarportCode = 0;
+            int.TryParse(noCpCode, out noCarportCode);
+
+            bool codeAndNumbersMismatched = (carportCount > 0 && (ParcelMast.CarportNumCars == 0 || parcelMast.CarportTypeCode == noCarportCode));
+
+            bool carsCountUpdateNeeded = carportCount > 1 && (ParcelMast.CarportTypeCode != 0 || ParcelMast.CarportTypeCode != noCarportCode);
+            carportUpdateNeeded = (codeAndNumbersMismatched || carsCountUpdateNeeded);
+            return carportUpdateNeeded;
+            //if (codeAndNumbersMismatched)
+            //{
+            //    MissingGarageData missingGarCPForm = new MissingGarageData(parcelMast, carportSize, "CP");
+            //    missingGarCPForm.ShowDialog();
+
+            //}
+
+            //if (carsCountUpdateNeeded)
+            //{
+            //    MissingGarageData missCPx = new MissingGarageData(parcelMast, CPSize, "CP");
+            //    missCPx.ShowDialog();
+
+            //    ParcelMast.CarportNumCars += MissingGarageData.CarportNumCars;
+            //}
         }
+
 
         private bool ConfirmGarageNumbers()
         {
-            bool garageOk = false;
+            bool garageUpdateNeeded = false;
+            int gar1Cars = 0;
+            int gar2Cars = 0;
+            int garageTotalCars = 0;
+            int mastGarageTotal = 0;
+            bool garageOk = true;
+            //TODO: Remove debugging codebool garageOk = false;
             SMParcelMast originalParcelMast = SketchUpGlobals.SMParcelFromData.ParcelMast;
-            if (Garcnt > 0)
+            mastGarageTotal = (string.IsNullOrEmpty(originalParcelMast.Garage1NumCars.ToString()) ? 0:originalParcelMast.Garage1NumCars) + (string.IsNullOrEmpty(originalParcelMast.Garage2NumCars.ToString()) ? 0 : originalParcelMast.Garage2NumCars);
+            List<SMSection> garages = (from s in WorkingParcel.Sections where SketchUpLookups.GarageTypes.Contains(s.SectionType) select s).OrderBy(s=>s.SectionLetter).ToList();
+            if (garages!=null && garages.Count>0)
             {
-                if (Garcnt == 1 && parcelMast.Garage1TypeCode <= 60 || Garcnt == 1 && parcelMast.Garage1TypeCode == 63 || Garcnt == 1 && parcelMast.Garage1TypeCode == 64)
-                {
-                    MissingGarageData missGar = new MissingGarageData(parcelMast, GarSize, "GAR");
-                    missGar.ShowDialog();
+                garageCount = garages.Count;
+            }
+            else
+            {
+                garageCount = 0;
+            }
+          
 
-                    if (MissingGarageData.GarageCode != originalParcelMast.Garage1TypeCode)                    {
-                        parcelMast.Garage1NumCars = MissingGarageData.GarNbr;
-                        parcelMast.Garage1TypeCode = MissingGarageData.GarageCode;
-                    }
-                }
-                if (Garcnt > 1 && parcelMast.Garage1NumCars == 0)
+            if (garageCount > 0)
+            {
+                if (garageCount == 1 && parcelMast.Garage1TypeCode <= 60 || garageCount == 1 && parcelMast.Garage1TypeCode == 63 || garageCount == 1 && parcelMast.Garage1TypeCode == 64)
                 {
                     MissingGarageData missGar = new MissingGarageData(parcelMast, GarSize, "GAR");
                     missGar.ShowDialog();
@@ -634,14 +627,25 @@ namespace SketchUp
                         parcelMast.Garage1TypeCode = MissingGarageData.GarageCode;
                     }
                 }
-                if (Garcnt > 2)
+                if (garageCount > 1 && parcelMast.Garage1NumCars == 0)
+                {
+                    MissingGarageData missGar = new MissingGarageData(parcelMast, GarSize, "GAR");
+                    missGar.ShowDialog();
+                    //Start here to migrate to new form.
+                    if (MissingGarageData.GarageCode != originalParcelMast.Garage1TypeCode)
+                    {
+                        parcelMast.Garage1NumCars = MissingGarageData.GarNbr;
+                        parcelMast.Garage1TypeCode = MissingGarageData.GarageCode;
+                    }
+                }
+                if (garageCount > 2)
                 {
                     MissingGarageData missGar = new MissingGarageData(parcelMast, GarSize, "GAR");
                     missGar.ShowDialog();
 
                     parcelMast.Garage2NumCars += MissingGarageData.GarNbr;
                 }
-              
+
             }
             return garageOk;
         }
@@ -1093,7 +1097,7 @@ namespace SketchUp
 
         private void DMouseMove(int X, int Y, bool jumpMode)
         {
-
+         
 
         }
 
@@ -1154,7 +1158,7 @@ namespace SketchUp
                 _isJumpMode = true;
                 _mouseX = e.X;
                 _mouseY = e.Y;
-                DMouseMove(e.X, e.Y, true);
+             // TODO: Remove if not needed:	   DMouseMove(e.X, e.Y, true);
             }
         }
 
@@ -1411,6 +1415,7 @@ namespace SketchUp
                 AddSectionContextMenu.Enabled = true;
                 cmiJumpToCorner.Enabled = true;
                 EditState = DrawingState.SectionAdded;
+                UnsavedChangesExist = true;
                 _isJumpMode = true;
                 try
                 {
@@ -1425,6 +1430,7 @@ namespace SketchUp
                 AddSectionContextMenu.Enabled = false;
                 cmiJumpToCorner.Enabled = false;
                 EditState = DrawingState.SketchLoaded;
+                UnsavedChangesExist = sectionTypeForm.SectionWasAdded;
             }
         }
 
@@ -1825,6 +1831,7 @@ namespace SketchUp
             Cursor = new Cursor(Cursor.Current.Handle);
             int jumpXScaled = Convert.ToInt32(newPoint.X);
             int jumpYScaled = Convert.ToInt32(newPoint.Y);
+            
             Cursor.Position = new Point(jumpXScaled, jumpYScaled);
             penColor = PenColorForDrawing(EditState);
             _isJumpMode = (EditState == DrawingState.JumpPointSelected || EditState == DrawingState.SectionAdded);
@@ -1983,16 +1990,7 @@ namespace SketchUp
         }
 
 
-        private void VerifyCarportsAndGarages()
-        {
-          
-            SMParcel originalParcel = SketchUpGlobals.SMParcelFromData;
-            SMParcelMast parcelMaster = WorkingParcel.ParcelMast;
-          
-            ConfirmGarageNumbers(originalParcel);
-            ConfirmCarportNumbers();
-        }
-
+        
         private void RevertToPriorVersion()
         {
             string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
@@ -2016,6 +2014,7 @@ namespace SketchUp
                 WorkingParcel.SnapShotIndex++;
                 AddParcelToSnapshots(WorkingParcel);
                 EditState = DrawingState.SketchLoaded;
+                UnsavedChangesExist = false;
                 RefreshWorkspace();
             }
             catch (Exception ex)
@@ -2054,10 +2053,10 @@ namespace SketchUp
             {
                 if (UnsavedChangesExist)
                 {
+
+                    UpdateCarsInfo();
                     parcel.ReorganizeSections();
                     SketchRepository sr = new SketchRepository(parcel);
-                    ConfirmCarportNumbers();
-                    ConfirmGarageNumbers();
                     ParcelMast = sr.SaveCurrentParcel(parcel);
                     WorkingParcel = ParcelMast.Parcel;
                     UnsavedChangesExist = false;
@@ -2077,10 +2076,14 @@ namespace SketchUp
 
                 throw;
             }
-          
+
         }
 
-      
+        private void UpdateCarsInfo()
+        {
+            bool updatesNeeded = true;
+        //TODO: June 2-3: Check the garage and carports data here.
+        }
 
         private void SaveJumpPointsAndOldSectionEndPoints(float CurrentScale, int rowindex, DataView SortedJumpTableDataView)
         {
@@ -2459,7 +2462,7 @@ namespace SketchUp
         {
             if (SketchUpLookups.GarageTypes.Contains(s.SectionType))
             {
-                Garcnt++;
+                garageCount++;
 
                 GarSize += s.SqFt;
             }
@@ -2574,7 +2577,7 @@ namespace SketchUp
 
         private void UpdateCarportCountToZero()
         {
-            string codeFromLookup= (from c in SketchUpLookups.CarPortTypeCollection where c.Description.Trim().ToUpper() == "NONE" select c.Code).FirstOrDefault();
+            string codeFromLookup = (from c in SketchUpLookups.CarPortTypeCollection where c.Description.Trim().ToUpper() == "NONE" select c.Code).FirstOrDefault();
             int cpCode = 0;
             int.TryParse(codeFromLookup, out cpCode);
             ParcelMast.CarportTypeCode = cpCode == 0 ? 67 : cpCode;
@@ -2598,39 +2601,40 @@ namespace SketchUp
             int garCode = 0;
             int.TryParse(codeFromLookup, out garCode);
             ParcelMast.Garage1TypeCode = (garCode == 0 ? 63 : garCode);
-            ParcelMast.Garage1NumCars= 0;
+            ParcelMast.Garage1NumCars = 0;
             ParcelMast.Garage2TypeCode = 0;
             ParcelMast.Garage2NumCars = 0;
-            
+
         }
 
-        private DataSet UpdateMasterArea(decimal summedArea)
-        {
-            string checkMaster = string.Format("select * from {0}.{1}master where jmrecord = {2} and jmdwell = {3} ",
-                SketchUpGlobals.LocalLib,
-                SketchUpGlobals.LocalityPrefix,
-                SketchUpGlobals.Record,
-                SketchUpGlobals.Card);
+        //private DataSet UpdateMasterArea(decimal summedArea)
+        //{
+        //    string checkMaster = string.Format("select * from {0}.{1}master where jmrecord = {2} and jmdwell = {3} ",
+        //        SketchUpGlobals.LocalLib,
+        //        SketchUpGlobals.LocalityPrefix,
+        //        SketchUpGlobals.Record,
+        //        SketchUpGlobals.Card);
 
-            DataSet ds_master = dbConn.DBConnection.RunSelectStatement(checkMaster.ToString());
+        //    DataSet ds_master = dbConn.DBConnection.RunSelectStatement(checkMaster.ToString());
 
-            if (ds_master.Tables[0].Rows.Count > 0)
-            {
-                string updateMasterSql = string.Format("update {0}.{1}master set jmtotsqft = {2} where jmrecord = {3} and jmdwell = {4} ",
-                               SketchUpGlobals.LocalLib,
-                               SketchUpGlobals.LocalityPrefix,
-                               summedArea,
-                               SketchUpGlobals.Record,
-                               SketchUpGlobals.Card);
+        //    if (ds_master.Tables[0].Rows.Count > 0)
+        //    {
+        //        string updateMasterSql = string.Format("update {0}.{1}master set jmtotsqft = {2} where jmrecord = {3} and jmdwell = {4} ",
+        //                       SketchUpGlobals.LocalLib,
+        //                       SketchUpGlobals.LocalityPrefix,
+        //                       summedArea,
+        //                       SketchUpGlobals.Record,
+        //                       SketchUpGlobals.Card);
 
-                dbConn.DBConnection.ExecuteNonSelectStatement(updateMasterSql.ToString());
-            }
+        //        dbConn.DBConnection.ExecuteNonSelectStatement(updateMasterSql.ToString());
+        //    }
 
-            return ds_master;
-        }
+        //    return ds_master;
+        //}
 
         #endregion
 
 
     }
+
 }
