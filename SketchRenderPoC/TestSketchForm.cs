@@ -149,31 +149,31 @@ namespace SketchUp
             line2.ParentParcel = LocalParcelCopy;
             newSection.Lines.Add(line2);
 
-            //SMLine line3 = new SMLine(newSection);
-            //line3.StartX = 73;
-            //line3.StartY = -7;
-            //line3.EndX = 63;
-            //line3.EndY = -7;
-            //line3.SectionLetter = newSection.SectionLetter;
-            //line3.Direction = "W";
-            //line3.LineNumber = 3;
-            //line3.XLength = 10;
-            //line3.YLength = 0;
-            //line3.ParentParcel = LocalParcelCopy;
-            //newSection.Lines.Add(line3);
+            SMLine line3 = new SMLine(newSection);
+            line3.StartX = 73;
+            line3.StartY = -7;
+            line3.EndX = 63;
+            line3.EndY = -7;
+            line3.SectionLetter = newSection.SectionLetter;
+            line3.Direction = "W";
+            line3.LineNumber = 3;
+            line3.XLength = 10;
+            line3.YLength = 0;
+            line3.ParentParcel = LocalParcelCopy;
+            newSection.Lines.Add(line3);
 
-            //SMLine line4 = new SMLine(newSection);
-            //line4.StartX = 63;
-            //line4.StartY = -7;
-            //line4.EndX = 63;
-            //line4.EndY = 3;
-            //line4.SectionLetter = newSection.SectionLetter;
-            //line4.Direction = "S";
-            //line4.LineNumber = 4;
-            //line4.XLength = 0;
-            //line4.YLength = 10;
-            //line4.ParentParcel = LocalParcelCopy;
-            //newSection.Lines.Add(line4);
+            SMLine line4 = new SMLine(newSection);
+            line4.StartX = 63;
+            line4.StartY = -7;
+            line4.EndX = 63;
+            line4.EndY = 3;
+            line4.SectionLetter = newSection.SectionLetter;
+            line4.Direction = "S";
+            line4.LineNumber = 4;
+            line4.XLength = 0;
+            line4.YLength = 10;
+            line4.ParentParcel = LocalParcelCopy;
+            newSection.Lines.Add(line4);
 
             LocalParcelCopy.Sections.Add(newSection);
            
@@ -1388,6 +1388,7 @@ namespace SketchUp
 
         private void runTest1_Click(object sender, EventArgs e)
         {
+            graphics.Clear(Color.White);
             string sectionLetter = string.Empty;
             string message = string.Empty;
 
@@ -1396,6 +1397,7 @@ namespace SketchUp
             AddNewTestSection();
 
             sms.RenderSketch(LocalParcelCopy.LastSectionLetter);
+            sketchBox.Image = sms.SketchImage;
         }
 
         private void runTest4_Click(object sender, EventArgs e)
@@ -1586,7 +1588,7 @@ namespace SketchUp
         {
            
             //Arrange
-            SketchRepository sr = new SketchRepository(parcel);
+            
 
             SMSection sectionB = (parcel.SelectSectionByLetter("B"));
             parcel.RemoveSectionFromParcel( sectionB);

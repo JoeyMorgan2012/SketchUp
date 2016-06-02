@@ -42,8 +42,8 @@ namespace SketchUp
         public string DescribeMast(SMParcelMast mast)
         {
             string description = string.Empty;
-            StringBuilder details = new StringBuilder();
-            details.AppendLine(string.Format("{0}", string.Empty));
+            FormattableString details = $"{mast.Record}\t\t\t {mast.Card}\t\t\t {mast.OccupancyCode}\t\t\t {mast.PropertyClass}\t\t\t {mast.Garage1TypeCode}\t\t\t {mast.Garage1NumCars}\t\t\t {mast.CarportTypeCode}\t\t\t {mast.CarportNumCars}\t\t\t {mast.Garage2TypeCode}\t\t\t {mast.Garage2NumCars}\t\t\t {mast.NumCarsBuiltInCode}\t\t\t {mast.StoreysValue}\t\t\t {mast.TotalArea}\t\t\t {mast.StoreysText}";
+
             description = details.ToString();
             return description;
         }
@@ -87,7 +87,7 @@ namespace SketchUp
 
         public string MastHeader()
         {
-            string header = string.Empty;
+            string header = "Record \t\t\tCard \t\t\tOccupancyCode \t\t\tPropertyClass \t\t\tGarage1TypeCode \t\t\tGarage1NumCars \t\t\tCarportTypeCode \t\t\tCarportNumCars \t\t\tGarage2TypeCode \t\t\tGarage2NumCars \t\t\tNumCarsBuiltInCode \t\t\tMasterParcelStoreys \t\t\tTotalSquareFootage \t\t\tStoreysText \t\t\t";
 
             return header;
         }

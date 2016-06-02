@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SketchUp.SMParcel">
+    <Position X="3" Y="0.5" Width="3" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AABEhkCAwINACQDDMAswAGACIeEQSALpIMgCmAAABIQ=</HashCode>
+      <FileName>SMParcel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.SMLine" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BHCECAMwByCD4gMggGBJAAMAyAADwgAAAAAEABAAFCg=</HashCode>
+      <FileName>SMLine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.SMParcelMast">
+    <Position X="0.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IABMgAAAQAAAAACAAQAAALMACCCQAAiBBAAARDAABCQ=</HashCode>
+      <FileName>SMParcelMast.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.SMSection">
+    <Position X="6.5" Y="0.5" Width="2" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>BAAEJkJARCYiQsAAIgDEJGMQFCYBEAACAAAAAAAQBAA=</HashCode>
+      <FileName>SMSection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

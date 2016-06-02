@@ -7,7 +7,7 @@
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AABEhkCAwINACQDDMAswAGACIeEQSALpIMgCmAAABIQ=</HashCode>
+      <HashCode>AABEhlCAwINACQDDMAswAGACIeEwSALpIMgCmCAABIQ=</HashCode>
       <FileName>SMParcel.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -26,10 +26,9 @@
     <Position X="0.5" Y="0.5" Width="1.75" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
-      <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>IABMgAAAQAAAAACAAQAAALMACCCQAAiBBAAARDAABCQ=</HashCode>
+      <HashCode>IABMgAAAQAAAAACAAQAAALMACCCQAAiBBAAARDAADCQ=</HashCode>
       <FileName>SMParcelMast.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -40,8 +39,97 @@
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>BAAEJkJARCYiQsAAIgDEJGMQFCYBEAACAAAAAAAQBAA=</HashCode>
+      <HashCode>BABEJkJIRCYiQsAAIgDEJGIQFCYAEAACAAAAAAAQBAA=</HashCode>
       <FileName>SMSection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.CamraDataEnums">
+    <Position X="2.75" Y="7" Width="2.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="SketchUp.CamraDataEnums.AuxAreaTypes" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CamraSupport\CamraDataEnums.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="SketchUp.CamraDataEnums.EnclPorchTypes" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CamraSupport\CamraDataEnums.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="SketchUp.CamraDataEnums.ResidentialOccupancyCodes" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CamraSupport\CamraDataEnums.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="SketchUp.CamraDataEnums.InvalidCommercialSection" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CamraSupport\CamraDataEnums.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="SketchUp.CamraDataEnums.IncomeOccupancies" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CamraSupport\CamraDataEnums.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="SketchUp.CamraDataEnums.CommercialOccupancyCodes" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CamraSupport\CamraDataEnums.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="SketchUp.CamraDataEnums.CarPortTypes" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CamraSupport\CamraDataEnums.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="SketchUp.CamraDataEnums.GarageTypes" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CamraSupport\CamraDataEnums.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="SketchUp.CamraDataEnums.VacantOccupancies" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CamraSupport\CamraDataEnums.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="SketchUp.CamraDataEnums.OccupancyType" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CamraSupport\CamraDataEnums.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="SketchUp.CamraDataEnums.Letters" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CamraSupport\CamraDataEnums.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="SketchUp.CamraDataEnums.CardinalDirection" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CamraSupport\CamraDataEnums.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="SketchUp.CamraDataEnums.TaxExemptOccupancies" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CamraSupport\CamraDataEnums.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="SketchUp.CamraDataEnums.PatioTypes" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CamraSupport\CamraDataEnums.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CamraSupport\CamraDataEnums.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.SketchUpLookups">
+    <Position X="5.75" Y="7.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>IBAELAYADIQgmAFAhqKQIIYXBAAIdUmARBBKQQiAgGA=</HashCode>
+      <FileName>UtilityClasses\SketchUpLookups.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

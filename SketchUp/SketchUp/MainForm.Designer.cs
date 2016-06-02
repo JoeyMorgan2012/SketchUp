@@ -121,10 +121,10 @@
             this.statusStripMain.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.statusStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusMessage});
-            this.statusStripMain.Location = new System.Drawing.Point(0, 721);
+            this.statusStripMain.Location = new System.Drawing.Point(0, 630);
             this.statusStripMain.Name = "statusStripMain";
             this.statusStripMain.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
-            this.statusStripMain.Size = new System.Drawing.Size(1110, 22);
+            this.statusStripMain.Size = new System.Drawing.Size(1000, 22);
             this.statusStripMain.TabIndex = 13;
             this.statusStripMain.Text = "Status";
             // 
@@ -136,17 +136,17 @@
             // sketchBox
             // 
             this.sketchBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.sketchBox.Location = new System.Drawing.Point(379, 88);
+            this.sketchBox.Location = new System.Drawing.Point(387, 97);
             this.sketchBox.Margin = new System.Windows.Forms.Padding(4);
-            this.sketchBox.MinimumSize = new System.Drawing.Size(550, 517);
+            this.sketchBox.MinimumSize = new System.Drawing.Size(400, 400);
             this.sketchBox.Name = "sketchBox";
-            this.sketchBox.Size = new System.Drawing.Size(718, 589);
+            this.sketchBox.Size = new System.Drawing.Size(550, 462);
             this.sketchBox.TabIndex = 9;
             this.sketchBox.TabStop = false;
             // 
             // EditImage
             // 
-            this.EditImage.Location = new System.Drawing.Point(235, 672);
+            this.EditImage.Location = new System.Drawing.Point(387, 578);
             this.EditImage.Margin = new System.Windows.Forms.Padding(4);
             this.EditImage.Name = "EditImage";
             this.EditImage.Size = new System.Drawing.Size(100, 32);
@@ -245,8 +245,10 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.ClientSize = new System.Drawing.Size(1110, 743);
+            this.ClientSize = new System.Drawing.Size(1000, 652);
             this.Controls.Add(this.LocNameTxt);
             this.Controls.Add(this.PreFixTxt);
             this.Controls.Add(this.label6);
@@ -254,7 +256,6 @@
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.EditImage);
-            this.Controls.Add(this.sketchBox);
             this.Controls.Add(this.statusStripMain);
             this.Controls.Add(this.SelectRecordBtn);
             this.Controls.Add(this.CardTxt);
@@ -262,10 +263,11 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
+            this.Controls.Add(this.sketchBox);
             this.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Margin = new System.Windows.Forms.Padding(4);
-            this.MinimumSize = new System.Drawing.Size(1041, 701);
+            this.MinimumSize = new System.Drawing.Size(1022, 701);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Current CAMRA Parcel";

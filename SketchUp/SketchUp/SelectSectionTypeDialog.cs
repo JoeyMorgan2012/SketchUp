@@ -50,11 +50,7 @@ namespace SketchUp
 
         private void AddSectionToWorkingParcel()
         {
-            #if DEBUG
-			StringBuilder traceOut = new StringBuilder();
-			traceOut.AppendLine(string.Format("Before adding, snapshot index is {0}", ParcelMaster.Parcel.SnapShotIndex));
-			
-#endif
+          
             decimal storeys = 0.00M;
             SMSection newSection = new SMSection(ParcelMaster.Parcel);
             newSection.SectionLetter = SectLtrTxt.Text;
@@ -68,13 +64,7 @@ namespace SketchUp
             ParcelMaster.Parcel.SnapShotIndex++;
             SketchUpGlobals.SketchSnapshots.Add(ParcelMaster.Parcel);
             SectionWasAdded = true;
-#if DEBUG
-            traceOut.AppendLine(string.Format("After adding, snapshot index is {0}", ParcelMaster.Parcel.SnapShotIndex));
-            traceOut.AppendLine(string.Format("New section added: {0}", newSection.SectionLetter));
-         
-            Console.WriteLine(string.Format("{0}", traceOut.ToString()));
 
-#endif
         }
 
         private bool BaseIsValid()
@@ -120,7 +110,7 @@ namespace SketchUp
 
                 if (newSectionStoreys == 0 && nextSec == "A")
                 {
-                    newSectionStoreys = ParcelMaster.MasterParcelStoreys;
+                    newSectionStoreys = ParcelMaster.StoreysValue;
                     SectionSizeTxt.Text = newSectionStoreys.ToString("N2");
                 }
             }
@@ -239,11 +229,14 @@ namespace SketchUp
             else
             {
                 decimal.TryParse(SectionStoriesTxt.Text, out storeyTextEntered);
-                dbStoreys = ParcelMaster.MasterParcelStoreys;
+                dbStoreys = ParcelMaster.StoreysValue;
                 newSectionStoreys = storeyTextEntered;
             }
             if (nextSec == "A" && storeyTextIsBlank != true && dbStoreys != storeyTextEntered)
             {
+                //TODO: Cross-reference text values to numeric.
+                // Update text field as well.
+
                 DialogResult storycheck;
                 string warningMessage = string.Format("Master Parcel shows {0} stories .. Entered Sories = {1}.\nDo you want to update the Master Parcel Record? ", dbStoreys.ToString("N2"), storeyTextEntered.ToString("N2"));
                 storycheck = MessageBox.Show(warningMessage, "Stories Conflict", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -253,7 +246,7 @@ namespace SketchUp
                     if (storeyTextEntered > 0)
                     {
                         SectionStoriesTxt.Text = storeyTextEntered.ToString("N2");
-                        ParcelMaster.MasterParcelStoreys = storeyTextEntered;
+                        ParcelMaster.StoreysValue = storeyTextEntered;
                         _AddStory = true;
                         storeyCountMatches = true;
                     }
@@ -288,7 +281,7 @@ namespace SketchUp
                 switch (result)
                 {
                     case DialogResult.Yes:
-                        SectionStoriesTxt.Text = string.Format("{0:N2}", ParcelMaster.MasterParcelStoreys);
+                        SectionStoriesTxt.Text = string.Format("{0:N2}", ParcelMaster.StoreysValue);
                         SectionTypesCbox.Focus();
                         break;
 

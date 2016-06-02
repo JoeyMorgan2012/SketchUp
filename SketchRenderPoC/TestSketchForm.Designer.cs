@@ -150,6 +150,7 @@
             this.addScreenLine.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D6)));
             this.addScreenLine.Size = new System.Drawing.Size(358, 26);
             this.addScreenLine.Text = "Remove Section B and Reorganize";
+            this.addScreenLine.Click += new System.EventHandler(this.miRemoveSectionB_Click);
             // 
             // runTest4
             // 

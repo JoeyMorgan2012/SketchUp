@@ -148,7 +148,7 @@ namespace SketchUp
             SMSection selectedSection = null;
             if (Sections != null && Sections.Count > 0)
             {
-                selectedSection = (from s in Sections where s.SectionLetter == sectionLetter select s).FirstOrDefault<SMSection>();
+                selectedSection = (from s in Sections where s.SectionLetter == sectionLetter select s).FirstOrDefault();
             }
             return selectedSection;
         }

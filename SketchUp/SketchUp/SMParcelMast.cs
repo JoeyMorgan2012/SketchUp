@@ -34,22 +34,9 @@ namespace SketchUp
             return occType;
         }
 
-#endregion
+        #endregion
 
-#region "Properties"
-
-        public CamraDataEnums.OccupancyType OccupancyType
-        {
-            get
-            {
-                occupancyType = SelectOccupancyType(OccupancyCode);
-                return occupancyType;
-            }
-            set
-            {
-                occupancyType = value;
-            }
-        }
+        #region "Properties"
 
         public int Card
         {
@@ -135,18 +122,6 @@ namespace SketchUp
             }
         }
 
-        public decimal MasterParcelStoreys
-        {
-            get
-            {
-                return masterParcelStoreys;
-            }
-            set
-            {
-                masterParcelStoreys = value;
-            }
-        }
-
         public int NumCarsBuiltInCode
         {
             get
@@ -168,6 +143,19 @@ namespace SketchUp
             set
             {
                 occupancyCode = value;
+            }
+        }
+
+        public CamraDataEnums.OccupancyType OccupancyType
+        {
+            get
+            {
+                occupancyType = SelectOccupancyType(OccupancyCode);
+                return occupancyType;
+            }
+            set
+            {
+                occupancyType = value;
             }
         }
 
@@ -207,21 +195,44 @@ namespace SketchUp
             }
         }
 
-        public decimal TotalSquareFootage
+        public string StoreysText
         {
             get
             {
-                return totalSquareFootage;
+                return storeysText;
             }
+
             set
             {
-                totalSquareFootage = value;
+                storeysText = value;
             }
         }
 
-#endregion
+        public decimal StoreysValue
+        {
+            get
+            {
+                return storeysValue;
+            }
+            set
+            {
+                storeysValue = value;
+            }
+        }
+        public decimal TotalArea
+        {
+            get
+            {
+                return totalArea;
+            }
+            set
+            {
+                totalArea = value;
+            }
+        }
+        #endregion
 
-#region "Fields"
+        #region "Private Fields"
 
         private int card;
         private int carportNumCars;
@@ -230,14 +241,15 @@ namespace SketchUp
         private int garage1TypeCode;
         private int garage2NumCars;
         private int garage2TypeCode;
-        private decimal masterParcelStoreys;
         private int numCarsBuiltInCode;
         private int occupancyCode;
         CamraDataEnums.OccupancyType occupancyType;
         private SMParcel parcel;
         private int propertyClass;
         private int record;
-        private decimal totalSquareFootage;
+        private string storeysText;
+        private decimal storeysValue;
+        private decimal totalArea;
 
 #endregion
         
