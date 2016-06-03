@@ -87,20 +87,7 @@ namespace SketchUp
             get; set;
         }
 
-        public DataGridViewRow SelectSectionDataRow
-        {
-            get
-            {
-                if (SectDGView.SelectedRows.Count > 0)
-                {
-                    return SectDGView.SelectedRows[0];
-                }
-                else
-                {
-                    return null;
-                }
-            }
-        }
+    
 
         public static List<string> Letters = new List<string>() { "A", "B", "C", "D", "F", "G", "H", "I", "J", "K", "L", "M" };
 
@@ -236,8 +223,51 @@ namespace SketchUp
 
         #endregion Properties
 
-        #region Form Control Event Methods
+        #region Code I need #1
 
+        private void GetMisingGarageData()
+        {
+            MissingGarageData missGar = new MissingGarageData(conn, _currentParcel, GarSize, "GAR");
+            missGar.ShowDialog();
+
+            int newgarcnt = _currentParcel.mgarN2 + MissingGarageData.GarNbr;
+
+            string addcp = string.Format("update {0}.{1}mast set mgar#2 = {2} where mrecno = {3} and mdwell = {4} ",
+                    SketchUpGlobals.LocalLib,
+                    SketchUpGlobals.LocalityPreFix,
+                    newgarcnt,
+                    _currentParcel.mrecno,
+                    _currentParcel.mdwell);
+
+            //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "addcp", addcp);
+            conn.DBConnection.ExecuteNonSelectStatement(addcp);
+
+            //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "addcp", addcp);
+            SketchUpParcelData.getParcel(conn, _currentParcel.mrecno, _currentParcel.mdwell);
+        }
+
+        private void GetMissingFirstGarageData()
+        {
+            MissingGarageData missGar = new MissingGarageData(conn, _currentParcel, GarSize, "GAR");
+            missGar.ShowDialog();
+
+            if (MissingGarageData.GarCode != _currentParcel.orig_mgart)
+            {
+                string fixCp = string.Format("update {0}.{1}mast set mgart = {2},mgar#c = {3} where mrecno = {4} and mdwell = {5} ",
+                 SketchUpGlobals.LocalLib,
+                     SketchUpGlobals.LocalityPreFix,
+                    MissingGarageData.GarCode,
+                    MissingGarageData.GarNbr,
+                    _currentParcel.mrecno,
+                    _currentParcel.mdwell);
+
+                //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "fixCp", fixCp);
+                conn.DBConnection.ExecuteNonSelectStatement(fixCp);
+
+                //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "fixCp", fixCp);
+                SketchUpParcelData.getParcel(conn, _currentParcel.mrecno, _currentParcel.mdwell);
+            }
+        }
         private void DeleteSectBtn_Click(object sender, EventArgs e)
         {
             DeleteSection();
@@ -544,8 +574,445 @@ namespace SketchUp
 
             Reorder();
         }
+        private void SectDGView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            ProcessChangedSectDGViewCell(e);
+        }
 
-        #endregion Form Control Event Methods
+        private void SetResOrCommValues(string type)
+        {
+            if (ResTypes.Contains(type.Trim()))
+            {
+                resSection = true;
+                commSection = false;
+            }
+            if (ComTypes.Contains(type.Trim()))
+            {
+                resSection = false;
+                commSection = true;
+            }
+        }
+
+        private void SumSectionArea()
+        {
+            decimal totalsectionarea = 0;
+            int sectcnt = _currentSection.Count;
+
+            for (int i = 0; i < sectcnt; i++)
+            {
+                totalsectionarea = (totalsectionarea + _currentSection[i].jssqft);
+            }
+
+            sumSize = totalsectionarea;
+        }
+
+        private void SumSectionValues()
+        {
+            if (SketchUpLookups.CommercialOccupancies.Contains(_currentParcel.moccup))
+            {
+                sumBaseValue = 0;
+                sumFinalValue = 0;
+
+                //sumFinalFullValue = 0;
+                sumDepreciation = 0;
+                sumFactoredValue = 0;
+
+                int uti = Convert.ToInt32(SectDGView.Rows[0].Cells["Size"].Value);
+
+                int tst2 = Convert.ToInt32(_currentSection[0].jssqft);
+
+                for (int i = 0; i < SectDGView.Rows.Count; i++)
+                {
+                    sumFinalValue = Convert.ToInt32(sumFinalValue + Convert.ToInt32(SectDGView.Rows[i].Cells["Value"].Value));
+                    sumBaseValue = Convert.ToInt32(sumBaseValue +
+                        Convert.ToInt32((_currentSection[i].jssqft) * Convert.ToInt32(SectDGView.Rows[i].Cells["Rate"].Value)));
+                    sumFactoredValue = Convert.ToInt32(sumFactoredValue +
+                        Convert.ToInt32((_currentSection[i].jssqft) * Convert.ToInt32(SectDGView.Rows[i].Cells["Rate"].Value) *
+                        (1 + Convert.ToDecimal(SectDGView.Rows[i].Cells["Factor"].Value))));
+
+                    sumDepreciation = Convert.ToInt32(sumDepreciation + Convert.ToInt32((_currentSection[i].jssqft) *
+                        Convert.ToInt32(SectDGView.Rows[i].Cells["Rate"].Value) *
+                        (1 + Convert.ToDecimal(SectDGView.Rows[i].Cells["Factor"].Value)) *
+                        Convert.ToDecimal(SectDGView.Rows[i].Cells["Deprec"].Value)));
+
+                    //sumFinalFullValue = Convert.ToInt32(sumFinalFullValue + Convert.ToInt32(SectDGView.Rows[i].Cells["NewValue"].Value));
+                }
+            }
+        }
+
+        public DataGridViewRow SelectSectionDataRow
+        {
+            get
+            {
+                if (SectDGView.SelectedRows.Count > 0)
+                {
+                    return SectDGView.SelectedRows[0];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        private void TotalUpSectionValues()
+        {
+            SectDGView.DataSource = Sections;
+
+            //}
+
+            DataGridViewColumn sectionCol1 = SectDGView.Columns[0];
+            DataGridViewColumn typeCol2 = SectDGView.Columns[1];
+            DataGridViewColumn descCol3 = SectDGView.Columns[2];
+            DataGridViewColumn storyCol4 = SectDGView.Columns[3];
+            DataGridViewColumn sizeCol5 = SectDGView.Columns[4];
+            DataGridViewColumn NoDeprCol6 = SectDGView.Columns[5];
+            DataGridViewColumn ClassCol7 = SectDGView.Columns[6];
+            DataGridViewColumn factorCol8 = SectDGView.Columns[7];
+            DataGridViewColumn rateCol9 = SectDGView.Columns[8];
+            DataGridViewColumn deprcCol10 = SectDGView.Columns[9];
+
+            DataGridViewColumn valueCol11 = SectDGView.Columns[10];
+            sectionCol1.Width = 25;
+            typeCol2.Width = 75;
+            descCol3.Width = 125;
+            storyCol4.Width = 50;
+            sizeCol5.Width = 50;
+            NoDeprCol6.Width = 50;
+            ClassCol7.Width = 50;
+            factorCol8.Width = 50;
+            rateCol9.Width = 50;
+            deprcCol10.Width = 50;
+            valueCol11.Width = 75;
+
+            SumSectionValues();
+        }
+
+        private void UpdateCarports()
+        {
+            if (CPcnt > 0 && _currentParcel.mcarpt == 0 || CPcnt > 0 && _currentParcel.mcarpt == 67)
+            {
+                if (_sectDelete != true)
+                {
+                    MissingGarageData missCP = new MissingGarageData(conn, _currentParcel, CPSize, "CP");
+                    missCP.ShowDialog();
+
+                    if (MissingGarageData.CPCode != _currentParcel.orig_mcarpt)
+                    {
+                        StringBuilder fixCp = new StringBuilder();
+                        fixCp.Append(String.Format("update {0}.{1}mast set mcarpt = {2},mcar#c = {3} ",
+                         SketchUpGlobals.LocalLib,
+                             SketchUpGlobals.LocalityPreFix,
+
+                            //SketchUpGlobals.FcLib,
+                            //SketchUpGlobals.FcLocalityPrefix,
+                            MissingGarageData.CPCode,
+                            MissingGarageData.CpNbr));
+                        fixCp.Append(String.Format("where mrecno = {0} and mdwell = {1} ", _currentParcel.mrecno, _currentParcel.mdwell));
+
+                        //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "fixCp", fixCp);
+                        conn.DBConnection.ExecuteNonSelectStatement(fixCp.ToString());
+
+                        //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "fixCp", fixCp);
+                    }
+                }
+
+                if (_sectDelete != false && _currentParcel.mcarpt == 67)
+                {
+                    StringBuilder carupd = new StringBuilder();
+                    carupd.Append(String.Format("update {0}.{1}mast set mcarpt = 65,mcar#c = 1 where mrecno = {2} and mdwell = {3} ",
+                                    SketchUpGlobals.LocalLib,
+                                    SketchUpGlobals.LocalityPreFix,
+                                    _currentParcel.mrecno,
+                                    _currentParcel.mdwell));
+
+                    //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "carupd", carupd);
+                    conn.DBConnection.ExecuteNonSelectStatement(carupd.ToString());
+
+                    //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "carupd", carupd);
+                    _currentParcel.mcarpt = 65;
+                    _currentParcel.mcarNc = 1;
+                }
+            }
+
+            if (CPcnt > 1 && _currentParcel.mcarpt != 0 || CPcnt > 1 && _currentParcel.mcarpt != 67)
+            {
+                if (_sectDelete == true)
+                {
+                    MissingGarageData missCPx = new MissingGarageData(conn, _currentParcel, CPSize, "CP");
+                    missCPx.ShowDialog();
+
+                    int newcpcnt = _currentParcel.mcarNc + MissingGarageData.CpNbr;
+
+                    StringBuilder addcp = new StringBuilder();
+                    addcp.Append(String.Format("update {0}.{1}mast set mcar#c = {2} where mrecno = {3} and mdwell = {4} ",
+                            SketchUpGlobals.LocalLib,
+                            SketchUpGlobals.LocalityPreFix,
+                            newcpcnt,
+                            _currentParcel.mrecno,
+                            _currentParcel.mdwell));
+
+                    //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "addcp", addcp);
+                    conn.DBConnection.ExecuteNonSelectStatement(addcp.ToString());
+
+                    //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "addcp", addcp);
+                    //ParcelData.getParcel(conn, _currentParcel.mrecno, _currentParcel.mdwell);
+                }
+            }
+        }
+
+        private void UpdateForZeroCP()
+        {
+            string zerocp = string.Format("update {0}.{1}mast set mcarpt = 67, mcar#c = 0 where mrecno = {2} and mdwell = {3} ",
+                                    SketchUpGlobals.LocalLib,
+                                    SketchUpGlobals.LocalityPreFix,
+                                    _currentParcel.mrecno,
+                                    _currentParcel.mdwell);
+
+            //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "zerocp", zerocp);
+            conn.DBConnection.ExecuteNonSelectStatement(zerocp);
+
+            //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "zerocp", zerocp);
+        }
+
+        private void UpdateForZeroGarage()
+        {
+            string zerogar = string.Format("update {0}.{1}mast set mgart = 63, mgar#c = 0,mgart2 = 0,mgar#2 = 0 where mrecno = {2} and mdwell = {3} ",
+                                                    SketchUpGlobals.LocalLib,
+                                                    SketchUpGlobals.LocalityPreFix,
+                                                    _currentParcel.mrecno,
+                                                    _currentParcel.mdwell);
+
+            //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "zerogar", zerogar);
+            conn.DBConnection.ExecuteNonSelectStatement(zerogar);
+
+            //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "zerogar", zerogar);
+        }
+
+        private void UpdateGAR_CP()
+        {
+            int curIndex = SectDGView.CurrentRow.Index;
+            string dType2 = SectDGView.Rows[curIndex].Cells["Type"].Value.ToString();
+
+            bool garcptype = false;
+
+            if (SketchUpLookups.GarageTypes.Contains(OriginalUnitType.Trim()))
+            {
+                garcptype = true;
+
+                ngar = 0;
+
+                CountGar(OriginalUnitType.Trim());
+            }
+            if (SketchUpLookups.CarPortTypes.Contains(OriginalUnitType.Trim()))
+            {
+                garcptype = true;
+
+                ncp = 0;
+
+                CountCP(OriginalUnitType.Trim());
+            }
+
+            if (garcptype == true)
+            {
+                StringBuilder garcp2 = new StringBuilder();
+
+                //garcp.Append("select rsecto from rat1 where rid = 'P' and rdesc like '%GAR%' and rrpsf <> 0 and rincsf = 'Y' ");
+                garcp2.Append(String.Format("select rsecto from {0}.{1}rat1 where rid = 'P' and rdesc like '%GAR%' and rrpsf <> 0 ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
+
+                try
+                {
+                    DataSet ds = conn.DBConnection.RunSelectStatement(garcp2.ToString());
+
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        GarTypes = new List<string>();
+                        for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                        {
+                            string sect = ds.Tables[0].Rows[i]["rsecto"].ToString().Trim();
+
+                            GarTypes.Add(sect);
+                        }
+                    }
+                }
+                catch
+                {
+                }
+
+                StringBuilder cptype2 = new StringBuilder();
+
+                //cptype.Append("select rsecto from rat1 where rid = 'P' and rdesc like '%CAR%' and rrpsf <> 0 and rincsf = 'Y' ");
+                cptype2.Append(String.Format("select rsecto from {0}.{1}rat1 where rid = 'P' and rdesc like '%CAR%' and rrpsf <> 0 ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
+
+                try
+                {
+                    DataSet ds1 = conn.DBConnection.RunSelectStatement(cptype2.ToString());
+
+                    if (ds1.Tables[0].Rows.Count > 0)
+                    {
+                        CPTypes = new List<string>();
+                        for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                        {
+                            string sect = ds1.Tables[0].Rows[i]["rsecto"].ToString().Trim();
+
+                            CPTypes.Add(sect);
+                        }
+                    }
+                }
+                catch
+                {
+                }
+
+                StringBuilder garcode = new StringBuilder();
+                garcode.Append(String.Format("select ttelem from {0}.{1}stab where ttid = 'GAR' and tdesc not like '%NONE%' and tdesc not like '%DETACHED%' ",
+                    SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
+
+                try
+                {
+                    DataSet gc = conn.DBConnection.RunSelectStatement(garcode.ToString());
+
+                    if (gc.Tables[0].Rows.Count > 0)
+                    {
+                        GarCodes = new List<int>();
+                        for (int i = 0; i < gc.Tables[0].Rows.Count; i++)
+                        {
+                            int gcode = Convert.ToInt32(gc.Tables[0].Rows[i]["ttelem"].ToString());
+
+                            GarCodes.Add(gcode);
+                        }
+                    }
+                }
+                catch
+                {
+                }
+
+                StringBuilder cpcode = new StringBuilder();
+                cpcode.Append(String.Format("select ttelem from {0}.{1}stab where ttid = 'CAR' and tdesc not like '%NONE%' and tdesc not like '%DETACHED%' ",
+                    SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
+
+                try
+                {
+                    DataSet cp = conn.DBConnection.RunSelectStatement(cpcode.ToString());
+
+                    if (cp.Tables[0].Rows.Count > 0)
+                    {
+                        CPCodes = new List<int>();
+                        for (int i = 0; i < cp.Tables[0].Rows.Count; i++)
+                        {
+                            int cpcodeX = Convert.ToInt32(cp.Tables[0].Rows[i]["ttelem"].ToString());
+
+                            CPCodes.Add(cpcodeX);
+                        }
+                    }
+                }
+                catch
+                {
+                }
+
+                try
+                {
+                    if (GarTypes.Contains(dType2))
+                    {
+                        ngar = 0;
+
+                        CountGar(dType2);
+
+                        if (ngar == 0)
+                        {
+                            StringBuilder fixGar = new StringBuilder();
+                            fixGar.Append(String.Format("update {0}.{1}mast set mgart = 63, mgar#c = 0 where mrecno = {2} and mdwell = {3} ",
+                                SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, _currentParcel.mrecno, _currentParcel.mdwell));
+
+                            //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "fixGar (ngar == 0)", fixGar);
+                            conn.DBConnection.ExecuteNonSelectStatement(fixGar.ToString());
+
+                            //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "fixGar", fixGar);
+                            _currentParcel.mgart = 63;
+                            _currentParcel.mgarNc = 0;
+                        }
+                    }
+                }
+                catch
+                {
+                }
+
+                try
+                {
+                    if (CPTypes.Contains(dType2))
+                    {
+                        StringBuilder fixCP = new StringBuilder();
+                        fixCP.Append(String.Format("update {0}.{1}mast set mcarpt = 67, mcar#c = 0 where mrecno = {2} and mdwell = {3} ",
+                             SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, _currentParcel.mrecno, _currentParcel.mdwell));
+
+                        //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "fixCP (CPTypes.Contains(dType2))", fixCP);
+                        conn.DBConnection.ExecuteNonSelectStatement(fixCP.ToString());
+
+                        //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "fixCP", fixCP);
+                        _currentParcel.mcarpt = 67;
+                        _currentParcel.mcarNc = 0;
+                    }
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        private void UpdateGarages()
+        {
+            if (Garcnt > 0)
+            {
+                if (Garcnt == 1 && _currentParcel.mgart <= 60 || Garcnt == 1 && _currentParcel.mgart == 63 || Garcnt == 1 && _currentParcel.mgart == 64)
+                {
+                    if (_sectDelete != true)
+                    {
+                        GetMissingFirstGarageData();
+                    }
+                    if (_sectDelete == true && _currentParcel.mgart == 63)
+                    {
+                        string fixgar2 = string.Format("update {0}.{1}mast set mgart2 = 0,mgar#2 = 0, mgart = {2}, mgar#c = {3} where mrecno = {4} and mdwell = {5} ",
+                                        SketchUpGlobals.LocalLib,
+                                        SketchUpGlobals.LocalityPreFix,
+                                        _currentParcel.orig_mgart,
+                                        _currentParcel.orig_mgarNc,
+                                        _currentParcel.mrecno,
+                                        _currentParcel.mdwell);
+
+                        //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "fixgar2", fixgar2);
+                        conn.DBConnection.ExecuteNonSelectStatement(fixgar2);
+
+                        //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "fixgar2", fixgar2);
+                    }
+                }
+                if (Garcnt > 1 && _currentParcel.mgart2 == 0)
+                {
+                    if (_sectDelete != true)
+                    {
+                        MissingGarageData missGar = new MissingGarageData(conn, _currentParcel, GarSize, "GAR");
+                        missGar.ShowDialog();
+
+                        if (MissingGarageData.GarCode != _currentParcel.orig_mgart2)
+                        {
+                            string fixCp = string.Format("update {0}.{1}mast set mgart2 = {2},mgar#2 = {3} where mrecno = {4} and mdwell = {5} ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix, MissingGarageData.GarCode, MissingGarageData.GarNbr, _currentParcel.mrecno, _currentParcel.mdwell);
+
+                            //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "fixCp", fixCp);
+                            conn.DBConnection.ExecuteNonSelectStatement(fixCp);
+
+                            //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "fixCp", fixCp);
+                        }
+                    }
+                }
+                if (Garcnt > 2)
+                {
+                    if (_sectDelete != true)
+                    {
+                        GetMisingGarageData();
+                    }
+                }
+            }
+        } 
+        #endregion
+
+     
 
         #region Refactored Methods
 
@@ -1333,49 +1800,7 @@ namespace SketchUp
             }
         }
 
-        //private void GetMisingGarageData()
-        //{
-        //    MissingGarageData missGar = new MissingGarageData(conn, _currentParcel, GarSize, "GAR");
-        //    missGar.ShowDialog();
 
-        //    int newgarcnt = _currentParcel.mgarN2 + MissingGarageData.GarNbr;
-
-        //    string addcp = string.Format("update {0}.{1}mast set mgar#2 = {2} where mrecno = {3} and mdwell = {4} ",
-        //            SketchUpGlobals.LocalLib,
-        //            SketchUpGlobals.LocalityPreFix,
-        //            newgarcnt,
-        //            _currentParcel.mrecno,
-        //            _currentParcel.mdwell);
-
-        //    //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "addcp", addcp);
-        //    conn.DBConnection.ExecuteNonSelectStatement(addcp);
-
-        //    //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "addcp", addcp);
-        //    SketchUpParcelData.getParcel(conn, _currentParcel.mrecno, _currentParcel.mdwell);
-        //}
-
-        //private void GetMissingFirstGarageData()
-        //{
-        //    MissingGarageData missGar = new MissingGarageData(conn, _currentParcel, GarSize, "GAR");
-        //    missGar.ShowDialog();
-
-        //    if (MissingGarageData.GarCode != _currentParcel.orig_mgart)
-        //    {
-        //        string fixCp = string.Format("update {0}.{1}mast set mgart = {2},mgar#c = {3} where mrecno = {4} and mdwell = {5} ",
-        //         SketchUpGlobals.LocalLib,
-        //             SketchUpGlobals.LocalityPreFix,
-        //            MissingGarageData.GarCode,
-        //            MissingGarageData.GarNbr,
-        //            _currentParcel.mrecno,
-        //            _currentParcel.mdwell);
-
-        //        //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "fixCp", fixCp);
-        //        conn.DBConnection.ExecuteNonSelectStatement(fixCp);
-
-        //        //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "fixCp", fixCp);
-        //        SketchUpParcelData.getParcel(conn, _currentParcel.mrecno, _currentParcel.mdwell);
-        //    }
-        //}
 
         private void GetRatesFromTables(string type)
         {
@@ -2193,430 +2618,6 @@ namespace SketchUp
                 }
             }
         }
-
-        private void SectDGView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            ProcessChangedSectDGViewCell(e);
-        }
-
-        private void SetResOrCommValues(string type)
-        {
-            if (ResTypes.Contains(type.Trim()))
-            {
-                resSection = true;
-                commSection = false;
-            }
-            if (ComTypes.Contains(type.Trim()))
-            {
-                resSection = false;
-                commSection = true;
-            }
-        }
-
-        private void SumSectionArea()
-        {
-            decimal totalsectionarea = 0;
-            int sectcnt = _currentSection.Count;
-
-            for (int i = 0; i < sectcnt; i++)
-            {
-                totalsectionarea = (totalsectionarea + _currentSection[i].jssqft);
-            }
-
-            sumSize = totalsectionarea;
-        }
-
-        private void SumSectionValues()
-        {
-            if (SketchUpLookups.CommercialOccupancies.Contains(_currentParcel.moccup))
-            {
-                sumBaseValue = 0;
-                sumFinalValue = 0;
-
-                //sumFinalFullValue = 0;
-                sumDepreciation = 0;
-                sumFactoredValue = 0;
-
-                int uti = Convert.ToInt32(SectDGView.Rows[0].Cells["Size"].Value);
-
-                int tst2 = Convert.ToInt32(_currentSection[0].jssqft);
-
-                for (int i = 0; i < SectDGView.Rows.Count; i++)
-                {
-                    sumFinalValue = Convert.ToInt32(sumFinalValue + Convert.ToInt32(SectDGView.Rows[i].Cells["Value"].Value));
-                    sumBaseValue = Convert.ToInt32(sumBaseValue +
-                        Convert.ToInt32((_currentSection[i].jssqft) * Convert.ToInt32(SectDGView.Rows[i].Cells["Rate"].Value)));
-                    sumFactoredValue = Convert.ToInt32(sumFactoredValue +
-                        Convert.ToInt32((_currentSection[i].jssqft) * Convert.ToInt32(SectDGView.Rows[i].Cells["Rate"].Value) *
-                        (1 + Convert.ToDecimal(SectDGView.Rows[i].Cells["Factor"].Value))));
-
-                    sumDepreciation = Convert.ToInt32(sumDepreciation + Convert.ToInt32((_currentSection[i].jssqft) *
-                        Convert.ToInt32(SectDGView.Rows[i].Cells["Rate"].Value) *
-                        (1 + Convert.ToDecimal(SectDGView.Rows[i].Cells["Factor"].Value)) *
-                        Convert.ToDecimal(SectDGView.Rows[i].Cells["Deprec"].Value)));
-
-                    //sumFinalFullValue = Convert.ToInt32(sumFinalFullValue + Convert.ToInt32(SectDGView.Rows[i].Cells["NewValue"].Value));
-                }
-            }
-        }
-
-        private void TotalUpSectionValues()
-        {
-            SectDGView.DataSource = Sections;
-
-            //}
-
-            DataGridViewColumn sectionCol1 = SectDGView.Columns[0];
-            DataGridViewColumn typeCol2 = SectDGView.Columns[1];
-            DataGridViewColumn descCol3 = SectDGView.Columns[2];
-            DataGridViewColumn storyCol4 = SectDGView.Columns[3];
-            DataGridViewColumn sizeCol5 = SectDGView.Columns[4];
-            DataGridViewColumn NoDeprCol6 = SectDGView.Columns[5];
-            DataGridViewColumn ClassCol7 = SectDGView.Columns[6];
-            DataGridViewColumn factorCol8 = SectDGView.Columns[7];
-            DataGridViewColumn rateCol9 = SectDGView.Columns[8];
-            DataGridViewColumn deprcCol10 = SectDGView.Columns[9];
-
-            DataGridViewColumn valueCol11 = SectDGView.Columns[10];
-            sectionCol1.Width = 25;
-            typeCol2.Width = 75;
-            descCol3.Width = 125;
-            storyCol4.Width = 50;
-            sizeCol5.Width = 50;
-            NoDeprCol6.Width = 50;
-            ClassCol7.Width = 50;
-            factorCol8.Width = 50;
-            rateCol9.Width = 50;
-            deprcCol10.Width = 50;
-            valueCol11.Width = 75;
-
-            SumSectionValues();
-        }
-
-        private void UpdateCarports()
-        {
-            if (CPcnt > 0 && _currentParcel.mcarpt == 0 || CPcnt > 0 && _currentParcel.mcarpt == 67)
-            {
-                if (_sectDelete != true)
-                {
-                    MissingGarageData missCP = new MissingGarageData(conn, _currentParcel, CPSize, "CP");
-                    missCP.ShowDialog();
-
-                    if (MissingGarageData.CPCode != _currentParcel.orig_mcarpt)
-                    {
-                        StringBuilder fixCp = new StringBuilder();
-                        fixCp.Append(String.Format("update {0}.{1}mast set mcarpt = {2},mcar#c = {3} ",
-                         SketchUpGlobals.LocalLib,
-                             SketchUpGlobals.LocalityPreFix,
-
-                            //SketchUpGlobals.FcLib,
-                            //SketchUpGlobals.FcLocalityPrefix,
-                            MissingGarageData.CPCode,
-                            MissingGarageData.CpNbr));
-                        fixCp.Append(String.Format("where mrecno = {0} and mdwell = {1} ", _currentParcel.mrecno, _currentParcel.mdwell));
-
-                        //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "fixCp", fixCp);
-                        conn.DBConnection.ExecuteNonSelectStatement(fixCp.ToString());
-
-                        //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "fixCp", fixCp);
-                    }
-                }
-
-                if (_sectDelete != false && _currentParcel.mcarpt == 67)
-                {
-                    StringBuilder carupd = new StringBuilder();
-                    carupd.Append(String.Format("update {0}.{1}mast set mcarpt = 65,mcar#c = 1 where mrecno = {2} and mdwell = {3} ",
-                                    SketchUpGlobals.LocalLib,
-                                    SketchUpGlobals.LocalityPreFix,
-                                    _currentParcel.mrecno,
-                                    _currentParcel.mdwell));
-
-                    //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "carupd", carupd);
-                    conn.DBConnection.ExecuteNonSelectStatement(carupd.ToString());
-
-                    //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "carupd", carupd);
-                    _currentParcel.mcarpt = 65;
-                    _currentParcel.mcarNc = 1;
-                }
-            }
-
-            if (CPcnt > 1 && _currentParcel.mcarpt != 0 || CPcnt > 1 && _currentParcel.mcarpt != 67)
-            {
-                if (_sectDelete == true)
-                {
-                    MissingGarageData missCPx = new MissingGarageData(conn, _currentParcel, CPSize, "CP");
-                    missCPx.ShowDialog();
-
-                    int newcpcnt = _currentParcel.mcarNc + MissingGarageData.CpNbr;
-
-                    StringBuilder addcp = new StringBuilder();
-                    addcp.Append(String.Format("update {0}.{1}mast set mcar#c = {2} where mrecno = {3} and mdwell = {4} ",
-                            SketchUpGlobals.LocalLib,
-                            SketchUpGlobals.LocalityPreFix,
-                            newcpcnt,
-                            _currentParcel.mrecno,
-                            _currentParcel.mdwell));
-
-                    //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "addcp", addcp);
-                    conn.DBConnection.ExecuteNonSelectStatement(addcp.ToString());
-
-                    //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "addcp", addcp);
-                    //ParcelData.getParcel(conn, _currentParcel.mrecno, _currentParcel.mdwell);
-                }
-            }
-        }
-
-        private void UpdateForZeroCP()
-        {
-            string zerocp = string.Format("update {0}.{1}mast set mcarpt = 67, mcar#c = 0 where mrecno = {2} and mdwell = {3} ",
-                                    SketchUpGlobals.LocalLib,
-                                    SketchUpGlobals.LocalityPreFix,
-                                    _currentParcel.mrecno,
-                                    _currentParcel.mdwell);
-
-            //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "zerocp", zerocp);
-            conn.DBConnection.ExecuteNonSelectStatement(zerocp);
-
-            //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "zerocp", zerocp);
-        }
-
-        private void UpdateForZeroGarage()
-        {
-            string zerogar = string.Format("update {0}.{1}mast set mgart = 63, mgar#c = 0,mgart2 = 0,mgar#2 = 0 where mrecno = {2} and mdwell = {3} ",
-                                                    SketchUpGlobals.LocalLib,
-                                                    SketchUpGlobals.LocalityPreFix,
-                                                    _currentParcel.mrecno,
-                                                    _currentParcel.mdwell);
-
-            //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "zerogar", zerogar);
-            conn.DBConnection.ExecuteNonSelectStatement(zerogar);
-
-            //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "zerogar", zerogar);
-        }
-
-        private void UpdateGAR_CP()
-        {
-            int curIndex = SectDGView.CurrentRow.Index;
-            string dType2 = SectDGView.Rows[curIndex].Cells["Type"].Value.ToString();
-
-            bool garcptype = false;
-
-            if (SketchUpLookups.GarageTypes.Contains(OriginalUnitType.Trim()))
-            {
-                garcptype = true;
-
-                ngar = 0;
-
-                CountGar(OriginalUnitType.Trim());
-            }
-            if (SketchUpLookups.CarPortTypes.Contains(OriginalUnitType.Trim()))
-            {
-                garcptype = true;
-
-                ncp = 0;
-
-                CountCP(OriginalUnitType.Trim());
-            }
-
-            if (garcptype == true)
-            {
-                StringBuilder garcp2 = new StringBuilder();
-
-                //garcp.Append("select rsecto from rat1 where rid = 'P' and rdesc like '%GAR%' and rrpsf <> 0 and rincsf = 'Y' ");
-                garcp2.Append(String.Format("select rsecto from {0}.{1}rat1 where rid = 'P' and rdesc like '%GAR%' and rrpsf <> 0 ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
-
-                try
-                {
-                    DataSet ds = conn.DBConnection.RunSelectStatement(garcp2.ToString());
-
-                    if (ds.Tables[0].Rows.Count > 0)
-                    {
-                        GarTypes = new List<string>();
-                        for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
-                        {
-                            string sect = ds.Tables[0].Rows[i]["rsecto"].ToString().Trim();
-
-                            GarTypes.Add(sect);
-                        }
-                    }
-                }
-                catch
-                {
-                }
-
-                StringBuilder cptype2 = new StringBuilder();
-
-                //cptype.Append("select rsecto from rat1 where rid = 'P' and rdesc like '%CAR%' and rrpsf <> 0 and rincsf = 'Y' ");
-                cptype2.Append(String.Format("select rsecto from {0}.{1}rat1 where rid = 'P' and rdesc like '%CAR%' and rrpsf <> 0 ", SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
-
-                try
-                {
-                    DataSet ds1 = conn.DBConnection.RunSelectStatement(cptype2.ToString());
-
-                    if (ds1.Tables[0].Rows.Count > 0)
-                    {
-                        CPTypes = new List<string>();
-                        for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
-                        {
-                            string sect = ds1.Tables[0].Rows[i]["rsecto"].ToString().Trim();
-
-                            CPTypes.Add(sect);
-                        }
-                    }
-                }
-                catch
-                {
-                }
-
-                StringBuilder garcode = new StringBuilder();
-                garcode.Append(String.Format("select ttelem from {0}.{1}stab where ttid = 'GAR' and tdesc not like '%NONE%' and tdesc not like '%DETACHED%' ",
-                    SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
-
-                try
-                {
-                    DataSet gc = conn.DBConnection.RunSelectStatement(garcode.ToString());
-
-                    if (gc.Tables[0].Rows.Count > 0)
-                    {
-                        GarCodes = new List<int>();
-                        for (int i = 0; i < gc.Tables[0].Rows.Count; i++)
-                        {
-                            int gcode = Convert.ToInt32(gc.Tables[0].Rows[i]["ttelem"].ToString());
-
-                            GarCodes.Add(gcode);
-                        }
-                    }
-                }
-                catch
-                {
-                }
-
-                StringBuilder cpcode = new StringBuilder();
-                cpcode.Append(String.Format("select ttelem from {0}.{1}stab where ttid = 'CAR' and tdesc not like '%NONE%' and tdesc not like '%DETACHED%' ",
-                    SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix));
-
-                try
-                {
-                    DataSet cp = conn.DBConnection.RunSelectStatement(cpcode.ToString());
-
-                    if (cp.Tables[0].Rows.Count > 0)
-                    {
-                        CPCodes = new List<int>();
-                        for (int i = 0; i < cp.Tables[0].Rows.Count; i++)
-                        {
-                            int cpcodeX = Convert.ToInt32(cp.Tables[0].Rows[i]["ttelem"].ToString());
-
-                            CPCodes.Add(cpcodeX);
-                        }
-                    }
-                }
-                catch
-                {
-                }
-
-                try
-                {
-                    if (GarTypes.Contains(dType2))
-                    {
-                        ngar = 0;
-
-                        CountGar(dType2);
-
-                        if (ngar == 0)
-                        {
-                            StringBuilder fixGar = new StringBuilder();
-                            fixGar.Append(String.Format("update {0}.{1}mast set mgart = 63, mgar#c = 0 where mrecno = {2} and mdwell = {3} ",
-                                SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, _currentParcel.mrecno, _currentParcel.mdwell));
-
-                            //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "fixGar (ngar == 0)", fixGar);
-                            conn.DBConnection.ExecuteNonSelectStatement(fixGar.ToString());
-
-                            //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "fixGar", fixGar);
-                            _currentParcel.mgart = 63;
-                            _currentParcel.mgarNc = 0;
-                        }
-                    }
-                }
-                catch
-                {
-                }
-
-                try
-                {
-                    if (CPTypes.Contains(dType2))
-                    {
-                        StringBuilder fixCP = new StringBuilder();
-                        fixCP.Append(String.Format("update {0}.{1}mast set mcarpt = 67, mcar#c = 0 where mrecno = {2} and mdwell = {3} ",
-                             SketchUpGlobals.FcLib, SketchUpGlobals.FcLocalityPrefix, _currentParcel.mrecno, _currentParcel.mdwell));
-
-                        //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "fixCP (CPTypes.Contains(dType2))", fixCP);
-                        conn.DBConnection.ExecuteNonSelectStatement(fixCP.ToString());
-
-                        //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "fixCP", fixCP);
-                        _currentParcel.mcarpt = 67;
-                        _currentParcel.mcarNc = 0;
-                    }
-                }
-                catch
-                {
-                }
-            }
-        }
-
-        private void UpdateGarages()
-        {
-            if (Garcnt > 0)
-            {
-                if (Garcnt == 1 && _currentParcel.mgart <= 60 || Garcnt == 1 && _currentParcel.mgart == 63 || Garcnt == 1 && _currentParcel.mgart == 64)
-                {
-                    if (_sectDelete != true)
-                    {
-                        GetMissingFirstGarageData();
-                    }
-                    if (_sectDelete == true && _currentParcel.mgart == 63)
-                    {
-                        string fixgar2 = string.Format("update {0}.{1}mast set mgart2 = 0,mgar#2 = 0, mgart = {2}, mgar#c = {3} where mrecno = {4} and mdwell = {5} ",
-                                        SketchUpGlobals.LocalLib,
-                                        SketchUpGlobals.LocalityPreFix,
-                                        _currentParcel.orig_mgart,
-                                        _currentParcel.orig_mgarNc,
-                                        _currentParcel.mrecno,
-                                        _currentParcel.mdwell);
-
-                        //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "fixgar2", fixgar2);
-                        conn.DBConnection.ExecuteNonSelectStatement(fixgar2);
-
-                        //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "fixgar2", fixgar2);
-                    }
-                }
-                if (Garcnt > 1 && _currentParcel.mgart2 == 0)
-                {
-                    if (_sectDelete != true)
-                    {
-                        MissingGarageData missGar = new MissingGarageData(conn, _currentParcel, GarSize, "GAR");
-                        missGar.ShowDialog();
-
-                        if (MissingGarageData.GarCode != _currentParcel.orig_mgart2)
-                        {
-                            string fixCp = string.Format("update {0}.{1}mast set mgart2 = {2},mgar#2 = {3} where mrecno = {4} and mdwell = {5} ", SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPreFix, MissingGarageData.GarCode, MissingGarageData.GarNbr, _currentParcel.mrecno, _currentParcel.mdwell);
-
-                            //UtilityMethods.LogSqlExecutionAttempt(MethodBase.GetCurrentMethod().Name, "fixCp", fixCp);
-                            conn.DBConnection.ExecuteNonSelectStatement(fixCp);
-
-                            //UtilityMethods.LogSqlExecutionSuccess(MethodBase.GetCurrentMethod().Name, "fixCp", fixCp);
-                        }
-                    }
-                }
-                if (Garcnt > 2)
-                {
-                    if (_sectDelete != true)
-                    {
-                        GetMisingGarageData();
-                    }
-                }
-            }
-        }
-
         private void upDlineLtr(string newLtr, string old)
         {
             StringBuilder fixLine = new StringBuilder();

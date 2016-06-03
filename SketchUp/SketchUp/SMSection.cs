@@ -65,7 +65,7 @@ namespace SketchUp
                 areaPoints.Add(l.EndPoint);
             }
             PolygonF sectionPolygon = new PolygonF(areaPoints.ToArray<PointF>());
-            area = Math.Round(sectionPolygon.Area*Storeys, 2);
+            area = Math.Round(sectionPolygon.Area*StoreysValue, 2);
             return area;
         }
 
@@ -386,16 +386,16 @@ namespace SketchUp
             }
         }
 
-        public decimal Storeys
+        public decimal StoreysValue
         {
             get
             {
-                return storeys;
+                return storeysValue;
             }
 
             set
             {
-                storeys = value;
+                storeysValue = value;
             }
         }
 
@@ -412,12 +412,25 @@ namespace SketchUp
             }
         }
 
-   
+        public string StoreysText
+        {
+            get
+            {
+                return storeysText;
+            }
+
+            set
+            {
+                storeysText = value;
+            }
+        }
+
+
 
         #endregion "Properties"
 
         #region "Private Fields"
-      
+
         private decimal adjFactor;
         private SMLine anchorLine;
         private FormattableString areaLabel;
@@ -437,7 +450,8 @@ namespace SketchUp
         private string sectionType;
         private decimal sectionValue;
         private decimal sqFt;
-        private decimal storeys;
+        private decimal storeysValue;
+        private string storeysText;
         private string zeroDepr;
 
         #endregion "Private Fields"

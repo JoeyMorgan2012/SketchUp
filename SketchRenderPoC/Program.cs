@@ -13,7 +13,7 @@ namespace SketchUp
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new TestSketchForm());
+            Application.Run(new EditSketchSections());
         }
     }
 }

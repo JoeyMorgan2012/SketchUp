@@ -63,7 +63,7 @@ namespace SketchUp
         {
             string description = string.Empty;
             StringBuilder details = new StringBuilder();
-            details.AppendLine(string.Format("{0}\t\t{1:N2}\t\t{2:N2}\t\t{3}\t\t{4}", section.SectionLabel, section.Storeys, section.SqFt, section.Lines.Count, section.AttachedTo));
+            details.AppendLine(string.Format("{0}\t\t{1:N2}\t\t{2:N2}\t\t{3}\t\t{4}", section.SectionLabel, section.StoreysValue, section.SqFt, section.Lines.Count, section.AttachedTo));
             if (includeLines && section.Lines != null && section.Lines.Count > 0)
             {
                 details.AppendLine(LinesHeader());

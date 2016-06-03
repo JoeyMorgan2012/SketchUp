@@ -246,7 +246,7 @@ namespace SketchUp
                             Card = parcel.Card,
                             SectionLetter = row["JSSECT"].ToString().Trim(),
                             SectionType = row["JSTYPE"].ToString().Trim(),
-                            Storeys = storeys,
+                            StoreysValue = storeys,
                             Description = row["JSDESC"].ToString().Trim(),
                             HasSketch = row["JSSKETCH"].ToString().Trim().ToUpper() == "Y" ? true : false,
                             SqFt = squareFeet,

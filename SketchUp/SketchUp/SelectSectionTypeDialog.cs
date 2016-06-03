@@ -20,7 +20,7 @@ namespace SketchUp
 
             _checkStory = false;
             newSectionStoreys = 0;
-            SectionStoriesTxt.Text = ParcelMaster.Parcel.SelectSectionByLetter("A").Storeys.ToString("N2");
+            SectionStoriesTxt.Text = ParcelMaster.Parcel.SelectSectionByLetter("A").StoreysValue.ToString("N2");
             SectionStoriesTxt.Focus();
 
             Record = ParcelMaster.Record;
@@ -56,7 +56,7 @@ namespace SketchUp
             newSection.SectionLetter = SectLtrTxt.Text;
             newSection.SectionType = SectionTypesCbox.SelectedValue.ToString();
             decimal.TryParse(SectionStoriesTxt.Text, out storeys);
-            newSection.Storeys = storeys;
+            newSection.StoreysValue = storeys;
             newSection.ParentParcel = ParcelMaster.Parcel;
             newSection.Record = SketchUpGlobals.Record;
             newSection.AttachedTo = string.Empty;
