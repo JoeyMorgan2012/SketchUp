@@ -13,6 +13,11 @@ namespace SketchUp
         {
             get
             {
+                if (camraDbConn==null)
+                {
+                    camraDbConn = new CAMRA_Connection(IpAddress, "CAMRA2", "CAMRA2");
+                    camraDbConn.LocalityPrefix = LocalityPrefix;
+                }
                 return camraDbConn;
             }
 
@@ -342,6 +347,19 @@ namespace SketchUp
             }
         }
 
+        public static string Password
+        {
+            get
+            {
+                return password;
+            }
+
+            set
+            {
+                password = value;
+            }
+        }
+
         public static int Record
         {
             get
@@ -443,6 +461,18 @@ namespace SketchUp
             }
         }
 
+        public static string UserName
+        {
+            get
+            {
+                return userName;
+            }
+
+            set
+            {
+                userName = value;
+            }
+        }
         private static string _selectedPath = String.Empty;
         private static string _selectedPicPath = String.Empty;
         private static string _selectedSktPath = String.Empty;
@@ -450,7 +480,6 @@ namespace SketchUp
         private static int card = 0;
         private static int checker = 0;
         private static Image currentSketchImage;
-        private static SMParcel smParcelFromData;
         private static DBAccessManager dbAccessMgr = null;
         private static decimal defaultScale;
         private static int fcCard = 0;
@@ -471,11 +500,14 @@ namespace SketchUp
         private static int month;
         private static SMParcelMast parcelMast;
         private static SMParcel parcelWorkingCopy;
+        private static string password = "CAMRA2";
         private static int record = 0;
         private static string reOpenSection;
         private static string sketchFolder;
         private static Image sketchImage;
         private static SketchRepository sketchMgrRepo;
         private static List<SMParcel> sketchSnapshots;
+        private static SMParcel smParcelFromData;
+        private static string userName = "CAMRA2";
     }
 }

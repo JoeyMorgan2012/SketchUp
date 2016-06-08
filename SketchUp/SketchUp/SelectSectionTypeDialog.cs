@@ -20,7 +20,7 @@ namespace SketchUp
 
             _checkStory = false;
             newSectionStoreys = 0;
-            SectionStoriesTxt.Text = ParcelMaster.Parcel.SelectSectionByLetter("A").StoreysValue.ToString("N2");
+            SectionStoriesTxt.Text = ParcelMaster.Parcel.SelectSectionByLetter("A").StoreysText.ToString();
             SectionStoriesTxt.Focus();
 
             Record = ParcelMaster.Record;
@@ -217,7 +217,8 @@ namespace SketchUp
 
         private bool StoreyCountMatches()
         {
-            decimal storeyTextEntered = 0;
+            decimal storeyTextValue = 0;
+            string storeyTextEntered = string.Empty;
             bool storeyCountMatches = false;
             newSectionStoreys = 0;
             decimal dbStoreys = 0.00M;
@@ -228,25 +229,51 @@ namespace SketchUp
             }
             else
             {
-                decimal.TryParse(SectionStoriesTxt.Text, out storeyTextEntered);
-                dbStoreys = ParcelMaster.StoreysValue;
-                newSectionStoreys = storeyTextEntered;
+                if (SectionStoriesTxt.Text=="S/L"|| SectionStoriesTxt.Text == "S/F")
+                {
+                    storeyTextValue = 1.0M;
+                }
+                else
+                {
+                   
+                    decimal.TryParse(SectionStoriesTxt.Text, out storeyTextValue);
+                    dbStoreys = ParcelMaster.StoreysValue;
+                    newSectionStoreys = storeyTextValue;
+                }
+                
             }
-            if (nextSec == "A" && storeyTextIsBlank != true && dbStoreys != storeyTextEntered)
+            if (nextSec == "A" && storeyTextIsBlank != true && dbStoreys != storeyTextValue)
             {
                 //TODO: Cross-reference text values to numeric.
                 // Update text field as well.
 
                 DialogResult storycheck;
-                string warningMessage = string.Format("Master Parcel shows {0} stories .. Entered Sories = {1}.\nDo you want to update the Master Parcel Record? ", dbStoreys.ToString("N2"), storeyTextEntered.ToString("N2"));
-                storycheck = MessageBox.Show(warningMessage, "Stories Conflict", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                FormattableString warningMessage = $"Master Parcel shows {dbStoreys.ToString("N2")} stories .. Entered Stories = {storeyTextValue.ToString("N2")}.\nDo you want to update the Master Parcel Record?";
+                FormattableString message = $"Master Parcel shows {dbStoreys.ToString("N2")} stories.\n\n Entered Stories = {storeyTextValue.ToString("N2")}.\n\nDo you want to update the Master Parcel Record?";
+                string title = "Story Conflict";
+                MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+                MessageBoxIcon icon = MessageBoxIcon.Question;
+                MessageBoxDefaultButton defButton = MessageBoxDefaultButton.Button2;
+                storycheck = MessageBox.Show(message.ToString(), title, buttons, icon, defButton);
+             
 
                 if (storycheck == DialogResult.Yes)
                 {
-                    if (storeyTextEntered > 0)
+                    if (SectionStoriesTxt.Text == "S/L" || SectionStoriesTxt.Text == "S/F")
                     {
-                        SectionStoriesTxt.Text = storeyTextEntered.ToString("N2");
-                        ParcelMaster.StoreysValue = storeyTextEntered;
+                        storeyTextValue = 1.0M;
+                    }
+                    else
+                    {
+
+                        decimal.TryParse(SectionStoriesTxt.Text, out storeyTextValue);
+                      
+                    }
+                    if (storeyTextValue > 0)
+                    {
+                        SectionStoriesTxt.Text = storeyTextValue.ToString("N2");
+
+                        ParcelMaster.StoreysValue = storeyTextValue;
                         _AddStory = true;
                         storeyCountMatches = true;
                     }

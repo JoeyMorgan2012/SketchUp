@@ -13,7 +13,9 @@ namespace SketchUp
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new EditSketchSections());
+            TestSetup ts = new TestSetup();
+            SMParcel testParcel = ts.TestParcel();
+            Application.Run(new EditSketchSections(testParcel));
         }
     }
 }

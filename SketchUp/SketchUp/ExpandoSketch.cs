@@ -15,6 +15,20 @@ namespace SketchUp
 
     public partial class ExpandoSketch : Form
     {
+        private bool garageOrCarportAdded;
+
+        public bool GarageOrCarportAdded
+        {
+            get
+            {
+                return garageOrCarportAdded;
+            }
+
+            set
+            {
+                garageOrCarportAdded = value;
+            }
+        }
         #region "Constructor"
 
         public ExpandoSketch(string sketchFolder, int sketchRecord, int sketchCard, bool hasSketch, bool hasNewSketch)
@@ -121,7 +135,7 @@ namespace SketchUp
 
                 DataRow row = JumpTable.NewRow();
                 row["Record"] = line.Record;
-                row["Card"] = line.Dwelling;
+                row["Card"] = line.Card;
                 row["Sect"] = line.SectionLetter;
                 row["LineNo"] = line.LineNumber;
                 row["Direct"] = line.Direction;
@@ -180,6 +194,7 @@ namespace SketchUp
                 newLine.EndY = newLine.StartY + yLength;
                 WorkingSection.Lines.Add(newLine);
                 WorkingSection.ParentParcel = WorkingParcel;
+                SetButtonStates(EditState);
             }
             catch (Exception ex)
             {
@@ -335,13 +350,17 @@ namespace SketchUp
             switch (editState)
             {
                 case DrawingState.DoneDrawing:
+                    if (GarageOrCarportAdded)
+                    {
+                        MessageBox.Show("Will check for missing garage data");
+                    }
                     SaveChanges(WorkingParcel);
                     break;
 
                 case DrawingState.Drawing:
                     if (WorkingSection.SectionIsClosed)
                     {
-                        EditState = DrawingState.DoneDrawing;
+                       
                         CompleteDrawingNewSection();
                         EditState = DrawingState.DoneDrawing;
                     }
@@ -557,8 +576,8 @@ namespace SketchUp
 
         private bool ConfirmCarportNumbers()
         {
-            //TODO: Remove debugging code bool carportUpdateNeeded = false;
-            bool carportUpdateNeeded = true;
+            
+            bool carportUpdateNeeded = false;
             decimal carportSize = 0;
             var carportSections = (from s in WorkingParcel.Sections where SketchUpLookups.CarPortTypes.Contains(s.SectionType) select s).ToList();
             if (carportSections != null)
@@ -575,20 +594,20 @@ namespace SketchUp
             bool carsCountUpdateNeeded = carportCount > 1 && (ParcelMast.CarportTypeCode != 0 || ParcelMast.CarportTypeCode != noCarportCode);
             carportUpdateNeeded = (codeAndNumbersMismatched || carsCountUpdateNeeded);
             return carportUpdateNeeded;
-            //if (codeAndNumbersMismatched)
-            //{
-            //    MissingGarageData missingGarCPForm = new MissingGarageData(parcelMast, carportSize, "CP");
-            //    missingGarCPForm.ShowDialog();
+            if (codeAndNumbersMismatched)
+            {
+                MissingGarageData missingGarCPForm = new MissingGarageData(parcelMast, carportSize, "CP");
+                missingGarCPForm.ShowDialog();
 
-            //}
+            }
 
-            //if (carsCountUpdateNeeded)
-            //{
-            //    MissingGarageData missCPx = new MissingGarageData(parcelMast, CPSize, "CP");
-            //    missCPx.ShowDialog();
+            if (carsCountUpdateNeeded)
+            {
+                MissingGarageData missCPx = new MissingGarageData(parcelMast, CPSize, "CP");
+                missCPx.ShowDialog();
 
-            //    ParcelMast.CarportNumCars += MissingGarageData.CarportNumCars;
-            //}
+                ParcelMast.CarportNumCars += MissingGarageData.CarportNumCars;
+            }
         }
 
 
@@ -599,8 +618,8 @@ namespace SketchUp
             int gar2Cars = 0;
             int garageTotalCars = 0;
             int mastGarageTotal = 0;
-            bool garageOk = true;
-            //TODO: Remove debugging codebool garageOk = false;
+          
+          bool garageOk = false;
             SMParcelMast originalParcelMast = SketchUpGlobals.SMParcelFromData.ParcelMast;
             mastGarageTotal = (string.IsNullOrEmpty(originalParcelMast.Garage1NumCars.ToString()) ? 0:originalParcelMast.Garage1NumCars) + (string.IsNullOrEmpty(originalParcelMast.Garage2NumCars.ToString()) ? 0 : originalParcelMast.Garage2NumCars);
             List<SMSection> garages = (from s in WorkingParcel.Sections where SketchUpLookups.GarageTypes.Contains(s.SectionType) select s).OrderBy(s=>s.SectionLetter).ToList();
@@ -2054,7 +2073,7 @@ namespace SketchUp
                 if (UnsavedChangesExist)
                 {
 
-                    UpdateCarsInfo();
+                    //UpdateCarsInfo();
                     parcel.ReorganizeSections();
                     SketchRepository sr = new SketchRepository(parcel);
                     ParcelMast = sr.SaveCurrentParcel(parcel);
@@ -2082,7 +2101,9 @@ namespace SketchUp
         private void UpdateCarsInfo()
         {
             bool updatesNeeded = true;
-        //TODO: June 2-3: Check the garage and carports data here.
+            SMVehicleStructure svs = new SMVehicleStructure(WorkingParcel);
+            
+
         }
 
         private void SaveJumpPointsAndOldSectionEndPoints(float CurrentScale, int rowindex, DataView SortedJumpTableDataView)
@@ -2129,6 +2150,7 @@ namespace SketchUp
                     {
                         btnAdd.Text = "Auto-Close";
                         btnAdd.Image = CloseSectionImage;
+                        btnAdd.Enabled = WorkingSection.Lines.Count >= 2;
                     }
 
                     break;
@@ -2215,7 +2237,7 @@ namespace SketchUp
                 s.SectionLetter != "A").ToList())
             {
                 int record = l.Record;
-                int card = l.Dwelling;
+                int card = l.Card;
                 string curSect = l.SectionLetter;
                 decimal X1 = l.StartX;
                 decimal Y1 = l.StartY;

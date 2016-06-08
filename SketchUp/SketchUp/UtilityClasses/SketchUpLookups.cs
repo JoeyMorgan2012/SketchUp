@@ -57,9 +57,10 @@ namespace SketchUp
             return q.SingleOrDefault();
         }
 
-        public static void Init(SWallTech.CAMRA_Connection conn)
+        public static void Init(CAMRA_Connection conn)
         {
             DBAccessManager db = conn.DBConnection;
+            
             ClearValues();
             InitializeRatTableCollectionLists(conn);
             GetClassValuesData(db);

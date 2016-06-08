@@ -209,7 +209,7 @@ namespace SketchUp
             }
         }
 
-        public bool HasSketch
+        public string HasSketch
         {
             get
             {
@@ -416,6 +416,10 @@ namespace SketchUp
         {
             get
             {
+                if (string.IsNullOrEmpty(storeysText))
+                {
+                    storeysText = storeysValue.ToString("N2");
+                }
                 return storeysText;
             }
 
@@ -438,7 +442,7 @@ namespace SketchUp
         private decimal depreciation;
         private string description;
         private int card;
-        private bool hasSketch;
+        private string hasSketch;
         private List<SMLine> lines;
         private int record;
         private bool refreshSection = true;

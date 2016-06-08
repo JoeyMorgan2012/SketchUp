@@ -15,7 +15,7 @@ namespace SketchUp
         public SMLine(SMSection section)
         {
             record = section.Record;
-            dwelling = section.Card;
+            card = section.Card;
             sectionLetter = section.SectionLetter;
             ParentSection = section;
             ParentParcel = section.ParentParcel;
@@ -207,15 +207,15 @@ namespace SketchUp
             }
         }
 
-        public int Dwelling
+        public int Card
         {
             get
             {
-                return dwelling;
+                return card;
             }
             set
             {
-                dwelling = value;
+                card = value;
             }
         }
 
@@ -490,7 +490,7 @@ namespace SketchUp
         private string attachedSection;
         private PointF comparisonPoint;
         private string direction;
-        private int dwelling;
+        private int card;
         private PointF endPoint;
         private decimal endPointDistanceFromComparisonPoint;
         private decimal endX;

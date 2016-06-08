@@ -93,7 +93,34 @@ namespace SketchUp
             UCP,
             WCP
         }
+        public enum CarportCodes
+        {
+            Attached = 68,
+            None = 67,
+            Open = 65,
+            Walled = 66
 
+        }
+        public enum GarageCodes
+        {
+            Aluminum = 69,
+            Asbestos = 74,
+            Attached = 75,
+            Block = 62,
+            Brick = 61,
+            Cedar = 68,
+            Cinderblock = 72,
+            Detached = 64,
+            Dryvit = 73,
+            Frame = 60,
+            Log = 67,
+            Metal = 71,
+            None = 63,
+            Stone = 66,
+            Stucco = 70,
+            Vinyl = 65
+
+        }
         //public static List<int> CommercialOccupancies = new List<int>() { 11, 13, 14, 26 };
         public enum CommercialOccupancyCodes
         {

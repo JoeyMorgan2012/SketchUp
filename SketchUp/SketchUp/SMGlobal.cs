@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
 using System.Text;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace SketchUp
@@ -69,7 +71,26 @@ namespace SketchUp
             }
             return dir;
         }
-
+        public static string CodeToDescription(List<StabType> stabTypeList, int code)
+        {
+            string description = string.Empty;
+            var descriptionLookup = (from t in stabTypeList where t.Code == code.ToString() select t.Description).FirstOrDefault();
+            if (descriptionLookup!=null)
+            {
+                description = descriptionLookup.ToString();
+            }
+            return description;
+        }
+        public static int DescriptionToCode(List<StabType> stabTypeList, string description)
+        {
+            int code = 0;
+            var codeLookup = (from c in stabTypeList where c.Description.ToUpper().Trim() == description.ToUpper().Trim() select c.Code).FirstOrDefault();
+            if (codeLookup!=null)
+            {
+                int.TryParse(codeLookup.ToString(), out code);
+            }
+            return code;
+        }
         public static MoveDirection GetDirectionOfKeyEntered(KeyEventArgs e)
         {
             SMGlobal.MoveDirection moveDir;
