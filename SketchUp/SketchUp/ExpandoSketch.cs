@@ -1,5 +1,4 @@
-﻿using SWallTech;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -9,14 +8,12 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
+using SWallTech;
 
 namespace SketchUp
 {
-
     public partial class ExpandoSketch : Form
     {
-        private bool garageOrCarportAdded;
-
         public bool GarageOrCarportAdded
         {
             get
@@ -29,6 +26,9 @@ namespace SketchUp
                 garageOrCarportAdded = value;
             }
         }
+
+        private bool garageOrCarportAdded;
+
         #region "Constructor"
 
         public ExpandoSketch(string sketchFolder, int sketchRecord, int sketchCard, bool hasSketch, bool hasNewSketch)
@@ -41,7 +41,7 @@ namespace SketchUp
             ShowWorkingCopySketch(sketchFolder, sketchRecord.ToString(), sketchCard.ToString(), hasSketch, hasNewSketch);
         }
 
-        #endregion
+        #endregion "Constructor"
 
         #region "Private methods"
 
@@ -226,8 +226,6 @@ namespace SketchUp
             }
         }
 
-    
-
         private void AddMoveToImage()
         {
             try
@@ -259,7 +257,6 @@ namespace SketchUp
         {
             AddSection();
         }
-
 
         private void AdjustLengthDirection(CamraDataEnums.CardinalDirection moveDirection, ref decimal xLength, ref decimal ylength)
         {
@@ -355,21 +352,19 @@ namespace SketchUp
                         MessageBox.Show("Will check for missing garage data");
                     }
                     SaveChanges(WorkingParcel);
+                    EditState = DrawingState.SketchSaved;
                     break;
 
                 case DrawingState.Drawing:
                     if (WorkingSection.SectionIsClosed)
                     {
-                       
                         CompleteDrawingNewSection();
                         EditState = DrawingState.DoneDrawing;
                     }
                     else
                     {
                         AutoCloseSection(WorkingSection);
-
                     }
-
 
                     break;
 
@@ -391,7 +386,7 @@ namespace SketchUp
 
                 case DrawingState.SectionEditStarted:
                     UnsavedChangesExist = true;
-                
+
                     break;
 
                 case DrawingState.SketchLoaded:
@@ -400,7 +395,7 @@ namespace SketchUp
 
                 case DrawingState.SketchSaved:
                     UnsavedChangesExist = false;
-                  
+
                     break;
 
                 default:
@@ -409,8 +404,6 @@ namespace SketchUp
 
             SetButtonStates(EditState);
         }
-
-
 
         private Image byteArrayToImage(byte[] byteArrayIn)
         {
@@ -433,19 +426,17 @@ namespace SketchUp
             }
         }
 
-
-
         private void calculateNewArea(int record, int card, string nextsec)
         {
             StringBuilder getLine = new StringBuilder();
             getLine.Append("select jlpt1x,jlpt1y,jlpt2x,jlpt2Y ");
-            getLine.Append(String.Format("from {0}.{1}line where jlrecord = {2} and jldwell = {3} ",
+            getLine.Append(string.Format("from {0}.{1}line where jlrecord = {2} and jldwell = {3} ",
                       SketchUpGlobals.LocalLib,
                           SketchUpGlobals.LocalityPrefix,
 
                         SketchUpGlobals.Record,
                         SketchUpGlobals.Card));
-            getLine.Append(String.Format("and jlsect = '{0}' ", nextsec));
+            getLine.Append(string.Format("and jlsect = '{0}' ", nextsec));
 
             DataSet arealines = dbConn.DBConnection.RunSelectStatement(getLine.ToString());
 
@@ -524,7 +515,6 @@ namespace SketchUp
         private void cmiAddClosingLine_Click(object sender, EventArgs e)
         {
             AutoCloseSection(WorkingSection);
-
         }
 
         private void cmiBeginDrawing_Click(object sender, EventArgs e)
@@ -576,7 +566,6 @@ namespace SketchUp
 
         private bool ConfirmCarportNumbers()
         {
-            
             bool carportUpdateNeeded = false;
             decimal carportSize = 0;
             var carportSections = (from s in WorkingParcel.Sections where SketchUpLookups.CarPortTypes.Contains(s.SectionType) select s).ToList();
@@ -598,7 +587,6 @@ namespace SketchUp
             {
                 MissingGarageData missingGarCPForm = new MissingGarageData(parcelMast, carportSize, "CP");
                 missingGarCPForm.ShowDialog();
-
             }
 
             if (carsCountUpdateNeeded)
@@ -610,7 +598,6 @@ namespace SketchUp
             }
         }
 
-
         private bool ConfirmGarageNumbers()
         {
             bool garageUpdateNeeded = false;
@@ -618,12 +605,12 @@ namespace SketchUp
             int gar2Cars = 0;
             int garageTotalCars = 0;
             int mastGarageTotal = 0;
-          
-          bool garageOk = false;
+
+            bool garageOk = false;
             SMParcelMast originalParcelMast = SketchUpGlobals.SMParcelFromData.ParcelMast;
-            mastGarageTotal = (string.IsNullOrEmpty(originalParcelMast.Garage1NumCars.ToString()) ? 0:originalParcelMast.Garage1NumCars) + (string.IsNullOrEmpty(originalParcelMast.Garage2NumCars.ToString()) ? 0 : originalParcelMast.Garage2NumCars);
-            List<SMSection> garages = (from s in WorkingParcel.Sections where SketchUpLookups.GarageTypes.Contains(s.SectionType) select s).OrderBy(s=>s.SectionLetter).ToList();
-            if (garages!=null && garages.Count>0)
+            mastGarageTotal = (string.IsNullOrEmpty(originalParcelMast.Garage1NumCars.ToString()) ? 0 : originalParcelMast.Garage1NumCars) + (string.IsNullOrEmpty(originalParcelMast.Garage2NumCars.ToString()) ? 0 : originalParcelMast.Garage2NumCars);
+            List<SMSection> garages = (from s in WorkingParcel.Sections where SketchUpLookups.GarageTypes.Contains(s.SectionType) select s).OrderBy(s => s.SectionLetter).ToList();
+            if (garages != null && garages.Count > 0)
             {
                 garageCount = garages.Count;
             }
@@ -631,7 +618,6 @@ namespace SketchUp
             {
                 garageCount = 0;
             }
-          
 
             if (garageCount > 0)
             {
@@ -650,6 +636,7 @@ namespace SketchUp
                 {
                     MissingGarageData missGar = new MissingGarageData(parcelMast, GarSize, "GAR");
                     missGar.ShowDialog();
+
                     //Start here to migrate to new form.
                     if (MissingGarageData.GarageCode != originalParcelMast.Garage1TypeCode)
                     {
@@ -664,7 +651,6 @@ namespace SketchUp
 
                     parcelMast.Garage2NumCars += MissingGarageData.GarNbr;
                 }
-
             }
             return garageOk;
         }
@@ -938,24 +924,6 @@ namespace SketchUp
 
         private void deleteExistingSketchToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
 
 #if DEBUG
@@ -969,7 +937,7 @@ namespace SketchUp
         private void DeleteLineSection()
         {
             StringBuilder deletelinesect = new StringBuilder();
-            deletelinesect.Append(String.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' ",
+            deletelinesect.Append(string.Format("delete from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlsect = '{4}' ",
                            SketchUpGlobals.LocalLib,
                            SketchUpGlobals.LocalityPrefix,
 
@@ -991,8 +959,6 @@ namespace SketchUp
             throw new NotImplementedException();
 #endif
         }
-
-
 
         private CamraDataEnums.CardinalDirection DirectionOfKeyEntered(KeyEventArgs e)
         {
@@ -1099,8 +1065,8 @@ namespace SketchUp
             txtLoc = 0;
             txtX = 0;
             txtY = 0;
-            _lenString = String.Empty;
-            LastDir = String.Empty;
+            _lenString = string.Empty;
+            LastDir = string.Empty;
 
             if (_undoMode == true)
             {
@@ -1116,8 +1082,6 @@ namespace SketchUp
 
         private void DMouseMove(int X, int Y, bool jumpMode)
         {
-         
-
         }
 
         //ToDo: Begin here to hook in parcel updates
@@ -1153,6 +1117,7 @@ namespace SketchUp
         private void ExpandoSketchTools_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
         }
+
         private void ExpSketchPbox_MouseClick(object sender, MouseEventArgs e)
         {
             if (!_isJumpMode)
@@ -1177,7 +1142,8 @@ namespace SketchUp
                 _isJumpMode = true;
                 _mouseX = e.X;
                 _mouseY = e.Y;
-             // TODO: Remove if not needed:	   DMouseMove(e.X, e.Y, true);
+
+                // TODO: Remove if not needed:	   DMouseMove(e.X, e.Y, true);
             }
         }
 
@@ -1384,7 +1350,7 @@ namespace SketchUp
             StringBuilder getLine = new StringBuilder();
             getLine.Append("select jlrecord,jldwell,jlsect,jlline#,jldirect,jlxlen,jlylen,jllinelen,jlangle, ");
             getLine.Append("jlpt1x,jlpt1y,jlpt2x,jlpt2Y,jlattach ");
-            getLine.Append(String.Format("from {0}.{1}line where jlrecord = {2} and jldwell = {3} ",
+            getLine.Append(string.Format("from {0}.{1}line where jlrecord = {2} and jldwell = {3} ",
                        SketchUpGlobals.LocalLib,
                        SketchUpGlobals.LocalityPrefix,
 
@@ -1399,7 +1365,7 @@ namespace SketchUp
         private int GetSectionsCount()
         {
             StringBuilder checkSect = new StringBuilder();
-            checkSect.Append(String.Format("select count(*) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} and jssect = '{4}' ",
+            checkSect.Append(string.Format("select count(*) from {0}.{1}section where jsrecord = {2} and jsdwell = {3} and jssect = '{4}' ",
                            SketchUpGlobals.LocalLib,
                           SketchUpGlobals.LocalityPrefix,
 
@@ -1438,11 +1404,12 @@ namespace SketchUp
                 _isJumpMode = true;
                 try
                 {
-                    FieldText.Text = String.Format("Sect- {0}, {1} sty {2}", NextSectLtr.Trim(), _nextStoryHeight.ToString("N2"), _nextSectType.Trim());
+                    FieldText.Text = string.Format("Sect- {0}, {1} sty {2}", NextSectLtr.Trim(), _nextStoryHeight.ToString("N2"), _nextSectType.Trim());
                 }
                 catch
                 {
                 }
+
             }
             else
             {
@@ -1580,7 +1547,6 @@ namespace SketchUp
             SketchUpGlobals.HasSketch = hasSketch;
 
             // TODO: Remove if not needed:
-
         }
 
         private void InitializeDisplayDataGrid()
@@ -1593,10 +1559,10 @@ namespace SketchUp
         private void InsertLine(string CurAttDir, decimal newEndX, decimal newEndY, decimal StartEndX, decimal StartEndY, decimal splitLength)
         {
             StringBuilder insertLine = new StringBuilder();
-            insertLine.Append(String.Format("insert into {0}.{1}line (jlrecord,jldwell,jlsect,jlline#,jldirect,jlxlen,jlylen,jllinelen, ",
+            insertLine.Append(string.Format("insert into {0}.{1}line (jlrecord,jldwell,jlsect,jlline#,jldirect,jlxlen,jlylen,jllinelen, ",
                       SketchUpGlobals.LocalLib, SketchUpGlobals.LocalityPrefix));
             insertLine.Append("jlangle,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach ) values ( ");
-            insertLine.Append(String.Format(" {0},{1},'{2}',{3},'{4}',{5},{6},{7},{8},{9},{10},{11},{12},'{13}' )", SketchUpGlobals.Record, SketchUpGlobals.Card, CurrentSecLtr,
+            insertLine.Append(string.Format(" {0},{1},'{2}',{3},'{4}',{5},{6},{7},{8},{9},{10},{11},{12},'{13}' )", SketchUpGlobals.Record, SketchUpGlobals.Card, CurrentSecLtr,
                 mylineNo,
                 CurAttDir,
                 Math.Abs(adjNewSecX),
@@ -1618,20 +1584,20 @@ namespace SketchUp
             if (ds_master.Tables[0].Rows.Count == 0)
             {
                 StringBuilder insMaster = new StringBuilder();
-                insMaster.Append(String.Format("insert into {0}.{1}master (jmrecord,jmdwell,jmsketch,jmstory,jmstoryex,jmscale,jmtotsqft,jmesketch) ",
+                insMaster.Append(string.Format("insert into {0}.{1}master (jmrecord,jmdwell,jmsketch,jmstory,jmstoryex,jmscale,jmtotsqft,jmesketch) ",
                               SketchUpGlobals.LocalLib,
                                SketchUpGlobals.LocalityPrefix
 
                                 ));
-                insMaster.Append(String.Format("values ({0},{1},'{2}',{3},'{4}',{5},{6},'{7}' ) ",
+                insMaster.Append(string.Format("values ({0},{1},'{2}',{3},'{4}',{5},{6},'{7}' ) ",
                             SketchUpGlobals.Record,
                             SketchUpGlobals.Card,
                             "Y",
                             baseStory,
-                            String.Empty,
+                            string.Empty,
                             1.00,
                             summedArea,
-                            String.Empty));
+                            string.Empty));
 
                 dbConn.DBConnection.ExecuteNonSelectStatement(insMaster.ToString());
             }
@@ -1647,7 +1613,7 @@ namespace SketchUp
         {
             decimal scale = WorkingParcel.Scale;
             PointF origin = WorkingParcel.SketchOrigin;
-            CurrentSecLtr = String.Empty;
+            CurrentSecLtr = string.Empty;
 
             // TODO: Remove if not needed:	_newIndex = 0;
             currentAttachmentLine = 0;
@@ -1693,15 +1659,14 @@ namespace SketchUp
                     DbJumpPoint = JumpPointLine.EndPoint;
                     ScaledStartPoint = ScaledJumpPoint;
                     LegalMoveDirections = GetLegalMoveDirections(ScaledJumpPoint, AttSectLtr);
-                    MoveCursorToNewPoint(ScaledJumpPoint);
                     SetReadyButtonAppearance();
                     _isJumpMode = true;
                     EditState = DrawingState.JumpPointSelected;
                     ScaledStartPoint = ScaledJumpPoint;
                     DbStartX = Math.Round((decimal)DbJumpPoint.X, 2);
                     DbStartY = Math.Round((decimal)DbJumpPoint.Y, 2);
-
                     DistText.Focus();
+                    MoveCursorToNewPoint(ScaledJumpPoint);
                 }
             }
         }
@@ -1727,7 +1692,6 @@ namespace SketchUp
             _isJumpMode = false;
         }
 
-
         private List<SMLine> LinesWithClosestEndpoints(PointF mouseLocation)
         {
             foreach (SMLine l in WorkingParcel.AllSectionLines.Where(s => s.SectionLetter != WorkingParcel.LastSectionLetter))
@@ -1740,7 +1704,6 @@ namespace SketchUp
 
             return connectionLines;
         }
-
 
         private void LoadSectionLinesGrid(string sectionLetter)
         {
@@ -1780,12 +1743,12 @@ namespace SketchUp
         {
             int maxLineCnt;
             StringBuilder lineCntx = new StringBuilder();
-            lineCntx.Append(String.Format("select max(jlline#) from {0}.{1}line ",
+            lineCntx.Append(string.Format("select max(jlline#) from {0}.{1}line ",
                        SketchUpGlobals.LocalLib,
                           SketchUpGlobals.LocalityPrefix
 
                         ));
-            lineCntx.Append(String.Format("where jlrecord = {0} and jldwell = {1} and jlsect = '{2}' ",
+            lineCntx.Append(string.Format("where jlrecord = {0} and jldwell = {1} and jlsect = '{2}' ",
                 SketchUpGlobals.Record, SketchUpGlobals.Card, CurrentSecLtr));
 
             maxLineCnt = Convert.ToInt32(dbConn.DBConnection.ExecuteScalar(lineCntx.ToString()));
@@ -1817,7 +1780,6 @@ namespace SketchUp
         {
             SaveChanges(WorkingParcel);
             WorkingSection = null;
-
         }
 
         private void miSaveAndContinue_Click(object sender, EventArgs e)
@@ -1825,32 +1787,14 @@ namespace SketchUp
             SaveChanges(WorkingParcel);
             WorkingSection = null;
         }
-
-        // TODO: Remove if not needed:
-        private void MoveCursor()
-        {
-            Color penColor;
-            Cursor = new Cursor(Cursor.Current.Handle);
-            Cursor.Position = new Point(Convert.ToInt32(JumpX) - 50, Convert.ToInt32(JumpY) - 50);
-            Cursor.Position = new Point(Convert.ToInt32(JumpX) - 50, Convert.ToInt32(JumpY));
-            penColor = (_undoMode || draw) ? Color.Red : Color.Black;
-
-            Graphics g = Graphics.FromImage(MainImage);
-            Pen pen1 = new Pen(Color.Red, 4);
-            g.DrawRectangle(pen1, Convert.ToInt32(JumpX), Convert.ToInt32(JumpY), 1, 1);
-            g.Save();
-
-            sketchBox.Image = MainImage;
-
-        }
-
+        
         private void MoveCursorToNewPoint(PointF newPoint)
         {
             Color penColor;
             Cursor = new Cursor(Cursor.Current.Handle);
             int jumpXScaled = Convert.ToInt32(newPoint.X);
             int jumpYScaled = Convert.ToInt32(newPoint.Y);
-            
+
             Cursor.Position = new Point(jumpXScaled, jumpYScaled);
             penColor = PenColorForDrawing(EditState);
             _isJumpMode = (EditState == DrawingState.JumpPointSelected || EditState == DrawingState.SectionAdded);
@@ -1865,7 +1809,7 @@ namespace SketchUp
 
         private string MultiPointsAvailable(List<string> sectionLetterList)
         {
-            string multipleSectionsAttachment = String.Empty;
+            string multipleSectionsAttachment = string.Empty;
 
             if (sectionLetterList.Count > 1)
             {
@@ -1884,7 +1828,6 @@ namespace SketchUp
             return multipleSectionsAttachment;
         }
 
-
         private void NotifyUserOfLegalMoves()
         {
             try
@@ -1894,7 +1837,7 @@ namespace SketchUp
                 MessageBox.Show(message, "Illegal direction", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                 UndoJump = true;
                 RevertToPriorVersion();
-                DistText.Text = String.Empty;
+                DistText.Text = string.Empty;
                 distance = 0;
             }
             catch (Exception ex)
@@ -1910,14 +1853,14 @@ namespace SketchUp
             decimal origDistX = 0;
 
             StringBuilder orgLen = new StringBuilder();
-            orgLen.Append(String.Format("select jllinelen from {0}.{1}line where jlrecord = {2} and jldwell = {3} ",
+            orgLen.Append(string.Format("select jllinelen from {0}.{1}line where jlrecord = {2} and jldwell = {3} ",
                       SketchUpGlobals.LocalLib,
                           SketchUpGlobals.LocalityPrefix,
 
                         SketchUpGlobals.Record,
                         SketchUpGlobals.Card
                         ));
-            orgLen.Append(String.Format("and jlsect = '{0}' and jlline# = {1} ",
+            orgLen.Append(string.Format("and jlsect = '{0}' and jlline# = {1} ",
                 CurrentSecLtr, AttSpLineNo));
 
             origDistX = Convert.ToDecimal(dbConn.DBConnection.ExecuteScalar(orgLen.ToString()));
@@ -1976,22 +1919,17 @@ namespace SketchUp
             angle.AngledLineDirection = direction;
             return angle;
         }
-        private void RedrawSketch(SMParcel parcel)
+
+        private void RedrawSketch(SMParcel parcel,string sectionLetter="")
         {
             SMSketcher sketcher = new SMSketcher(parcel, sketchBox);
-            sketcher.RenderSketch(WorkingSection.SectionLetter);
+            sketcher.RenderSketch(sectionLetter);
             sketchBox.Image = sketcher.SketchImage;
             _currentScale = (float)parcel.Scale;
         }
 
         private void RefreshSketch()
         {
-
-
-
-
-
-
             string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
 
 #if DEBUG
@@ -2008,8 +1946,6 @@ namespace SketchUp
             SetButtonStates(EditState);
         }
 
-
-        
         private void RevertToPriorVersion()
         {
             string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
@@ -2052,8 +1988,6 @@ namespace SketchUp
 
         private void rotateSketchToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
-
             FlipSketch fskt = new FlipSketch();
             fskt.ShowDialog();
             if (FlipSketch.FrontBack == true)
@@ -2072,13 +2006,14 @@ namespace SketchUp
             {
                 if (UnsavedChangesExist)
                 {
-
                     //UpdateCarsInfo();
                     parcel.ReorganizeSections();
                     SketchRepository sr = new SketchRepository(parcel);
                     ParcelMast = sr.SaveCurrentParcel(parcel);
                     WorkingParcel = ParcelMast.Parcel;
+                    RedrawSketch(WorkingParcel);
                     UnsavedChangesExist = false;
+
                 }
                 return true;
             }
@@ -2095,15 +2030,6 @@ namespace SketchUp
 
                 throw;
             }
-
-        }
-
-        private void UpdateCarsInfo()
-        {
-            bool updatesNeeded = true;
-            SMVehicleStructure svs = new SMVehicleStructure(WorkingParcel);
-            
-
         }
 
         private void SaveJumpPointsAndOldSectionEndPoints(float CurrentScale, int rowindex, DataView SortedJumpTableDataView)
@@ -2135,12 +2061,18 @@ namespace SketchUp
 
         private void SetButtonStates(DrawingState sketchState)
         {
+            bool enableAdd = false;
+            bool enableUndo = false;
+            bool enableContextMenu = false;
+            bool enableJumpMenu = false;
             switch (sketchState)
             {
                 case DrawingState.Drawing:
-                    btnAdd.Enabled = true;
-                    AddSectionContextMenu.Enabled = true;
-                    cmiJumpToCorner.Enabled = false;
+                    enableAdd = true;
+                    enableContextMenu = true;
+                    enableJumpMenu = false;
+                    enableUndo = (WorkingSection != null && WorkingSection.Lines != null && WorkingSection.Lines.Count > 0);
+
                     if (WorkingSection.SectionIsClosed)
                     {
                         btnAdd.Text = "Done Drawing";
@@ -2150,47 +2082,52 @@ namespace SketchUp
                     {
                         btnAdd.Text = "Auto-Close";
                         btnAdd.Image = CloseSectionImage;
-                        btnAdd.Enabled = WorkingSection.Lines.Count >= 2;
+                        enableAdd = WorkingSection.Lines.Count >= 2;
                     }
 
                     break;
 
                 case DrawingState.SectionAdded:
-
-                    cmiJumpToCorner.Enabled = true;
-                    AddSectionContextMenu.Enabled = true;
                     btnAdd.Text = "Begin";
                     btnAdd.Image = JumpToCornerImage;
-                    btnAdd.Enabled = false;
+                    enableAdd = false;
+                    enableContextMenu = true;
+                    enableJumpMenu = true;
                     break;
 
                 case DrawingState.JumpPointSelected:
-                    cmiJumpToCorner.Enabled = true;
-                    AddSectionContextMenu.Enabled = true;
+                    enableJumpMenu = false;
+                    enableContextMenu = true;
                     btnAdd.Text = "Begin";
-                    btnAdd.Image = JumpToCornerImage;
-                    btnAdd.Enabled = true;
+                    btnAdd.Image = BeginDrawingImage;
+                    enableAdd = true;
                     break;
+
                 case DrawingState.DoneDrawing:
-                    btnAdd.Enabled = true;
-                    AddSectionContextMenu.Enabled = true;
+                    enableAdd = true;
+                    enableContextMenu = true;
                     btnAdd.Text = "Save";
                     btnAdd.Image = SaveAndCloseImage;
-                    cmiJumpToCorner.Enabled = false;
-                    AddSectionContextMenu.Enabled = false;
+                    enableJumpMenu = false;
+
                     break;
+
                 case DrawingState.SketchLoaded:
+                case DrawingState.SketchSaved:
                 default:
 
-                    btnAdd.Enabled = true;
-                    AddSectionContextMenu.Enabled = !UnsavedChangesExist;
+                    enableAdd = true;
+                    enableContextMenu = !UnsavedChangesExist;
                     btnAdd.Text = "Add Section";
                     btnAdd.Image = AddImage;
-                    cmiJumpToCorner.Enabled = false;
-                    AddSectionContextMenu.Enabled = false;
+                    enableJumpMenu = false;
 
                     break;
             }
+            btnAdd.Enabled = enableAdd;
+            AddSectionContextMenu.Enabled = enableContextMenu;
+            cmiJumpToCorner.Enabled = enableJumpMenu;
+            btnUnDo.Enabled = enableUndo;
         }
 
         private void SetReadyButtonAppearance()
@@ -2222,12 +2159,12 @@ namespace SketchUp
                     NextSectLtr).FirstOrDefault().AttachedSection = " ";
             }
 
-            if (MultiSectionSelection.adjsec == String.Empty)
+            if (MultiSectionSelection.adjsec == string.Empty)
             {
                 ConnectSec = "A";
             }
 
-            if (MultiSectionSelection.adjsec != String.Empty)
+            if (MultiSectionSelection.adjsec != string.Empty)
             {
                 ConnectSec = MultiSectionSelection.adjsec;
             }
@@ -2339,7 +2276,6 @@ namespace SketchUp
 
                     MainImage = sketcher.SketchImage;
                     _currentScale = (float)WorkingParcel.Scale;
-
                 }
                 else
                 {
@@ -2391,7 +2327,7 @@ namespace SketchUp
             FixSect = new List<string>();
 
             StringBuilder addFix = new StringBuilder();
-            addFix.Append(String.Format("select jlsect from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlline# = 1 ",
+            addFix.Append(string.Format("select jlsect from {0}.{1}line where jlrecord = {2} and jldwell = {3} and jlline# = 1 ",
                       SketchUpGlobals.LocalLib,
                           SketchUpGlobals.LocalityPrefix,
 
@@ -2416,12 +2352,12 @@ namespace SketchUp
                     StringBuilder chkLen = new StringBuilder();
                     chkLen.Append("select jlsect,jlline#,jldirect, case when jldirect in ( 'N','S') then abs(jlpt1y-jlpt2y) when jldirect in ( 'E','W') then abs(jlpt1x-jlpt2x) ");
                     chkLen.Append("when jldirect in ( 'NE','SE','NW','SW') then sqrt(abs(jlpt1y-jlpt2y)*abs(jlpt1y-jlpt2y)+abs(jlpt1x-jlpt2x)*abs(jlpt1x-jlpt2x)) ");
-                    chkLen.Append(String.Format("end as LineLen, abs(jlpt1x-jlpt2x) as Xlen, abs(jlpt1y-jlpt2y) as Ylen from {0}.{1}line ",
+                    chkLen.Append(string.Format("end as LineLen, abs(jlpt1x-jlpt2x) as Xlen, abs(jlpt1y-jlpt2y) as Ylen from {0}.{1}line ",
                                   SketchUpGlobals.LocalLib,
                           SketchUpGlobals.LocalityPrefix
 
                                     ));
-                    chkLen.Append(String.Format("where jlrecord = {0} and jldwell = {1} order by jlsect,jlline# ", SketchUpGlobals.Record, SketchUpGlobals.Card));
+                    chkLen.Append(string.Format("where jlrecord = {0} and jldwell = {1} order by jlsect,jlline# ", SketchUpGlobals.Record, SketchUpGlobals.Card));
 
                     DataSet fixl = dbConn.DBConnection.RunSelectStatement(chkLen.ToString());
 
@@ -2429,16 +2365,15 @@ namespace SketchUp
                     {
                         for (int i = 0; i < fixl.Tables[0].Rows.Count; i++)
                         {
-
                             StringBuilder updLine = new StringBuilder();
-                            updLine.Append(String.Format("update {0}.{1}line set jlxlen = {2},jlylen = {3},jllinelen = {4} ",
+                            updLine.Append(string.Format("update {0}.{1}line set jlxlen = {2},jlylen = {3},jllinelen = {4} ",
                                            SketchUpGlobals.LocalLib,
                                            SketchUpGlobals.LocalityPrefix,
 
                                             Convert.ToDecimal(fixl.Tables[0].Rows[i]["Xlen"].ToString()),
                                             Convert.ToDecimal(fixl.Tables[0].Rows[i]["Ylen"].ToString()),
                                             Convert.ToDecimal(fixl.Tables[0].Rows[i]["LineLen"].ToString())));
-                            updLine.Append(String.Format("where jlrecord = {0} and jldwell = {1} and jlsect = '{2}' and jlline# = {3} ",
+                            updLine.Append(string.Format("where jlrecord = {0} and jldwell = {1} and jlsect = '{2}' and jlline# = {3} ",
                                     SketchUpGlobals.Record,
                                     SketchUpGlobals.Card,
                                     fixl.Tables[0].Rows[i]["jlsect"].ToString(),
@@ -2478,8 +2413,6 @@ namespace SketchUp
             return preventClose;
         }
 
-
-
         private void TotalGaragesAndCarports(SMSection s)
         {
             if (SketchUpLookups.GarageTypes.Contains(s.SectionType))
@@ -2496,7 +2429,6 @@ namespace SketchUp
             }
         }
 
-
         private void UnDoBtn_Click(object sender, EventArgs e)
         {
             switch (EditState)
@@ -2505,13 +2437,14 @@ namespace SketchUp
 
                     UndoLine();
                     break;
+
                 case DrawingState.DoneDrawing:
                     if (UnsavedChangesExist)
                     {
                         UndoLine();
-
                     }
                     break;
+
                 case DrawingState.JumpPointSelected:
 
                     RefreshWorkspace();
@@ -2527,7 +2460,6 @@ namespace SketchUp
                     DialogResult response = MessageBox.Show(message.ToString(), title, buttons, icon, defButton);
                     switch (response)
                     {
-
                         case DialogResult.Yes:
                             RevertToSavedSketch();
                             break;
@@ -2577,6 +2509,7 @@ namespace SketchUp
                             DbStartPoint = lastLine.StartPoint;
                             ScaledStartPoint = lastLine.ScaledStartPoint;
                             MoveCursorToNewPoint(ScaledStartPoint);
+                            ScaledJumpPoint = ScaledStartPoint;
                             WorkingSection.Lines.Remove(lastLine);
                             break;
 
@@ -2588,6 +2521,7 @@ namespace SketchUp
                 {
                     DbStartPoint = lastLine.StartPoint;
                     ScaledStartPoint = lastLine.ScaledStartPoint;
+                    ScaledJumpPoint = ScaledStartPoint;
                     MoveCursorToNewPoint(ScaledStartPoint);
                     WorkingSection.Lines.Remove(lastLine);
                 }
@@ -2617,6 +2551,12 @@ namespace SketchUp
             //dbConn.DBConnection.ExecuteNonSelectStatement(zerocp.ToString());
         }
 
+        private void UpdateCarsInfo()
+        {
+            bool updatesNeeded = true;
+            SMVehicleStructure svs = new SMVehicleStructure(WorkingParcel);
+        }
+
         private void UpdateGarageCountToZero()
         {
             string codeFromLookup = (from c in SketchUpLookups.GarageTypeCollection where c.Description.Trim().ToUpper() == "NONE" select c.Code).FirstOrDefault();
@@ -2626,7 +2566,6 @@ namespace SketchUp
             ParcelMast.Garage1NumCars = 0;
             ParcelMast.Garage2TypeCode = 0;
             ParcelMast.Garage2NumCars = 0;
-
         }
 
         //private DataSet UpdateMasterArea(decimal summedArea)
@@ -2654,9 +2593,6 @@ namespace SketchUp
         //    return ds_master;
         //}
 
-        #endregion
-
-
+        #endregion "Private methods"
     }
-
 }

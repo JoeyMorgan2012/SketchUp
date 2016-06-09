@@ -194,7 +194,7 @@ namespace SketchUp
                 }
             }
 
-            this.Close();
+            Close();
         }
 
         private void SectionTypesCbox_SelectedIndexChanged(object sender, EventArgs e)
@@ -299,7 +299,7 @@ namespace SketchUp
             if (_AddStory == true && _AddType == true)
             {
                 AddSectionToWorkingParcel();
-                this.Close();
+                Close();
             }
             else
             {
@@ -313,7 +313,7 @@ namespace SketchUp
                         break;
 
                     default:
-                        this.Close();
+                        Close();
                         break;
                 }
             }

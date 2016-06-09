@@ -108,32 +108,77 @@ namespace SketchUp
             return SketchUpGlobals.ParcelWorkingCopy;
         }
 
-        public void DeleteSketch(SMParcel parcel)
+        public int DeleteSketch(SMParcel parcel)
         {
-            FormattableString deleteLinesSql = $"DELETE FROM {LineRecordTable} WHERE JLRECORD = {parcel.Record} AND JLDWELL = {parcel.Card}";
+            try
+            {
+                int resultsCount = 0;
+                FormattableString deleteLinesSql = $"DELETE FROM {LineRecordTable} WHERE JLRECORD = {parcel.Record} AND JLDWELL = {parcel.Card}";
 
-            SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteLinesSql.ToString());
+                resultsCount += SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteLinesSql.ToString());
 
-            FormattableString deleteSectionsSql = $"DELETE FROM {SectionRecordTable} WHERE JSRECORD = {parcel.Record} AND JSDWELL = {parcel.Card}";
+                FormattableString deleteSectionsSql = $"DELETE FROM {SectionRecordTable} WHERE JSRECORD = {parcel.Record} AND JSDWELL = {parcel.Card}";
 
-            SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteSectionsSql.ToString());
+                resultsCount += SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteSectionsSql.ToString());
 
-            FormattableString deleteMasterSql = $"DELETE FROM {MasterRecordTable} WHERE JMRECORD = {parcel.Record} AND JMDWELL = {parcel.Card}";
+                FormattableString deleteMasterSql = $"DELETE FROM {MasterRecordTable} WHERE JMRECORD = {parcel.Record} AND JMDWELL = {parcel.Card}";
 
-            SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteMasterSql.ToString());
+                resultsCount += SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteMasterSql.ToString());
+                return resultsCount;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = $"Error occurred in {MethodBase.GetCurrentMethod().Module}, in procedure {MethodBase.GetCurrentMethod().Name}: {ex.Message}".ToString();
+                Trace.WriteLine(errMessage);
+                Console.WriteLine(errMessage);
+#if DEBUG
+
+                MessageBox.Show(errMessage);
+#endif
+                throw;
+            }
         }
 
         public SMParcelMast SaveCurrentParcel(SMParcel parcel)
         {
-            workingParcel = parcel;
-            UpdateLivingArea(parcel);
-            UpdateTotalArea(parcel);
-            UpdateDatabase(parcel);
 
-            SMParcelMast parcelMast = RefreshWorkingCopyFromDb(parcel);
-            MessageBox.Show("Changes saved.", "Update Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            return parcelMast;
+            try
+            {
+                bool success = false;
+                FormattableString resultsMessage = $"";
+                workingParcel = parcel;
+                UpdateLivingArea(parcel);
+                UpdateTotalArea(parcel);
+
+                success = UpdateDatabase(parcel);
+
+                if (success)
+                {
+                    resultsMessage = $"Parcel {parcel.Record} Dwelling #{parcel.Card} was successfully updated.";
+                    MessageBox.Show(resultsMessage.ToString(), "Update Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    resultsMessage = $"An error occurred while saving Parcel {parcel.Record} Dwelling #{parcel.Card}.";
+                    MessageBox.Show(resultsMessage.ToString(), "Update Failed", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+                SMParcelMast parcelMast = RefreshWorkingCopyFromDb(parcel);
+                return parcelMast;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = $"Error occurred in {MethodBase.GetCurrentMethod().Module}, in procedure {MethodBase.GetCurrentMethod().Name}: {ex.Message}".ToString();
+                Trace.WriteLine(errMessage);
+                Console.WriteLine(errMessage);
+#if DEBUG
+
+                MessageBox.Show(errMessage);
+#endif
+                return parcel.ParcelMast;
+            }
         }
+
+        #region Select Methods
 
         public SMParcelMast SelectParcelMasterWithParcel(int recordNumber, int dwellingNumber)
         {
@@ -193,57 +238,44 @@ namespace SketchUp
             return parcelMast;
         }
 
-        #endregion "Public Methods"
+        #endregion Select Methods
 
         #region "Private methods"
 
-        private int DeleteExistingSketchData(SMParcel parcel)
+        private int InsertLines(SMParcel parcel)
         {
-            FormattableString deleteLinesSql = $"DELETE FROM {LineRecordTable} WHERE JLRECORD = {parcel.Record} AND JLDWELL = {parcel.Card}";
-
-            FormattableString deleteSectionsSql = $"DELETE FROM {SectionRecordTable} WHERE JSRECORD = {parcel.Record}  AND JSDWELL = {parcel.Card}";
-
-            FormattableString deleteMasterSql = $"DELETE FROM {MasterRecordTable} WHERE JMRECORD = {parcel.Record} AND JMDWELL = {parcel.Card}";
-            int resultsCount = 0;
-            resultsCount += SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteLinesSql.ToString());
-            resultsCount += SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteSectionsSql.ToString());
-            resultsCount += SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteMasterSql.ToString());
-            return resultsCount;
-        }
-
-        private string InsertLinesSql(SMParcel parcel)
-        {
-            StringBuilder insertLinesSql = new StringBuilder();
+            int recordsAffected = 0;
             FormattableString insertLineSql;
             foreach (SMSection s in parcel.Sections.OrderBy(s => s.SectionLetter))
             {
                 foreach (SMLine l in s.Lines.OrderBy(l => l.LineNumber))
                 {
-                    insertLineSql = $"INSERT INTO NATIVE.AUGLINE(JLRECORD, JLDWELL, JLSECT, JLLINE#, JLDIRECT, JLXLEN, JLYLEN, JLLINELEN, JLANGLE, JLPT1X, JLPT1Y, JLPT2X, JLPT2Y, JLATTACH) VALUES({l.Record}, {l.Card}, '{l.SectionLetter}', {l.LineNumber}, '{l.Direction.ToString()}', {l.XLength}, {l.YLength}, {l.LineLength}, {l.LineAngle}, {l.StartX}, {l.StartY}, {l.EndX}, {l.EndY}, '{l.AttachedSection}');";
-                    insertLinesSql.AppendLine(insertLineSql.ToString());
+                    insertLineSql = $"INSERT INTO NATIVE.AUGLINE(JLRECORD, JLDWELL, JLSECT, JLLINE#, JLDIRECT, JLXLEN, JLYLEN, JLLINELEN, JLANGLE, JLPT1X, JLPT1Y, JLPT2X, JLPT2Y, JLATTACH) VALUES({l.Record}, {l.Card}, '{l.SectionLetter}', {l.LineNumber}, '{l.Direction.ToString()}', {l.XLength}, {l.YLength}, {l.LineLength}, {l.LineAngle}, {l.StartX}, {l.StartY}, {l.EndX}, {l.EndY}, '{l.AttachedSection}')";
+                    recordsAffected += SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(insertLineSql.ToString());
                 }
             }
-            return insertLinesSql.ToString();
+            return recordsAffected;
         }
 
-        private string InsertMasterSql(SMParcel parcel)
+        private int InsertMaster(SMParcel parcel)
         {
-            FormattableString insertMasterSql = $"INSERT INTO {MasterRecordTable}(JMRECORD, JMDWELL, JMSKETCH, JMSTORY, JMSTORYEX, JMSCALE, JMTOTSQFT, JMESKETCH) VALUES ( {parcel.Record}, {parcel.Card}, '{parcel.HasSketch.ToUpper().Trim()}', {parcel.Storeys},'{parcel.StoreyEx}', {parcel.Scale}, {parcel.TotalSqFt},'{parcel.ExSketch}' );";
-            return insertMasterSql.ToString();
+            FormattableString insertMasterSql = $"INSERT INTO {MasterRecordTable}(JMRECORD, JMDWELL, JMSKETCH, JMSTORY, JMSTORYEX, JMSCALE, JMTOTSQFT, JMESKETCH) VALUES ( {parcel.Record}, {parcel.Card}, '{parcel.HasSketch.ToUpper().Trim()}', {parcel.Storeys},'{parcel.StoreyEx}', {parcel.Scale}, {parcel.TotalSqFt},'{parcel.ExSketch}' )";
+            return SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(insertMasterSql.ToString());
         }
 
-        private string InsertSectionsSql(SMParcel parcel)
+        private int InsertSections(SMParcel parcel)
         {
             FormattableString insertSectionSql;
-            StringBuilder insertSectionsSql = new StringBuilder();
+
+            int recordsAffected = 0;
             foreach (SMSection s in parcel.Sections)
             {
                 insertSectionSql =
-                    $"INSERT INTO {SectionRecordTable}(JSRECORD, JSDWELL, JSSECT, JSTYPE, JSSTORY, JSDESC, JSSKETCH, JSSQFT, JS0DEPR, JSCLASS, JSVALUE, JSFACTOR, JSDEPRC) VALUES({s.Record},{s.Card}, '{s.SectionLetter}', '{s.SectionType}', {s.StoreysValue}, '{s.Description}', '{s.HasSketch}', {s.SqFt}, '{s.ZeroDepr}', '{s.SectionClass}', {s.SectionValue}, {s.AdjFactor}, {s.Depreciation});";
-                insertSectionsSql.AppendLine(insertSectionSql.ToString());
+                    $"INSERT INTO {SectionRecordTable}(JSRECORD, JSDWELL, JSSECT, JSTYPE, JSSTORY, JSDESC, JSSKETCH, JSSQFT, JS0DEPR, JSCLASS, JSVALUE, JSFACTOR, JSDEPRC) VALUES({s.Record},{s.Card}, '{s.SectionLetter}', '{s.SectionType}', {s.StoreysValue}, '{s.Description}', '{s.HasSketch}', {s.SqFt}, '{s.ZeroDepr}', '{s.SectionClass}', {s.SectionValue}, {s.AdjFactor}, {s.Depreciation})";
+                recordsAffected += SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(insertSectionSql.ToString());
             }
 
-            return insertSectionsSql.ToString();
+            return recordsAffected;
         }
 
         private SMParcelMast RefreshWorkingCopyFromDb(SMParcel parcel)
@@ -428,41 +460,39 @@ namespace SketchUp
             }
         }
 
+        #endregion "Private methods"
+
         private void UpdateCarports(SMParcel parcel)
         {
             MessageBox.Show(string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module.Name, MethodBase.GetCurrentMethod().Name), "Refactoring in Progress", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void UpdateDatabase(SMParcel parcel)
+        private bool UpdateDatabase(SMParcel parcel)
         {
-
-            int resultsCount=0;
+            int resultsCount = 0;
+            bool updateCompleted = false;
             try
             {
-                resultsCount+= DeleteExistingSketchData(parcel);
-
-                //sqlSb.AppendLine(UpdateMastSql(parcel));
-                //resultsCount = SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(sqlSb.ToString());
-
-                //sqlSb.AppendLine(InsertMasterSql(parcel));
-                //resultsCount = SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(sqlSb.ToString());
-
-                //sqlSb.AppendLine(InsertSectionsSql(parcel));
-                //resultsCount = SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(sqlSb.ToString());
-
-                //sqlSb.AppendLine(InsertLinesSql(parcel));
-                //resultsCount = SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(sqlSb.ToString());
-                Debug.WriteLine($"Results: {resultsCount.ToString()}".ToString());
+                resultsCount += DeleteSketch(parcel);
+                resultsCount += UpdateMastData(parcel);
+                resultsCount += InsertMaster(parcel);
+                resultsCount += InsertSections(parcel);
+                resultsCount += InsertLines(parcel);
+                Trace.WriteLine($"{resultsCount} records affected for save.");
+                updateCompleted = true;
+                return updateCompleted;
             }
             catch (Exception ex)
             {
                 string errMessage = $"Error occurred in {MethodBase.GetCurrentMethod().Module}, in procedure {MethodBase.GetCurrentMethod().Name}: {ex.Message}".ToString();
                 Trace.WriteLine(errMessage);
                 Debug.WriteLine(errMessage);
+
 #if DEBUG
 
                 MessageBox.Show(errMessage);
 #endif
+                return updateCompleted;
             }
         }
 
@@ -483,12 +513,12 @@ namespace SketchUp
             SketchUpGlobals.ParcelWorkingCopy.ParcelMast.TotalArea = areaSum;
         }
 
-        private string UpdateMastSql(SMParcel parcel)
+        private int UpdateMastData(SMParcel parcel)
         {
             try
             {
-                FormattableString updateMastSql = $"UPDATE {MastRecordTable} SET MSTOR#={parcel.ParcelMast.StoreysValue} , MGART={parcel.ParcelMast.Garage1TypeCode} , MGAR#C={parcel.ParcelMast.Garage1NumCars} , MCARPT={parcel.ParcelMast.CarportTypeCode} , MCAR#C={parcel.ParcelMast.CarportNumCars} , MBI#C={parcel.ParcelMast.NumCarsBuiltInCode} , MGART2={parcel.ParcelMast.Garage2TypeCode} , MGAR#2={parcel.ParcelMast.Garage2NumCars} , MTOTA={parcel.ParcelMast.TotalArea}  WHERE MRECNO={parcel.ParcelMast.Record} AND MDWELL={parcel.ParcelMast.Card};";
-                return updateMastSql.ToString();
+                FormattableString updateMastSql = $"UPDATE {MastRecordTable} SET MSTOR#={parcel.ParcelMast.StoreysValue} , MGART={parcel.ParcelMast.Garage1TypeCode} , MGAR#C={parcel.ParcelMast.Garage1NumCars} , MCARPT={parcel.ParcelMast.CarportTypeCode} , MCAR#C={parcel.ParcelMast.CarportNumCars} , MBI#C={parcel.ParcelMast.NumCarsBuiltInCode} , MGART2={parcel.ParcelMast.Garage2TypeCode} , MGAR#2={parcel.ParcelMast.Garage2NumCars} , MTOTA={parcel.ParcelMast.TotalArea}  WHERE MRECNO={parcel.ParcelMast.Record} AND MDWELL={parcel.ParcelMast.Card}";
+                return SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(updateMastSql.ToString());
             }
             catch (Exception ex)
             {
@@ -521,7 +551,7 @@ namespace SketchUp
             }
         }
 
-        #endregion "Private methods"
+        #endregion "Public Methods"
 
         #region "Properties"
 
