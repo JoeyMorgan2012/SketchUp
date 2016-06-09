@@ -2006,14 +2006,16 @@ namespace SketchUp
             {
                 if (UnsavedChangesExist)
                 {
-                    //UpdateCarsInfo();
+                    if (GarageDataComplete())
+                    {
+                  
                     parcel.ReorganizeSections();
                     SketchRepository sr = new SketchRepository(parcel);
                     ParcelMast = sr.SaveCurrentParcel(parcel);
                     WorkingParcel = ParcelMast.Parcel;
                     RedrawSketch(WorkingParcel);
                     UnsavedChangesExist = false;
-
+                }
                 }
                 return true;
             }
@@ -2551,10 +2553,20 @@ namespace SketchUp
             //dbConn.DBConnection.ExecuteNonSelectStatement(zerocp.ToString());
         }
 
-        private void UpdateCarsInfo()
+        private bool GarageDataComplete()
         {
-            bool updatesNeeded = true;
-            SMVehicleStructure svs = new SMVehicleStructure(WorkingParcel);
+            bool updatesNeeded = (SketchUpLookups.CarPortTypes.Contains(WorkingSection.SectionType) || SketchUpLookups.GarageTypes.Contains(WorkingSection.SectionType));
+
+            if (updatesNeeded)
+            {
+                MissingGarageData mgd = new MissingGarageData(WorkingParcel.ParcelMast, WorkingSection.SqFt, WorkingSection.SectionType);
+                if (mgd.GarageDataOk&&mgd.CarportDataOk)
+                {
+                    updatesNeeded = false;
+                }
+            }
+            return !updatesNeeded;
+            //SMVehicleStructure svs = new SMVehicleStructure(WorkingParcel);
         }
 
         private void UpdateGarageCountToZero()
