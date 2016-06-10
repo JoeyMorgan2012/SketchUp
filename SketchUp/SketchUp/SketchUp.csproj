@@ -140,7 +140,7 @@
     <Compile Include="CamraSupport\ResidentialSections.cs" />
     <Compile Include="SMVehicleStructure.cs" />
     <Compile Include="UtilityClasses\DevUtilities.cs" />
-    <Compile Include="UtilityClasses\SketchUpLookups.cs" />
+    <Compile Include="SketchUpLookups.cs" />
     <Compile Include="CamraSupport\StabType.cs" />
     <Compile Include="CamraSupport\StabTypeD.cs" />
     <Compile Include="CamraSupport\OccupancyDescriptionD.cs" />

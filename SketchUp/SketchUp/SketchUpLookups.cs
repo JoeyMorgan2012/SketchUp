@@ -4,13 +4,29 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
+using System.Reflection;
+using System.Diagnostics;
 
 namespace SketchUp
 {
     public static class SketchUpLookups
     {
-#region "Public Methods"
+        
+        #region "Public Methods"
+        public static void InitializeWithTestSettings()
+        {
+            //The application sets these, but for the PoC project we need to initialize the connection information manually. JMM 6-6-16
+            SketchUpGlobals.IpAddress = "192.168.176.241";
+            SketchUpGlobals.UserName = "CAMRA2";
+            SketchUpGlobals.Password = "CAMRA2";
+            SketchUpGlobals.LocalityPrefix = "AUG";
+            SketchUpGlobals.Record = 11787;
+            SketchUpGlobals.Card = 1;
 
+            SMConnection conn = new SMConnection(SketchUpGlobals.IpAddress, SketchUpGlobals.UserName, SketchUpGlobals.Password, SketchUpGlobals.LocalityPrefix);
+            Init(conn.DbConn);
+        }
         public static List<string> ClassCodeList()
         {
             if (Rates.ClassValues == null)
@@ -87,19 +103,19 @@ namespace SketchUp
       
                     foreach (CommercialSections cs in CommercialSectionTypeCollection.OrderBy(s=>s._commSectionDescription))
                     {
-                        sectList.Add(new ListOrComboBoxItem { Code = cs._commSectionType, Description = string.Format("{0} - {1}",cs._commSectionType,cs._commSectionDescription )});
+                        sectList.Add(new ListOrComboBoxItem { Code = cs._commSectionType, Description = $"{cs._commSectionType} - {cs._commSectionDescription}".ToString(), PrintDescription = cs._commSectionDescription });
                     }
                     List<ResidentalSections> commOk = (from rs in ResidentialSectionTypeCollection where !CamraDataEnums.GetEnumStrings(typeof(CamraDataEnums.InvalidCommercialSection)).Contains(rs._resSectionType) select rs).ToList();
                     foreach (ResidentalSections rs in commOk.OrderBy(c=>c._resSectionDescription))
                     {
-                        sectList.Add(new ListOrComboBoxItem { Code = rs._resSectionType, Description = string.Format("{0} - {1}",rs._resSectionType,rs._resSectionDescription) });
+                        sectList.Add(new ListOrComboBoxItem { Code = rs._resSectionType, Description = $"{rs._resSectionType} - {rs._resSectionDescription}".ToString(), PrintDescription = rs._resSectionDescription });
                     }
                    
                     break;
                 case CamraDataEnums.OccupancyType.Residential:
                     foreach (ResidentalSections rs in ResidentialSectionTypeCollection.OrderBy(s=>s._resSectionDescription))
                     {
-                        sectList.Add(new ListOrComboBoxItem { Code = rs._resSectionType, Description = string.Format("{0} - {1}", rs._resSectionType, rs._resSectionDescription) });
+                        sectList.Add(new ListOrComboBoxItem { Code = rs._resSectionType, Description = $"{rs._resSectionType} - {rs._resSectionDescription}".ToString(), PrintDescription = rs._resSectionDescription });
                     }
                     break;
 
@@ -108,11 +124,11 @@ namespace SketchUp
                 case CamraDataEnums.OccupancyType.Other:
                     foreach (ResidentalSections rs in ResidentialSectionTypeCollection.OrderBy(s=>s._resSectionDescription))
                     {
-                        sectList.Add(new ListOrComboBoxItem { Code = rs._resSectionType, Description = string.Format("{0} - {1}", rs._resSectionType, rs._resSectionDescription) });
+                        sectList.Add(new ListOrComboBoxItem { Code = rs._resSectionType, Description = $"{rs._resSectionType} - {rs._resSectionDescription}".ToString(),PrintDescription= rs._resSectionDescription });
                     }
                     foreach (CommercialSections cs in CommercialSectionTypeCollection.OrderBy(s=>s._commSectionDescription))
                     {
-                        sectList.Add(new ListOrComboBoxItem { Code = cs._commSectionType, Description = string.Format("{0} - {1}", cs._commSectionType, cs._commSectionDescription) });
+                        sectList.Add(new ListOrComboBoxItem { Code = cs._commSectionType, Description = $"{cs._commSectionType} - {cs._commSectionDescription}".ToString(),PrintDescription=cs._commSectionDescription});
                     }
                     break;
                     
@@ -121,8 +137,8 @@ namespace SketchUp
             }
             foreach (ResidentalSections rs in ResidentialSectionTypeCollection.OrderBy(s => s._resSectionDescription))
             {
-                ListOrComboBoxItem sli= new ListOrComboBoxItem { Code = rs._resSectionType, Description = string.Format("{0} - {1}", rs._resSectionType, rs._resSectionDescription) };
-                sectList.Add(sli);
+               
+               sectList.Add(new ListOrComboBoxItem { Code = rs._resSectionType, Description = $"{rs._resSectionType} - {rs._resSectionDescription}".ToString(), PrintDescription = rs._resSectionDescription });
             }
             sectList.OrderBy(d => d.Description);
             return sectList;
@@ -241,8 +257,61 @@ namespace SketchUp
             }
         }
 
-       
 
+        public static List<ListOrComboBoxItem> SectionDescriptionLookups()
+        {
+
+            try
+            {
+                List<ListOrComboBoxItem> sectionDescriptions = new List<ListOrComboBoxItem>();
+                string library=SketchUpGlobals.LocalLib;
+                string locality=SketchUpGlobals.LocalityPrefix;
+                FormattableString sql = $"SELECT DISTINCT R.RSECTO as Code,R.RDESC as Description FROM {library}.{locality}RAT1 R WHERE R. RID = 'P' OR(RID = 'C' AND RRPSF = 0) ORDER BY RSECTO,RDESC";
+                SMConnection conn = new SMConnection(SketchUpGlobals.IpAddress, SketchUpGlobals.UserName, SketchUpGlobals.Password, locality);
+                DataSet descriptions = conn.DbConn.DBConnection.RunSelectStatement(sql.ToString());
+                string sectType = string.Empty;
+                string sectDescr = string.Empty;
+                string printDescr = string.Empty;
+                ListOrComboBoxItem lci;
+                if (descriptions!=null&&descriptions.Tables.Count>0)
+                {
+                    DataTable dt = descriptions.Tables[0];
+                    if (dt.Rows.Count>0)
+                    {
+                        foreach (DataRow row in dt.Rows)
+                        {
+                            sectType = row["Code"].ToString();
+                            sectDescr = row["description"].ToString();
+                            printDescr = $"{sectType} - {sectDescr}".ToString();
+                            lci = new ListOrComboBoxItem { Code = sectType.ToUpper().Trim(), Description = sectDescr, PrintDescription = printDescr };
+                            sectionDescriptions.Add(lci);
+                        }
+                    }
+                }
+                return sectionDescriptions;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = $"Error occurred in {MethodBase.GetCurrentMethod().Module}, in procedure {MethodBase.GetCurrentMethod().Name}: {ex.Message}".ToString();
+                Trace.WriteLine(errMessage);
+                Console.WriteLine(errMessage);
+#if DEBUG
+
+                MessageBox.Show(errMessage);
+#endif
+                throw;
+            }
+        }
+        public static string SectionDescriptionFromType(string sectionType)
+        {
+            string description = string.Empty;
+            var typeLookup = SectionDescriptionLookups().Where(c => c.Code == sectionType).FirstOrDefault();
+            if (typeLookup!=null)
+            {
+                description= typeLookup.Description.Trim();
+            }
+            return description;
+        }
         private static void GetCommercialSections(DBAccessManager db)
         {
             DataSet ds_commercialSection = db.RunSelectStatement(String.Format(

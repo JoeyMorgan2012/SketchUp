@@ -11,7 +11,7 @@ namespace SketchUp
 {
     public class SketchRepository
     {
-        #region "Constructor"
+#region "Constructor"
 
         public SketchRepository(SMParcel selectedParcel)
         {
@@ -24,9 +24,47 @@ namespace SketchUp
             SketchConnection = new SMConnection(dbDataSource, dbUserName, dbPassword, localityPrefix);
         }
 
-        #endregion "Constructor"
+#endregion
 
-        #region "Public Methods"
+#region "Public Methods"
+
+        public SMParcel AddSketchToSnapshots(SMParcel parcel)
+        {
+            parcel.SnapShotIndex++;
+            SketchUpGlobals.SketchSnapshots.Add(parcel);
+            return SketchUpGlobals.ParcelWorkingCopy;
+        }
+
+        public int DeleteSketch(SMParcel parcel)
+        {
+            try
+            {
+                int resultsCount = 0;
+                FormattableString deleteLinesSql = $"DELETE FROM {LineRecordTable} WHERE JLRECORD = {parcel.Record} AND JLDWELL = {parcel.Card}";
+
+                resultsCount += SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteLinesSql.ToString());
+
+                FormattableString deleteSectionsSql = $"DELETE FROM {SectionRecordTable} WHERE JSRECORD = {parcel.Record} AND JSDWELL = {parcel.Card}";
+
+                resultsCount += SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteSectionsSql.ToString());
+
+                FormattableString deleteMasterSql = $"DELETE FROM {MasterRecordTable} WHERE JMRECORD = {parcel.Record} AND JMDWELL = {parcel.Card}";
+
+                resultsCount += SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteMasterSql.ToString());
+                return resultsCount;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = $"Error occurred in {MethodBase.GetCurrentMethod().Module}, in procedure {MethodBase.GetCurrentMethod().Name}: {ex.Message}".ToString();
+                Trace.WriteLine(errMessage);
+                Console.WriteLine(errMessage);
+#if DEBUG
+
+                MessageBox.Show(errMessage);
+#endif
+                throw;
+            }
+        }
 
         public static string NextLetterFromDb(SWallTech.CAMRA_Connection conn, int record, int card)
         {
@@ -101,44 +139,6 @@ namespace SketchUp
             return nextLetter;
         }
 
-        public SMParcel AddSketchToSnapshots(SMParcel parcel)
-        {
-            parcel.SnapShotIndex++;
-            SketchUpGlobals.SketchSnapshots.Add(parcel);
-            return SketchUpGlobals.ParcelWorkingCopy;
-        }
-
-        public int DeleteSketch(SMParcel parcel)
-        {
-            try
-            {
-                int resultsCount = 0;
-                FormattableString deleteLinesSql = $"DELETE FROM {LineRecordTable} WHERE JLRECORD = {parcel.Record} AND JLDWELL = {parcel.Card}";
-
-                resultsCount += SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteLinesSql.ToString());
-
-                FormattableString deleteSectionsSql = $"DELETE FROM {SectionRecordTable} WHERE JSRECORD = {parcel.Record} AND JSDWELL = {parcel.Card}";
-
-                resultsCount += SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteSectionsSql.ToString());
-
-                FormattableString deleteMasterSql = $"DELETE FROM {MasterRecordTable} WHERE JMRECORD = {parcel.Record} AND JMDWELL = {parcel.Card}";
-
-                resultsCount += SketchConnection.DbConn.DBConnection.ExecuteNonSelectStatement(deleteMasterSql.ToString());
-                return resultsCount;
-            }
-            catch (Exception ex)
-            {
-                string errMessage = $"Error occurred in {MethodBase.GetCurrentMethod().Module}, in procedure {MethodBase.GetCurrentMethod().Name}: {ex.Message}".ToString();
-                Trace.WriteLine(errMessage);
-                Console.WriteLine(errMessage);
-#if DEBUG
-
-                MessageBox.Show(errMessage);
-#endif
-                throw;
-            }
-        }
-
         public SMParcelMast SaveCurrentParcel(SMParcel parcel)
         {
 
@@ -177,8 +177,6 @@ namespace SketchUp
                 return parcel.ParcelMast;
             }
         }
-
-        #region Select Methods
 
         public SMParcelMast SelectParcelMasterWithParcel(int recordNumber, int dwellingNumber)
         {
@@ -238,9 +236,9 @@ namespace SketchUp
             return parcelMast;
         }
 
-        #endregion Select Methods
+#endregion
 
-        #region "Private methods"
+#region "Private methods"
 
         private int InsertLines(SMParcel parcel)
         {
@@ -329,6 +327,10 @@ namespace SketchUp
                             RefreshSection = false,
                             ParentParcel = parcel
                         };
+                        if (string.IsNullOrEmpty(thisSection.Description))
+                        {
+                            thisSection.Description = SketchUpLookups.SectionDescriptionFromType(thisSection.SectionType);
+                        }
                         thisSection.Lines = SelectSectionLines(thisSection);
                         sections.Add(thisSection);
                     }
@@ -460,8 +462,6 @@ namespace SketchUp
             }
         }
 
-        #endregion "Private methods"
-
         private void UpdateCarports(SMParcel parcel)
         {
             MessageBox.Show(string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module.Name, MethodBase.GetCurrentMethod().Name), "Refactoring in Progress", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -551,9 +551,9 @@ namespace SketchUp
             }
         }
 
-        #endregion "Public Methods"
+#endregion
 
-        #region "Properties"
+#region "Properties"
 
         public string DataSource
         {
@@ -561,7 +561,6 @@ namespace SketchUp
             {
                 return dataSource;
             }
-
             set
             {
                 dataSource = value;
@@ -575,7 +574,6 @@ namespace SketchUp
                 lineRecordTable = SketchConnection.LineTable;
                 return lineRecordTable;
             }
-
             set
             {
                 lineRecordTable = value;
@@ -588,7 +586,6 @@ namespace SketchUp
             {
                 return locality;
             }
-
             set
             {
                 locality = value;
@@ -602,7 +599,6 @@ namespace SketchUp
                 masterRecordTable = SketchConnection.MasterTable;
                 return masterRecordTable;
             }
-
             set
             {
                 masterRecordTable = value;
@@ -616,7 +612,6 @@ namespace SketchUp
                 mastRecordTable = SketchConnection.MastTable;
                 return mastRecordTable;
             }
-
             set
             {
                 mastRecordTable = value;
@@ -629,7 +624,6 @@ namespace SketchUp
             {
                 return password;
             }
-
             set
             {
                 password = value;
@@ -643,7 +637,6 @@ namespace SketchUp
                 sectionRecordTable = SketchConnection.SectionTable;
                 return sectionRecordTable;
             }
-
             set
             {
                 sectionRecordTable = value;
@@ -656,7 +649,6 @@ namespace SketchUp
             {
                 return sketchConnection;
             }
-
             set
             {
                 sketchConnection = value;
@@ -669,7 +661,6 @@ namespace SketchUp
             {
                 return userName;
             }
-
             set
             {
                 userName = value;
@@ -682,16 +673,15 @@ namespace SketchUp
             {
                 return workingParcel;
             }
-
             set
             {
                 workingParcel = value;
             }
         }
 
-        #endregion "Properties"
+#endregion
 
-        #region "Private Fields"
+#region "Private Fields"
 
         private string dataSource;
         private string lineRecordTable;
@@ -704,6 +694,6 @@ namespace SketchUp
         private string userName;
         private SMParcel workingParcel;
 
-        #endregion "Private Fields"
+#endregion
     }
 }

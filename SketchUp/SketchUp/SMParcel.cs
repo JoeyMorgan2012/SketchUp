@@ -224,7 +224,7 @@ namespace SketchUp
             {
                 foreach (SMSection sms in Sections)
                 {
-                    sms.AttachedTo = (from l in AllSectionLines where l.AttachedSection == sms.SectionLetter select l.SectionLetter).FirstOrDefault<string>() ?? string.Empty;
+                    sms.AttachedTo = (from l in AllSectionLines where l.AttachedSection == sms.SectionLetter select l.SectionLetter).FirstOrDefault() ?? string.Empty;
                 }
             }
         }
