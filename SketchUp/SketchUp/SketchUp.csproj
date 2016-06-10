@@ -138,7 +138,14 @@
     <Compile Include="CamraSupport\CamraDataEnums.cs" />
     <Compile Include="CamraSupport\LivingAreaSectionTypes.cs" />
     <Compile Include="CamraSupport\ResidentialSections.cs" />
+    <Compile Include="EditSketchSections.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditSketchSections.Designer.cs">
+      <DependentUpon>EditSketchSections.cs</DependentUpon>
+    </Compile>
     <Compile Include="SMVehicleStructure.cs" />
+    <Compile Include="UtilityClasses\TestSetup.cs" />
     <Compile Include="UtilityClasses\DevUtilities.cs" />
     <Compile Include="SketchUpLookups.cs" />
     <Compile Include="CamraSupport\StabType.cs" />
@@ -260,6 +267,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DeleteReview.resx">
       <DependentUpon>DeleteReview.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditSketchSections.resx">
+      <DependentUpon>EditSketchSections.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ExpandoSketch.resx">
       <DependentUpon>ExpandoSketch.cs</DependentUpon>

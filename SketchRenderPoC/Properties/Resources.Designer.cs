@@ -253,9 +253,9 @@ namespace SketchUp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Jump_Point {
+        internal static System.Drawing.Bitmap JumpPoint {
             get {
-                object obj = ResourceManager.GetObject("Jump Point", resourceCulture);
+                object obj = ResourceManager.GetObject("JumpPoint", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -286,6 +286,16 @@ namespace SketchUp.Properties {
         internal static System.Drawing.Bitmap RedRectangle {
             get {
                 object obj = ResourceManager.GetObject("RedRectangle", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SaveGreenCheck {
+            get {
+                object obj = ResourceManager.GetObject("SaveGreenCheck", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

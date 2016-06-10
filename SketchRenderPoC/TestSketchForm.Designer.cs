@@ -256,7 +256,7 @@
             // cmenuJump
             // 
             this.cmenuJump.AutoToolTip = true;
-            this.cmenuJump.Image = global::SketchUp.Properties.Resources.Jump_Point;
+            this.cmenuJump.Image = global::SketchUp.Properties.Resources.JumpPoint;
             this.cmenuJump.Name = "cmenuJump";
             this.cmenuJump.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.J)));
             this.cmenuJump.Size = new System.Drawing.Size(162, 26);
