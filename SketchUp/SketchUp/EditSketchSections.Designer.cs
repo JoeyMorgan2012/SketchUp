@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dtSectionsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.sectionsDt = new System.Data.DataTable();
             this.selectColumn = new System.Data.DataColumn();
@@ -62,6 +62,7 @@
             this.sectionLabel = new System.Windows.Forms.Label();
             this.sectionLetterLabel = new System.Windows.Forms.Label();
             this.cboSectionType = new System.Windows.Forms.ComboBox();
+            this.editSketchSectionsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.storyText = new System.Windows.Forms.TextBox();
             this.sizeTextLabel = new System.Windows.Forms.Label();
             this.descriptionTextLabel = new System.Windows.Forms.Label();
@@ -69,6 +70,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.sectionsDt)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSections)).BeginInit();
             this.statusStripMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.editSketchSectionsBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // dtSectionsBindingSource
@@ -100,20 +102,20 @@
             // 
             this.dgvSections.AllowUserToAddRows = false;
             this.dgvSections.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.Padding = new System.Windows.Forms.Padding(4);
-            this.dgvSections.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.Padding = new System.Windows.Forms.Padding(4);
+            this.dgvSections.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvSections.AutoGenerateColumns = false;
             this.dgvSections.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle7.Padding = new System.Windows.Forms.Padding(4);
-            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvSections.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.Padding = new System.Windows.Forms.Padding(4);
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvSections.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dgvSections.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvSections.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.sectionCol,
@@ -122,14 +124,14 @@
             this.storyCol,
             this.sizeCol});
             this.dgvSections.DataSource = this.sectionsDt;
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle10.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle10.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle10.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle10.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvSections.DefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvSections.DefaultCellStyle = dataGridViewCellStyle5;
             this.dgvSections.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnF2;
             this.dgvSections.Location = new System.Drawing.Point(26, 36);
             this.dgvSections.Name = "dgvSections";
@@ -142,7 +144,9 @@
             this.dgvSections.ShowEditingIcon = false;
             this.dgvSections.Size = new System.Drawing.Size(857, 220);
             this.dgvSections.TabIndex = 3;
+            this.dgvSections.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dgvSections_DataError);
             this.dgvSections.SelectionChanged += new System.EventHandler(this.dgvSections_SelectionChanged);
+            this.dgvSections.Enter += new System.EventHandler(this.dgvSections_Enter);
             // 
             // sectionCol
             // 
@@ -178,8 +182,8 @@
             // 
             this.storyCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.storyCol.DataPropertyName = "StoreysText";
-            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.Black;
-            this.storyCol.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black;
+            this.storyCol.DefaultCellStyle = dataGridViewCellStyle3;
             this.storyCol.FillWeight = 150F;
             this.storyCol.HeaderText = "Story";
             this.storyCol.MinimumWidth = 30;
@@ -189,8 +193,8 @@
             // sizeCol
             // 
             this.sizeCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle9.ForeColor = System.Drawing.Color.Black;
-            this.sizeCol.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
+            this.sizeCol.DefaultCellStyle = dataGridViewCellStyle4;
             this.sizeCol.FillWeight = 200F;
             this.sizeCol.HeaderText = "Size";
             this.sizeCol.MinimumWidth = 30;
@@ -213,7 +217,7 @@
             // 
             this.stlSection.Name = "stlSection";
             this.stlSection.Padding = new System.Windows.Forms.Padding(20, 0, 20, 0);
-            this.stlSection.Size = new System.Drawing.Size(821, 20);
+            this.stlSection.Size = new System.Drawing.Size(860, 20);
             this.stlSection.Spring = true;
             this.stlSection.Text = "Selected Section(s):";
             this.stlSection.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -293,14 +297,21 @@
             // 
             // cboSectionType
             // 
+            this.cboSectionType.DataSource = this.editSketchSectionsBindingSource;
+            this.cboSectionType.DisplayMember = "Code";
             this.cboSectionType.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboSectionType.FormattingEnabled = true;
             this.cboSectionType.Location = new System.Drawing.Point(241, 305);
             this.cboSectionType.Name = "cboSectionType";
             this.cboSectionType.Size = new System.Drawing.Size(234, 28);
             this.cboSectionType.TabIndex = 12;
-            this.cboSectionType.ValueMember = "Code";
+            this.cboSectionType.ValueMember = "Description";
             this.cboSectionType.SelectedIndexChanged += new System.EventHandler(this.cboSectionType_SelectedIndexChanged);
+            // 
+            // editSketchSectionsBindingSource
+            // 
+            this.editSketchSectionsBindingSource.DataMember = "SectionCboList";
+            this.editSketchSectionsBindingSource.DataSource = typeof(SketchUp.EditSketchSections);
             // 
             // storyText
             // 
@@ -357,6 +368,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvSections)).EndInit();
             this.statusStripMain.ResumeLayout(false);
             this.statusStripMain.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.editSketchSectionsBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -394,5 +406,6 @@
         private System.Windows.Forms.TextBox storyText;
         private System.Windows.Forms.Label sizeTextLabel;
         private System.Windows.Forms.Label descriptionTextLabel;
+        private System.Windows.Forms.BindingSource editSketchSectionsBindingSource;
     }
 }

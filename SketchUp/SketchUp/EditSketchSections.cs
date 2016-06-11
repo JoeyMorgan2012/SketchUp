@@ -41,29 +41,12 @@ namespace SketchUp
         
 
     private void cboSectionType_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        if (cboSectionType.SelectedIndex>0&&selectedSection != null)
         {
-                string newType = cboSectionType.SelectedValue.ToString();
-                string newDescription = ((ListOrComboBoxItem)cboSectionType.SelectedItem).PrintDescription;
-            if (newType.ToUpper().Trim() != selectedSection.SectionType.ToUpper().Trim())
-            {
-                unsavedChangesExist = true;
-                selectedSection.SectionType = newType;
-                selectedSection.Description = newDescription;
-                    dgvSections.Rows[selectedRow.Index].Cells["typeCol"].Value = newType.ToUpper().Trim();
-                    dgvSections.Rows[selectedRow.Index].Cells["descriptionCol"].Value =newDescription.ToUpper().Trim();
-                    //TODO: Start here tomorrow June 11
-                    dgvSections.Rows[selectedRow.Index].Clone();
-                }
-
+            UpdateSectionType();
 
         }
 
-
-    }
-
-    private void ClearDetails()
+        private void ClearDetails()
     {
         sectionLetterLabel.Text = string.Empty;
         cboSectionType.SelectedIndex = -1;
@@ -72,7 +55,7 @@ namespace SketchUp
         cboSectionType.SelectedIndex = 0;
         cboSectionType.Enabled = false;
         sizeTextLabel.Text = string.Empty;
-        selectedSection = null;
+        SelectedSection = null;
     }
 
         private DataTable CreateSectionsDataTable()
@@ -127,6 +110,11 @@ namespace SketchUp
 #endif
         }
 
+        private void dgvSections_Enter(object sender, EventArgs e)
+        {
+            SelectCurrentSectionTypeFromList();
+        }
+
         private void dgvSections_SelectionChanged(object sender, EventArgs e)
         {
             RefreshFormInformation();
@@ -149,15 +137,15 @@ namespace SketchUp
 
         private void InitializeComboBox(SMParcel workingParcel)
         {
-            List<ListOrComboBoxItem> sectionCboList = new List<ListOrComboBoxItem>();
-            ListOrComboBoxItem lci = new ListOrComboBoxItem { Code = "(NONE)", Description = "< Select Section Type >", PrintDescription = "NONE" };
-            sectionCboList.Add(lci);
-            sectionCboList.AddRange(SketchUpLookups.SectionsByOccupancy(workingParcel.ParcelMast.OccupancyType));
-            cboSectionType.DataSource = sectionCboList;
+           
+            ListOrComboBoxItem lci = new ListOrComboBoxItem { Code = "(NONE)", Description = "<Select Section Type>", PrintDescription = "NONE" };
+            SectionCboList.Add(lci);
+            SectionCboList.AddRange(SketchUpLookups.SectionsByOccupancy(workingParcel.ParcelMast.OccupancyType));
+            cboSectionType.DataSource = SectionCboList;
             cboSectionType.DisplayMember = "Description";
             cboSectionType.ValueMember = "Code";
-            cboSectionType.SelectedIndex = 0;
-         
+            cboSectionType.SelectedIndex = 4;
+     
             dgvSections.Focus();
         }
 
@@ -179,23 +167,45 @@ namespace SketchUp
 
         private void RefreshFormInformation()
         {
-         
-              
+
+            string sectionLetter = string.Empty;
                 if (SelectedRow==null)
                 {
                     ClearDetails();
+                sectionLetter = string.Empty;
                 }
                 
                 else
                 {
-                   
-                    string sectionLetter = sectionLetterLabel.Text = SelectedRow.Cells["sectionCol"].Value.ToString();
-                    selectedSection = Parcel.SelectSectionByLetter(sectionLetter);
+                if (SelectedRow==null)
+                {
+                    dgvSections.Rows[0].Selected = true;
+                }
+                     sectionLetter = sectionLetterLabel.Text = SelectedRow.Cells["sectionCol"].Value.ToString();
+                    SelectedSection = Parcel.SelectSectionByLetter(sectionLetter);
                     ShowDetails(SelectedRow);
+
                 }
               
-                UpdateStatusStrip();
+                UpdateStatusStrip(sectionLetter);
             }
+
+        private void SelectCurrentSectionTypeFromList()
+        {
+            if (SelectedSection!=null)
+            {
+         string sectionType = SelectedSection.SectionType;
+                int cboIndex = cboSectionType.FindStringExact(sectionType);
+                cboSectionType.SelectedIndex = cboIndex;
+            }
+            else
+            {
+                cboSectionType.SelectedIndex = 0;
+            }
+
+          
+
+        }
 
     private void ShowDetails(DataGridViewRow selectedRow)
     {
@@ -203,13 +213,45 @@ namespace SketchUp
         storyText.Enabled = true;
 
         sectionLetterLabel.Text = selectedRow.Cells["sectionCol"].Value.ToString();
-          int cboIndex=  cboSectionType.FindStringExact(selectedSection.SectionType);
+          int cboIndex=  cboSectionType.FindString(SelectedSection.SectionType);
             cboSectionType.SelectedIndex = cboIndex;
         descriptionTextLabel.Text = selectedRow.Cells["descriptionCol"].Value.ToString();
         storyText.Text = string.Format("{0:N2}", selectedRow.Cells["storyCol"].Value.ToString());
         sizeTextLabel.Text = string.Format("{0:N2}", selectedRow.Cells["sizeCol"].Value.ToString());
 
     }
+
+        private void UpdateSectionType()
+        {
+            if (cboSectionType.SelectedIndex > 0 && SelectedSection != null)
+            {
+                string newType = cboSectionType.SelectedValue.ToString();
+                string newDescription = ((ListOrComboBoxItem)cboSectionType.SelectedItem).PrintDescription;
+                if (newType.ToUpper().Trim() != SelectedSection.SectionType.ToUpper().Trim())
+                {
+                    DataGridViewRow rowCopy = (DataGridViewRow)dgvSections.Rows[SelectedRow.Index].Clone();
+                    
+                    dgvSections.BeginEdit(true);
+                   
+                    
+                    SelectedSection.SectionType = newType;
+                    SelectedSection.Description = newDescription;
+                    string currentType = dgvSections.Rows[SelectedRow.Index].Cells["typeCol"].Value.ToString();
+                    if (currentType!=newType)
+                    {
+      dgvSections.Rows[SelectedRow.Index].Cells["typeCol"].Value = newType.ToUpper().Trim();
+                    dgvSections.Rows[SelectedRow.Index].Cells["descriptionCol"].Value = newDescription.ToUpper().Trim();
+                    }
+                    dgvSections.EndEdit();
+                    unsavedChangesExist = true;
+                    RefreshFormInformation();
+               
+                   
+                }
+
+
+            }
+        }
 
     private void UpdateStatusStrip(string sectionLetter = "")
     {
@@ -267,6 +309,23 @@ namespace SketchUp
             }
         }
 
+        public List<ListOrComboBoxItem> SectionCboList
+        {
+            get
+            {
+                if (sectionCboList==null)
+                {
+                    sectionCboList = new List<ListOrComboBoxItem>();
+                   
+                }
+                return sectionCboList;
+            }
+            set
+            {
+                sectionCboList = value;
+            }
+        }
+
         public DataGridViewRow SelectedRow
         {
             get
@@ -292,6 +351,26 @@ namespace SketchUp
             set
             {
                 selectedRow = value;
+            }
+        }
+
+     
+
+        public SMSection SelectedSection
+        {
+            get
+            {
+                if (SelectedRow!=null)
+                {
+                    string sectionLetter = SelectedRow.Cells["sectionCol"].Value.ToString();
+                    selectedSection = Parcel.SelectSectionByLetter(sectionLetter);
+
+                }
+                return selectedSection;
+            }
+            set
+            {
+                selectedSection = value;
             }
         }
 
@@ -323,11 +402,12 @@ namespace SketchUp
 
 #region "Private Fields"
 
-    private Bitmap ChangesSavedImage = Properties.Resources.GreenCheck;
+        private Bitmap ChangesSavedImage = Properties.Resources.GreenCheck;
     private Bitmap DeleteSectionImage = Properties.Resources.DeleteListItem_32x;
         private DataTable dtSections;
     private Bitmap EditedImage = Properties.Resources.Edit_32xMD;
     private Bitmap SaveAndCloseImage = Properties.Resources.Save;
+        List<ListOrComboBoxItem> sectionCboList;
         DataGridViewRow selectedRow;
         private List<DataGridViewRow> selectedRows = new List<DataGridViewRow>();
         private SMSection selectedSection;
@@ -336,7 +416,5 @@ namespace SketchUp
         private bool unsavedChangesExist;
 
 #endregion
-     
-
     }
 }
