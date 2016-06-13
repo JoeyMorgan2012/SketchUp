@@ -34,6 +34,7 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditSketchSections));
             this.dtSectionsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.sectionsDt = new System.Data.DataTable();
             this.selectColumn = new System.Data.DataColumn();
@@ -66,11 +67,15 @@
             this.storyText = new System.Windows.Forms.TextBox();
             this.sizeTextLabel = new System.Windows.Forms.Label();
             this.descriptionTextLabel = new System.Windows.Forms.Label();
+            this.editSketchToolstrip = new System.Windows.Forms.ToolStrip();
+            this.tsbSave = new System.Windows.Forms.ToolStripButton();
+            this.tsbExit = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.dtSectionsBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sectionsDt)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSections)).BeginInit();
             this.statusStripMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.editSketchSectionsBindingSource)).BeginInit();
+            this.editSketchToolstrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // dtSectionsBindingSource
@@ -107,8 +112,9 @@
             this.dgvSections.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvSections.AutoGenerateColumns = false;
             this.dgvSections.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvSections.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.Raised;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.BlanchedAlmond;
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI Semibold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
             dataGridViewCellStyle2.Padding = new System.Windows.Forms.Padding(4);
@@ -321,6 +327,8 @@
             this.storyText.Name = "storyText";
             this.storyText.Size = new System.Drawing.Size(75, 27);
             this.storyText.TabIndex = 13;
+            this.storyText.TextChanged += new System.EventHandler(this.storyText_TextChanged);
+            this.storyText.Leave += new System.EventHandler(this.storyText_Leave);
             // 
             // sizeTextLabel
             // 
@@ -344,11 +352,49 @@
             this.descriptionTextLabel.Text = "Description";
             this.descriptionTextLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // editSketchToolstrip
+            // 
+            this.editSketchToolstrip.BackColor = System.Drawing.Color.LightGoldenrodYellow;
+            this.editSketchToolstrip.ImageScalingSize = new System.Drawing.Size(30, 30);
+            this.editSketchToolstrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsbSave,
+            this.tsbExit});
+            this.editSketchToolstrip.Location = new System.Drawing.Point(0, 0);
+            this.editSketchToolstrip.Margin = new System.Windows.Forms.Padding(4);
+            this.editSketchToolstrip.Name = "editSketchToolstrip";
+            this.editSketchToolstrip.Size = new System.Drawing.Size(895, 33);
+            this.editSketchToolstrip.TabIndex = 16;
+            this.editSketchToolstrip.Text = "Menu";
+            // 
+            // tsbSave
+            // 
+            this.tsbSave.AutoSize = false;
+            this.tsbSave.Image = global::SketchUp.Properties.Resources.Save;
+            this.tsbSave.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbSave.Name = "tsbSave";
+            this.tsbSave.Size = new System.Drawing.Size(75, 30);
+            this.tsbSave.Text = "Save";
+            this.tsbSave.ToolTipText = "Save Changes";
+            this.tsbSave.Click += new System.EventHandler(this.tsbSave_Click);
+            // 
+            // tsbExit
+            // 
+            this.tsbExit.AutoSize = false;
+            this.tsbExit.Image = global::SketchUp.Properties.Resources.Exit_16x;
+            this.tsbExit.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbExit.Name = "tsbExit";
+            this.tsbExit.Size = new System.Drawing.Size(75, 30);
+            this.tsbExit.Text = "Exit";
+            this.tsbExit.ToolTipText = "Exit to Sketch";
+            this.tsbExit.Click += new System.EventHandler(this.tsbExit_Click);
+            // 
             // EditSketchSections
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.LightGoldenrodYellow;
             this.ClientSize = new System.Drawing.Size(895, 537);
+            this.Controls.Add(this.editSketchToolstrip);
             this.Controls.Add(this.descriptionTextLabel);
             this.Controls.Add(this.sizeTextLabel);
             this.Controls.Add(this.storyText);
@@ -361,6 +407,7 @@
             this.Controls.Add(this.sectionLabel);
             this.Controls.Add(this.statusStripMain);
             this.Controls.Add(this.dgvSections);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "EditSketchSections";
             this.Text = "EditSketchSections";
             ((System.ComponentModel.ISupportInitialize)(this.dtSectionsBindingSource)).EndInit();
@@ -369,6 +416,8 @@
             this.statusStripMain.ResumeLayout(false);
             this.statusStripMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.editSketchSectionsBindingSource)).EndInit();
+            this.editSketchToolstrip.ResumeLayout(false);
+            this.editSketchToolstrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -407,5 +456,8 @@
         private System.Windows.Forms.Label sizeTextLabel;
         private System.Windows.Forms.Label descriptionTextLabel;
         private System.Windows.Forms.BindingSource editSketchSectionsBindingSource;
+        private System.Windows.Forms.ToolStrip editSketchToolstrip;
+        private System.Windows.Forms.ToolStripButton tsbSave;
+        private System.Windows.Forms.ToolStripButton tsbExit;
     }
 }

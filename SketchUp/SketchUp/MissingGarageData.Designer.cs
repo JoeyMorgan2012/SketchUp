@@ -31,13 +31,18 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MissingGarageData));
             this.label1 = new System.Windows.Forms.Label();
             this.MissingGarLbl = new System.Windows.Forms.Label();
-            this.GarLbl = new System.Windows.Forms.Label();
+            this.Garage1Label = new System.Windows.Forms.Label();
             this.CarPortLbl = new System.Windows.Forms.Label();
-            this.GarTypeCbox = new System.Windows.Forms.ComboBox();
+            this.Gar1TypeCbox = new System.Windows.Forms.ComboBox();
             this.CarPortTypCbox = new System.Windows.Forms.ComboBox();
-            this.GarNbrCarTxt = new System.Windows.Forms.TextBox();
+            this.Gar1NbrCarTxt = new System.Windows.Forms.TextBox();
             this.CarPortNbrCarTxt = new System.Windows.Forms.TextBox();
             this.MissingCarporLbl = new System.Windows.Forms.Label();
+            this.Gar2TypeCbox = new System.Windows.Forms.ComboBox();
+            this.Garage2Label = new System.Windows.Forms.Label();
+            this.Gar2NbrCarTxt = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.btnDone = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -63,76 +68,130 @@
             this.MissingGarLbl.TabIndex = 1;
             this.MissingGarLbl.Text = "No. Cars";
             // 
-            // GarLbl
+            // Garage1Label
             // 
-            this.GarLbl.AutoSize = true;
-            this.GarLbl.Location = new System.Drawing.Point(20, 130);
-            this.GarLbl.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.GarLbl.Name = "GarLbl";
-            this.GarLbl.Size = new System.Drawing.Size(64, 17);
-            this.GarLbl.TabIndex = 2;
-            this.GarLbl.Text = "Garage :";
+            this.Garage1Label.AutoSize = true;
+            this.Garage1Label.Location = new System.Drawing.Point(20, 130);
+            this.Garage1Label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.Garage1Label.Name = "Garage1Label";
+            this.Garage1Label.Size = new System.Drawing.Size(76, 17);
+            this.Garage1Label.TabIndex = 2;
+            this.Garage1Label.Text = "Garage  1:";
             // 
             // CarPortLbl
             // 
             this.CarPortLbl.AutoSize = true;
-            this.CarPortLbl.Location = new System.Drawing.Point(16, 199);
+            this.CarPortLbl.Location = new System.Drawing.Point(16, 242);
             this.CarPortLbl.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.CarPortLbl.Name = "CarPortLbl";
             this.CarPortLbl.Size = new System.Drawing.Size(68, 17);
-            this.CarPortLbl.TabIndex = 3;
+            this.CarPortLbl.TabIndex = 10;
             this.CarPortLbl.Text = "Car Port :";
             // 
-            // GarTypeCbox
+            // Gar1TypeCbox
             // 
-            this.GarTypeCbox.FormattingEnabled = true;
-            this.GarTypeCbox.Location = new System.Drawing.Point(112, 127);
-            this.GarTypeCbox.Margin = new System.Windows.Forms.Padding(4);
-            this.GarTypeCbox.Name = "GarTypeCbox";
-            this.GarTypeCbox.Size = new System.Drawing.Size(160, 24);
-            this.GarTypeCbox.TabIndex = 6;
-            this.GarTypeCbox.SelectedIndexChanged += new System.EventHandler(this.GarTypeCbox_SelectedIndexChanged);
+            this.Gar1TypeCbox.DisplayMember = "Description ";
+            this.Gar1TypeCbox.FormattingEnabled = true;
+            this.Gar1TypeCbox.Location = new System.Drawing.Point(112, 127);
+            this.Gar1TypeCbox.Margin = new System.Windows.Forms.Padding(4);
+            this.Gar1TypeCbox.Name = "Gar1TypeCbox";
+            this.Gar1TypeCbox.Size = new System.Drawing.Size(160, 24);
+            this.Gar1TypeCbox.TabIndex = 3;
+            this.Gar1TypeCbox.ValueMember = "Code";
+            this.Gar1TypeCbox.SelectedIndexChanged += new System.EventHandler(this.Gar1TypeCbox_SelectedIndexChanged);
             // 
             // CarPortTypCbox
             // 
+            this.CarPortTypCbox.DisplayMember = "Description";
             this.CarPortTypCbox.FormattingEnabled = true;
-            this.CarPortTypCbox.Location = new System.Drawing.Point(112, 196);
+            this.CarPortTypCbox.Location = new System.Drawing.Point(112, 239);
             this.CarPortTypCbox.Margin = new System.Windows.Forms.Padding(4);
             this.CarPortTypCbox.Name = "CarPortTypCbox";
             this.CarPortTypCbox.Size = new System.Drawing.Size(160, 24);
-            this.CarPortTypCbox.TabIndex = 7;
+            this.CarPortTypCbox.TabIndex = 11;
+            this.CarPortTypCbox.ValueMember = "Code";
             this.CarPortTypCbox.SelectedIndexChanged += new System.EventHandler(this.CarPortTypCbox_SelectedIndexChanged);
             // 
-            // GarNbrCarTxt
+            // Gar1NbrCarTxt
             // 
-            this.GarNbrCarTxt.Location = new System.Drawing.Point(353, 127);
-            this.GarNbrCarTxt.Margin = new System.Windows.Forms.Padding(4);
-            this.GarNbrCarTxt.Name = "GarNbrCarTxt";
-            this.GarNbrCarTxt.Size = new System.Drawing.Size(32, 22);
-            this.GarNbrCarTxt.TabIndex = 4;
-            this.GarNbrCarTxt.TextChanged += new System.EventHandler(this.GarNbrCarTxt_TextChanged);
-            this.GarNbrCarTxt.Leave += new System.EventHandler(this.GarNbrCarTxt_Leave);
+            this.Gar1NbrCarTxt.Location = new System.Drawing.Point(353, 127);
+            this.Gar1NbrCarTxt.Margin = new System.Windows.Forms.Padding(4);
+            this.Gar1NbrCarTxt.Name = "Gar1NbrCarTxt";
+            this.Gar1NbrCarTxt.Size = new System.Drawing.Size(32, 22);
+            this.Gar1NbrCarTxt.TabIndex = 4;
+            this.Gar1NbrCarTxt.Leave += new System.EventHandler(this.Gar1NbrCarTxt_Leave);
             // 
             // CarPortNbrCarTxt
             // 
-            this.CarPortNbrCarTxt.Location = new System.Drawing.Point(353, 196);
+            this.CarPortNbrCarTxt.Location = new System.Drawing.Point(353, 241);
             this.CarPortNbrCarTxt.Margin = new System.Windows.Forms.Padding(4);
             this.CarPortNbrCarTxt.Name = "CarPortNbrCarTxt";
             this.CarPortNbrCarTxt.Size = new System.Drawing.Size(32, 22);
-            this.CarPortNbrCarTxt.TabIndex = 5;
-            this.CarPortNbrCarTxt.TextChanged += new System.EventHandler(this.CarPortNbrCarTxt_TextChanged);
+            this.CarPortNbrCarTxt.TabIndex = 12;
             this.CarPortNbrCarTxt.Leave += new System.EventHandler(this.CarPortNbrCarTxt_Leave);
             // 
             // MissingCarporLbl
             // 
             this.MissingCarporLbl.AutoSize = true;
             this.MissingCarporLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.MissingCarporLbl.Location = new System.Drawing.Point(336, 167);
+            this.MissingCarporLbl.Location = new System.Drawing.Point(336, 212);
             this.MissingCarporLbl.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.MissingCarporLbl.Name = "MissingCarporLbl";
             this.MissingCarporLbl.Size = new System.Drawing.Size(71, 17);
-            this.MissingCarporLbl.TabIndex = 8;
+            this.MissingCarporLbl.TabIndex = 9;
             this.MissingCarporLbl.Text = "No. Cars";
+            // 
+            // Gar2TypeCbox
+            // 
+            this.Gar2TypeCbox.DisplayMember = "Description";
+            this.Gar2TypeCbox.FormattingEnabled = true;
+            this.Gar2TypeCbox.Location = new System.Drawing.Point(112, 182);
+            this.Gar2TypeCbox.Margin = new System.Windows.Forms.Padding(4);
+            this.Gar2TypeCbox.Name = "Gar2TypeCbox";
+            this.Gar2TypeCbox.Size = new System.Drawing.Size(160, 24);
+            this.Gar2TypeCbox.TabIndex = 7;
+            this.Gar2TypeCbox.ValueMember = "Code";
+            this.Gar2TypeCbox.SelectedIndexChanged += new System.EventHandler(this.Gar2TypeCbox_SelectedIndexChanged);
+            // 
+            // Garage2Label
+            // 
+            this.Garage2Label.AutoSize = true;
+            this.Garage2Label.Location = new System.Drawing.Point(20, 185);
+            this.Garage2Label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.Garage2Label.Name = "Garage2Label";
+            this.Garage2Label.Size = new System.Drawing.Size(76, 17);
+            this.Garage2Label.TabIndex = 6;
+            this.Garage2Label.Text = "Garage 2 :";
+            // 
+            // Gar2NbrCarTxt
+            // 
+            this.Gar2NbrCarTxt.Location = new System.Drawing.Point(353, 184);
+            this.Gar2NbrCarTxt.Margin = new System.Windows.Forms.Padding(4);
+            this.Gar2NbrCarTxt.Name = "Gar2NbrCarTxt";
+            this.Gar2NbrCarTxt.Size = new System.Drawing.Size(32, 22);
+            this.Gar2NbrCarTxt.TabIndex = 8;
+            this.Gar2NbrCarTxt.Leave += new System.EventHandler(this.Gar2NbrCarTxt_Leave);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(336, 153);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(71, 17);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "No. Cars";
+            // 
+            // btnDone
+            // 
+            this.btnDone.Location = new System.Drawing.Point(339, 285);
+            this.btnDone.Name = "btnDone";
+            this.btnDone.Size = new System.Drawing.Size(75, 32);
+            this.btnDone.TabIndex = 13;
+            this.btnDone.Text = "Done";
+            this.btnDone.UseVisualStyleBackColor = true;
+            this.btnDone.Click += new System.EventHandler(this.btnDone_Click);
             // 
             // MissingGarageData
             // 
@@ -140,13 +199,18 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.ClientSize = new System.Drawing.Size(508, 342);
+            this.Controls.Add(this.btnDone);
+            this.Controls.Add(this.Gar2NbrCarTxt);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.Gar2TypeCbox);
+            this.Controls.Add(this.Garage2Label);
             this.Controls.Add(this.MissingCarporLbl);
             this.Controls.Add(this.CarPortNbrCarTxt);
-            this.Controls.Add(this.GarNbrCarTxt);
+            this.Controls.Add(this.Gar1NbrCarTxt);
             this.Controls.Add(this.CarPortTypCbox);
-            this.Controls.Add(this.GarTypeCbox);
+            this.Controls.Add(this.Gar1TypeCbox);
             this.Controls.Add(this.CarPortLbl);
-            this.Controls.Add(this.GarLbl);
+            this.Controls.Add(this.Garage1Label);
             this.Controls.Add(this.MissingGarLbl);
             this.Controls.Add(this.label1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -154,7 +218,6 @@
             this.Name = "MissingGarageData";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Missing Garage Information";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MissingGarageData_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -164,12 +227,17 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label MissingGarLbl;
-        private System.Windows.Forms.Label GarLbl;
+        private System.Windows.Forms.Label Garage1Label;
         private System.Windows.Forms.Label CarPortLbl;
-        private System.Windows.Forms.ComboBox GarTypeCbox;
+        private System.Windows.Forms.ComboBox Gar1TypeCbox;
         private System.Windows.Forms.ComboBox CarPortTypCbox;
-        private System.Windows.Forms.TextBox GarNbrCarTxt;
+        private System.Windows.Forms.TextBox Gar1NbrCarTxt;
         private System.Windows.Forms.TextBox CarPortNbrCarTxt;
         private System.Windows.Forms.Label MissingCarporLbl;
+        private System.Windows.Forms.ComboBox Gar2TypeCbox;
+        private System.Windows.Forms.Label Garage2Label;
+        private System.Windows.Forms.TextBox Gar2NbrCarTxt;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button btnDone;
     }
 }

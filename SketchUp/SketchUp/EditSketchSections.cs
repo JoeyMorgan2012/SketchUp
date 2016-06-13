@@ -16,6 +16,7 @@ namespace SketchUp
 
         public EditSketchSections(SMParcel workingParcel)
         {
+            Cursor.Current = Cursors.Default;
             InitializeComponent();
 #if DEBUG
             TestSetup ts = new TestSetup();
@@ -23,8 +24,18 @@ namespace SketchUp
             SketchUpLookups.InitializeWithTestSettings();
 
 #endif
-            InitializeComboBox(workingParcel);
-            FillDataGridView(workingParcel);
+
+         
+            Parcel = workingParcel;
+            //May be redundant:
+            ParcelMast = Parcel.ParcelMast;
+            //------------------
+            originalSnapshotIndex = Parcel.SnapShotIndex;
+            SketchRepo.AddSketchToSnapshots(Parcel);
+            Parcel.SnapShotIndex++;
+            InitializeComboBox();
+            FillDataGridView();
+            ShowDetails(SelectedRow);
         }
 
 #endregion
@@ -38,25 +49,57 @@ namespace SketchUp
             TotalLivingArea = (from s in Parcel.Sections where laTypes.Contains(s.SectionType) select s.SqFt).Sum();
         }
 
-        
-
-    private void cboSectionType_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboSectionType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateSectionType();
 
+            UpdateSectionType();
+        }
+
+        private bool CheckGaragesAndCarports()
+        {
+            bool carsOk = false;
+            if (Parcel.SnapShotIndex>0)
+            {
+                originalSnapshotIndex = (from p in SketchUpGlobals.SketchSnapshots where p.SnapShotIndex < Parcel.SnapShotIndex select p.SnapShotIndex).Max();
+            }
+            SMParcel priorVersion = (from p in SketchUpGlobals.SketchSnapshots where p.SnapShotIndex ==originalSnapshotIndex select p).FirstOrDefault();
+            int priorCarports = (from s in priorVersion.Sections where SketchUpLookups.CarPortTypes.Contains(s.SectionType) select s).Count();
+            int currentCarports = (from s in Parcel.Sections where SketchUpLookups.CarPortTypes.Contains(s.SectionType) select s).Count();
+            int priorGarages = (from s in priorVersion.Sections where SketchUpLookups.GarageTypes.Contains(s.SectionType) select s).Count();
+            int currentGarages = (from s in Parcel.Sections where SketchUpLookups.GarageTypes.Contains(s.SectionType) select s).Count();
+            if (currentCarports == 0)
+            {
+                SetCarportsToZero(Parcel);
+            }
+            if (currentGarages == 0)
+            {
+                SetGaragesToZero(Parcel);
+            }
+            if (currentGarages != priorGarages || currentCarports != priorCarports)
+            {
+                MissingGarageData mgd = new MissingGarageData(Parcel.ParcelMast);
+                ParcelMast.Garage1NumCars = mgd.Gar1NumCars;
+                ParcelMast.Garage1TypeCode = mgd.Garage1Code;
+                ParcelMast.Garage2NumCars = mgd.Gar2NumCars;
+                ParcelMast.Garage2TypeCode = mgd.Garage2Code;
+                ParcelMast.CarportNumCars = mgd.CarportNumCars;
+                ParcelMast.CarportTypeCode = mgd.CarportCode;
+            }
+            carsOk = true;
+            return carsOk;
         }
 
         private void ClearDetails()
-    {
-        sectionLetterLabel.Text = string.Empty;
-        cboSectionType.SelectedIndex = -1;
-        storyText.Text = string.Empty;
-        storyText.Enabled = false;
-        cboSectionType.SelectedIndex = 0;
-        cboSectionType.Enabled = false;
-        sizeTextLabel.Text = string.Empty;
-        SelectedSection = null;
-    }
+        {
+            sectionLetterLabel.Text = string.Empty;
+            cboSectionType.SelectedIndex = -1;
+            storyText.Text = string.Empty;
+            storyText.Enabled = false;
+            cboSectionType.SelectedIndex = 0;
+            cboSectionType.Enabled = false;
+            sizeTextLabel.Text = string.Empty;
+            SelectedSection = null;
+        }
 
         private DataTable CreateSectionsDataTable()
         {
@@ -112,7 +155,7 @@ namespace SketchUp
 
         private void dgvSections_Enter(object sender, EventArgs e)
         {
-            SelectCurrentSectionTypeFromList();
+            ShowDetails(SelectedRow);
         }
 
         private void dgvSections_SelectionChanged(object sender, EventArgs e)
@@ -120,10 +163,19 @@ namespace SketchUp
             RefreshFormInformation();
         }
 
-        private void FillDataGridView(SMParcel workingParcel)
+        private void ExitWithoutSaving()
         {
-            Parcel = workingParcel;
-            ParcelMast = workingParcel.ParcelMast;
+            List<SMParcel> versionsToDiscard = (from p in SketchUpGlobals.SketchSnapshots where p.SnapShotIndex > originalSnapshotIndex select p).ToList();
+            foreach (SMParcel p in versionsToDiscard)
+            {
+  SketchUpGlobals.SketchSnapshots.Remove(p);
+            }
+            Parcel = SketchUpGlobals.ParcelWorkingCopy;
+        }
+
+        private void FillDataGridView()
+        {
+           
 
             CalculateAreaTotals();
 
@@ -135,21 +187,19 @@ namespace SketchUp
             }
         }
 
-        private void InitializeComboBox(SMParcel workingParcel)
+        private void InitializeComboBox()
         {
-           
             ListOrComboBoxItem lci = new ListOrComboBoxItem { Code = "(NONE)", Description = "<Select Section Type>", PrintDescription = "NONE" };
             SectionCboList.Add(lci);
-            SectionCboList.AddRange(SketchUpLookups.SectionsByOccupancy(workingParcel.ParcelMast.OccupancyType));
+            SectionCboList.AddRange(SketchUpLookups.SectionsByOccupancy(ParcelMast.OccupancyType));
             cboSectionType.DataSource = SectionCboList;
             cboSectionType.DisplayMember = "Description";
             cboSectionType.ValueMember = "Code";
-            cboSectionType.SelectedIndex = 4;
-     
+            cboSectionType.SelectedIndex = 0;
+
             dgvSections.Focus();
         }
 
-    
         private void PopulateSectionData(DataTable dt)
         {
             foreach (SMSection s in Parcel.Sections.OrderBy(s => s.SectionLetter))
@@ -167,34 +217,53 @@ namespace SketchUp
 
         private void RefreshFormInformation()
         {
-
             string sectionLetter = string.Empty;
-                if (SelectedRow==null)
-                {
-                    ClearDetails();
+            if (SelectedRow == null)
+            {
+                ClearDetails();
                 sectionLetter = string.Empty;
-                }
-                
-                else
-                {
-                if (SelectedRow==null)
+            }
+            else
+            {
+                if (SelectedRow == null)
                 {
                     dgvSections.Rows[0].Selected = true;
                 }
-                     sectionLetter = sectionLetterLabel.Text = SelectedRow.Cells["sectionCol"].Value.ToString();
-                    SelectedSection = Parcel.SelectSectionByLetter(sectionLetter);
-                    ShowDetails(SelectedRow);
+                sectionLetter = sectionLetterLabel.Text = SelectedRow.Cells["sectionCol"].Value.ToString();
+                SelectedSection = Parcel.SelectSectionByLetter(sectionLetter);
 
-                }
-              
-                UpdateStatusStrip(sectionLetter);
+                ShowDetails(SelectedRow);
             }
+
+            UpdateStatusStrip(sectionLetter);
+        }
+
+        private void SaveChanges()
+        {
+            SketchUpGlobals.SketchSnapshots.Add(Parcel);
+            foreach (DataGridViewRow row in dgvSections.Rows)
+            {
+               
+                string sectionLetter =row.Cells["sectionCol"].Value.ToString();
+                SMSection section = Parcel.SelectSectionByLetter(sectionLetter);
+                section.SectionType = row.Cells["typeCol"].Value.ToString();
+                section.Description = row.Cells["descriptionCol"].Value.ToString();
+                section.StoreysText= row.Cells["storyCol"].Value.ToString();
+                section.StoreysValue = SMGlobal.StoryValueFromText(section.StoreysText);
+            }
+            SketchRepository sr = new SketchRepository(Parcel);
+            CheckGaragesAndCarports();
+            sr.SaveCurrentParcel(Parcel);
+            Parcel.SnapShotIndex++;
+            SketchUpGlobals.SketchSnapshots.Add(Parcel);
+
+        }
 
         private void SelectCurrentSectionTypeFromList()
         {
-            if (SelectedSection!=null)
+            if (SelectedRow != null)
             {
-         string sectionType = SelectedSection.SectionType;
+                string sectionType = SelectedRow.Cells["typeCol"].Value.ToString();
                 int cboIndex = cboSectionType.FindStringExact(sectionType);
                 cboSectionType.SelectedIndex = cboIndex;
             }
@@ -202,60 +271,139 @@ namespace SketchUp
             {
                 cboSectionType.SelectedIndex = 0;
             }
+        }
 
-          
+        private void SetCarportsToZero(SMParcel parcel)
+        {
+            string noCpCode = (from c in SketchUpLookups.CarPortTypeCollection where c.Description == "NONE" select c.Code).FirstOrDefault();
+            int noCpCodeValue = 0;
+            int.TryParse(noCpCode, out noCpCodeValue);
+            Parcel.ParcelMast.CarportTypeCode = noCpCodeValue;
+            ParcelMast.CarportNumCars= 0;
+        }
+
+        private void SetGaragesToZero(SMParcel parcel)
+        {
+            string noGarCode =(from g in SketchUpLookups.GarageTypeCollection where g.Description == "NONE" select g.Code).FirstOrDefault();
+            int noGarCodeValue = 0;
+            int.TryParse(noGarCode, out noGarCodeValue);
+            Parcel.ParcelMast.Garage1TypeCode = noGarCodeValue;
+            Parcel.ParcelMast.Garage2TypeCode = noGarCodeValue;
+            ParcelMast.Garage1NumCars = 0;
+            ParcelMast.Garage2NumCars = 0;
 
         }
 
-    private void ShowDetails(DataGridViewRow selectedRow)
-    {
-        cboSectionType.Enabled = true;
-        storyText.Enabled = true;
+        private void ShowDetails(DataGridViewRow selectedRow)
+        {
+            cboSectionType.Enabled = true;
+            storyText.Enabled = true;
 
-        sectionLetterLabel.Text = selectedRow.Cells["sectionCol"].Value.ToString();
-          int cboIndex=  cboSectionType.FindString(SelectedSection.SectionType);
+            sectionLetterLabel.Text = selectedRow.Cells["sectionCol"].Value.ToString();
+            int cboIndex = cboSectionType.FindString(SelectedSection.SectionType);
             cboSectionType.SelectedIndex = cboIndex;
-        descriptionTextLabel.Text = selectedRow.Cells["descriptionCol"].Value.ToString();
-        storyText.Text = string.Format("{0:N2}", selectedRow.Cells["storyCol"].Value.ToString());
-        sizeTextLabel.Text = string.Format("{0:N2}", selectedRow.Cells["sizeCol"].Value.ToString());
+            descriptionTextLabel.Text = selectedRow.Cells["descriptionCol"].Value.ToString();
+            storyText.Text = string.Format("{0:N2}", selectedRow.Cells["storyCol"].Value.ToString());
+            sizeTextLabel.Text = string.Format("{0:N2}", selectedRow.Cells["sizeCol"].Value.ToString());
+            cboSectionType.Enabled = (selectedRow.Cells["sectionCol"].Value.ToString() != "A");
+        }
 
-    }
+        private void storyText_Leave(object sender, EventArgs e)
+        {
+            SelectedRow.Cells["storyCol"].Value = storyText.Text;
+        }
+
+        private void tsbExit_Click(object sender, EventArgs e)
+        {
+            if (unsavedChangesExist)
+            {
+                string message = "You have not saved your changes. Save now? choose \"Yes\" to save, \"No\" to close without saving, or \"Cancel\" to continue editing.";
+                DialogResult response = MessageBox.Show(message, "Save Changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                switch (response)
+                {
+                    case DialogResult.Yes:
+                    case DialogResult.OK:
+                        SaveChanges();
+                        Close();
+                        break;
+
+                    case DialogResult.No:
+                        ExitWithoutSaving();
+                        break;
+
+                    case DialogResult.None:
+
+                    case DialogResult.Cancel:
+
+                    default:
+                        dgvSections.Focus();
+                        break;
+                }
+            }
+        }
+
+        private void tsbSave_Click(object sender, EventArgs e)
+        {
+            if (unsavedChangesExist)
+            {
+                SaveChanges();
+                originalSnapshotIndex = Parcel.SnapShotIndex;
+                Parcel.SnapShotIndex++;
+                SketchUpGlobals.SketchSnapshots.Add(Parcel);
+                unsavedChangesExist = false;
+                UpdateStatusStrip();
+            }
+        }
+
+        private void UpdateSectionStorys(string textEntered)
+        {
+            if (!string.IsNullOrEmpty(textEntered))
+            {
+                string storeys = textEntered.Trim().ToUpper();
+                decimal storeysNumber = 0.00M;
+                if (storeys == "S/F" || storeys == "S/L")
+                {
+                    SelectedSection.StoreysText = storeys;
+                    SelectedSection.StoreysValue = 1;
+                }
+                else
+                {
+                    SelectedSection.StoreysText = storeys;
+                    decimal.TryParse(storeys, out storeysNumber);
+                    SelectedSection.StoreysValue = storeysNumber;
+                }
+            }
+            RefreshFormInformation();
+        }
 
         private void UpdateSectionType()
         {
             if (cboSectionType.SelectedIndex > 0 && SelectedSection != null)
             {
-                string newType = cboSectionType.SelectedValue.ToString();
+                editedSectionType = cboSectionType.SelectedValue.ToString();
                 string newDescription = ((ListOrComboBoxItem)cboSectionType.SelectedItem).PrintDescription;
-                if (newType.ToUpper().Trim() != SelectedSection.SectionType.ToUpper().Trim())
+                if (editedSectionType.ToUpper().Trim() != SelectedSection.SectionType.ToUpper().Trim())
                 {
-                    DataGridViewRow rowCopy = (DataGridViewRow)dgvSections.Rows[SelectedRow.Index].Clone();
-                    
+                    unsavedChangesExist = true;
+                    UpdateStatusStrip(dgvSections.Rows[SelectedRow.Index].Cells["sectionCol"].Value.ToString());
                     dgvSections.BeginEdit(true);
-                   
-                    
-                    SelectedSection.SectionType = newType;
-                    SelectedSection.Description = newDescription;
+
                     string currentType = dgvSections.Rows[SelectedRow.Index].Cells["typeCol"].Value.ToString();
-                    if (currentType!=newType)
+                    if (currentType != editedSectionType)
                     {
-      dgvSections.Rows[SelectedRow.Index].Cells["typeCol"].Value = newType.ToUpper().Trim();
-                    dgvSections.Rows[SelectedRow.Index].Cells["descriptionCol"].Value = newDescription.ToUpper().Trim();
+                        dgvSections.Rows[SelectedRow.Index].Cells["typeCol"].Value = editedSectionType.ToUpper().Trim();
+                        dgvSections.Rows[SelectedRow.Index].Cells["descriptionCol"].Value = newDescription.ToUpper().Trim();
+                        descriptionTextLabel.Text = newDescription.ToUpper().Trim();
                     }
                     dgvSections.EndEdit();
-                    unsavedChangesExist = true;
-                    RefreshFormInformation();
-               
-                   
+                  
                 }
-
-
             }
         }
 
-    private void UpdateStatusStrip(string sectionLetter = "")
-    {
-
+        private void UpdateStatusStrip(string sectionLetter = "")
+        {
+            string statusText = string.Empty;
             if (unsavedChangesExist)
             {
                 stlEditStatus.Image = EditedImage;
@@ -266,12 +414,20 @@ namespace SketchUp
             }
             if (!string.IsNullOrEmpty(sectionLetter))
             {
-                stlSection.Text = $"Section {sectionLetter.ToUpper().Trim()} selected.";
+               statusText = $"Section {sectionLetter.ToUpper().Trim()} selected.";
+                if (sectionLetter.ToUpper().Trim()=="A")
+                {
+                    statusText += $"\tSection A must be {dgvSections.Rows[SelectedRow.Index].Cells["descriptionCol"].Value} for Occupancy Type {ParcelMast.OccupancyType.ToString()}";
+
+                }
+
             }
             else
             {
-                stlSection.Text = "No section or multiple sections selected.";
+                statusText= "No section or multiple sections selected.";
+               
             }
+            stlSection.Text = statusText;
         }
 
 #endregion
@@ -313,10 +469,9 @@ namespace SketchUp
         {
             get
             {
-                if (sectionCboList==null)
+                if (sectionCboList == null)
                 {
                     sectionCboList = new List<ListOrComboBoxItem>();
-                   
                 }
                 return sectionCboList;
             }
@@ -344,7 +499,6 @@ namespace SketchUp
                         }
                         selectedRow = selectedRows[0];
                     }
-
                 }
                 return selectedRow;
             }
@@ -354,17 +508,14 @@ namespace SketchUp
             }
         }
 
-     
-
         public SMSection SelectedSection
         {
             get
             {
-                if (SelectedRow!=null)
+                if (SelectedRow != null)
                 {
                     string sectionLetter = SelectedRow.Cells["sectionCol"].Value.ToString();
                     selectedSection = Parcel.SelectSectionByLetter(sectionLetter);
-
                 }
                 return selectedSection;
             }
@@ -398,23 +549,64 @@ namespace SketchUp
             }
         }
 
-#endregion
+        public string SelectedSectionLetter
+        {
+            get
+            {
+                return selectedSectionLetter;
+            }
 
-#region "Private Fields"
+            set
+            {
+                selectedSectionLetter = value;
+            }
+        }
+
+        public SketchRepository SketchRepo
+        {
+            get
+            {
+                if (sketchRepo==null&&Parcel!=null)
+                {
+                    sketchRepo = new SketchRepository(Parcel);
+                }
+                return sketchRepo;
+            }
+
+            set
+            {
+                sketchRepo = value;
+            }
+        }
+
+        #endregion
+
+        #region "Private Fields"
 
         private Bitmap ChangesSavedImage = Properties.Resources.GreenCheck;
-    private Bitmap DeleteSectionImage = Properties.Resources.DeleteListItem_32x;
+        private Bitmap DeleteSectionImage = Properties.Resources.DeleteListItem_32x;
         private DataTable dtSections;
-    private Bitmap EditedImage = Properties.Resources.Edit_32xMD;
-    private Bitmap SaveAndCloseImage = Properties.Resources.Save;
-        List<ListOrComboBoxItem> sectionCboList;
-        DataGridViewRow selectedRow;
+        private Bitmap EditedImage = Properties.Resources.Edit_32xMD;
+        private string editedSectionType;
+        private string editedStoreysText;
+        private Bitmap SaveAndCloseImage = Properties.Resources.Save;
+        private List<ListOrComboBoxItem> sectionCboList;
+        private DataGridViewRow selectedRow;
         private List<DataGridViewRow> selectedRows = new List<DataGridViewRow>();
         private SMSection selectedSection;
+        private string selectedSectionLetter;
         private decimal totalArea = 0.00M;
         private decimal totalLivingArea = 0.00M;
         private bool unsavedChangesExist;
+        private int originalSnapshotIndex = 0;
+        private SketchRepository sketchRepo;
+        #endregion
 
-#endregion
+        private void storyText_TextChanged(object sender, EventArgs e)
+        {
+            editedStoreysText = storyText.Text;
+            unsavedChangesExist =(editedStoreysText!=ParcelMast.StoreysText);
+            
+        }
     }
 }

@@ -500,5 +500,19 @@ namespace SketchUp
         public const string SouthEastArrow = "\u2198";
         public const string SouthWestArrow = "\u2199";
         public const string WestArrow = "\u2190";
+
+        public static decimal StoryValueFromText(string storeysText)
+        {
+            decimal storeys = 1.00M;
+            if (storeysText=="S/L"||storeysText=="S/F")
+            {
+                storeys = 1.00M;
+            }
+            else
+            {
+                decimal.TryParse(storeysText, out storeys);
+            }
+            return storeys;
+        }
     }
 }

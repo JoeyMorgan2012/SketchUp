@@ -582,20 +582,22 @@ namespace SketchUp
 
             bool carsCountUpdateNeeded = carportCount > 1 && (ParcelMast.CarportTypeCode != 0 || ParcelMast.CarportTypeCode != noCarportCode);
             carportUpdateNeeded = (codeAndNumbersMismatched || carsCountUpdateNeeded);
-            return carportUpdateNeeded;
+         
             if (codeAndNumbersMismatched)
             {
-                MissingGarageData missingGarCPForm = new MissingGarageData(parcelMast, carportSize, "CP");
+                MissingGarageData missingGarCPForm = new MissingGarageData(parcelMast);
                 missingGarCPForm.ShowDialog();
             }
 
             if (carsCountUpdateNeeded)
             {
-                MissingGarageData missCPx = new MissingGarageData(parcelMast, CPSize, "CP");
+                MissingGarageData missCPx = new MissingGarageData(parcelMast);
                 missCPx.ShowDialog();
 
-                ParcelMast.CarportNumCars += MissingGarageData.CarportNumCars;
+                ParcelMast.CarportNumCars += missCPx.CarportNumCars;
             }
+            return carportUpdateNeeded;
+           
         }
 
         private bool ConfirmGarageNumbers()
@@ -626,30 +628,29 @@ namespace SketchUp
                     MissingGarageData missGar = new MissingGarageData(parcelMast, GarSize, "GAR");
                     missGar.ShowDialog();
 
-                    if (MissingGarageData.GarageCode != originalParcelMast.Garage1TypeCode)
+                    if (missGar.Garage1Code != originalParcelMast.Garage1TypeCode)
                     {
-                        parcelMast.Garage1NumCars = MissingGarageData.GarNbr;
-                        parcelMast.Garage1TypeCode = MissingGarageData.GarageCode;
+                        parcelMast.Garage1NumCars = missGar.Gar1NumCars;
+                        parcelMast.Garage1TypeCode = missGar.Garage1Code;
                     }
                 }
-                if (garageCount > 1 && parcelMast.Garage1NumCars == 0)
+                if (garageCount > 1 && parcelMast.Garage2NumCars == 0)
                 {
                     MissingGarageData missGar = new MissingGarageData(parcelMast, GarSize, "GAR");
                     missGar.ShowDialog();
 
                     //Start here to migrate to new form.
-                    if (MissingGarageData.GarageCode != originalParcelMast.Garage1TypeCode)
+                    if (missGar.Garage2Code != originalParcelMast.Garage2TypeCode)
                     {
-                        parcelMast.Garage1NumCars = MissingGarageData.GarNbr;
-                        parcelMast.Garage1TypeCode = MissingGarageData.GarageCode;
+                        parcelMast.Garage2NumCars = missGar.Gar2NumCars;
+                        parcelMast.Garage2TypeCode = missGar.Garage2Code;
                     }
                 }
                 if (garageCount > 2)
                 {
-                    MissingGarageData missGar = new MissingGarageData(parcelMast, GarSize, "GAR");
-                    missGar.ShowDialog();
-
-                    parcelMast.Garage2NumCars += MissingGarageData.GarNbr;
+                    string message = "There can only be two garages defined for this structure.";
+                    MessageBox.Show(message, "Garage Limit Reached", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //TODO: Provide a rollback here.
                 }
             }
             return garageOk;
@@ -1928,22 +1929,11 @@ namespace SketchUp
             _currentScale = (float)parcel.Scale;
         }
 
-        private void RefreshSketch()
-        {
-            string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
-
-#if DEBUG
-            MessageBox.Show(message);
-#else
-            Console.WriteLine(message);
-            throw new NotImplementedException();
-#endif
-        }
-
         private void RefreshWorkspace()
         {
             RedrawSketch(WorkingParcel);
             SetButtonStates(EditState);
+            DisplayStatus("Ready");
         }
 
         private void RevertToPriorVersion()
@@ -2606,5 +2596,16 @@ namespace SketchUp
         //}
 
         #endregion "Private methods"
+
+        private void btnEditSections_Click(object sender, EventArgs e)
+        {
+            Cursor.Current = Cursors.WaitCursor;
+            DisplayStatus("Loading sections information...please wait.");
+            WorkingParcel.SnapShotIndex++;
+            AddParcelToSnapshots(WorkingParcel);
+            EditSketchSections ess = new EditSketchSections(WorkingParcel);
+            ess.ShowDialog();
+            RefreshWorkspace();
+        }
     }
 }

@@ -298,6 +298,10 @@ namespace SketchUp
         {
             Application.DoEvents();
             RetrieveAndShowCurrentSketchImage();
+            SketchUpGlobals.SketchSnapshots.Clear();
+            SketchUpGlobals.SMParcelFromData.SnapShotIndex = 0;
+            SketchRepo.AddSketchToSnapshots(SketchUpGlobals.SMParcelFromData);
+            AddWorkingCopyOfSketchToSnapshots();
         }
 
         private void MainForm_SizeChanged(object sender, EventArgs e)

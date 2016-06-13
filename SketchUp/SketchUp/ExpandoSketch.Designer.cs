@@ -50,8 +50,8 @@ namespace SketchUp
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.btnAdd = new System.Windows.Forms.ToolStripButton();
             this.btnUnDo = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.btnEditSections = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.dgSections = new System.Windows.Forms.DataGridView();
             this.selectFontDlg = new System.Windows.Forms.FontDialog();
             this.SketchStatusBar = new System.Windows.Forms.StatusStrip();
@@ -124,7 +124,7 @@ namespace SketchUp
             this.cmiExitSketch});
             this.AddSectionContextMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.AddSectionContextMenu.Name = "AddSectionContextMenu";
-            this.AddSectionContextMenu.Size = new System.Drawing.Size(287, 224);
+            this.AddSectionContextMenu.Size = new System.Drawing.Size(285, 224);
             // 
             // cmiJumpToCorner
             // 
@@ -133,7 +133,7 @@ namespace SketchUp
             this.cmiJumpToCorner.Image = global::SketchUp.Properties.Resources.JumpPointImage;
             this.cmiJumpToCorner.Name = "cmiJumpToCorner";
             this.cmiJumpToCorner.ShowShortcutKeys = false;
-            this.cmiJumpToCorner.Size = new System.Drawing.Size(286, 26);
+            this.cmiJumpToCorner.Size = new System.Drawing.Size(284, 26);
             this.cmiJumpToCorner.Text = "Jump to Nearest Corner";
             this.cmiJumpToCorner.ToolTipText = "Jump to Nearest Corner (Add section to Enable";
             this.cmiJumpToCorner.Click += new System.EventHandler(this.jumpToolStripMenuItem_Click);
@@ -142,7 +142,7 @@ namespace SketchUp
             // 
             this.cmiBeginDrawing.Image = global::SketchUp.Properties.Resources.EditImage;
             this.cmiBeginDrawing.Name = "cmiBeginDrawing";
-            this.cmiBeginDrawing.Size = new System.Drawing.Size(286, 26);
+            this.cmiBeginDrawing.Size = new System.Drawing.Size(284, 26);
             this.cmiBeginDrawing.Text = "Begin Drawing";
             this.cmiBeginDrawing.Click += new System.EventHandler(this.cmiBeginDrawing_Click);
             // 
@@ -150,7 +150,7 @@ namespace SketchUp
             // 
             this.cmiAddClosingLine.Image = global::SketchUp.Properties.Resources.CloseSection;
             this.cmiAddClosingLine.Name = "cmiAddClosingLine";
-            this.cmiAddClosingLine.Size = new System.Drawing.Size(286, 26);
+            this.cmiAddClosingLine.Size = new System.Drawing.Size(284, 26);
             this.cmiAddClosingLine.Text = "Add Closing Line";
             this.cmiAddClosingLine.Click += new System.EventHandler(this.cmiAddClosingLine_Click);
             // 
@@ -158,20 +158,20 @@ namespace SketchUp
             // 
             this.cmiDoneSketching.Image = global::SketchUp.Properties.Resources.GreenCheck;
             this.cmiDoneSketching.Name = "cmiDoneSketching";
-            this.cmiDoneSketching.Size = new System.Drawing.Size(286, 26);
+            this.cmiDoneSketching.Size = new System.Drawing.Size(284, 26);
             this.cmiDoneSketching.Text = "Done Sketching";
             // 
             // cmiSaveDrawing
             // 
             this.cmiSaveDrawing.Image = global::SketchUp.Properties.Resources.Save;
             this.cmiSaveDrawing.Name = "cmiSaveDrawing";
-            this.cmiSaveDrawing.Size = new System.Drawing.Size(286, 26);
+            this.cmiSaveDrawing.Size = new System.Drawing.Size(284, 26);
             this.cmiSaveDrawing.Text = "Save to Database";
             // 
             // cmiSepLine1
             // 
             this.cmiSepLine1.Name = "cmiSepLine1";
-            this.cmiSepLine1.Size = new System.Drawing.Size(283, 6);
+            this.cmiSepLine1.Size = new System.Drawing.Size(281, 6);
             // 
             // cmiFlipHorizontally
             // 
@@ -179,7 +179,7 @@ namespace SketchUp
             this.cmiFlipHorizontally.Name = "cmiFlipHorizontally";
             this.cmiFlipHorizontally.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.H)));
-            this.cmiFlipHorizontally.Size = new System.Drawing.Size(286, 26);
+            this.cmiFlipHorizontally.Size = new System.Drawing.Size(284, 26);
             this.cmiFlipHorizontally.Text = "Flip Horizontally";
             // 
             // cmiFlipVeritcally
@@ -188,20 +188,20 @@ namespace SketchUp
             this.cmiFlipVeritcally.Name = "cmiFlipVeritcally";
             this.cmiFlipVeritcally.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.V)));
-            this.cmiFlipVeritcally.Size = new System.Drawing.Size(286, 26);
+            this.cmiFlipVeritcally.Size = new System.Drawing.Size(284, 26);
             this.cmiFlipVeritcally.Text = "Flip Veritcally";
             // 
             // cmiSepLine2
             // 
             this.cmiSepLine2.Name = "cmiSepLine2";
-            this.cmiSepLine2.Size = new System.Drawing.Size(283, 6);
+            this.cmiSepLine2.Size = new System.Drawing.Size(281, 6);
             // 
             // cmiExitSketch
             // 
             this.cmiExitSketch.Image = global::SketchUp.Properties.Resources.Close_16x;
             this.cmiExitSketch.Name = "cmiExitSketch";
             this.cmiExitSketch.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.X)));
-            this.cmiExitSketch.Size = new System.Drawing.Size(286, 26);
+            this.cmiExitSketch.Size = new System.Drawing.Size(284, 26);
             this.cmiExitSketch.Text = "Exit Sketch";
             // 
             // DistLbl
@@ -267,11 +267,6 @@ namespace SketchUp
             this.btnUnDo.Text = "UnDo";
             this.btnUnDo.Click += new System.EventHandler(this.UnDoBtn_Click);
             // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
-            // 
             // btnEditSections
             // 
             this.btnEditSections.AutoSize = false;
@@ -280,6 +275,12 @@ namespace SketchUp
             this.btnEditSections.Name = "btnEditSections";
             this.btnEditSections.Size = new System.Drawing.Size(120, 24);
             this.btnEditSections.Text = "Edit Sections";
+            this.btnEditSections.Click += new System.EventHandler(this.btnEditSections_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
             // 
             // dgSections
             // 
