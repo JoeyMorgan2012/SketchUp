@@ -86,36 +86,7 @@ namespace SketchUp
 
             FormattableString result = $"Selected Radio button tag ={selectedTag}";
             AngleDirection = SMGlobal.DirectionFromString(selectedTag);
-#if DEBUG
-            Trace.WriteLine(result.ToString());
-            Console.WriteLine(result.ToString());
-            Trace.Flush();
-#endif
-            //if (rbNW.Checked == true)
-            //{
-            //    AngleDirection = CamraDataEnums.CardinalDirection.NW;
-
-            //}
-
-            //if (rbNE.Checked == true)
-            //{
-            //    AngleDirection = CamraDataEnums.CardinalDirection.NE;
-
-            //}
-
-            //if (rbSW.Checked == true)
-            //{
-            //    AngleDirection = CamraDataEnums.CardinalDirection.SW;
-            //}
-
-            //if (rbSE.Checked == true)
-            //{
-            //    AngleDirection = CamraDataEnums.CardinalDirection.SE;
-            //}
         }
-
-     
-
-       
+      
     }
 }

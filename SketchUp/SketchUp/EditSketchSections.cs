@@ -58,14 +58,11 @@ namespace SketchUp
         private bool CheckGaragesAndCarports()
         {
             bool carsOk = false;
-            if (Parcel.SnapShotIndex>0)
-            {
-                originalSnapshotIndex = (from p in SketchUpGlobals.SketchSnapshots where p.SnapShotIndex < Parcel.SnapShotIndex select p.SnapShotIndex).Max();
-            }
-            SMParcel priorVersion = (from p in SketchUpGlobals.SketchSnapshots where p.SnapShotIndex ==originalSnapshotIndex select p).FirstOrDefault();
-            int priorCarports = (from s in priorVersion.Sections where SketchUpLookups.CarPortTypes.Contains(s.SectionType) select s).Count();
+
+            SMParcel dbVersion = SketchUpGlobals.SMParcelFromData;
+            int priorCarports = (from s in dbVersion.Sections where SketchUpLookups.CarPortTypes.Contains(s.SectionType) select s).Count();
             int currentCarports = (from s in Parcel.Sections where SketchUpLookups.CarPortTypes.Contains(s.SectionType) select s).Count();
-            int priorGarages = (from s in priorVersion.Sections where SketchUpLookups.GarageTypes.Contains(s.SectionType) select s).Count();
+            int priorGarages = (from s in dbVersion.Sections where SketchUpLookups.GarageTypes.Contains(s.SectionType) select s).Count();
             int currentGarages = (from s in Parcel.Sections where SketchUpLookups.GarageTypes.Contains(s.SectionType) select s).Count();
             if (currentCarports == 0)
             {
@@ -407,17 +404,19 @@ namespace SketchUp
             if (unsavedChangesExist)
             {
                 stlEditStatus.Image = EditedImage;
+                stlEditStatus.Text = "Record has Changes";
             }
             else
             {
                 stlEditStatus.Image = ChangesSavedImage;
+                stlEditStatus.Text = "No unsaved changes.";
             }
             if (!string.IsNullOrEmpty(sectionLetter))
             {
                statusText = $"Section {sectionLetter.ToUpper().Trim()} selected.";
                 if (sectionLetter.ToUpper().Trim()=="A")
                 {
-                    statusText += $"\tSection A must be {dgvSections.Rows[SelectedRow.Index].Cells["descriptionCol"].Value} for Occupancy Type {ParcelMast.OccupancyType.ToString()}";
+                    statusText += $" • Section A must be {dgvSections.Rows[SelectedRow.Index].Cells["descriptionCol"].Value} for Occupancy Type {ParcelMast.OccupancyType.ToString()}";
 
                 }
 
@@ -607,6 +606,55 @@ namespace SketchUp
             editedStoreysText = storyText.Text;
             unsavedChangesExist =(editedStoreysText!=ParcelMast.StoreysText);
             
+        }
+
+        private void btnDeleteSection_Click(object sender, EventArgs e)
+        {
+            string secLetter = sectionLetterLabel.Text.Trim();
+            SelectedSection = Parcel.SelectSectionByLetter(secLetter);
+            DialogResult confirm=ConfirmDeletion();
+            if (confirm==DialogResult.Yes)
+            {
+                if (secLetter!="A")
+                {
+                    unsavedChangesExist = false;
+                    Close();
+                }
+                else
+                {
+                    unsavedChangesExist = true;
+                    SketchRepo.AddSketchToSnapshots(Parcel);
+                    Parcel.Sections.Remove(SelectedSection);
+                    Parcel.ReorganizeSections();
+                    RefreshFormInformation();
+                }
+            }
+        }
+
+        private DialogResult ConfirmDeletion()
+        {
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            MessageBoxIcon icon = MessageBoxIcon.Question;
+            string secLetter = sectionLetterLabel.Text.Trim();
+            string title = string.Empty;
+            string warning = string.Empty;
+            SelectedSection = Parcel.SelectSectionByLetter(secLetter);
+            if (secLetter == "A")
+            {
+                title = "Action Unavailable";
+                warning = $"You can only delete the {SelectedSection.SectionType} section (A) if you delete the entire sketch. Do this in the main sketch screen using the \"Delete Sketch\" button. Do you want to abandon your changes and close this form?";
+
+                icon = MessageBoxIcon.Information;
+                
+            }
+            else
+            {
+                title = $"Delete section {secLetter}?";
+                warning = $"Delete section {secLetter} ({SelectedSection.SectionType})?\n\nNOTE: This cannot be undone--you will have to redraw the section once you save! (Exit without saving to keep the parcel structure as-is.)";
+
+            }
+            DialogResult response = MessageBox.Show(warning,title,buttons,icon);
+            return response;
         }
     }
 }

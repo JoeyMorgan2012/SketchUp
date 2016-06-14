@@ -12,9 +12,41 @@ namespace SketchUp
 {
     public partial class AdjustCarsData : Form
     {
-        public AdjustCarsData()
+        private bool carportsOk;
+        private bool garagesOk;
+        private bool garagesAndCarportsOk;
+        private string feedbackMessage;
+        SMVehicleStructure vehicleStructures;
+        public bool GaragesAndCarportsOk
+        {
+            get
+            {
+                return garagesAndCarportsOk;
+            }
+
+            set
+            {
+                garagesAndCarportsOk = value;
+            }
+        }
+
+        public SMVehicleStructure VehicleStructures
+        {
+            get
+            {
+                return vehicleStructures;
+            }
+
+            set
+            {
+                vehicleStructures = value;
+            }
+        }
+
+        public AdjustCarsData(SMParcel parcel)
         {
             InitializeComponent();
+            vehicleStructures = new SMVehicleStructure(parcel);
         }
     }
 }

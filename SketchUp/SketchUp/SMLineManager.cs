@@ -255,14 +255,6 @@ namespace SketchUp
             line1EndPointOnCombinedLine = SMGlobal.PointIsOnLine(firstLine.ScaledStartPoint, secondLine.ScaledEndPoint, firstLine.ScaledEndPoint);
             line2StartPointOnCombinedLine = SMGlobal.PointIsOnLine(firstLine.ScaledStartPoint, secondLine.ScaledEndPoint, secondLine.ScaledStartPoint);
             bool canBeCombined = (sameDirection && line1EndPointOnCombinedLine && line2StartPointOnCombinedLine && firstLineNotAnAttachmentPoint);
-
-            string Message = string.Format("Section {0}: Line {1} {2} be combined with line {3}", firstLine.SectionLetter, firstLine.LineNumber, canBeCombined ? "can" : "cannot", secondLine.LineNumber);
-            Trace.WriteLine(Message);
-            Debug.WriteLine(Message);
-#if DEBUG
-
-            //MessageBox.Show(Message);
-#endif
             return canBeCombined;
         }
 

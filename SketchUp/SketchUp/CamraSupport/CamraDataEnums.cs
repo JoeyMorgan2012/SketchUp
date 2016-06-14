@@ -33,10 +33,11 @@ namespace SketchUp
             return values;
         }
 
-#endregion
+        #endregion
 
-#region "Enums"
-
+        #region "Enums"
+       
+     
         public enum AuxAreaTypes
         {
             BEGR,

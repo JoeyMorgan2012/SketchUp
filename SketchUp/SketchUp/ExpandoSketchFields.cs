@@ -1058,7 +1058,7 @@ namespace SketchUp
         private Bitmap AddImage = Properties.Resources.AddSection;
         private Bitmap BeginDrawingImage = Properties.Resources.Edit_32xMD;
         private Bitmap CloseSectionImage = Properties.Resources.CloseSection;
-        private Bitmap DoneSketchingImage = Properties.Resources.GreenCheck;
+        private Bitmap GreenCheckImage = Properties.Resources.GreenCheck;
         private Bitmap EditSectionsImage = Properties.Resources.EditImage;
         private Bitmap EditUndoLineImage = Properties.Resources.Undo_grey_32x;
         private Bitmap ExitSketchImage = Properties.Resources.Close_16x;

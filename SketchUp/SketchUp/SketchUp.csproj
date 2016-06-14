@@ -144,6 +144,12 @@
     <Compile Include="EditSketchSections.Designer.cs">
       <DependentUpon>EditSketchSections.cs</DependentUpon>
     </Compile>
+    <Compile Include="SketchDeleteOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SketchDeleteOptions.Designer.cs">
+      <DependentUpon>SketchDeleteOptions.cs</DependentUpon>
+    </Compile>
     <Compile Include="SMVehicleStructure.cs" />
     <Compile Include="UtilityClasses\TestSetup.cs" />
     <Compile Include="UtilityClasses\DevUtilities.cs" />
@@ -304,6 +310,9 @@
     </Compile>
     <EmbeddedResource Include="SelectSectionTypeDialog.resx">
       <DependentUpon>SelectSectionTypeDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SketchDeleteOptions.resx">
+      <DependentUpon>SketchDeleteOptions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SketchDistance.resx">
       <DependentUpon>SketchDistance.cs</DependentUpon>

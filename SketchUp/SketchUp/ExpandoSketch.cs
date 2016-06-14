@@ -36,8 +36,9 @@ namespace SketchUp
             InitializeComponent();
             AddSectionContextMenu.Enabled = false;
             WorkingParcel = SketchUpGlobals.ParcelWorkingCopy;
-            ShowVersion(WorkingParcel.SnapShotIndex);
+         
             EditState = DrawingState.SketchLoaded;
+            ShowEditStatus(EditState);
             ShowWorkingCopySketch(sketchFolder, sketchRecord.ToString(), sketchCard.ToString(), hasSketch, hasNewSketch);
         }
 
@@ -242,7 +243,7 @@ namespace SketchUp
         {
             SketchRepository sr = new SketchRepository(parcel);
             WorkingParcel = sr.AddSketchToSnapshots(parcel);
-            ShowVersion(WorkingParcel.SnapShotIndex);
+            ShowEditStatus(EditState);
         }
 
         private void AddSection()
@@ -300,20 +301,9 @@ namespace SketchUp
                 {
                     SMLine anchorLine = linesWithStart.First();
                     SMLineManager slm = new SMLineManager();
-#if DEBUG
-                    DevUtilities du = new DevUtilities();
-                    Trace.WriteLine("\nBefore Break: \n");
-                    Trace.WriteLine(du.ParcelInfo(WorkingParcel));
-#endif
-
                     AttachmentSection = slm.SectionWithLineBreak(AttachmentSection, anchorLine.LineNumber, wsStart);
                     anchorLine = (from l in AttachmentSection.Lines where l.EndPoint == wsStart select l).FirstOrDefault();
                     anchorLine.AttachedSection = WorkingSection.SectionLetter;
-#if DEBUG
-                    Trace.WriteLine("\nAfter Break: \n");
-                    Trace.WriteLine(du.ParcelInfo(WorkingParcel));
-                    Trace.Flush();
-#endif
                 }
             }
         }
@@ -500,17 +490,7 @@ namespace SketchUp
             }
         }
 
-        private void changeSectionToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
-
-#if DEBUG
-            MessageBox.Show(message);
-#else
-            Console.WriteLine(message);
-            throw new NotImplementedException();
-#endif
-        }
+       
 
         private void cmiAddClosingLine_Click(object sender, EventArgs e)
         {
@@ -923,18 +903,7 @@ namespace SketchUp
             }
         }
 
-        private void deleteExistingSketchToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
-
-#if DEBUG
-            MessageBox.Show(message);
-#else
-            Console.WriteLine(message);
-            throw new NotImplementedException();
-#endif
-        }
-
+    
         private void DeleteLineSection()
         {
             StringBuilder deletelinesect = new StringBuilder();
@@ -951,15 +920,31 @@ namespace SketchUp
 
         private void DeleteSketch()
         {
-            string message = string.Format("Need to implement {0}.{1}", MethodBase.GetCurrentMethod().Module, MethodBase.GetCurrentMethod().Name);
+            if (ConfirmSketchDeletion())
+            {
+                WorkingParcel.ParcelMast.OccupancyType = CamraDataEnums.OccupancyType.Vacant;
+                var vacantOccupancies = (from c in SketchUpLookups.OccupancyCollection where c.Description.Contains("VACANT") select c).ToList();
+              
 
-#if DEBUG
-            MessageBox.Show(message);
-#else
-            Console.WriteLine(message);
-            throw new NotImplementedException();
-#endif
+            }
+    }
+
+        private bool ConfirmSketchDeletion()
+        {
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            MessageBoxIcon icon = MessageBoxIcon.Question;
+
+            string title = string.Empty;
+            string warning = string.Empty;
+
+            title = "Delete entire sketch?";
+            warning = $" Do you want to delete the entire sketch?\n\nNOTE: This cannot be undone--you will have to redraw the sketch once you save! \n\nParcel's Occupancy Code will be set to \"Vacant\".";
+            icon = MessageBoxIcon.Warning;
+
+            DialogResult response = MessageBox.Show(warning, title, buttons, icon);
+            return response==DialogResult.Yes;
         }
+      
 
         private CamraDataEnums.CardinalDirection DirectionOfKeyEntered(KeyEventArgs e)
         {
@@ -1093,7 +1078,16 @@ namespace SketchUp
 
         private void EditParcelSections()
         {
-            throw new NotImplementedException();
+            Cursor.Current = Cursors.WaitCursor;
+            DisplayStatus("Loading sections information...please wait.");
+            Application.DoEvents();
+            WorkingParcel.SnapShotIndex++;
+            AddParcelToSnapshots(WorkingParcel);
+            Application.DoEvents();
+            EditSketchSections ess = new EditSketchSections(WorkingParcel);
+            ess.ShowDialog();
+            DisplayStatus("Ready.");
+            RefreshWorkspace();
         }
 
         private void EraseSectionFromDrawing(SMSection section)
@@ -1549,13 +1543,13 @@ namespace SketchUp
 
             // TODO: Remove if not needed:
         }
+// TODO: Remove if not needed:
+        //private void InitializeDisplayDataGrid()
+        //{
+        //    displayDataTable = ConstructDisplayDataTable();
 
-        private void InitializeDisplayDataGrid()
-        {
-            displayDataTable = ConstructDisplayDataTable();
-
-            dgSections.DataSource = displayDataTable;
-        }
+        //    dgSections.DataSource = displayDataTable;
+        //}
 
         private void InsertLine(string CurAttDir, decimal newEndX, decimal newEndY, decimal StartEndX, decimal StartEndY, decimal splitLength)
         {
@@ -1781,6 +1775,7 @@ namespace SketchUp
         {
             SaveChanges(WorkingParcel);
             WorkingSection = null;
+            Close();
         }
 
         private void miSaveAndContinue_Click(object sender, EventArgs e)
@@ -2068,11 +2063,12 @@ namespace SketchUp
                     if (WorkingSection.SectionIsClosed)
                     {
                         btnAdd.Text = "Done Drawing";
-                        btnAdd.Image = DoneSketchingImage;
+                        btnAdd.Image = GreenCheckImage;
                     }
                     else
                     {
                         btnAdd.Text = "Auto-Close";
+
                         btnAdd.Image = CloseSectionImage;
                         enableAdd = WorkingSection.Lines.Count >= 2;
                     }
@@ -2081,6 +2077,7 @@ namespace SketchUp
 
                 case DrawingState.SectionAdded:
                     btnAdd.Text = "Begin";
+                    btnAdd.BackColor = Color.LightCyan;
                     btnAdd.Image = JumpToCornerImage;
                     enableAdd = false;
                     enableContextMenu = true;
@@ -2091,6 +2088,7 @@ namespace SketchUp
                     enableJumpMenu = false;
                     enableContextMenu = true;
                     btnAdd.Text = "Begin";
+                    btnAdd.BackColor = Color.LightCyan;
                     btnAdd.Image = BeginDrawingImage;
                     enableAdd = true;
                     break;
@@ -2098,6 +2096,7 @@ namespace SketchUp
                 case DrawingState.DoneDrawing:
                     enableAdd = true;
                     enableContextMenu = true;
+                    btnAdd.BackColor = Color.LightGreen;
                     btnAdd.Text = "Save";
                     btnAdd.Image = SaveAndCloseImage;
                     enableJumpMenu = false;
@@ -2138,7 +2137,7 @@ namespace SketchUp
         {
             WorkingParcel.SnapShotIndex++;
             AddParcelToSnapshots(WorkingParcel);
-            ShowVersion(WorkingParcel.SnapShotIndex);
+            ShowEditStatus(EditState);
             var AttachPoints = (from l in
                   WorkingParcel.AllSectionLines.Where(s =>
                   s.SectionLetter != "A" && s.LineNumber == 1).ToList()
@@ -2242,10 +2241,24 @@ namespace SketchUp
             DisplayStatus(message);
         }
 
-        private void ShowVersion(int snapShotIndex)
+        private void ShowEditStatus(DrawingState state)
         {
-            string versionInfo = string.Format("#{0}", snapShotIndex);
-            snapshotIndexLabel.Text = versionInfo;
+            string message = string.Empty;
+            Bitmap statusImage = (UnsavedChangesExist?SaveDrawingImage:GreenCheckImage);
+            switch (state)
+            {
+                case DrawingState.SketchLoaded:
+                case DrawingState.SketchSaved:
+                    UnsavedChangesExist = false;
+                    statusImage = EditSectionsImage;
+                    break;
+                    
+                default:
+
+                    break;
+            }
+
+            editStatusLabel.Text = message;
         }
 
         private void ShowWorkingCopySketch(string sketchFolder, string sketchRecord, string sketchCard, bool hasSketch, bool hasNewSketch)
@@ -2254,13 +2267,12 @@ namespace SketchUp
             {
                 InitializeDataTablesAndVariables(sketchFolder, sketchRecord, sketchCard, hasSketch, hasNewSketch);
 
-                InitializeDisplayDataGrid();
+              //  InitializeDisplayDataGrid();
                 SketchUpGlobals.ParcelWorkingCopy = SketchUpGlobals.ParcelWorkingCopy;
                 SketchUpGlobals.HasSketch = (SketchUpGlobals.ParcelWorkingCopy != null && WorkingParcel.AllSectionLines.Count > 0);
                 IsNewSketch = !SketchUpGlobals.HasSketch;
 
-                //HACK - Easier to repeat than track down the usages at this juncture
-                SketchUpGlobals.HasNewSketch = IsNewSketch;
+              
                 if (SketchUpGlobals.HasSketch == true)
                 {
                     SMSketcher sketcher = new SMSketcher(SketchUpGlobals.ParcelWorkingCopy, sketchBox);
@@ -2268,14 +2280,15 @@ namespace SketchUp
 
                     MainImage = sketcher.SketchImage;
                     _currentScale = (float)WorkingParcel.Scale;
+                    ScaleBaseX = sketchBox.Width / (float)WorkingParcel.SketchXSize;
+
+                    ScaleBaseY = sketchBox.Height / (float)WorkingParcel.SketchYSize;
                 }
                 else
                 {
                     MainImage = new Bitmap(sketchBox.Width, sketchBox.Height);
                 }
-                ScaleBaseX = sketchBox.Width / (float)WorkingParcel.SketchXSize;
-
-                ScaleBaseY = sketchBox.Height / (float)WorkingParcel.SketchYSize;
+               
 
                 if (MainImage == null)
                 {
@@ -2597,15 +2610,14 @@ namespace SketchUp
 
         #endregion "Private methods"
 
-        private void btnEditSections_Click(object sender, EventArgs e)
+        private void tsbEditSections_Click(object sender, EventArgs e)
         {
-            Cursor.Current = Cursors.WaitCursor;
-            DisplayStatus("Loading sections information...please wait.");
-            WorkingParcel.SnapShotIndex++;
-            AddParcelToSnapshots(WorkingParcel);
-            EditSketchSections ess = new EditSketchSections(WorkingParcel);
-            ess.ShowDialog();
-            RefreshWorkspace();
+            EditParcelSections();
+        }
+
+        private void tsbDeleteSketch_Click(object sender, EventArgs e)
+        {
+            DeleteSketch();
         }
     }
 }

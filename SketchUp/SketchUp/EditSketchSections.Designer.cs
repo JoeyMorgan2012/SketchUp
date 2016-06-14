@@ -56,26 +56,29 @@
             this.statusStripMain = new System.Windows.Forms.StatusStrip();
             this.stlSection = new System.Windows.Forms.ToolStripStatusLabel();
             this.stlEditStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.editSketchSectionsBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.editSketchToolstrip = new System.Windows.Forms.ToolStrip();
+            this.tsbSave = new System.Windows.Forms.ToolStripButton();
+            this.tsbExit = new System.Windows.Forms.ToolStripButton();
+            this.btnDeleteSection = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.descriptionTextLabel = new System.Windows.Forms.Label();
+            this.sizeTextLabel = new System.Windows.Forms.Label();
+            this.storyText = new System.Windows.Forms.TextBox();
+            this.cboSectionType = new System.Windows.Forms.ComboBox();
+            this.sectionLetterLabel = new System.Windows.Forms.Label();
             this.sizeLabel = new System.Windows.Forms.Label();
             this.storeysTextLabel = new System.Windows.Forms.Label();
             this.descriptionLabel = new System.Windows.Forms.Label();
             this.typeLabel = new System.Windows.Forms.Label();
             this.sectionLabel = new System.Windows.Forms.Label();
-            this.sectionLetterLabel = new System.Windows.Forms.Label();
-            this.cboSectionType = new System.Windows.Forms.ComboBox();
-            this.editSketchSectionsBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.storyText = new System.Windows.Forms.TextBox();
-            this.sizeTextLabel = new System.Windows.Forms.Label();
-            this.descriptionTextLabel = new System.Windows.Forms.Label();
-            this.editSketchToolstrip = new System.Windows.Forms.ToolStrip();
-            this.tsbSave = new System.Windows.Forms.ToolStripButton();
-            this.tsbExit = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.dtSectionsBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sectionsDt)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSections)).BeginInit();
             this.statusStripMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.editSketchSectionsBindingSource)).BeginInit();
             this.editSketchToolstrip.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // dtSectionsBindingSource
@@ -112,6 +115,7 @@
             this.dgvSections.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvSections.AutoGenerateColumns = false;
             this.dgvSections.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvSections.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dgvSections.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.Raised;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.BlanchedAlmond;
@@ -215,7 +219,7 @@
             this.stlEditStatus});
             this.statusStripMain.Location = new System.Drawing.Point(0, 512);
             this.statusStripMain.Name = "statusStripMain";
-            this.statusStripMain.Size = new System.Drawing.Size(895, 25);
+            this.statusStripMain.Size = new System.Drawing.Size(909, 25);
             this.statusStripMain.TabIndex = 5;
             this.statusStripMain.Text = "statusStrip1";
             // 
@@ -223,134 +227,22 @@
             // 
             this.stlSection.Name = "stlSection";
             this.stlSection.Padding = new System.Windows.Forms.Padding(20, 0, 20, 0);
-            this.stlSection.Size = new System.Drawing.Size(860, 20);
+            this.stlSection.Size = new System.Drawing.Size(859, 20);
             this.stlSection.Spring = true;
             this.stlSection.Text = "Selected Section(s):";
             this.stlSection.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // stlEditStatus
             // 
-            this.stlEditStatus.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.stlEditStatus.Image = global::SketchUp.Properties.Resources.GreenCheck;
             this.stlEditStatus.Name = "stlEditStatus";
-            this.stlEditStatus.Size = new System.Drawing.Size(20, 20);
+            this.stlEditStatus.Size = new System.Drawing.Size(35, 20);
             this.stlEditStatus.Text = "*";
-            // 
-            // sizeLabel
-            // 
-            this.sizeLabel.AutoSize = true;
-            this.sizeLabel.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.sizeLabel.Location = new System.Drawing.Point(639, 308);
-            this.sizeLabel.Name = "sizeLabel";
-            this.sizeLabel.Size = new System.Drawing.Size(36, 20);
-            this.sizeLabel.TabIndex = 10;
-            this.sizeLabel.Text = "Size";
-            this.sizeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // storeysTextLabel
-            // 
-            this.storeysTextLabel.AutoSize = true;
-            this.storeysTextLabel.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.storeysTextLabel.Location = new System.Drawing.Point(494, 308);
-            this.storeysTextLabel.Name = "storeysTextLabel";
-            this.storeysTextLabel.Size = new System.Drawing.Size(45, 20);
-            this.storeysTextLabel.TabIndex = 9;
-            this.storeysTextLabel.Text = "Story";
-            this.storeysTextLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // descriptionLabel
-            // 
-            this.descriptionLabel.AutoSize = true;
-            this.descriptionLabel.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.descriptionLabel.Location = new System.Drawing.Point(146, 344);
-            this.descriptionLabel.Name = "descriptionLabel";
-            this.descriptionLabel.Size = new System.Drawing.Size(87, 20);
-            this.descriptionLabel.TabIndex = 8;
-            this.descriptionLabel.Text = "Description";
-            this.descriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // typeLabel
-            // 
-            this.typeLabel.AutoSize = true;
-            this.typeLabel.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.typeLabel.Location = new System.Drawing.Point(137, 308);
-            this.typeLabel.Name = "typeLabel";
-            this.typeLabel.Size = new System.Drawing.Size(96, 20);
-            this.typeLabel.TabIndex = 7;
-            this.typeLabel.Text = "Section Type";
-            this.typeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // sectionLabel
-            // 
-            this.sectionLabel.AutoSize = true;
-            this.sectionLabel.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.sectionLabel.Location = new System.Drawing.Point(35, 308);
-            this.sectionLabel.Name = "sectionLabel";
-            this.sectionLabel.Size = new System.Drawing.Size(59, 20);
-            this.sectionLabel.TabIndex = 6;
-            this.sectionLabel.Text = "Section";
-            this.sectionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // sectionLetterLabel
-            // 
-            this.sectionLetterLabel.AutoSize = true;
-            this.sectionLetterLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.sectionLetterLabel.Location = new System.Drawing.Point(100, 308);
-            this.sectionLetterLabel.Name = "sectionLetterLabel";
-            this.sectionLetterLabel.Size = new System.Drawing.Size(20, 20);
-            this.sectionLetterLabel.TabIndex = 11;
-            this.sectionLetterLabel.Text = "A";
-            // 
-            // cboSectionType
-            // 
-            this.cboSectionType.DataSource = this.editSketchSectionsBindingSource;
-            this.cboSectionType.DisplayMember = "Code";
-            this.cboSectionType.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboSectionType.FormattingEnabled = true;
-            this.cboSectionType.Location = new System.Drawing.Point(241, 305);
-            this.cboSectionType.Name = "cboSectionType";
-            this.cboSectionType.Size = new System.Drawing.Size(234, 28);
-            this.cboSectionType.TabIndex = 12;
-            this.cboSectionType.ValueMember = "Description";
-            this.cboSectionType.SelectedIndexChanged += new System.EventHandler(this.cboSectionType_SelectedIndexChanged);
             // 
             // editSketchSectionsBindingSource
             // 
             this.editSketchSectionsBindingSource.DataMember = "SectionCboList";
             this.editSketchSectionsBindingSource.DataSource = typeof(SketchUp.EditSketchSections);
-            // 
-            // storyText
-            // 
-            this.storyText.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.storyText.Location = new System.Drawing.Point(546, 305);
-            this.storyText.Margin = new System.Windows.Forms.Padding(2, 3, 3, 3);
-            this.storyText.Name = "storyText";
-            this.storyText.Size = new System.Drawing.Size(75, 27);
-            this.storyText.TabIndex = 13;
-            this.storyText.TextChanged += new System.EventHandler(this.storyText_TextChanged);
-            this.storyText.Leave += new System.EventHandler(this.storyText_Leave);
-            // 
-            // sizeTextLabel
-            // 
-            this.sizeTextLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.sizeTextLabel.Location = new System.Drawing.Point(681, 309);
-            this.sizeTextLabel.Margin = new System.Windows.Forms.Padding(3, 0, 2, 0);
-            this.sizeTextLabel.Name = "sizeTextLabel";
-            this.sizeTextLabel.Size = new System.Drawing.Size(87, 20);
-            this.sizeTextLabel.TabIndex = 14;
-            this.sizeTextLabel.Text = "000";
-            this.sizeTextLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // descriptionTextLabel
-            // 
-            this.descriptionTextLabel.AutoSize = true;
-            this.descriptionTextLabel.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.descriptionTextLabel.Location = new System.Drawing.Point(239, 344);
-            this.descriptionTextLabel.Name = "descriptionTextLabel";
-            this.descriptionTextLabel.Size = new System.Drawing.Size(87, 20);
-            this.descriptionTextLabel.TabIndex = 15;
-            this.descriptionTextLabel.Text = "Description";
-            this.descriptionTextLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // editSketchToolstrip
             // 
@@ -362,7 +254,8 @@
             this.editSketchToolstrip.Location = new System.Drawing.Point(0, 0);
             this.editSketchToolstrip.Margin = new System.Windows.Forms.Padding(4);
             this.editSketchToolstrip.Name = "editSketchToolstrip";
-            this.editSketchToolstrip.Size = new System.Drawing.Size(895, 33);
+            this.editSketchToolstrip.Size = new System.Drawing.Size(909, 33);
+            this.editSketchToolstrip.Stretch = true;
             this.editSketchToolstrip.TabIndex = 16;
             this.editSketchToolstrip.Text = "Menu";
             // 
@@ -388,28 +281,160 @@
             this.tsbExit.ToolTipText = "Exit to Sketch";
             this.tsbExit.Click += new System.EventHandler(this.tsbExit_Click);
             // 
+            // btnDeleteSection
+            // 
+            this.btnDeleteSection.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDeleteSection.Location = new System.Drawing.Point(764, 72);
+            this.btnDeleteSection.Name = "btnDeleteSection";
+            this.btnDeleteSection.Size = new System.Drawing.Size(79, 40);
+            this.btnDeleteSection.TabIndex = 17;
+            this.btnDeleteSection.Text = "Delete";
+            this.btnDeleteSection.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.btnDeleteSection.UseVisualStyleBackColor = true;
+            this.btnDeleteSection.Click += new System.EventHandler(this.btnDeleteSection_Click);
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.LightBlue;
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel1.Controls.Add(this.descriptionTextLabel);
+            this.panel1.Controls.Add(this.btnDeleteSection);
+            this.panel1.Controls.Add(this.sizeTextLabel);
+            this.panel1.Controls.Add(this.storyText);
+            this.panel1.Controls.Add(this.cboSectionType);
+            this.panel1.Controls.Add(this.sectionLetterLabel);
+            this.panel1.Controls.Add(this.sizeLabel);
+            this.panel1.Controls.Add(this.storeysTextLabel);
+            this.panel1.Controls.Add(this.descriptionLabel);
+            this.panel1.Controls.Add(this.typeLabel);
+            this.panel1.Controls.Add(this.sectionLabel);
+            this.panel1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panel1.Location = new System.Drawing.Point(26, 275);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(857, 126);
+            this.panel1.TabIndex = 18;
+            // 
+            // descriptionTextLabel
+            // 
+            this.descriptionTextLabel.AutoSize = true;
+            this.descriptionTextLabel.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.descriptionTextLabel.Location = new System.Drawing.Point(218, 60);
+            this.descriptionTextLabel.Name = "descriptionTextLabel";
+            this.descriptionTextLabel.Size = new System.Drawing.Size(87, 20);
+            this.descriptionTextLabel.TabIndex = 25;
+            this.descriptionTextLabel.Text = "Description";
+            this.descriptionTextLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // sizeTextLabel
+            // 
+            this.sizeTextLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.sizeTextLabel.Location = new System.Drawing.Point(660, 25);
+            this.sizeTextLabel.Margin = new System.Windows.Forms.Padding(3, 0, 2, 0);
+            this.sizeTextLabel.Name = "sizeTextLabel";
+            this.sizeTextLabel.Size = new System.Drawing.Size(87, 20);
+            this.sizeTextLabel.TabIndex = 24;
+            this.sizeTextLabel.Text = "000";
+            this.sizeTextLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // storyText
+            // 
+            this.storyText.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.storyText.Location = new System.Drawing.Point(525, 21);
+            this.storyText.Margin = new System.Windows.Forms.Padding(2, 3, 3, 3);
+            this.storyText.Name = "storyText";
+            this.storyText.Size = new System.Drawing.Size(75, 27);
+            this.storyText.TabIndex = 23;
+            // 
+            // cboSectionType
+            // 
+            this.cboSectionType.DataSource = this.editSketchSectionsBindingSource;
+            this.cboSectionType.DisplayMember = "Code";
+            this.cboSectionType.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboSectionType.FormattingEnabled = true;
+            this.cboSectionType.Location = new System.Drawing.Point(220, 21);
+            this.cboSectionType.Name = "cboSectionType";
+            this.cboSectionType.Size = new System.Drawing.Size(234, 28);
+            this.cboSectionType.TabIndex = 22;
+            this.cboSectionType.ValueMember = "Description";
+            // 
+            // sectionLetterLabel
+            // 
+            this.sectionLetterLabel.AutoSize = true;
+            this.sectionLetterLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.sectionLetterLabel.Location = new System.Drawing.Point(79, 24);
+            this.sectionLetterLabel.Name = "sectionLetterLabel";
+            this.sectionLetterLabel.Size = new System.Drawing.Size(20, 20);
+            this.sectionLetterLabel.TabIndex = 21;
+            this.sectionLetterLabel.Text = "A";
+            // 
+            // sizeLabel
+            // 
+            this.sizeLabel.AutoSize = true;
+            this.sizeLabel.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.sizeLabel.Location = new System.Drawing.Point(618, 24);
+            this.sizeLabel.Name = "sizeLabel";
+            this.sizeLabel.Size = new System.Drawing.Size(36, 20);
+            this.sizeLabel.TabIndex = 20;
+            this.sizeLabel.Text = "Size";
+            this.sizeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // storeysTextLabel
+            // 
+            this.storeysTextLabel.AutoSize = true;
+            this.storeysTextLabel.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.storeysTextLabel.Location = new System.Drawing.Point(473, 24);
+            this.storeysTextLabel.Name = "storeysTextLabel";
+            this.storeysTextLabel.Size = new System.Drawing.Size(45, 20);
+            this.storeysTextLabel.TabIndex = 19;
+            this.storeysTextLabel.Text = "Story";
+            this.storeysTextLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // descriptionLabel
+            // 
+            this.descriptionLabel.AutoSize = true;
+            this.descriptionLabel.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.descriptionLabel.Location = new System.Drawing.Point(125, 60);
+            this.descriptionLabel.Name = "descriptionLabel";
+            this.descriptionLabel.Size = new System.Drawing.Size(87, 20);
+            this.descriptionLabel.TabIndex = 18;
+            this.descriptionLabel.Text = "Description";
+            this.descriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // typeLabel
+            // 
+            this.typeLabel.AutoSize = true;
+            this.typeLabel.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.typeLabel.Location = new System.Drawing.Point(116, 24);
+            this.typeLabel.Name = "typeLabel";
+            this.typeLabel.Size = new System.Drawing.Size(96, 20);
+            this.typeLabel.TabIndex = 17;
+            this.typeLabel.Text = "Section Type";
+            this.typeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // sectionLabel
+            // 
+            this.sectionLabel.AutoSize = true;
+            this.sectionLabel.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.sectionLabel.Location = new System.Drawing.Point(14, 24);
+            this.sectionLabel.Name = "sectionLabel";
+            this.sectionLabel.Size = new System.Drawing.Size(59, 20);
+            this.sectionLabel.TabIndex = 16;
+            this.sectionLabel.Text = "Section";
+            this.sectionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // EditSketchSections
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightGoldenrodYellow;
-            this.ClientSize = new System.Drawing.Size(895, 537);
+            this.ClientSize = new System.Drawing.Size(909, 537);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.editSketchToolstrip);
-            this.Controls.Add(this.descriptionTextLabel);
-            this.Controls.Add(this.sizeTextLabel);
-            this.Controls.Add(this.storyText);
-            this.Controls.Add(this.cboSectionType);
-            this.Controls.Add(this.sectionLetterLabel);
-            this.Controls.Add(this.sizeLabel);
-            this.Controls.Add(this.storeysTextLabel);
-            this.Controls.Add(this.descriptionLabel);
-            this.Controls.Add(this.typeLabel);
-            this.Controls.Add(this.sectionLabel);
             this.Controls.Add(this.statusStripMain);
             this.Controls.Add(this.dgvSections);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "EditSketchSections";
-            this.Text = "EditSketchSections";
+            this.Text = "Edit Sketch Sections";
             ((System.ComponentModel.ISupportInitialize)(this.dtSectionsBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.sectionsDt)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSections)).EndInit();
@@ -418,6 +443,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.editSketchSectionsBindingSource)).EndInit();
             this.editSketchToolstrip.ResumeLayout(false);
             this.editSketchToolstrip.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -445,6 +472,12 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn sectionCol;
         private System.Windows.Forms.DataGridView dgvSections;
         private System.Windows.Forms.ToolStripStatusLabel stlEditStatus;
+        private System.Windows.Forms.BindingSource editSketchSectionsBindingSource;
+        private System.Windows.Forms.ToolStrip editSketchToolstrip;
+        private System.Windows.Forms.ToolStripButton tsbSave;
+        private System.Windows.Forms.ToolStripButton tsbExit;
+        private System.Windows.Forms.Button btnDeleteSection;
+        private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label sectionLabel;
         private System.Windows.Forms.Label typeLabel;
         private System.Windows.Forms.Label descriptionLabel;
@@ -455,9 +488,5 @@
         private System.Windows.Forms.TextBox storyText;
         private System.Windows.Forms.Label sizeTextLabel;
         private System.Windows.Forms.Label descriptionTextLabel;
-        private System.Windows.Forms.BindingSource editSketchSectionsBindingSource;
-        private System.Windows.Forms.ToolStrip editSketchToolstrip;
-        private System.Windows.Forms.ToolStripButton tsbSave;
-        private System.Windows.Forms.ToolStripButton tsbExit;
     }
 }

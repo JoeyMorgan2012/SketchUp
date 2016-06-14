@@ -20,8 +20,16 @@ namespace SketchUp
 
             _checkStory = false;
             newSectionStoreys = 0;
-            SectionStoriesTxt.Text = ParcelMaster.Parcel.SelectSectionByLetter("A").StoreysText.ToString();
-            SectionStoriesTxt.Focus();
+            if (ParcelMaster!=null&&ParcelMaster.Parcel!=null&&ParcelMaster.Parcel.Sections!=null &&ParcelMaster.Parcel.Sections.Count>0)
+            {
+   SectionStoriesTxt.Text = ParcelMaster.Parcel.SelectSectionByLetter("A").StoreysText.ToString();
+     
+            }
+            else
+            {
+                SectionStoriesTxt.Text = "1.0";
+            }
+                SectionStoriesTxt.Focus();
 
             Record = ParcelMaster.Record;
             Card = ParcelMaster.Card;

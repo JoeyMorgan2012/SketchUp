@@ -255,7 +255,7 @@ namespace SketchUp
 
                 if (result == DialogResult.Yes)
                 {
-                    //BuildNewSketch();
+                    BuildNewSketch();
 
                     EditImage.Text = "Edit Sketch";
 
@@ -287,6 +287,21 @@ namespace SketchUp
             {
                 EditImage.Text = "Add Sketch";
             }
+        }
+
+        private void BuildNewSketch()
+        {
+            SMParcelMast newMast = SketchRepo.SelectParcelMasterWithParcel(SketchUpGlobals.Record, SketchUpGlobals.Card);
+            SMParcel parcel= new SMParcel();
+          parcel.Record = newMast.Record;
+            parcel.TotalSqFt = 0.00M;
+            parcel.ExSketch = string.Empty;
+            parcel.Scale  = 1.0M;
+            parcel.ParcelMast = newMast;
+            parcel.SnapShotIndex = 0;
+            SketchRepo.AddSketchToSnapshots(parcel);
+            parcel.SnapShotIndex++;
+
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
