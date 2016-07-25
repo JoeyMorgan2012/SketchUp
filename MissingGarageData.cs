@@ -1,258 +1,352 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using SWallTech;
 
 namespace SketchUp
 {
-	public partial class MissingGarageData : Form
-	{
-		//private DBAccessManager _fox = null;
-		private CAMRA_Connection _conn = null;
+    public partial class MissingGarageData : Form
+    {
+        #region "Constructor"
 
-		private ParcelData _currentParcel = null;
+        public MissingGarageData(SMParcelMast parcelMast)
+        {
+            InitializeComponent();
+            InitializeForm(parcelMast);
+        }
 
-		private decimal NewArea = 0;
+        public MissingGarageData(SMParcelMast parcelMast, decimal sectionArea, string sectionType)
+        {
+            InitializeComponent();
+            InitializeForm(parcelMast);
+        }
 
-		public static int GarCode
-		{
-			get; set;
-		}
+        #endregion
 
-		public static int GarNbr
-		{
-			get; set;
-		}
 
-		public static int CPCode
-		{
-			get; set;
-		}
 
-		public static int CpNbr
-		{
-			get; set;
-		}
+        #region "Private methods"
 
-		public MissingGarageData(SWallTech.CAMRA_Connection conn, ParcelData data, decimal newSectArea, string Type)
-		{
-			_conn = conn;
-			_currentParcel = data;
-			GarCode = 0;
-			GarNbr = 0;
-			CPCode = 0;
-			CpNbr = 0;
 
-			InitializeComponent();
 
-			Build_CarPort_Data();
-			Build_Garage_Data();
+        private void CarPortNbrCarTxt_Leave(object sender, EventArgs e)
+        {
+            CarportNumCars = Convert.ToInt32(CarPortNbrCarTxt.Text.ToString());
+        }
 
-			GarNbrCarTxt.Text = "0";
-			CarPortNbrCarTxt.Text = "0";
 
-			NewArea = newSectArea;
 
-			if (Type == "GAR")
-			{
-				CarPortTypCbox.Visible = false;
-				CarPortNbrCarTxt.Visible = false;
-				CarPortLbl.Visible = false;
-				MissingCarporLbl.Visible = false;
-				GarTypeCbox.Visible = true;
-				GarNbrCarTxt.Visible = true;
-				GarLbl.Visible = true;
-				MissingGarLbl.Visible = true;
-			}
+        private void CarPortTypCbox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (CarPortTypCbox.Items.Count > 0)
+            {
+                if (ParcelMast != null && CarPortTypCbox.SelectedIndex > 0)
+                {
+                    int codeValue = 0;
+                    string selectedValue = CarPortTypCbox.SelectedValue.ToString();
+                    Int32.TryParse(selectedValue, out codeValue);
+                    CarportCode = codeValue;
 
-			if (Type == "CP")
-			{
-				CarPortTypCbox.Visible = true;
-				CarPortNbrCarTxt.Visible = true;
-				CarPortLbl.Visible = true;
-				MissingCarporLbl.Visible = true;
-				GarTypeCbox.Visible = false;
-				GarNbrCarTxt.Visible = false;
-				GarLbl.Visible = false;
-				MissingGarLbl.Visible = false;
-			}
+                    if (CarportCode != OriginalParcelMast.CarportTypeCode)
+                    {
+                        CarPortTypCbox.BackColor = Color.PaleGreen;
+                    }
+                    else
+                    {
+                        CarPortTypCbox.BackColor = Color.White;
+                    }
+                    ParcelMast.CarportTypeCode = CarportCode;
+                }
+            }
+        }
 
-			if (Type == "GAR" && NewArea <= 360)
-			{
-				GarNbrCarTxt.Text = "1";
-				_currentParcel.mgarNc = 1;
-				GarNbr = 1;
-			}
-			if (Type == "GAR" && NewArea > 360)
-			{
-				GarNbrCarTxt.Text = "2";
-				_currentParcel.mgarNc = 2;
-				GarNbr = 2;
-			}
+        private void Gar1NbrCarTxt_Leave(object sender, EventArgs e)
+        {
+            Gar1NumCars = Convert.ToInt32(Gar1NbrCarTxt.Text.ToString());
+        }
+        private void Gar2NbrCarTxt_Leave(object sender, EventArgs e)
+        {
+            Gar2NumCars = Convert.ToInt32(Gar2NbrCarTxt.Text.ToString());
+        }
 
-			if (Type == "CP" && NewArea <= 275)
-			{
-				CarPortNbrCarTxt.Text = "1";
-				_currentParcel.mcarNc = 1;
-				CpNbr = 1;
-			}
-			if (Type == "CP" && NewArea > 275)
-			{
-				CarPortNbrCarTxt.Text = "2";
-				_currentParcel.mcarNc = 2;
-				CpNbr = 2;
-			}
+        private void Gar2NbrCarTxt_TextChanged(object sender, EventArgs e)
+        {
+            Gar1NumCars = Convert.ToInt32(Gar1NbrCarTxt.Text.ToString());
+        }
 
-			GarTypeCbox.Items.Clear();
-			ListGarageSelection();
-			CarPortTypCbox.Items.Clear();
-			ListCPortSelection();
-		}
+        private void Gar1TypeCbox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (Gar1TypeCbox.Items.Count > 0)
+            {
+                if (ParcelMast != null && Gar1TypeCbox.SelectedIndex > 0)
+                {
+                    string selectedValue = Gar1TypeCbox.SelectedValue.ToString().Substring(0, 2);
+                    int codeValue = 0;
+                    Int32.TryParse(selectedValue, out codeValue);
+                    Garage1Code = codeValue;
 
-		private Dictionary<int, StabType> _garList = null;
-		private Dictionary<int, StabType> _cportList = null;
+                    if (Garage1Code != OriginalParcelMast.Garage1TypeCode)
+                    {
+                        Gar1TypeCbox.BackColor = Color.PaleGreen;
+                    }
+                    else
+                    {
+                        Gar1TypeCbox.BackColor = Color.White;
+                    }
+                    ParcelMast.Garage1TypeCode = Garage1Code;
+                }
+            }
+        }
+        private void Gar2TypeCbox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (Gar2TypeCbox.Items.Count > 0)
+            {
+                if (ParcelMast != null && Gar2TypeCbox.SelectedIndex > 0)
+                {
+                    string selectedValue = Gar2TypeCbox.SelectedValue.ToString().Substring(0, 2);
+                    int codeValue = 0;
+                    Int32.TryParse(selectedValue, out codeValue);
+                    Garage1Code = codeValue;
 
-		public void ListGarageSelection()
-		{
-			string _garTypeCodeDesc = String.Empty;
-			int _cboxIndex = 0;
+                    if (Garage2Code != OriginalParcelMast.Garage2TypeCode)
+                    {
+                        Gar2TypeCbox.BackColor = Color.PaleGreen;
+                    }
+                    else
+                    {
+                        Gar2TypeCbox.BackColor = Color.White;
+                    }
+                    ParcelMast.Garage2TypeCode = Garage2Code;
+                }
+            }
+        }
 
-			_garList = new Dictionary<int, StabType>();
-			var index = -1;
-			if (GarTypeCbox.SelectedIndex <= 0)
-			{
-				GarTypeCbox.Items.Add("< Garages >");
-				_garList.Add(++index, null);
+        private void InitializeForm(SMParcelMast parcelMast)
+        {
+            ParcelMast = parcelMast;
+            OriginalParcelMast = SketchUpGlobals.SMParcelFromData.ParcelMast;
+            Garage1Code = ParcelMast.Garage1TypeCode;
+            Garage2Code = ParcelMast.Garage2TypeCode;
+            Gar1NumCars = ParcelMast.Garage1NumCars;
+            Gar2NumCars = ParcelMast.Garage2NumCars;
+            CarportCode = ParcelMast.CarportTypeCode;
+            CarportNumCars = ParcelMast.CarportNumCars;
 
-				foreach (var item in CamraSupport.GarageTypeCollection)
-				{
-					_garList.Add(++index, item);
-					GarTypeCbox.Items.Add(item._printedDescription);
-				}
-			}
-			GarTypeCbox.SelectedIndex = _cboxIndex;
-		}
 
-		public void ListCPortSelection()
-		{
-			string _CarPortTypeCodeDesc = String.Empty;
-			int _cboxIndex = 0;
+            PopulateComboBoxes();
+            ShowCurrentValues(ParcelMast);
 
-			_cportList = new Dictionary<int, StabType>();
-			var index = -1;
-			if (CarPortTypCbox.SelectedIndex <= 0)
-			{
-				CarPortTypCbox.Items.Add("< Car Port >");
-				_cportList.Add(++index, null);
 
-				foreach (var item in CamraSupport.CarPortTypeCollection)
-				{
-					_cportList.Add(++index, item);
-					CarPortTypCbox.Items.Add(item._printedDescription);
-				}
-			}
-			CarPortTypCbox.SelectedIndex = _cboxIndex;
-		}
+            //SetControlVisibilityForSectionTypes(Type);
 
-		private void Build_Garage_Data()
-		{
-			if (GarTypeCbox.Items.Count > 0)
-			{
-				GarTypeCbox.SelectedIndex = 0;
-				for (int i = 1; i < GarTypeCbox.Items.Count; i++)
-				{
-					string listGarageType = GarTypeCbox.Items[i].ToString().Substring(0, 2);
-					if (_currentParcel.mgart.ToString().Trim() == listGarageType)
-					{
-						GarTypeCbox.SelectedIndex = i;
-					}
-				}
-			}
-		}
+            //SetDefaultCarsForGarage(parcelMast, Type);
 
-		private void GarTypeCbox_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (GarTypeCbox.Items.Count > 0)
-			{
-				if (_currentParcel != null && GarTypeCbox.SelectedIndex > 0)
-				{
-					int Garageck = Convert.ToInt32(GarTypeCbox.SelectedItem.ToString().Substring(0, 2));
-					GarCode = Garageck;
+            //SetDefaultCarsForCarport(parcelMast, Type);
 
-					if (Garageck != _currentParcel.orig_mgart)
-					{
-						GarTypeCbox.BackColor = Color.PaleGreen;
-						_currentParcel.mgart = Garageck;
-					}
-					if (Garageck == _currentParcel.orig_mgart)
-					{
-						GarTypeCbox.BackColor = Color.White;
-						_currentParcel.mgart = Garageck;
-					}
-				}
-			}
-		}
+        }
 
-		private void Build_CarPort_Data()
-		{
-			if (CarPortTypCbox.Items.Count > 0)
-			{
-				CarPortTypCbox.SelectedIndex = 0;
-				for (int i = 1; i < CarPortTypCbox.Items.Count; i++)
-				{
-					string listCarPortType = CarPortTypCbox.Items[i].ToString().Substring(0, 2);
-					if (_currentParcel.mcarpt.ToString().Trim() == listCarPortType)
-					{
-						CarPortTypCbox.SelectedIndex = i;
-					}
-				}
-			}
-		}
+        private void PopulateComboBoxes()
+        {
+            var garageData = SketchUpLookups.GarageTypeCollection.Select(garage => new ListOrComboBoxItem
+            {
+                Code = garage.Code,
+                Description = garage.Description
+            }).ToList();
+            garageData.Add(new ListOrComboBoxItem
+            {
+                Code = "(None)",
+                Description = "<Garage Type>"
+            });
+            Gar1TypeCbox.ValueMember = "Code";
+            Gar1TypeCbox.DisplayMember = "Description";
+            Gar1TypeCbox.DataSource = garageData.OrderBy(g => g.Description).ToList();
+            Gar2TypeCbox.ValueMember = "Code";
+            Gar2TypeCbox.DisplayMember = "Description";
+            Gar2TypeCbox.DataSource = garageData.OrderBy(g => g.Description).ToList();
+            var carports = SketchUpLookups.CarPortTypeCollection.Select(carport => new ListOrComboBoxItem
+            {
+                Code = carport.Code,
+                Description = carport.Description
+            }).ToList();
+            carports.Add(new ListOrComboBoxItem { Code = "(None)", Description = "<Carport Type>" });
 
-		private void CarPortTypCbox_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (CarPortTypCbox.Items.Count > 0)
-			{
-				if (_currentParcel != null && CarPortTypCbox.SelectedIndex > 0)
-				{
-					int CarPortck = Convert.ToInt32(CarPortTypCbox.SelectedItem.ToString().Substring(0, 2));
-					CPCode = CarPortck;
+            CarPortTypCbox.ValueMember = "Code";
+            CarPortTypCbox.DisplayMember = "Description";
+            CarPortTypCbox.DataSource = carports.OrderBy(c => c.Description).ToList();
+        }
 
-					if (CarPortck != _currentParcel.orig_mcarpt)
-					{
-						CarPortTypCbox.BackColor = Color.PaleGreen;
-						_currentParcel.mcarpt = CarPortck;
-					}
-					if (CarPortck == _currentParcel.orig_mcarpt)
-					{
-						CarPortTypCbox.BackColor = Color.White;
-						_currentParcel.mcarpt = CarPortck;
-					}
-				}
-			}
-		}
+        private void SetControlVisibilityForSectionTypes(string Type)
+        {
+            if (Type == "GAR")
+            {
+                CarPortTypCbox.Visible = false;
+                CarPortNbrCarTxt.Visible = false;
+                CarPortLbl.Visible = false;
+                MissingCarporLbl.Visible = false;
+                Gar1TypeCbox.Visible = true;
+                Gar1NbrCarTxt.Visible = true;
+                Garage1Label.Visible = true;
+                MissingGarLbl.Visible = true;
+            }
 
-		private void CarPortNbrCarTxt_TextChanged(object sender, EventArgs e)
-		{
-			CpNbr = Convert.ToInt32(CarPortNbrCarTxt.Text.ToString());
-		}
+            if (Type == "CP")
+            {
+                CarPortTypCbox.Visible = true;
+                CarPortNbrCarTxt.Visible = true;
+                CarPortLbl.Visible = true;
+                MissingCarporLbl.Visible = true;
+                Gar1TypeCbox.Visible = false;
+                Gar1NbrCarTxt.Visible = false;
+                Garage1Label.Visible = false;
+                MissingGarLbl.Visible = false;
+            }
+        }
 
-		private void CarPortNbrCarTxt_Leave(object sender, EventArgs e)
-		{
-			CpNbr = Convert.ToInt32(CarPortNbrCarTxt.Text.ToString());
-		}
+        private void SetDefaultCarsForCarport(SMParcelMast parcelMast, string Type)
+        {
+            if (Type == "CP" && NewArea <= 275)
+            {
+                CarPortNbrCarTxt.Text = "1";
+                parcelMast.CarportNumCars = 1;
+                CarportNumCars = 1;
+            }
+            if (Type == "CP" && NewArea > 275)
+            {
+                CarPortNbrCarTxt.Text = "2";
+                parcelMast.CarportNumCars = 2;
+                CarportNumCars = 2;
+            }
+        }
 
-		private void GarNbrCarTxt_TextChanged(object sender, EventArgs e)
-		{
-			GarNbr = Convert.ToInt32(GarNbrCarTxt.Text.ToString());
-		}
+        private void SetDefaultCarsForGarage(SMParcelMast parcelMast, string Type)
+        {
+            if (Type == "GAR" && NewArea <= 360)
+            {
+                Gar1NbrCarTxt.Text = "1";
+                parcelMast.Garage1NumCars = 1;
+                Gar1NumCars = 1;
+            }
+            if (Type == "GAR" && NewArea > 360)
+            {
+                Gar1NbrCarTxt.Text = "2";
+                parcelMast.Garage1NumCars = 2;
+                Gar1NumCars = 2;
+            }
+        }
 
-		private void GarNbrCarTxt_Leave(object sender, EventArgs e)
-		{
-			GarNbr = Convert.ToInt32(GarNbrCarTxt.Text.ToString());
-		}
-	}
+        private void ShowCurrentValues(SMParcelMast parcelMast)
+        {
+            int gar1Index = 0;
+            int gar2Index = 0;
+            int carportIndex = 0;
+
+
+            Garage1Code = parcelMast.Garage1TypeCode;
+            Garage2Code = parcelMast.Garage1TypeCode;
+            CarportCode = parcelMast.CarportTypeCode;
+            gar1Index = Gar1TypeCbox.Items.IndexOf(Garage1Code.ToString());
+            foreach (ListOrComboBoxItem item in Gar1TypeCbox.Items)
+            {
+                if (item.Code == Garage1Code.ToString())
+                {
+                    gar1Index = Gar1TypeCbox.Items.IndexOf(item);
+                }
+            }
+            foreach (ListOrComboBoxItem item in Gar2TypeCbox.Items)
+            {
+                if (item.Code == Garage2Code.ToString())
+                {
+                    gar2Index = Gar2TypeCbox.Items.IndexOf(item);
+                }
+            }
+            foreach (ListOrComboBoxItem item in CarPortTypCbox.Items)
+            {
+                if (item.Code == CarportCode.ToString())
+                {
+                    carportIndex = CarPortTypCbox.Items.IndexOf(item);
+                }
+            }
+
+            Gar1TypeCbox.SelectedIndex = gar1Index > 0 ? gar1Index : 0;
+            Gar2TypeCbox.SelectedIndex = gar2Index > 0 ? gar2Index : 0;
+            CarPortTypCbox.SelectedIndex = carportIndex > 0 ? carportIndex : 0;
+            Gar1NbrCarTxt.Text = ParcelMast.Garage1NumCars.ToString();
+            Gar2NbrCarTxt.Text = ParcelMast.Garage2NumCars.ToString();
+            CarPortNbrCarTxt.Text = ParcelMast.CarportNumCars.ToString();
+        }
+
+        #endregion
+
+        #region "Properties"
+
+        public int CarportCode { get; set; }
+
+        public bool CarportDataOk
+        {
+            get { return carportDataOk; }
+            set { carportDataOk = value; }
+        }
+
+        public int CarportNumCars { get; set; }
+
+        public int Gar1NumCars { get; set; }
+
+        public int Gar2NumCars { get; set; }
+
+        public int Garage1Code { get; set; }
+
+        public int Garage2Code { get; set; }
+
+        public bool GarageDataOk
+        {
+            get { return garageDataOk; }
+            set { garageDataOk = value; }
+        }
+
+        public SMParcelMast OriginalParcelMast
+        {
+            get { return originalParcelMast; }
+            set { originalParcelMast = value; }
+        }
+
+        public SMParcelMast ParcelMast
+        {
+            get { return parcelMast; }
+            set { parcelMast = value; }
+        }
+
+        #endregion
+
+        #region "Private Fields"
+
+        private bool carportDataOk;
+
+        private bool garageDataOk;
+        private decimal NewArea = 0;
+        private SMParcelMast originalParcelMast;
+        private SMParcelMast parcelMast;
+        // TODO: Remove if not needed:	  private bool updatesComplete = false;
+
+
+        #endregion
+
+        private void btnDone_Click(object sender, EventArgs e)
+        {
+            UpdateParcelValuesFromForm();
+        }
+
+        private void UpdateParcelValuesFromForm()
+        {
+            ParcelMast.Garage1NumCars = Gar1NumCars;
+            ParcelMast.Garage2NumCars = Gar2NumCars;
+            ParcelMast.CarportNumCars = CarportNumCars;
+            ParcelMast.Garage1TypeCode = Garage1Code;
+            ParcelMast.Garage2TypeCode = Garage2Code;
+            ParcelMast.CarportTypeCode = CarportCode;
+        }
+    }
 }

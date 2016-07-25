@@ -4,110 +4,66 @@ using System.Text;
 
 namespace SketchUp
 {
-	public class CommandLineArguments : CommandLineArgumentsBase
-	{
-		public CommandLineArguments() : base()
-		{
-		}
+    public class CommandLineArguments : CommandLineArgumentsBase
+    {
+        public CommandLineArguments() : base()
+        {
+        }
 
-		public string CommandLineArgumentsToString()
-		{
-			string propertyName = string.Empty;
-			string propertyValue = string.Empty;
-			StringBuilder sb = new StringBuilder();
-			propertyName = "Library";
-			propertyValue = Library;
-			sb.AppendLine(string.Format("{0}: {1}", propertyName, propertyValue));
 
-			propertyName = "Locality";
-			propertyValue = Locality;
-			sb.AppendLine(string.Format("{0}: {1}", propertyName, propertyValue));
+        public CommandLineArguments(string[] args, string pattern) : base(args, pattern)
+        {
+            ProcessArgs();
+        }
 
-			propertyName = "Record";
-			propertyValue = Record.ToString();
-			sb.AppendLine(string.Format("{0}: {1}", propertyName, propertyValue));
+        public CommandLineArguments(string[] args)
+            : base(args)
+        {
+            ProcessArgs();
+        }
 
-			propertyName = "Card";
-			propertyValue = Card.ToString();
-			sb.AppendLine(string.Format("{0}: {1}", propertyName, propertyValue));
+        private void ProcessArgs()
+        {
+            if (HasArgument("Library"))
+            {
+                Library = GetArgument("Library").Trim();
+            }
 
-			propertyName = "IPAddress";
-			propertyValue = IPAddress;
-			sb.AppendLine(string.Format("{0}: {1}", propertyName, propertyValue));
+            if (HasArgument("Locality"))
+            {
+                Locality = GetArgument("Locality").Trim();
+            }
 
-			string commandLine = commandLine = sb.ToString();
-			return commandLine;
-		}
+            if (HasArgument("Record"))
+            {
+                int record = 0;
+                int.TryParse(GetArgument("Record"), out record);
 
-		public CommandLineArguments(string[] args, string pattern) : base(args, pattern)
-		{
-			ProcessArgs();
-		}
+                Record = record;
+            }
 
-		public CommandLineArguments(string[] args)
-			: base(args)
-		{
-			ProcessArgs();
-		}
+            if (HasArgument("Card"))
+            {
+                int card;
+                int.TryParse(GetArgument("Card"), out card);
 
-		private void ProcessArgs()
-		{
-			if (HasArgument("Library"))
-			{
-				Library = GetArgument("Library").Trim();
-			}
+                Card = card;
+            }
 
-			if (HasArgument("Locality"))
-			{
-				Locality = GetArgument("Locality").Trim();
-			}
+            if (HasArgument("IPAddress"))
+            {
+                IPAddress = GetArgument("IPAddress").Trim();
+            }
+        }
 
-			if (HasArgument("Record"))
-			{
-				int record = 0;
-				int.TryParse(GetArgument("Record"), out record);
+        public string Locality { get; set; }
 
-				Record = record;
-			}
+        public string Library { get; set; }
 
-			if (HasArgument("Card"))
-			{
-				int card;
-				int.TryParse(GetArgument("Card"), out card);
+        public int Record { get; set; }
 
-				Card = card;
-			}
+        public int Card { get; set; }
 
-			if (HasArgument("IPAddress"))
-			{
-				IPAddress = GetArgument("IPAddress").Trim();
-			}
-		}
-
-		public string Locality
-		{
-			get; set;
-		}
-
-		public string Library
-		{
-			get; set;
-		}
-
-		public int Record
-		{
-			get; set;
-		}
-
-		public int Card
-		{
-			get; set;
-		}
-
-		public string IPAddress
-		{
-			get;
-			set;
-		}
-	}
+        public string IPAddress { get; set; }
+    }
 }

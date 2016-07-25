@@ -1,66 +1,62 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using SketchUp;
 
 namespace SketchUp
 
 {
-	public partial class AngleForm : Form
-	{
-		public static bool NorthEast = false;
-		public static bool NorthWest = false;
+    public partial class AngleForm : Form
+    {
+        public AngleForm()
+        {
+            InitializeComponent();
 
-		public static bool SouthEast = false;
-		public static bool SouthWest = false;
+        }
 
-		public AngleForm()
-		{
-			InitializeComponent();
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
 
-			if (NWcbox.Checked == true)
-			{
-				NorthWest = true;
-			}
+        private CamraDataEnums.CardinalDirection angleDirection = CamraDataEnums.CardinalDirection.None;
 
-			if (NEcbox.Checked == true)
-			{
-				NorthEast = true;
-			}
+        public CamraDataEnums.CardinalDirection AngleDirection
+        {
+            get { return angleDirection; }
 
-			if (SWcbox.Checked == true)
-			{
-				SouthWest = true;
-			}
+            set { angleDirection = value; }
+        }
 
-			if (SEcbox.Checked == true)
-			{
-				SouthEast = true;
-			}
-		}
+        private void btnSelectDirection_Click(object sender, EventArgs e)
+        {
+            SetDirectionValue();
+            this.Close();
+        }
 
-		private void NEcbox_CheckedChanged(object sender, EventArgs e)
-		{
-			NorthEast = true;
 
-			this.Close();
-		}
+        private void SetDirectionValue()
+        {
+            var buttons = new List<RadioButton>();
+            string selectedTag = "None";
+            foreach (Control c in directionGroup.Controls)
+            {
+                if (c.GetType() == typeof(RadioButton))
+                {
+                    buttons.Add((RadioButton)c);
+                }
+            }
+            RadioButton selectedRb = (from rb in buttons where rb.Checked == true select rb).FirstOrDefault();
+            if (selectedRb != null)
+            {
+                selectedTag = selectedRb.Tag.ToString();
+            }
 
-		private void NWcbox_CheckedChanged(object sender, EventArgs e)
-		{
-			NorthWest = true;
-			this.Close();
-		}
+            AngleDirection = SMGlobal.DirectionFromString(selectedTag);
+        }
 
-		private void SEcbox_CheckedChanged(object sender, EventArgs e)
-		{
-			SouthEast = true;
-			this.Close();
-		}
-
-		private void SWcbox_CheckedChanged(object sender, EventArgs e)
-		{
-			SouthWest = true;
-			this.Close();
-		}
-	}
+    }
 }

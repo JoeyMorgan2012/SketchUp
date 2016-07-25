@@ -7,100 +7,86 @@ using SWallTech;
 
 namespace SketchUp
 {
-	public partial class MultiSectionSelection : Form
-	{
-		#region Constructors
+    public partial class MultiSectionSelection : Form
+    {
+        #region Constructors
 
-		public MultiSectionSelection(List<string> sections, int record, int dwell, CAMRA_Connection fox)
-		{
-			InitializeComponent();
 
-			DataSet atpts = MultiSelectAttachmentPoints(record, dwell, fox);
+        public MultiSectionSelection(List<string> sectionLetters)
+        {
+            InitializeComponent();
+            SecLetterCbox.Items.AddRange(sectionLetters.ToArray());
+            SecLetterCbox.SelectedIndex = 0;
+            adjsec = SecLetterCbox.SelectedItem.ToString();
+        }
 
-			if (atpts.Tables[0].Rows.Count > 0)
-			{
-				mulattpts.Clear();
+        #endregion Constructors
 
-				for (int i = 0; i < atpts.Tables[0].Rows.Count; i++)
-				{
-					DataRow row = mulattpts.NewRow();
-					row["Sect"] = atpts.Tables[0].Rows[i]["jlsect"].ToString();
-					row["Line"] = Convert.ToInt32(atpts.Tables[0].Rows[i]["jlline#"].ToString());
-					row["X1"] = Convert.ToDecimal(atpts.Tables[0].Rows[i]["jlpt1x"].ToString());
-					row["Y1"] = Convert.ToDecimal(atpts.Tables[0].Rows[i]["jlpt1y"].ToString());
-					row["X2"] = Convert.ToDecimal(atpts.Tables[0].Rows[i]["jlpt2x"].ToString());
-					row["Y2"] = Convert.ToDecimal(atpts.Tables[0].Rows[i]["jlpt2y"].ToString());
+        #region Refactored and Class Methods
 
-					mulattpts.Rows.Add(row);
-				}
-			}
 
-			SecLetterCbox.DataSource = sections;
+        public DataTable MultiSelectAttachmentPoints(List<SMLine> connectionLines)
+        {
 
-			//attsec = sections;
+            MultiplePointsDataTable = new DataTable();
+            MultiplePointsDataTable.Columns.Add("Sect", typeof(string));
+            MultiplePointsDataTable.Columns.Add("Line", typeof(int));
+            MultiplePointsDataTable.Columns.Add("X1", typeof(decimal));
+            MultiplePointsDataTable.Columns.Add("Y1", typeof(decimal));
+            MultiplePointsDataTable.Columns.Add("X2", typeof(decimal));
+            MultiplePointsDataTable.Columns.Add("Y2", typeof(decimal));
 
-			//SecLetterCbox.DataSource = attsec;
+            // TODO: Remove if not needed:    DataSet atpts = null;
 
-			SecLetterCbox.SelectedIndex = 0;
-			adjsec = SecLetterCbox.SelectedItem.ToString();
-		}
+            foreach (SMLine line in connectionLines)
+            {
+                DataRow newRow = MultiplePointsDataTable.NewRow();
+                newRow.SetField("Sect", line.SectionLetter);
+                newRow.SetField("Line", line.LineNumber);
+                newRow.SetField("X1", line.StartX);
+                newRow.SetField("Y1", line.StartY);
+                newRow.SetField("X2", line.EndX);
+                newRow.SetField("Y2", line.EndY);
+                MultiplePointsDataTable.Rows.Add(newRow);
+            }
+            return MultiplePointsDataTable;
+        }
 
-		#endregion Constructors
 
-		#region Refactored and Class Methods
+        #endregion Refactored and Class Methods
 
-		private DataSet MultiSelectAttachmentPoints(int record, int dwell, CAMRA_Connection fox)
-		{
-			_fox = fox;
+        #region Event and Control Methods
 
-			mulattpts = new DataTable();
-			mulattpts.Columns.Add("Sect", typeof(string));
-			mulattpts.Columns.Add("Line", typeof(int));
-			mulattpts.Columns.Add("X1", typeof(decimal));
-			mulattpts.Columns.Add("Y1", typeof(decimal));
-			mulattpts.Columns.Add("X2", typeof(decimal));
-			mulattpts.Columns.Add("Y2", typeof(decimal));
+        private void MultiSectionSelection_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            adjsec = SecLetterCbox.SelectedItem.ToString();
+        }
 
-			DataSet atpts = null;
+        private void SecLetterCbox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (SecLetterCbox.SelectedIndex > 0)
+            {
+                adjsec = SecLetterCbox.SelectedItem.ToString();
+            }
+        }
 
-			StringBuilder getpts = new StringBuilder();
-			getpts.Append(String.Format("select distinct jlsect,jlline#,jlpt1x,jlpt1y,jlpt2x,jlpt2y,jlattach from {0}.{1}line ",
-						MainForm.localLib,
-						MainForm.localPreFix));
-			getpts.Append(String.Format("where jlrecord = {0} and jldwell = {1} and jlattach <> ' ' ",
-							record, dwell));
+        #endregion Event and Control Methods
 
-			atpts = fox.DBConnection.RunSelectStatement(getpts.ToString());
-			return atpts;
-		}
+        #region Fields
 
-		#endregion Refactored and Class Methods
+        public static string adjsec = string.Empty;
+        public static List<string> attsec = new List<string>();
+        public static DataTable MultiplePointsDataTable = null;
 
-		#region Event and Control Methods
+        // private CAMRA_Connection _fox = null;
 
-		private void MultiSectionSelection_FormClosing(object sender, FormClosingEventArgs e)
-		{
-			adjsec = SecLetterCbox.SelectedItem.ToString();
-		}
+        #endregion Fields
 
-		private void SecLetterCbox_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (SecLetterCbox.SelectedIndex > 0)
-			{
-				adjsec = SecLetterCbox.SelectedItem.ToString();
-			}
-		}
+        private void btnSelect_Click(object sender, EventArgs e)
+        {
+            adjsec = SecLetterCbox.SelectedText;
 
-		#endregion Event and Control Methods
-
-		#region Fields
-
-		public static string adjsec = String.Empty;
-		public static List<string> attsec = new List<string>();
-		public static DataTable mulattpts = null;
-
-		private CAMRA_Connection _fox = null;
-
-		#endregion Fields
-	}
+            this.Close();
+        }
+    }
 }

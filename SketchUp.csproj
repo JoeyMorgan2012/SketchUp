@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A6340C0C-822A-4633-BC59-B49CA8F24F85}</ProjectGuid>
+    <ProjectGuid>{A50F332A-3484-4B34-96A4-5F1E3D786EC4}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SketchUp</RootNamespace>
@@ -24,14 +24,13 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>http://updates.swalltech.com/Camra/support/SketchUp/</InstallUrl>
-    <SupportUrl>http://updates.swalltech.com/Camra/support/</SupportUrl>
     <ProductName>SketchUp</ProductName>
     <PublisherName>Stonewall Technologies</PublisherName>
-    <SuiteName>CAMRA Support Suite</SuiteName>
+    <SuiteName>CAMRA</SuiteName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>SketchUp.html</WebPage>
     <TrustUrlParameters>true</TrustUrlParameters>
-    <ApplicationRevision>13</ApplicationRevision>
+    <ApplicationRevision>39</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -44,28 +43,26 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>RELEASE</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>24216172B9588C94A259624C150D5EDD54E824B8</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>AB44E9BA993133F0AFC7DC54E2BC44463736AFD6</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>CamraSketch_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>SketchUp_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -74,17 +71,33 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TEST|AnyCPU'">
-    <DefineConstants>TRACE;TEST</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\TEST\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;TEST</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
+    <Optimize>false</Optimize>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup>
-    <TargetZone>LocalIntranet</TargetZone>
+    <ApplicationIcon>S.ico</ApplicationIcon>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>StonewallTechIcon.ico</ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup />
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=5.0.2.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.5.0.2\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="CodeFluent.Runtime.Client, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1bb6d7cccf1045ec, processorArchitecture=MSIL">
+      <HintPath>..\packages\CodeFluentRuntimeClient.1.0.0.844\lib\CodeFluent.Runtime.Client.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EfEnumToLookup, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1fde139e1e56f7c4, processorArchitecture=MSIL">
+      <HintPath>..\packages\ef-enum-to-lookup.1.9.0\lib\net45\EfEnumToLookup.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -93,43 +106,30 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Data.Tools.Schema.Sql, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.SqlServer.Dac.1.0.1\lib\Microsoft.Data.Tools.Schema.Sql.dll</HintPath>
+    <Reference Include="IBM.Data.DB2.EntityFramework, Version=10.5.5.6, Culture=neutral, PublicKeyToken=7c307b91aa13d208, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.IBM.DB2.6.0.5\lib\net40\IBM.Data.DB2.EntityFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Data.Tools.Utilities, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.SqlServer.Dac.1.0.1\lib\Microsoft.Data.Tools.Utilities.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.SqlServer.Dac, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.SqlServer.Dac.1.0.1\lib\Microsoft.SqlServer.Dac.dll</HintPath>
+    <Reference Include="KellermanSoftware.Compare-NET-Objects, Version=3.5.0.0, Culture=neutral, PublicKeyToken=d970ace04cc85217, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompareNETObjects.3.05.0.0\lib\net46\KellermanSoftware.Compare-NET-Objects.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="SqlLocalDb, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SqlLocalDb.1.1.0\lib\net451\SqlLocalDb.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SqlLocalDb.Dac, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SqlLocalDb.Dac.1.1.0\lib\net451\SqlLocalDb.Dac.dll</HintPath>
+    <Reference Include="nunit.framework, Version=3.4.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.4.1\lib\net45\nunit.framework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Repository, Version=1.0.7.8, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Repository.1.0.7.8\lib\net45\Repository.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Collections.NonGeneric, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Collections.NonGeneric.4.0.0\lib\net46\System.Collections.NonGeneric.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.Common, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Data.Common.4.0.0\lib\net46\System.Data.Common.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Data.SqlServerCe_unofficial.4.0.8482.1\lib\net20\System.Data.SqlServerCe.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web" />
@@ -144,32 +144,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdminData.cs" />
-    <Compile Include="AdminDataCollection.cs" />
     <Compile Include="AngleForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="AngleForm.Designer.cs">
       <DependentUpon>AngleForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="AttachedMapCollection.cs" />
-    <Compile Include="AttachedMapData.cs" />
-    <Compile Include="BuildingLine.cs" />
-    <Compile Include="BuildingLineCollection.cs" />
-    <Compile Include="BuildingSectionCollection.cs" />
-    <Compile Include="BuildingSketcher.cs" />
-    <Compile Include="BuilldingSection.cs" />
-    <Compile Include="CamraSupport.cs" />
+    <Compile Include="CamraSupport\AngleVector.cs" />
+    <Compile Include="CamraSupport\CamraDataEnums.cs" />
+    <Compile Include="CamraSupport\CommercialSections.cs" />
+    <Compile Include="CamraSupport\LivingAreaSectionTypes.cs" />
+    <Compile Include="CamraSupport\ResidentialSections.cs" />
+    <Compile Include="CamraSupport\StabType.cs" />
     <Compile Include="CommandLineArguments.cs" />
     <Compile Include="CommandLineArgumentsBase.cs" />
-    <Compile Include="ComparableSalesCollection.cs" />
-    <Compile Include="CPBuildingSection.cs" />
-    <Compile Include="CPBuildingSectionCollection.cs" />
-    <Compile Include="DeleteReview.cs">
+    <Compile Include="DrawOnlyLine.cs" />
+    <Compile Include="EditSketchSections.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DeleteReview.Designer.cs">
-      <DependentUpon>DeleteReview.cs</DependentUpon>
+    <Compile Include="EditSketchSections.Designer.cs">
+      <DependentUpon>EditSketchSections.cs</DependentUpon>
     </Compile>
     <Compile Include="ExpandoSketch.cs">
       <SubType>Form</SubType>
@@ -180,41 +174,16 @@
     <Compile Include="ExpandoSketchFields.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ExpandoSketchMovementMethods.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExpandoSketchUtilities.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Extensions.cs" />
-    <Compile Include="FlipSketch.cs">
+    <Compile Include="SplashForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FlipSketch.Designer.cs">
-      <DependentUpon>FlipSketch.cs</DependentUpon>
+    <Compile Include="SplashForm.Designer.cs">
+      <DependentUpon>SplashForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormConfigure.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormConfigure.Designer.cs">
-      <DependentUpon>FormConfigure.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormSplash.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormSplash.Designer.cs">
-      <DependentUpon>FormSplash.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GasLogCollection.cs" />
-    <Compile Include="GasLogData.cs" />
-    <Compile Include="Globals.cs" />
+    <Compile Include="FormUtilities.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="ImprData.cs" />
-    <Compile Include="ImprDataCollection.cs" />
-    <Compile Include="InteriorImprovement.cs" />
-    <Compile Include="InteriorImprovementCollection.cs" />
-    <Compile Include="LandData.cs" />
-    <Compile Include="LandDataCollection.cs" />
+    <Compile Include="ListOrComboBoxItem.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -233,73 +202,52 @@
     <Compile Include="MultiSectionSelection.Designer.cs">
       <DependentUpon>MultiSectionSelection.cs</DependentUpon>
     </Compile>
-    <Compile Include="ParcelChangedEventArgs.cs" />
-    <Compile Include="ParcelData.cs" />
-    <Compile Include="ParcelDataCollection.cs" />
-    <Compile Include="ParcelNotes.cs" />
-    <Compile Include="ParcelNotesCollection.cs" />
-    <Compile Include="JumpPointLine.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SalesHistory.cs" />
-    <Compile Include="SalesHistoryCollection.cs" />
-    <Compile Include="SectionData.cs" />
-    <Compile Include="SectionDataCollection.cs" />
-    <Compile Include="SectionTypes.cs">
+    <Compile Include="Rates.cs" />
+    <Compile Include="SelectSectionTypeDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SectionTypes.Designer.cs">
-      <DependentUpon>SectionTypes.cs</DependentUpon>
+    <Compile Include="SelectSectionTypeDialog.Designer.cs">
+      <DependentUpon>SelectSectionTypeDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Settings.cs" />
     <Compile Include="SingleInstanceController.cs" />
-    <Compile Include="SketchCreatedEventArgs.cs" />
-    <Compile Include="SketchDistance.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SketchDistance.Designer.cs">
-      <DependentUpon>SketchDistance.cs</DependentUpon>
-    </Compile>
-    <Compile Include="SketchLines.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SketchLines.Designer.cs">
-      <DependentUpon>SketchLines.cs</DependentUpon>
-    </Compile>
-    <Compile Include="SketchMaster.cs" />
-    <Compile Include="SketchNotDrawnExecption.cs" />
-    <Compile Include="SketchSection.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SketchSection.Designer.cs">
-      <DependentUpon>SketchSection.cs</DependentUpon>
-    </Compile>
+    <Compile Include="SketchRepository.cs" />
+    <Compile Include="SketchUpGlobals.cs" />
+    <Compile Include="SketchUpLookups.cs" />
+    <Compile Include="SMConnection.cs" />
+    <Compile Include="SMGlobal.cs" />
+    <Compile Include="SMLine.cs" />
+    <Compile Include="SMLineManager.cs" />
+    <Compile Include="SMParcel.cs" />
+    <Compile Include="SMParcelMast.cs" />
+    <Compile Include="SMSection.cs" />
+    <Compile Include="SMSketcher.cs" />
+    <Compile Include="SMVehicleStructure.cs" />
     <Compile Include="UpdateInfo.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UpdateInfo.Designer.cs">
+    <Compile Include="UpdateInfo.designer.cs">
       <DependentUpon>UpdateInfo.cs</DependentUpon>
     </Compile>
     <Compile Include="UtilityMethods.cs" />
-    <Compile Include="ValuesTracking.cs" />
-    <Compile Include="ValuesTrackingCollection.cs" />
+    <Compile Include="WaitOnSave.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WaitOnSave.Designer.cs">
+      <DependentUpon>WaitOnSave.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="AngleForm.resx">
       <DependentUpon>AngleForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DeleteReview.resx">
-      <DependentUpon>DeleteReview.cs</DependentUpon>
+    <EmbeddedResource Include="EditSketchSections.resx">
+      <DependentUpon>EditSketchSections.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ExpandoSketch.resx">
       <DependentUpon>ExpandoSketch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FlipSketch.resx">
-      <DependentUpon>FlipSketch.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormConfigure.resx">
-      <DependentUpon>FormConfigure.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormSplash.resx">
-      <DependentUpon>FormSplash.cs</DependentUpon>
+    <EmbeddedResource Include="SplashForm.resx">
+      <DependentUpon>SplashForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -311,7 +259,7 @@
       <DependentUpon>MultiSectionSelection.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -320,27 +268,25 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="SectionTypes.resx">
-      <DependentUpon>SectionTypes.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SketchDistance.resx">
-      <DependentUpon>SketchDistance.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SketchLines.resx">
-      <DependentUpon>SketchLines.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SketchSection.resx">
-      <DependentUpon>SketchSection.cs</DependentUpon>
+    <EmbeddedResource Include="SelectSectionTypeDialog.resx">
+      <DependentUpon>SelectSectionTypeDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UpdateInfo.resx">
       <DependentUpon>UpdateInfo.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="WaitOnSave.resx">
+      <DependentUpon>WaitOnSave.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="App.config" />
     <None Include="CamraSketch_1_TemporaryKey.pfx" />
     <None Include="CamraSketch_TemporaryKey.pfx" />
-    <None Include="ClassDiagram1.cd" />
-    <None Include="ClassDiagram2.cd" />
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\SketchUpLookups.datasource" />
+    <None Include="SM Components.cd" />
+    <None Include="EditSketchSections.datasource" />
     <None Include="Properties\app.manifest" />
+    <None Include="Properties\DataSources\CamraSketch.Properties.Resources.datasource" />
+    <None Include="Properties\DataSources\CamraSketch.Properties.Settings.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -350,10 +296,127 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="swalltech_devlead.snk" />
+    <None Include="SketchUp_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <ProjectReference Include="..\..\SWallTech\SWallTech.csproj">
+      <Project>{2af09c76-344e-4151-9ced-e745234e0437}</Project>
+      <Name>SWallTech</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="External\Readme.txt" />
+    <Content Include="External\x64\CodeFluent.Runtime.Compression.dll" />
+    <Content Include="External\x86\CodeFluent.Runtime.Compression.dll" />
+    <Content Include="Resources\AddControl_16x_32.bmp" />
+    <Content Include="Resources\Add_inverse_16x.png" />
+    <Content Include="Resources\at-work-cookie-monster.gif" />
+    <None Include="Resources\BluePlug.png" />
+    <None Include="Resources\GreenCheck16x16.png" />
+    <Content Include="S.ico" />
+    <None Include="Resources\Cancel_7x_16x.png" />
+    <None Include="Resources\Cancel_12x.png" />
+    <None Include="Resources\Cancel_14x.png" />
+    <None Include="Resources\Cancel_16x_24.bmp" />
+    <Content Include="Resources\CloseError.png" />
+    <None Include="Resources\CloseSection.jpg" />
+    <Content Include="Resources\CloseSection.png" />
+    <None Include="Resources\Close_12x_16x.png" />
+    <None Include="Resources\Close_12x_24.bmp" />
+    <Content Include="Resources\Close_16x.png" />
+    <None Include="Resources\Close_8x_16x.png" />
+    <None Include="Resources\Close_NoHalo_12x_16x.png" />
+    <None Include="Resources\Close_NoHalo_12x_16x_24.bmp" />
+    <None Include="Resources\Close_white.png" />
+    <Content Include="Resources\CloudOK_32x.jpg" />
+    <Content Include="Resources\ConnectionOffline_64x.jpg" />
+    <Content Include="Resources\DatabaseOffline_16x.png" />
+    <Content Include="Resources\DebugCommandLine.txt" />
+    <Content Include="Resources\DebugVersionMessage.txt" />
+    <Content Include="Resources\DeleteCell_16x.png" />
+    <Content Include="Resources\DeleteListItem_32x.png" />
+    <Content Include="Resources\DeleteListItem_32x_24.bmp" />
+    <Content Include="Resources\Draw.png" />
+    <Content Include="Resources\edit.png" />
+    <Content Include="Resources\Edit2.png" />
+    <Content Include="Resources\Edit3.png" />
+    <Content Include="Resources\Edit4.png" />
+    <Content Include="Resources\EditClipboard.png" />
+    <Content Include="Resources\EditIcon.png" />
+    <Content Include="Resources\Edit_16xMD.png" />
+    <Content Include="Resources\Edit_32xMD.png" />
+    <Content Include="Resources\Edit_32xSM.png" />
+    <Content Include="Resources\Edit_grey_24x.png" />
+    <Content Include="Resources\Edit_grey_32x.png" />
+    <Content Include="Resources\Edit_grey_32xMD.png" />
+    <Content Include="Resources\Exit_16x.png" />
+    <Content Include="Resources\ExportFile_16x.png" />
+    <Content Include="Resources\F12_CloseErrorBoxGrey.png" />
+    <Content Include="Resources\FlipHorizontal_16x.png" />
+    <Content Include="Resources\FlipHorizontal_16x_32.bmp" />
+    <Content Include="Resources\FlipVertical_16x.png" />
+    <Content Include="Resources\FlipVertical_16x_32.bmp" />
+    <Content Include="Resources\Font_16x.png" />
+    <Content Include="Resources\FormBackground.png" />
+    <Content Include="Resources\GreenCheck.jpg" />
+    <Content Include="Resources\HideMember_16x_32.bmp" />
+    <Content Include="Resources\HorizontalFlip.png" />
+    <Content Include="Resources\icon-home.png" />
+    <Content Include="Resources\Jump Arrow.png" />
+    <Content Include="Resources\Jump Point.png" />
+    <Content Include="Resources\Jump Point1.png" />
+    <Content Include="Resources\Jump.ico" />
+    <Content Include="Resources\Keyboard.png" />
+    <None Include="Resources\Loading_Blue_16x.png" />
+    <None Include="Resources\Loading_Blue_32x.gif" />
+    <None Include="Resources\Loading_BlueFast_16x.gif" />
+    <None Include="Resources\Loading_BlueSLow_16x.gif" />
+    <None Include="Resources\LoadingSpinner_10Dots007ACC_inverse_36x.gif" />
+    <Content Include="Resources\NoIcon.png" />
+    <Content Include="Resources\NoSave.jpg" />
+    <Content Include="Resources\NoSave.png" />
+    <Content Include="Resources\NoSketch.jpg" />
+    <None Include="Resources\progress.gif" />
+    <None Include="Resources\progress_36x_animation.gif" />
+    <None Include="Resources\Progress_Ring_12x.png" />
+    <None Include="Resources\Progress_Ring_24.bmp" />
+    <Content Include="Resources\RedRectangle.png" />
+    <Content Include="Resources\ReleaseVersionMessage.txt" />
+    <Content Include="Resources\Save and Continue.jpg" />
+    <Content Include="Resources\Save and Continue.png" />
+    <Content Include="Resources\Save and Continue1.jpg" />
+    <Content Include="Resources\Save Green Check.png" />
+    <Content Include="Resources\Save.png" />
+    <Content Include="Resources\Save1.png" />
+    <Content Include="Resources\Save2.jpg" />
+    <Content Include="Resources\Save2.png" />
+    <Content Include="Resources\Splash Screen Background.png" />
+    <Content Include="Resources\Start.png" />
+    <Content Include="Resources\StatusOk.png" />
+    <None Include="Resources\StatusOK_16x_24.bmp" />
+    <None Include="Resources\StatusOK_16x_32.bmp" />
+    <None Include="Resources\StatusOK_16xMD.png" />
+    <None Include="Resources\StatusOK_48x.png" />
+    <None Include="Resources\StatusOK_64x.png" />
+    <None Include="Resources\StatusOK_256x.png" />
+    <None Include="Resources\StatusOK_cyan_16x.png" />
+    <None Include="Resources\StatusOK_cyan_16x_32.bmp" />
+    <None Include="Resources\StatusRequired_32xLG.png" />
+    <None Include="Resources\StatusRequired_32xMD.png" />
+    <None Include="Resources\StatusRequired_32xSM.png" />
+    <None Include="Resources\StatusRequired_cyan_16x.png" />
+    <None Include="Resources\StatusRequired_cyan_16x_24.bmp" />
+    <None Include="Resources\StatusRequired_cyan_16x_32.bmp" />
+    <Content Include="Resources\STONE TECH LOGO.png" />
+    <Content Include="Resources\Stonewall Tech. Big Logo.png" />
+    <Content Include="Resources\TestCommandLine.txt" />
+    <Content Include="Resources\TestVersionMessage.txt" />
+    <Content Include="Resources\Undo_16x_32.bmp" />
+    <Content Include="Resources\Undo_grey_32x.png" />
+    <Content Include="Resources\VerticalFlip.png" />
+    <Content Include="Resources\VSO_Export_16x.png" />
+    <Content Include="Resources\VSO_Home_16x.png" />
+    <Content Include="Resources\VSO_Refresh_16x.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6">
@@ -366,29 +429,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.4.5">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 4.5</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Stonewall Tech. Big Logo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\STONE TECH LOGO.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="StonewallTechIcon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\SWallTech\SWallTech.csproj">
-      <Project>{2af09c76-344e-4151-9ced-e745234e0437}</Project>
-      <Name>SWallTech</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+    <Folder Include="UtilityClasses\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

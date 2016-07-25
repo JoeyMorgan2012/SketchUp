@@ -28,149 +28,163 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label5 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.NEcbox = new System.Windows.Forms.CheckBox();
-            this.NWcbox = new System.Windows.Forms.CheckBox();
-            this.SEcbox = new System.Windows.Forms.CheckBox();
-            this.SWcbox = new System.Windows.Forms.CheckBox();
+            this.directionGroup = new System.Windows.Forms.GroupBox();
+            this.rbNone = new System.Windows.Forms.RadioButton();
+            this.rbSW = new System.Windows.Forms.RadioButton();
+            this.rbSE = new System.Windows.Forms.RadioButton();
+            this.rbNW = new System.Windows.Forms.RadioButton();
+            this.rbNE = new System.Windows.Forms.RadioButton();
+            this.btnSelectDirection = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.directionGroup.SuspendLayout();
             this.SuspendLayout();
             // 
-            // label5
+            // directionGroup
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(45, 25);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(176, 17);
-            this.label5.TabIndex = 8;
-            this.label5.Text = "( Distances N/S , E/W )";
+            this.directionGroup.Controls.Add(this.rbNone);
+            this.directionGroup.Controls.Add(this.rbSW);
+            this.directionGroup.Controls.Add(this.rbSE);
+            this.directionGroup.Controls.Add(this.rbNW);
+            this.directionGroup.Controls.Add(this.rbNE);
+            this.directionGroup.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.directionGroup.Location = new System.Drawing.Point(18, 29);
+            this.directionGroup.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.directionGroup.Name = "directionGroup";
+            this.directionGroup.Padding = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.directionGroup.Size = new System.Drawing.Size(269, 253);
+            this.directionGroup.TabIndex = 0;
+            this.directionGroup.TabStop = false;
+            this.directionGroup.Text = "( Distances N/S , E/W )";
             // 
-            // label1
+            // rbNone
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(59, 69);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(86, 17);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "North-East";
+            this.rbNone.AutoSize = true;
+            this.rbNone.Checked = true;
+            this.rbNone.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbNone.Location = new System.Drawing.Point(65, 38);
+            this.rbNone.Name = "rbNone";
+            this.rbNone.Size = new System.Drawing.Size(83, 27);
+            this.rbNone.TabIndex = 0;
+            this.rbNone.TabStop = true;
+            this.rbNone.Tag = "rbNone";
+            this.rbNone.Text = "(None)";
+            this.rbNone.UseVisualStyleBackColor = true;
             // 
-            // label2
+            // rbSW
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(59, 126);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(90, 17);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "North-West";
+            this.rbSW.AutoSize = true;
+            this.rbSW.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbSW.Location = new System.Drawing.Point(65, 202);
+            this.rbSW.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.rbSW.Name = "rbSW";
+            this.rbSW.Size = new System.Drawing.Size(121, 27);
+            this.rbSW.TabIndex = 4;
+            this.rbSW.TabStop = true;
+            this.rbSW.Tag = "SW";
+            this.rbSW.Text = "South-West";
+            this.rbSW.UseVisualStyleBackColor = true;
             // 
-            // label3
+            // rbSE
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(59, 183);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(88, 17);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "South-East";
+            this.rbSE.AutoSize = true;
+            this.rbSE.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbSE.Location = new System.Drawing.Point(65, 159);
+            this.rbSE.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.rbSE.Name = "rbSE";
+            this.rbSE.Size = new System.Drawing.Size(114, 27);
+            this.rbSE.TabIndex = 3;
+            this.rbSE.TabStop = true;
+            this.rbSE.Tag = "SE";
+            this.rbSE.Text = "South-East";
+            this.rbSE.UseVisualStyleBackColor = true;
             // 
-            // label4
+            // rbNW
             // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(59, 239);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(92, 17);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "South-West";
+            this.rbNW.AutoSize = true;
+            this.rbNW.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbNW.Location = new System.Drawing.Point(65, 117);
+            this.rbNW.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.rbNW.Name = "rbNW";
+            this.rbNW.Size = new System.Drawing.Size(121, 27);
+            this.rbNW.TabIndex = 2;
+            this.rbNW.TabStop = true;
+            this.rbNW.Tag = "NW";
+            this.rbNW.Text = "North-West";
+            this.rbNW.UseVisualStyleBackColor = true;
             // 
-            // NEcbox
+            // rbNE
             // 
-            this.NEcbox.AutoSize = true;
-            this.NEcbox.Location = new System.Drawing.Point(202, 73);
-            this.NEcbox.Margin = new System.Windows.Forms.Padding(4);
-            this.NEcbox.Name = "NEcbox";
-            this.NEcbox.Size = new System.Drawing.Size(15, 14);
-            this.NEcbox.TabIndex = 1;
-            this.NEcbox.UseVisualStyleBackColor = true;
-            this.NEcbox.CheckedChanged += new System.EventHandler(this.NEcbox_CheckedChanged);
+            this.rbNE.AutoSize = true;
+            this.rbNE.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbNE.Location = new System.Drawing.Point(65, 74);
+            this.rbNE.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.rbNE.Name = "rbNE";
+            this.rbNE.Size = new System.Drawing.Size(114, 27);
+            this.rbNE.TabIndex = 1;
+            this.rbNE.TabStop = true;
+            this.rbNE.Tag = "NE";
+            this.rbNE.Text = "North-East";
+            this.rbNE.UseVisualStyleBackColor = true;
             // 
-            // NWcbox
+            // btnSelectDirection
             // 
-            this.NWcbox.AutoSize = true;
-            this.NWcbox.Location = new System.Drawing.Point(202, 130);
-            this.NWcbox.Margin = new System.Windows.Forms.Padding(4);
-            this.NWcbox.Name = "NWcbox";
-            this.NWcbox.Size = new System.Drawing.Size(15, 14);
-            this.NWcbox.TabIndex = 2;
-            this.NWcbox.UseVisualStyleBackColor = true;
-            this.NWcbox.CheckedChanged += new System.EventHandler(this.NWcbox_CheckedChanged);
+            this.btnSelectDirection.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnSelectDirection.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSelectDirection.Location = new System.Drawing.Point(216, 312);
+            this.btnSelectDirection.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.btnSelectDirection.Name = "btnSelectDirection";
+            this.btnSelectDirection.Size = new System.Drawing.Size(73, 39);
+            this.btnSelectDirection.TabIndex = 2;
+            this.btnSelectDirection.Text = "Select";
+            this.btnSelectDirection.UseVisualStyleBackColor = true;
+            this.btnSelectDirection.Click += new System.EventHandler(this.btnSelectDirection_Click);
             // 
-            // SEcbox
+            // btnCancel
             // 
-            this.SEcbox.AutoSize = true;
-            this.SEcbox.Location = new System.Drawing.Point(202, 187);
-            this.SEcbox.Margin = new System.Windows.Forms.Padding(4);
-            this.SEcbox.Name = "SEcbox";
-            this.SEcbox.Size = new System.Drawing.Size(15, 14);
-            this.SEcbox.TabIndex = 3;
-            this.SEcbox.UseVisualStyleBackColor = true;
-            this.SEcbox.CheckedChanged += new System.EventHandler(this.SEcbox_CheckedChanged);
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCancel.Location = new System.Drawing.Point(20, 312);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(73, 39);
+            this.btnCancel.TabIndex = 1;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // SWcbox
+            // AngleForm
             // 
-            this.SWcbox.AutoSize = true;
-            this.SWcbox.Location = new System.Drawing.Point(202, 243);
-            this.SWcbox.Margin = new System.Windows.Forms.Padding(4);
-            this.SWcbox.Name = "SWcbox";
-            this.SWcbox.Size = new System.Drawing.Size(15, 14);
-            this.SWcbox.TabIndex = 4;
-            this.SWcbox.UseVisualStyleBackColor = true;
-            this.SWcbox.CheckedChanged += new System.EventHandler(this.SWcbox_CheckedChanged);
-            // 
-            // AngelForm
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 16F);
+            this.AcceptButton = this.btnSelectDirection;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 23F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
-            this.ClientSize = new System.Drawing.Size(266, 300);
-            this.Controls.Add(this.SWcbox);
-            this.Controls.Add(this.SEcbox);
-            this.Controls.Add(this.NWcbox);
-            this.Controls.Add(this.NEcbox);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.label5);
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Margin = new System.Windows.Forms.Padding(4);
-            this.Name = "AngelForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.CancelButton = this.btnCancel;
+            this.ClientSize = new System.Drawing.Size(304, 369);
+            this.ControlBox = false;
+            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.btnSelectDirection);
+            this.Controls.Add(this.directionGroup);
+            this.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.Name = "AngleForm";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Angle Moves ";
+            this.directionGroup.ResumeLayout(false);
+            this.directionGroup.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.CheckBox NEcbox;
-        private System.Windows.Forms.CheckBox NWcbox;
-        private System.Windows.Forms.CheckBox SEcbox;
-        private System.Windows.Forms.CheckBox SWcbox;
+        private System.Windows.Forms.GroupBox directionGroup;
+        private System.Windows.Forms.RadioButton rbNE;
+        private System.Windows.Forms.RadioButton rbSW;
+        private System.Windows.Forms.RadioButton rbSE;
+        private System.Windows.Forms.RadioButton rbNW;
+        private System.Windows.Forms.Button btnSelectDirection;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.RadioButton rbNone;
     }
 }

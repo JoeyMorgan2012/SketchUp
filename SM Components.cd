@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Comment CommentText="ParcelMast is from NATIVE.[LOC]MAST&#xD;&#xA;1:1 to Parcel">
+    <Position X="0.767" Y="1.05" Height="0.75" Width="1.808" />
+  </Comment>
+  <Comment CommentText="Parcel is from NATIVE.[LOC]MASTER. &#xD;&#xA;1:1 to ParcelMast&#xD;&#xA;1:∞ to Section.">
+    <Position X="3.217" Y="1.058" Height="0.75" Width="2.208" />
+  </Comment>
+  <Comment CommentText="Section is from NATIVE.[LOC]Section. 1:∞ to Line.&#xD;&#xA;Parent is Parcel.">
+    <Position X="6.042" Y="1" Height="0.75" Width="1.7" />
+  </Comment>
+  <Comment CommentText="Line is from NATIVE.[LOC]Line. Parent is Section.&#xD;&#xA;Virtual Property for Parent Parcel.">
+    <Position X="8.15" Y="1.033" Height="0.75" Width="1.9" />
+  </Comment>
+  <Class Name="SketchUp.SMSection">
+    <Position X="6" Y="2" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>BABEJkIIBCYgQsAAAgDEZMAAEAagEAACCAAAAAAQBAA=</HashCode>
+      <FileName>SMSection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.SMLine">
+    <Position X="8" Y="2" Width="3" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>JHDECAIwRyCC4gMogGBJAAMAyAADwgAAAAAEABAAFCg=</HashCode>
+      <FileName>SMLine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.SMParcel">
+    <Position X="2.75" Y="2" Width="3" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AABEhlCAwINACQDBEAswAEACIWEwSALJIMgCmjABBIY=</HashCode>
+      <FileName>SMParcel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SketchUp.SMParcelMast">
+    <Position X="0.75" Y="2" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>IABAgAAAAAAAAABAAAACABEAAACQAAgBAAAARDAABCA=</HashCode>
+      <FileName>SMParcelMast.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
